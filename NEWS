@@ -2,6 +2,10 @@ PHP                                                                        NEWS
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 ?? ??? ????, PHP 8.6.0alpha2
 
+- Core:
+  . Property hooks are now allowed on backed readonly properties. (Crell,
+    NickSdot and iluuu1994)
+
 - DBA:
   . Fixed OOB read on malformed length field in dba flatfile handler. (alhudz)
 
