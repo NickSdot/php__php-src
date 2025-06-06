@@ -1,5 +1,5 @@
 --TEST--
-Hooks work on backed readonly properties
+Readonly hooks may be lazy loaded
 --FILE--
 <?php
 
@@ -45,12 +45,19 @@ $categoryId->setValue($product, '42');
 $category1 = $product->category;
 echo $category1->name . "\n";
 
-// cached value
+// cached category returned
 $category2 = $product->category;
 echo $category2->name . "\n";
 
-// Verify same instance is returned (backing field caching works)
+// same category instance returned
 var_dump($category1 === $category2);
+
+// cannot set twice
+try {
+    $categoryId->setValue($product, '420');
+} catch (Error $e) {
+    echo $e->getMessage(), "\n";
+}
 
 ?>
 --EXPECT--
@@ -58,3 +65,4 @@ hit database
 Category 42
 Category 42
 bool(true)
+Cannot modify readonly property LazyProduct::$categoryId
