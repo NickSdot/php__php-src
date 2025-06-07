@@ -1,5 +1,5 @@
 --TEST--
-Backed property cannot redeclare readonly as non-readonly property
+Readonly class Test cannot use trait with a non-readonly property
 --FILE--
 <?php
 

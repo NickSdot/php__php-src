@@ -1,12 +1,10 @@
 --TEST--
-Virtual readonly property cannot have hooks
+Virtual readonly property in interface throws
 --FILE--
 <?php
 
-class Test {
-    public readonly int $prop {
-        get => 42;
-    }
+interface Test {
+    public readonly int $prop { get; }
 }
 ?>
 --EXPECTF--

@@ -1,5 +1,5 @@
 --TEST--
-Backed property, promoted, readonly class
+Backed promoted property in readonly class may have hooks
 --FILE--
 <?php
 

@@ -1,5 +1,5 @@
 --TEST--
-Backed property, readonly class
+Backed property in readonly class may have hooks
 --FILE--
 <?php
 

@@ -1,5 +1,5 @@
 --TEST--
-Backed property cannot redeclare non-readonly as readonly property
+Readonly class cannot extend non-readonly class
 --FILE--
 <?php
 

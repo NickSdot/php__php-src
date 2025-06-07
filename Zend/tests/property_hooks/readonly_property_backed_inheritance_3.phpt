@@ -1,5 +1,5 @@
 --TEST--
-Backed property cannot redeclare readonly as non-readonly property
+Backed readonly property get() in child class behaves as expected
 --FILE--
 <?php
 
@@ -53,13 +53,11 @@ try {
     echo $e->getMessage(), "\n";
 }
 
-
 try {
     $t->prop = 43; // cannot write, visibility
 } catch (Error $e) {
     echo $e->getMessage(), "\n";
 }
-
 
 ?>
 --EXPECT--
