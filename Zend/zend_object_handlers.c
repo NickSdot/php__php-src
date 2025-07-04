@@ -722,19 +722,22 @@ static bool zend_call_get_hook(
 	/* Check if we have a cached result for readonly backed properties */
 	bool has_cached_result = false;
 	zval cached_result;
-	if ((prop_info->flags & ZEND_ACC_READONLY) && !(prop_info->flags & ZEND_ACC_VIRTUAL)) {
+	zend_string *cache_key = NULL;
+
+	const bool is_backed_readonly = prop_info->flags & ZEND_ACC_READONLY && !(prop_info->flags & ZEND_ACC_VIRTUAL);
+
+	if (is_backed_readonly) {
+
+		char cache_key_buf[256];
+		snprintf(cache_key_buf, sizeof(cache_key_buf), "__readonly_hook_cache_%s", ZSTR_VAL(prop_name));
+		cache_key = zend_string_init(cache_key_buf, strlen(cache_key_buf), 0);
+
 		if (zobj->properties) {
-			zend_string *cache_key;
-			char cache_key_buf[256];
-			snprintf(cache_key_buf, sizeof(cache_key_buf), "__readonly_hook_cache_%s", ZSTR_VAL(prop_name));
-			cache_key = zend_string_init(cache_key_buf, strlen(cache_key_buf), 0);
-			
-			zval *found_cache = zend_hash_find(zobj->properties, cache_key);
+			const zval *found_cache = zend_hash_find(zobj->properties, cache_key);
 			if (found_cache) {
 				ZVAL_COPY(&cached_result, found_cache);
 				has_cached_result = true;
 			}
-			zend_string_release(cache_key);
 		}
 	}
 
@@ -742,28 +745,28 @@ static bool zend_call_get_hook(
 	zend_call_known_instance_method_with_0_params(get, zobj, rv);
 
 	/* Return cache value if available, or cache the new result */
-	if ((prop_info->flags & ZEND_ACC_READONLY) && !(prop_info->flags & ZEND_ACC_VIRTUAL)) {
+	if (is_backed_readonly && cache_key) {
 		if (has_cached_result) {
-			/* Return cache result instead of hook result */
+
+			/* Use the cached result instead of the hook result */
 			zval_ptr_dtor(rv);
 			ZVAL_COPY(rv, &cached_result);
 			zval_ptr_dtor(&cached_result);
 		} else {
-			/* Cache the hook result for following reads */
+
+			/* Cache the hook result for any following reads */
 			if (!zobj->properties) {
 				rebuild_object_properties_internal(zobj);
 			}
-			
-			zend_string *cache_key;
-			char cache_key_buf[256];
-			snprintf(cache_key_buf, sizeof(cache_key_buf), "__readonly_hook_cache_%s", ZSTR_VAL(prop_name));
-			cache_key = zend_string_init(cache_key_buf, strlen(cache_key_buf), 0);
-			
+
 			zval cache_val;
 			ZVAL_COPY(&cache_val, rv);
 			zend_hash_add(zobj->properties, cache_key, &cache_val);
-			zend_string_release(cache_key);
 		}
+	}
+
+	if (cache_key) {
+		zend_string_release(cache_key);
 	}
 
 	return true;
