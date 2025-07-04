@@ -38,11 +38,9 @@ $t = new ChildClass(911);
 echo "\nFirst call:\n";
 $t->prop;
 
-echo "\nFirst call didn't change state:\n";
-$t->prop;
-
-echo "\nUnderlying value never touched:\n";
+echo "\nComputed value cached to backing store:\n";
 var_dump($t);
+var_dump($t->prop === $t->prop);
 
 echo "\nCalling scope is child, hitting child get() and child state expected:\n";
 $t->getParentValue();
@@ -67,31 +65,18 @@ In ChildClass::$prop::get():
     $this->prop: 911
     $this->prop * 2: 1822
 
-First call didn't change state:
-In ChildClass::$prop::get():
-    parent::$prop::get(): 911
-    $this->prop: 911
-    $this->prop * 2: 1822
-
-Underlying value never touched:
+Computed value cached to backing store:
 object(ChildClass)#1 (1) {
   ["prop"]=>
-  int(911)
+  int(1822)
 }
+bool(true)
 
 Calling scope is child, hitting child get() and child state expected:
-In ChildClass::$prop::get():
-    parent::$prop::get(): 911
-    $this->prop: 911
-    $this->prop * 2: 1822
 ParentClass::getParentValue(): 1822
 object(ChildClass)#1 (1) {
   ["prop"]=>
-  int(911)
+  int(1822)
 }
-In ChildClass::$prop::get():
-    parent::$prop::get(): 911
-    $this->prop: 911
-    $this->prop * 2: 1822
 Error: Cannot modify readonly property ChildClass::$prop
 Error: Cannot modify protected(set) readonly property ChildClass::$prop from global scope
