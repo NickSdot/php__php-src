@@ -719,7 +719,30 @@ static bool zend_call_get_hook(
 		return false;
 	}
 
+	const bool is_backed_readonly = prop_info->flags & ZEND_ACC_READONLY && !(prop_info->flags & ZEND_ACC_VIRTUAL);
+
+	/* Check if we already have a cached result */
+	if (is_backed_readonly) {
+		zval *property_slot = OBJ_PROP(zobj, prop_info->offset);
+
+		if (Z_PROP_FLAG_P(property_slot) & IS_PROP_READONLY_CACHED) {
+			ZVAL_COPY(rv, property_slot);
+			return true;
+		}
+	}
+
 	zend_call_known_instance_method_with_0_params(get, zobj, rv);
+
+	/* Cache the result in the property slot */
+	if (is_backed_readonly) {
+		zval *property_slot = OBJ_PROP(zobj, prop_info->offset);
+
+		zval_ptr_dtor(property_slot);
+		ZVAL_COPY(property_slot, rv);
+		
+		/* Mark the property as cached */
+		Z_PROP_FLAG_P(property_slot) |= IS_PROP_READONLY_CACHED;
+	}
 
 	return true;
 }
