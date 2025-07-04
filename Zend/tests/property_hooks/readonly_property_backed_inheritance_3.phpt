@@ -74,9 +74,11 @@ In ChildClass::$prop::get():
     $this->prop * 2: 1822
 
 Underlying value never touched:
-object(ChildClass)#1 (1) {
+object(ChildClass)#1 (2) {
   ["prop"]=>
   int(911)
+  ["__readonly_hook_cache_prop"]=>
+  int(1822)
 }
 
 Calling scope is child, hitting child get() and child state expected:
@@ -85,9 +87,11 @@ In ChildClass::$prop::get():
     $this->prop: 911
     $this->prop * 2: 1822
 ParentClass::getParentValue(): 1822
-object(ChildClass)#1 (1) {
+object(ChildClass)#1 (2) {
   ["prop"]=>
   int(911)
+  ["__readonly_hook_cache_prop"]=>
+  int(1822)
 }
 In ChildClass::$prop::get():
     parent::$prop::get(): 911
