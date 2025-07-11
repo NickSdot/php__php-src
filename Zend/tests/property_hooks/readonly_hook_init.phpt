@@ -17,4 +17,3 @@ var_dump($unusual->value === $unusual->value);
 ?>
 --EXPECT--
 bool(true)
-
