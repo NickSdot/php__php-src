@@ -4,7 +4,7 @@ Virtual readonly property in abstract class triggers non-abstract body error
 <?php
 
 abstract class Test {
-    public readonly int $prop { get; }
+    public readonly int $prop { set; }
 }
 ?>
 --EXPECTF--

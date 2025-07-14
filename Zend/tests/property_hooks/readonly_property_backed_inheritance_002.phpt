@@ -10,7 +10,6 @@ class ParentClass {
 class Test extends ParentClass {
     public function __construct(
         public readonly int $prop {
-            get => $this->prop;
             set => $value;
         }
     ) {}

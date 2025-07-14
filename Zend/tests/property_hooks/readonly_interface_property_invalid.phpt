@@ -4,7 +4,7 @@ Interface properties cannot be readonly
 <?php
 
 interface Test {
-    public readonly int $prop { get; }
+   public readonly int $prop { set; }
 }
 ?>
 --EXPECTF--

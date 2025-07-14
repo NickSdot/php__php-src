@@ -1,5 +1,5 @@
 --TEST--
-Backed readonly property get() in child class behaves as expected
+Hooked child property can override non-hooked readonly parent property
 --FILE--
 <?php
 
@@ -7,25 +7,12 @@ class ParentClass {
     public function __construct(
         public readonly int $prop
     ) {}
-
-    public function getParentValue() {
-        echo "ParentClass::getParentValue(): {$this->prop}\n";
-        var_dump($this);
-        return $this->prop;
-    }
 }
 
 class ChildClass extends ParentClass {
 
     public readonly int $prop {
-        get {
-            echo 'In ChildClass::$prop::get():' . "\n";
-            echo '    parent::$prop::get(): ' . parent::$prop::get() . "\n";
-            echo '    $this->prop: ' . $this->prop . "\n";
-            echo '    $this->prop * 2: ' . $this->prop * 2 . "\n";
-            return $this->prop * 2;
-        }
-        set => $value;
+        set => $value * 2;
     }
 
     public function setAgain() {
@@ -35,15 +22,8 @@ class ChildClass extends ParentClass {
 
 $t = new ChildClass(911);
 
-echo "\nFirst call:\n";
-$t->prop;
-
-echo "\nComputed value cached to backing store:\n";
 var_dump($t);
 var_dump($t->prop === $t->prop);
-
-echo "\nCalling scope is child, hitting child get() and child state expected:\n";
-$t->getParentValue();
 
 try {
     $t->setAgain(); // cannot write, readonly
@@ -59,24 +39,10 @@ try {
 
 ?>
 --EXPECT--
-First call:
-In ChildClass::$prop::get():
-    parent::$prop::get(): 911
-    $this->prop: 911
-    $this->prop * 2: 1822
-
-Computed value cached to backing store:
 object(ChildClass)#1 (1) {
   ["prop"]=>
   int(1822)
 }
 bool(true)
-
-Calling scope is child, hitting child get() and child state expected:
-ParentClass::getParentValue(): 1822
-object(ChildClass)#1 (1) {
-  ["prop"]=>
-  int(1822)
-}
 Error: Cannot modify readonly property ChildClass::$prop
 Error: Cannot modify protected(set) readonly property ChildClass::$prop from global scope

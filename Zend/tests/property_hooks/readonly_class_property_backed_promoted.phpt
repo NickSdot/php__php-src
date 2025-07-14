@@ -1,5 +1,5 @@
 --TEST--
-Backed promoted property in readonly class may have hooks
+Backed promoted property in readonly class may have set hooks
 --FILE--
 <?php
 
@@ -7,7 +7,6 @@ Backed promoted property in readonly class may have hooks
 readonly class Test {
     public function __construct(
         public int $prop {
-            get => $this->prop;
             set => $value;
         }
     ) {}

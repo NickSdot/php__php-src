@@ -6,7 +6,6 @@ Backed readonly property may have hooks
 // readonly property
 class Test {
     public readonly int $prop {
-        get => $this->prop;
         set => $value;
     }
 
@@ -59,8 +58,7 @@ final readonly class Foo3
 {
     public function __construct(
         public readonly array $values {
-            set(array $value) => array_map(strtoupper(...), $value);
-            get => $this->makeNicer($this->values);
+            set(array $value) => $this->makeNicer(array_map(strtoupper(...), $value));
         },
     ) {}
 

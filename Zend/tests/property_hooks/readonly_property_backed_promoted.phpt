@@ -7,7 +7,6 @@ Backed promoted readonly property may have hooks
 class Test {
     public function __construct(
         public readonly int $prop {
-                get => $this->prop;
                 set => $value;
             }
     ) {}

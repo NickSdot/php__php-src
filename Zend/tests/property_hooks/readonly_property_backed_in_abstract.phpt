@@ -1,11 +1,10 @@
 --TEST--
-Backed readonly property with hooks in abstract class
+Backed readonly property with set hooks in abstract class
 --FILE--
 <?php
 abstract class Test {
 
     public readonly int $prop {
-        get => $this->prop;
         set => $value;
     }
 

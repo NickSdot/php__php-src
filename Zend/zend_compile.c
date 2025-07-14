@@ -8545,6 +8545,12 @@ static void zend_compile_property_hooks(
 				ZSTR_VAL(name), ZSTR_VAL(ce->name), ZSTR_VAL(prop_name));
 		}
 
+		if (hook_kind == ZEND_PROPERTY_HOOK_GET && (prop_info->flags & ZEND_ACC_READONLY)) {
+			zend_error_noreturn(E_COMPILE_ERROR,
+				"Readonly property %s::$%s cannot have a get hook",
+				ZSTR_VAL(ce->name), ZSTR_VAL(prop_name));
+		}
+
 		if (stmt_ast && stmt_ast->kind == ZEND_AST_PROPERTY_HOOK_SHORT_BODY) {
 			stmt_ast = stmt_ast->child[0];
 			if (hook_kind == ZEND_PROPERTY_HOOK_GET) {

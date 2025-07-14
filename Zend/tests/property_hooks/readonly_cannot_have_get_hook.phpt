@@ -1,5 +1,5 @@
 --TEST--
-Virtual promoted property in readonly class cannot have hooks
+Get hooks are not allowed in readonly
 --FILE--
 <?php
 
@@ -13,4 +13,4 @@ readonly class Test {
 
 ?>
 --EXPECTF--
-Fatal error: Hooked virtual properties cannot be declared readonly in %s on line %d
+Fatal error: Readonly property Test::$prop cannot have a get hook in %s on line %d
