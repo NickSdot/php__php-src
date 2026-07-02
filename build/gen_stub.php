@@ -2852,6 +2852,7 @@ class StringBuilder {
         "line" => "ZEND_STR_LINE",
         "function" => "ZEND_STR_FUNCTION",
         "class" => "ZEND_STR_CLASS",
+        "namespace" => "ZEND_STR_NAMESPACE",
         "object" => "ZEND_STR_OBJECT",
         "type" => "ZEND_STR_TYPE",
         // ZEND_STR_OBJECT_OPERATOR and ZEND_STR_PAAMAYIM_NEKUDOTAYIM are

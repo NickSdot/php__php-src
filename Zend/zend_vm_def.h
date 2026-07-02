@@ -8978,14 +8978,20 @@ ZEND_VM_HANDLER(157, ZEND_FETCH_CLASS_NAME, CV|TMP|UNUSED|CLASS_FETCH, ANY)
 		if (UNEXPECTED(Z_TYPE_P(op) != IS_OBJECT)) {
 			ZVAL_DEREF(op);
 			if (Z_TYPE_P(op) != IS_OBJECT) {
-				zend_type_error("Cannot use \"::class\" on %s", zend_zval_value_name(op));
+				zend_type_error("Cannot use \"%s\" on %s",
+					opline->extended_value == ZEND_FETCH_CLASS_NAMESPACE_NAME ? "::namespace" : "::class",
+					zend_zval_value_name(op));
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				FREE_OP1();
 				HANDLE_EXCEPTION();
 			}
 		}
 
-		ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op)->name);
+		if (opline->extended_value == ZEND_FETCH_CLASS_NAMESPACE_NAME) {
+			ZVAL_STR(EX_VAR(opline->result.var), zend_get_class_namespace_name(Z_OBJCE_P(op)->name));
+		} else {
+			ZVAL_STR_COPY(EX_VAR(opline->result.var), Z_OBJCE_P(op)->name);
+		}
 		FREE_OP1();
 		ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 	}
@@ -9003,7 +9009,11 @@ ZEND_VM_HANDLER(157, ZEND_FETCH_CLASS_NAME, CV|TMP|UNUSED|CLASS_FETCH, ANY)
 
 	switch (fetch_type) {
 		case ZEND_FETCH_CLASS_SELF:
-			ZVAL_STR_COPY(EX_VAR(opline->result.var), scope->name);
+			if (opline->extended_value == ZEND_FETCH_CLASS_NAMESPACE_NAME) {
+				ZVAL_STR(EX_VAR(opline->result.var), zend_get_class_namespace_name(scope->name));
+			} else {
+				ZVAL_STR_COPY(EX_VAR(opline->result.var), scope->name);
+			}
 			break;
 		case ZEND_FETCH_CLASS_PARENT:
 			if (UNEXPECTED(scope->parent == NULL)) {
@@ -9013,7 +9023,11 @@ ZEND_VM_HANDLER(157, ZEND_FETCH_CLASS_NAME, CV|TMP|UNUSED|CLASS_FETCH, ANY)
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
-			ZVAL_STR_COPY(EX_VAR(opline->result.var), scope->parent->name);
+			if (opline->extended_value == ZEND_FETCH_CLASS_NAMESPACE_NAME) {
+				ZVAL_STR(EX_VAR(opline->result.var), zend_get_class_namespace_name(scope->parent->name));
+			} else {
+				ZVAL_STR_COPY(EX_VAR(opline->result.var), scope->parent->name);
+			}
 			break;
 		case ZEND_FETCH_CLASS_STATIC:
 			if (Z_TYPE(EX(This)) == IS_OBJECT) {
@@ -9021,7 +9035,11 @@ ZEND_VM_HANDLER(157, ZEND_FETCH_CLASS_NAME, CV|TMP|UNUSED|CLASS_FETCH, ANY)
 			} else {
 				called_scope = Z_CE(EX(This));
 			}
-			ZVAL_STR_COPY(EX_VAR(opline->result.var), called_scope->name);
+			if (opline->extended_value == ZEND_FETCH_CLASS_NAMESPACE_NAME) {
+				ZVAL_STR(EX_VAR(opline->result.var), zend_get_class_namespace_name(called_scope->name));
+			} else {
+				ZVAL_STR_COPY(EX_VAR(opline->result.var), called_scope->name);
+			}
 			break;
 		default: ZEND_UNREACHABLE();
 	}

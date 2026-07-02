@@ -4790,6 +4790,10 @@ ZEND_API zend_class_constant *zend_declare_typed_class_constant(zend_class_entry
 		zend_error_noreturn(ce->type == ZEND_INTERNAL_CLASS ? E_CORE_ERROR : E_COMPILE_ERROR,
 				"A class constant must not be called 'class'; it is reserved for class name fetching");
 	}
+	if (zend_string_equals_ci(name, ZSTR_KNOWN(ZEND_STR_NAMESPACE))) {
+		zend_error_noreturn(ce->type == ZEND_INTERNAL_CLASS ? E_CORE_ERROR : E_COMPILE_ERROR,
+				"A class constant must not be called 'namespace'; it is reserved for class namespace fetching");
+	}
 
 	if (Z_TYPE_P(value) == IS_STRING && !ZSTR_IS_INTERNED(Z_STR_P(value))) {
 		zval_make_interned_string(value);

@@ -1838,6 +1838,20 @@ static bool zend_try_compile_const_expr_resolve_class_name(zval *zv, zend_ast *c
 }
 /* }}} */
 
+static bool zend_try_compile_const_expr_resolve_class_namespace(zval *zv, zend_ast *class_ast) /* {{{ */
+{
+	zval class_name;
+
+	if (!zend_try_compile_const_expr_resolve_class_name(&class_name, class_ast)) {
+		return false;
+	}
+
+	ZVAL_STR(zv, zend_get_class_namespace_name(Z_STR(class_name)));
+	zval_ptr_dtor_nogc(&class_name);
+	return true;
+}
+/* }}} */
+
 /* We don't use zend_verify_const_access because we need to deal with unlinked classes. */
 static bool zend_verify_ct_const_access(const zend_class_constant *c, const zend_class_entry *scope)
 {
@@ -11401,6 +11415,7 @@ static void zend_compile_class_const(znode *result, zend_ast *ast) /* {{{ */
 static void zend_compile_class_name(znode *result, const zend_ast *ast) /* {{{ */
 {
 	zend_ast *class_ast = ast->child[0];
+	zend_op *opline;
 
 	if (zend_try_compile_const_expr_resolve_class_name(&result->u.constant, class_ast)) {
 		result->op_type = IS_CONST;
@@ -11408,8 +11423,9 @@ static void zend_compile_class_name(znode *result, const zend_ast *ast) /* {{{ *
 	}
 
 	if (class_ast->kind == ZEND_AST_ZVAL) {
-		zend_op *opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, NULL, NULL);
+		opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, NULL, NULL);
 		opline->op1.num = zend_get_class_fetch_type(zend_ast_get_str(class_ast));
+		opline->extended_value = ZEND_FETCH_CLASS_NAME_FULL;
 	} else {
 		znode expr_node;
 		zend_compile_expr(&expr_node, class_ast);
@@ -11420,8 +11436,39 @@ static void zend_compile_class_name(znode *result, const zend_ast *ast) /* {{{ *
 				zend_zval_value_name(&expr_node.u.constant));
 		}
 
-		zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, &expr_node, NULL);
+		opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, &expr_node, NULL);
+		opline->extended_value = ZEND_FETCH_CLASS_NAME_FULL;
 	}
+}
+/* }}} */
+
+static void zend_compile_class_namespace(znode *result, const zend_ast *ast) /* {{{ */
+{
+	zend_ast *class_ast = ast->child[0];
+	zend_op *opline;
+
+	if (zend_try_compile_const_expr_resolve_class_namespace(&result->u.constant, class_ast)) {
+		result->op_type = IS_CONST;
+		return;
+	}
+
+	if (class_ast->kind == ZEND_AST_ZVAL) {
+		opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, NULL, NULL);
+		opline->op1.num = zend_get_class_fetch_type(zend_ast_get_str(class_ast));
+	} else {
+		znode expr_node;
+		zend_compile_expr(&expr_node, class_ast);
+		if (expr_node.op_type == IS_CONST) {
+			/* Unlikely case that happen if class_ast is constant folded.
+			 * Handle it here, to avoid needing a CONST specialization in the VM. */
+			zend_error_noreturn(E_COMPILE_ERROR, "Cannot use \"::namespace\" on %s",
+				zend_zval_value_name(&expr_node.u.constant));
+		}
+
+		opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, &expr_node, NULL);
+	}
+
+	opline->extended_value = ZEND_FETCH_CLASS_NAMESPACE_NAME;
 }
 /* }}} */
 
@@ -11608,6 +11655,7 @@ static void zend_compile_magic_const(znode *result, const zend_ast *ast) /* {{{ 
 
 	opline = zend_emit_op_tmp(result, ZEND_FETCH_CLASS_NAME, NULL, NULL);
 	opline->op1.num = ZEND_FETCH_CLASS_SELF;
+	opline->extended_value = ZEND_FETCH_CLASS_NAME_FULL;
 }
 /* }}} */
 
@@ -11624,6 +11672,7 @@ static bool zend_is_allowed_in_const_expr(zend_ast_kind kind) /* {{{ */
 		|| kind == ZEND_AST_UNPACK
 		|| kind == ZEND_AST_CONST || kind == ZEND_AST_CLASS_CONST
 		|| kind == ZEND_AST_CLASS_NAME
+		|| kind == ZEND_AST_CLASS_NAMESPACE
 		|| kind == ZEND_AST_MAGIC_CONST || kind == ZEND_AST_COALESCE
 		|| kind == ZEND_AST_CONST_ENUM_INIT
 		|| kind == ZEND_AST_NEW || kind == ZEND_AST_ARG_LIST
@@ -11695,6 +11744,33 @@ static void zend_compile_const_expr_class_name(zend_ast **ast_ptr) /* {{{ */
 		case ZEND_FETCH_CLASS_STATIC:
 			zend_error_noreturn(E_COMPILE_ERROR,
 				"static::class cannot be used for compile-time class name resolution");
+		default: ZEND_UNREACHABLE();
+	}
+}
+
+static void zend_compile_const_expr_class_namespace(zend_ast **ast_ptr) /* {{{ */
+{
+	zend_ast *ast = *ast_ptr;
+	zend_ast *class_ast = ast->child[0];
+	if (class_ast->kind != ZEND_AST_ZVAL) {
+		zend_error_noreturn(E_COMPILE_ERROR,
+			"(expression)::namespace cannot be used in constant expressions");
+	}
+
+	zend_string *class_name = zend_ast_get_str(class_ast);
+	uint32_t fetch_type = zend_get_class_fetch_type(class_name);
+
+	switch (fetch_type) {
+		case ZEND_FETCH_CLASS_SELF:
+		case ZEND_FETCH_CLASS_PARENT:
+			/* For the const-eval representation store the fetch type instead of the name. */
+			zend_string_release(class_name);
+			ast->child[0] = NULL;
+			ast->attr = fetch_type;
+			return;
+		case ZEND_FETCH_CLASS_STATIC:
+			zend_error_noreturn(E_COMPILE_ERROR,
+				"static::namespace cannot be used for compile-time class namespace resolution");
 		default: ZEND_UNREACHABLE();
 	}
 }
@@ -11890,6 +11966,9 @@ static void zend_compile_const_expr(zend_ast **ast_ptr, void *context) /* {{{ */
 			break;
 		case ZEND_AST_CLASS_NAME:
 			zend_compile_const_expr_class_name(ast_ptr);
+			break;
+		case ZEND_AST_CLASS_NAMESPACE:
+			zend_compile_const_expr_class_namespace(ast_ptr);
 			break;
 		case ZEND_AST_CONST:
 			zend_compile_const_expr_const(ast_ptr);
@@ -12222,6 +12301,9 @@ static void zend_compile_expr_inner(znode *result, zend_ast *ast) /* {{{ */
 			return;
 		case ZEND_AST_CLASS_NAME:
 			zend_compile_class_name(result, ast);
+			return;
+		case ZEND_AST_CLASS_NAMESPACE:
+			zend_compile_class_namespace(result, ast);
 			return;
 		case ZEND_AST_ENCAPS_LIST:
 			zend_compile_encaps_list(result, ast);
@@ -12654,6 +12736,14 @@ static void zend_eval_const_expr(zend_ast **ast_ptr) /* {{{ */
 		{
 			zend_ast *class_ast = ast->child[0];
 			if (!zend_try_compile_const_expr_resolve_class_name(&result, class_ast)) {
+				return;
+			}
+			break;
+		}
+		case ZEND_AST_CLASS_NAMESPACE:
+		{
+			zend_ast *class_ast = ast->child[0];
+			if (!zend_try_compile_const_expr_resolve_class_namespace(&result, class_ast)) {
 				return;
 			}
 			break;

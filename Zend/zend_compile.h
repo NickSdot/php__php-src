@@ -1053,6 +1053,20 @@ ZEND_API zend_string *zend_type_to_string(zend_type type);
 #define ZEND_FETCH_CLASS_ALLOW_UNLINKED 0x0400
 #define ZEND_FETCH_CLASS_ALLOW_NEARLY_LINKED 0x0800
 
+#define ZEND_FETCH_CLASS_NAME_FULL       0
+#define ZEND_FETCH_CLASS_NAMESPACE_NAME  1
+
+static zend_always_inline zend_string *zend_get_class_namespace_name(const zend_string *name) {
+	const char *name_end = memchr(ZSTR_VAL(name), '\0', ZSTR_LEN(name));
+	size_t name_len = name_end ? (size_t) (name_end - ZSTR_VAL(name)) : ZSTR_LEN(name);
+	const char *ns_separator = zend_memrchr(ZSTR_VAL(name), '\\', name_len);
+	if (ns_separator == NULL) {
+		return zend_empty_string;
+	}
+
+	return zend_string_init_fast(ZSTR_VAL(name), ns_separator - ZSTR_VAL(name));
+}
+
 /* These should not clash with ZEND_ACC_PPP_MASK and ZEND_ACC_PPP_SET_MASK */
 #define ZEND_PARAM_REF      (1<<3)
 #define ZEND_PARAM_VARIADIC (1<<4)

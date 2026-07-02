@@ -28,7 +28,6 @@ class Obj
     const INSTANCEOF = 'instanceof';
     const INSTEADOF = 'insteadof';
     const INTERFACE = 'interface';
-    const NAMESPACE = 'namespace';
     const NEW = 'new';
     const OR = 'or';
     const XOR = 'xor';
@@ -105,7 +104,6 @@ echo Obj::GOTO, PHP_EOL;
 echo Obj::INSTANCEOF, PHP_EOL;
 echo Obj::INSTEADOF, PHP_EOL;
 echo Obj::INTERFACE, PHP_EOL;
-echo Obj::NAMESPACE, PHP_EOL;
 echo Obj::NEW, PHP_EOL;
 echo Obj::OR, PHP_EOL;
 echo Obj::XOR, PHP_EOL;
@@ -184,7 +182,6 @@ goto
 instanceof
 insteadof
 interface
-namespace
 new
 or
 xor

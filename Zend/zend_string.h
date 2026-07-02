@@ -573,6 +573,7 @@ default: ZEND_UNREACHABLE();
 	_(ZEND_STR_LINE,                   "line") \
 	_(ZEND_STR_FUNCTION,               "function") \
 	_(ZEND_STR_CLASS,                  "class") \
+	_(ZEND_STR_NAMESPACE,              "namespace") \
 	_(ZEND_STR_OBJECT,                 "object") \
 	_(ZEND_STR_TYPE,                   "type") \
 	_(ZEND_STR_OBJECT_OPERATOR,        "->") \

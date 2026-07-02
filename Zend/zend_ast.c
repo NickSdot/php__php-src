@@ -18,6 +18,7 @@
 
 #include "zend_ast.h"
 #include "zend_API.h"
+#include "zend_compile.h"
 #include "zend_operators.h"
 #include "zend_language_parser.h"
 #include "zend_smart_str.h"
@@ -129,6 +130,9 @@ ZEND_API zend_ast * ZEND_FASTCALL zend_ast_create_class_const_or_name(zend_ast *
 	if (zend_string_equals_ci(name_str, ZSTR_KNOWN(ZEND_STR_CLASS))) {
 		zend_string_release(name_str);
 		return zend_ast_create(ZEND_AST_CLASS_NAME, class_name);
+	} else if (zend_string_equals_ci(name_str, ZSTR_KNOWN(ZEND_STR_NAMESPACE))) {
+		zend_string_release(name_str);
+		return zend_ast_create(ZEND_AST_CLASS_NAMESPACE, class_name);
 	} else {
 		return zend_ast_create(ZEND_AST_CLASS_CONST, class_name, name);
 	}
@@ -764,6 +768,24 @@ static zend_result ZEND_FASTCALL zend_ast_evaluate_inner(
 					return FAILURE;
 				}
 				ZVAL_STR_COPY(result, scope->parent->name);
+			} else {
+				ZEND_ASSERT(0 && "Should have errored during compilation");
+			}
+			break;
+		case ZEND_AST_CLASS_NAMESPACE:
+			if (!scope) {
+				zend_throw_error(NULL, "Cannot use \"self\" when no class scope is active");
+				return FAILURE;
+			}
+			if (ast->attr == ZEND_FETCH_CLASS_SELF) {
+				ZVAL_STR(result, zend_get_class_namespace_name(scope->name));
+			} else if (ast->attr == ZEND_FETCH_CLASS_PARENT) {
+				if (!scope->parent) {
+					zend_throw_error(NULL,
+						"Cannot use \"parent\" when current class scope has no parent");
+					return FAILURE;
+				}
+				ZVAL_STR(result, zend_get_class_namespace_name(scope->parent->name));
 			} else {
 				ZEND_ASSERT(0 && "Should have errored during compilation");
 			}
@@ -2580,6 +2602,23 @@ simple_list:
 				zend_ast_export_ns_name(str, ast->child[0], 0, indent);
 			}
 			smart_str_appends(str, "::class");
+			break;
+		case ZEND_AST_CLASS_NAMESPACE:
+			if (ast->child[0] == NULL) {
+				/* The const expr representation stores the fetch type instead. */
+				switch (ast->attr) {
+					case ZEND_FETCH_CLASS_SELF:
+						smart_str_append(str, ZSTR_KNOWN(ZEND_STR_SELF));
+						break;
+					case ZEND_FETCH_CLASS_PARENT:
+						smart_str_append(str, ZSTR_KNOWN(ZEND_STR_PARENT));
+						break;
+					default: ZEND_UNREACHABLE();
+				}
+			} else {
+				zend_ast_export_ns_name(str, ast->child[0], 0, indent);
+			}
+			smart_str_appends(str, "::namespace");
 			break;
 		case ZEND_AST_ASSIGN:            BINARY_OP(" = ",   90, 91, 90);
 		case ZEND_AST_ASSIGN_REF:        BINARY_OP(" =& ",  90, 91, 90);
