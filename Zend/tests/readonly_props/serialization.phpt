@@ -17,6 +17,18 @@ var_dump(unserialize($s));
 var_dump(unserialize("O:4:\"Test\":1:{s:4:\"prop\";i:2;}"));
 var_dump(unserialize("O:4:\"Test\":2:{s:4:\"prop\";i:2;s:4:\"prop\";i:3;}"));
 
+class TestDefault {
+    public readonly int $prop = 1;
+}
+
+var_dump($s = serialize(new TestDefault));
+var_dump(unserialize($s));
+
+// Unserialization still bypasses normal readonly assignment semantics.
+var_dump(unserialize("O:11:\"TestDefault\":0:{}"));
+var_dump(unserialize("O:11:\"TestDefault\":1:{s:4:\"prop\";i:2;}"));
+var_dump(unserialize("O:11:\"TestDefault\":2:{s:4:\"prop\";i:2;s:4:\"prop\";i:3;}"));
+
 ?>
 --EXPECT--
 string(30) "O:4:"Test":1:{s:4:"prop";i:1;}"
@@ -29,6 +41,23 @@ object(Test)#1 (1) {
   int(2)
 }
 object(Test)#1 (1) {
+  ["prop"]=>
+  int(3)
+}
+string(38) "O:11:"TestDefault":1:{s:4:"prop";i:1;}"
+object(TestDefault)#1 (1) {
+  ["prop"]=>
+  int(1)
+}
+object(TestDefault)#1 (1) {
+  ["prop"]=>
+  int(1)
+}
+object(TestDefault)#1 (1) {
+  ["prop"]=>
+  int(2)
+}
+object(TestDefault)#1 (1) {
   ["prop"]=>
   int(3)
 }

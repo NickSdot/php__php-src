@@ -23,6 +23,24 @@ var_dump($foo2);
 
 var_dump(clone $foo2);
 
+class FooWithDefault {
+    public readonly int $bar = 1;
+
+    public function __clone()
+    {
+        $this->bar++;
+    }
+}
+
+$fooWithDefault = new FooWithDefault();
+
+var_dump(clone $fooWithDefault);
+
+$fooWithDefault2 = clone $fooWithDefault;
+var_dump($fooWithDefault2);
+
+var_dump(clone $fooWithDefault2);
+
 ?>
 --EXPECTF--
 object(Foo)#%d (%d) {
@@ -34,6 +52,18 @@ object(Foo)#%d (%d) {
   int(2)
 }
 object(Foo)#%d (%d) {
+  ["bar"]=>
+  int(3)
+}
+object(FooWithDefault)#%d (%d) {
+  ["bar"]=>
+  int(2)
+}
+object(FooWithDefault)#%d (%d) {
+  ["bar"]=>
+  int(2)
+}
+object(FooWithDefault)#%d (%d) {
   ["bar"]=>
   int(3)
 }
