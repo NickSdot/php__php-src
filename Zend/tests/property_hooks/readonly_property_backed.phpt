@@ -1,11 +1,11 @@
 --TEST--
-Backed readonly property may have hooks
+Backed hooked readonly property may have hooks
 --FILE--
 <?php
 
-// readonly property
+// property
 class Test {
-    public readonly int $prop {
+    public readonly(set hooks) int $prop {
         get => $this->prop;
         set => $value;
     }
@@ -34,8 +34,8 @@ try {
 }
 var_dump($t->prop);
 
-// class readonly
-final readonly class Foo
+// class
+final readonly(set hooks) class Foo
 {
     public function __construct(
         public array $values {
@@ -44,18 +44,18 @@ final readonly class Foo
     ) {}
 }
 
-// property readonly
+// property promoted
 final class Foo2
 {
     public function __construct(
-        public readonly array $values {
+        public readonly(set hooks) array $values {
             set(array $value) => array_map(strtoupper(...), $value);
         },
     ) {}
 }
 
 // redundant readonly
-final readonly class Foo3
+final readonly(set hooks) class Foo3
 {
     public function __construct(
         public readonly array $values {

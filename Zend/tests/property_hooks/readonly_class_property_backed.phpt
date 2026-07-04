@@ -1,10 +1,10 @@
 --TEST--
-Backed property in readonly class may have hooks
+Backed property in hooked readonly class may have hooks
 --FILE--
 <?php
 
-// readonly class
-readonly class Test {
+
+readonly(set hooks) class Test {
     public int $prop {
         get => $this->prop;
         set => $value;

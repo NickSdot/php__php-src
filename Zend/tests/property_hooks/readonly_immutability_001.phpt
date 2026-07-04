@@ -5,7 +5,7 @@ Readonly property hooks always return the same value
 class Unusual
 {
     public function __construct(
-        public readonly int $value {
+        public readonly(set hooks) int $value {
             get => $this->value * random_int(1, 100);
         }
     ) {}

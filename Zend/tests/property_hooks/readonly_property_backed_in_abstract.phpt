@@ -4,7 +4,7 @@ Backed readonly property with hooks in abstract class
 <?php
 abstract class Test {
 
-    public readonly int $prop {
+    public readonly(set hooks) int $prop {
         get => $this->prop;
         set => $value;
     }

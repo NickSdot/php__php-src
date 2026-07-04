@@ -14,7 +14,7 @@ readonly class Product
     ) {}
 }
 
-readonly class LazyProduct extends Product
+readonly(set hooks) class LazyProduct extends Product
 {
    private string $categoryId;
 
@@ -29,7 +29,6 @@ $reflect = new ReflectionClass(LazyProduct::class);
 $product = $reflect->newInstanceWithoutConstructor();
 
 $categoryId = $reflect->getProperty('categoryId');
-$categoryId->setAccessible(true);
 $categoryId->setValue($product, '42');
 
 $category1 = $product->category;

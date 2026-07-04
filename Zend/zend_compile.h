@@ -260,7 +260,7 @@ typedef struct _zend_oparray_context {
 /* has #[\Override] attribute                             |     |     |     */
 #define ZEND_ACC_OVERRIDE                (1 << 28) /*     |  X  |  X  |     */
 /*                                                        |     |     |     */
-/* Property Flags (unused: 13-27,29...)                   |     |     |     */
+/* Property Flags (unused: 14-27,29-31)                   |     |     |     */
 /* ===========                                            |     |     |     */
 /*                                                        |     |     |     */
 /* Promoted property / parameter                          |     |     |     */
@@ -274,7 +274,10 @@ typedef struct _zend_oparray_context {
 #define ZEND_ACC_PROTECTED_SET           (1 << 11) /*     |     |  X  |     */
 #define ZEND_ACC_PRIVATE_SET             (1 << 12) /*     |     |  X  |     */
 /*                                                        |     |     |     */
-/* Class Flags (unused: 31)                               |     |     |     */
+/* Property may be declared readonly(set hooks)            |     |     |     */
+#define ZEND_ACC_READONLY_HOOKS          (1 << 13) /*     |     |  X  |     */
+/*                                                        |     |     |     */
+/* Class Flags (unused: none)                             |     |     |     */
 /* ===========                                            |     |     |     */
 /*                                                        |     |     |     */
 /* Special class types                                    |     |     |     */
@@ -309,6 +312,9 @@ typedef struct _zend_oparray_context {
 /*                                                        |     |     |     */
 /* Readonly class                                         |     |     |     */
 #define ZEND_ACC_READONLY_CLASS          (1 << 16) /*  X  |     |     |     */
+/*                                                        |     |     |     */
+/* Readonly class may have hooked readonly properties     |     |     |     */
+#define ZEND_ACC_READONLY_HOOKS_CLASS    (1U << 31) /* X  |     |     |     */
 /*                                                        |     |     |     */
 /* Parent class is resolved (CE).                         |     |     |     */
 #define ZEND_ACC_RESOLVED_PARENT         (1 << 17) /*  X  |     |     |     */

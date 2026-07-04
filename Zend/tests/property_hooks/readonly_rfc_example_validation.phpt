@@ -3,7 +3,7 @@ Readonly property hook validation
 --FILE--
 <?php
 
-readonly class PositivePoint
+readonly(set hooks) class PositivePoint
 {
     public function __construct(
         public int $x { set => $value > 0 ? $value : throw new \Error('Value must be greater 0'); },
