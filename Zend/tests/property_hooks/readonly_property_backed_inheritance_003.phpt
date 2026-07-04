@@ -1,5 +1,5 @@
 --TEST--
-Backed readonly property get() in child class behaves as expected
+Backed hooked readonly property get() in child class behaves as expected
 --FILE--
 <?php
 
@@ -17,7 +17,7 @@ class ParentClass {
 
 class ChildClass extends ParentClass {
 
-    public readonly int $prop {
+    public readonly(set hooks) int $prop {
         get {
             echo 'In ChildClass::$prop::get():' . "\n";
             echo '    parent::$prop::get(): ' . parent::$prop::get() . "\n";

@@ -359,6 +359,11 @@ const T_PUBLIC_SET = UNKNOWN;
 const T_READONLY = UNKNOWN;
 /**
  * @var int
+ * @cvalue T_READONLY_HOOKED
+ */
+const T_READONLY_HOOKED = UNKNOWN;
+/**
+ * @var int
  * @cvalue T_VAR
  */
 const T_VAR = UNKNOWN;

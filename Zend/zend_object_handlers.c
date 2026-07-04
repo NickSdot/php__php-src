@@ -730,10 +730,12 @@ static bool zend_call_get_hook(
 		return false;
 	}
 
-	const bool is_backed_readonly = prop_info->flags & ZEND_ACC_READONLY && !(prop_info->flags & ZEND_ACC_VIRTUAL);
+	const bool is_readonly_qualified = (prop_info->flags & ZEND_ACC_READONLY_HOOKS)
+		&& (prop_info->flags & ZEND_ACC_READONLY)
+		&& !(prop_info->flags & ZEND_ACC_VIRTUAL);
 
 	/* Check if we already have a cached result */
-	if (is_backed_readonly) {
+	if (is_readonly_qualified) {
 		zval *property_slot = OBJ_PROP(zobj, prop_info->offset);
 
 		if (Z_PROP_FLAG_P(property_slot) & IS_PROP_READONLY_CACHED) {
@@ -747,7 +749,7 @@ static bool zend_call_get_hook(
 	OBJ_RELEASE(zobj);
 
 	/* Cache the result in the property slot */
-	if (is_backed_readonly) {
+	if (is_readonly_qualified) {
 		zval *property_slot = OBJ_PROP(zobj, prop_info->offset);
 
 		zval_ptr_dtor(property_slot);

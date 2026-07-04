@@ -888,6 +888,8 @@ static const char *zend_modifier_token_to_string(uint32_t token)
 			return "final";
 		case T_READONLY:
 			return "readonly";
+		case T_READONLY_HOOKED:
+			return "readonly(set hooks)";
 		case T_ABSTRACT:
 			return "abstract";
 		case T_PUBLIC_SET:
@@ -921,6 +923,11 @@ uint32_t zend_modifier_token_to_flag(zend_modifier_target target, uint32_t token
 		case T_READONLY:
 			if (target == ZEND_MODIFIER_TARGET_PROPERTY || target == ZEND_MODIFIER_TARGET_CPP) {
 				return ZEND_ACC_READONLY;
+			}
+			break;
+		case T_READONLY_HOOKED:
+			if (target == ZEND_MODIFIER_TARGET_PROPERTY || target == ZEND_MODIFIER_TARGET_CPP) {
+				return ZEND_ACC_READONLY | ZEND_ACC_READONLY_HOOKS;
 			}
 			break;
 		case T_ABSTRACT:
@@ -8063,7 +8070,8 @@ static void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast, uint32
 		}
 	}
 
-	const uint32_t promotion_flags = ZEND_ACC_PPP_MASK | ZEND_ACC_PPP_SET_MASK | ZEND_ACC_READONLY | ZEND_ACC_FINAL;
+	const uint32_t promotion_flags = ZEND_ACC_PPP_MASK | ZEND_ACC_PPP_SET_MASK
+		| ZEND_ACC_READONLY | ZEND_ACC_READONLY_HOOKS | ZEND_ACC_FINAL;
 	for (i = 0; i < list->children; ++i) {
 		zend_ast *param_ast = list->child[i];
 		zend_ast *type_ast = param_ast->child[0];
@@ -8242,6 +8250,10 @@ static void zend_compile_params(zend_ast *ast, zend_ast *return_type_ast, uint32
 
 			if (!(property_flags & ZEND_ACC_READONLY) && (scope->ce_flags & ZEND_ACC_READONLY_CLASS)) {
 				property_flags |= ZEND_ACC_READONLY;
+			}
+
+			if (scope->ce_flags & ZEND_ACC_READONLY_HOOKS_CLASS) {
+				property_flags |= ZEND_ACC_READONLY_HOOKS;
 			}
 
 			/* Recompile the type, as it has different memory management requirements. */
@@ -9123,18 +9135,25 @@ static void zend_compile_property_hooks(
 		}
 	}
 
-	/* Allow hooks on backed readonly properties only. */
-	if ((prop_info->flags & (ZEND_ACC_READONLY|ZEND_ACC_VIRTUAL)) == (ZEND_ACC_READONLY|ZEND_ACC_VIRTUAL)) {
+	if (prop_info->flags & ZEND_ACC_READONLY) {
 
-		if (ce->ce_flags & ZEND_ACC_INTERFACE) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Interface properties cannot be declared readonly");
+		/* Hooked readonly on virtual properties is forbidden */
+		if (prop_info->flags & ZEND_ACC_VIRTUAL) {
+			if (ce->ce_flags & ZEND_ACC_INTERFACE) {
+				zend_error_noreturn(E_COMPILE_ERROR, "Interface properties cannot be declared readonly");
+			}
+
+			if (ce->ce_flags & (ZEND_ACC_IMPLICIT_ABSTRACT_CLASS|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS)) {
+				zend_error_noreturn(E_COMPILE_ERROR, "Abstract hooked properties cannot be declared readonly");
+			}
+
+			zend_error_noreturn(E_COMPILE_ERROR, "Hooked virtual properties cannot be declared readonly");
 		}
 
-		if (ce->ce_flags & (ZEND_ACC_IMPLICIT_ABSTRACT_CLASS|ZEND_ACC_EXPLICIT_ABSTRACT_CLASS)) {
-			zend_error_noreturn(E_COMPILE_ERROR, "Abstract hooked properties cannot be declared readonly");
+        /* Hooked readonly only backed properties with readonly(set hooks). */
+		if (!(prop_info->flags & ZEND_ACC_READONLY_HOOKS)) {
+			zend_error_noreturn(E_COMPILE_ERROR, "Hooked readonly properties require explicit opt-in");
 		}
-
-		zend_error_noreturn(E_COMPILE_ERROR, "Hooked virtual properties cannot be declared readonly");
 	}
 
 	ce->num_hooked_props++;
@@ -9261,6 +9280,10 @@ static void zend_compile_prop_decl(zend_ast *ast, zend_ast *type_ast, uint32_t f
 
 		if ((ce->ce_flags & ZEND_ACC_READONLY_CLASS)) {
 			flags |= ZEND_ACC_READONLY;
+		}
+
+		if (ce->ce_flags & ZEND_ACC_READONLY_HOOKS_CLASS) {
+			flags |= ZEND_ACC_READONLY_HOOKS;
 		}
 
 		if (flags & ZEND_ACC_READONLY) {
