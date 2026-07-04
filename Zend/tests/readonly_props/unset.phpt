@@ -61,7 +61,7 @@ class Test4 {
         try {
             unset($this->prop);
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ": ", $e->getMessage(), "\n";
         }
     }
 
@@ -77,7 +77,7 @@ var_dump($test->prop); // Don't call __get.
 try {
     unset($test->prop);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ": ", $e->getMessage(), "\n";
 }
 var_dump($test->prop); // Still don't call __get.
 
@@ -89,7 +89,7 @@ int(1)
 int(1)
 Cannot unset readonly property Test2::$prop
 Cannot unset protected(set) readonly property Test3::$prop from global scope
-Cannot unset readonly property Test4::$prop
+Error: Cannot unset readonly property Test4::$prop
 int(1)
-Cannot unset readonly property Test4::$prop
+Error: Cannot unset readonly property Test4::$prop
 int(1)

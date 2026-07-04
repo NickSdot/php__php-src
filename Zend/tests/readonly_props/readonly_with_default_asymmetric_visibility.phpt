@@ -17,7 +17,7 @@ foreach (['default', 'private', 'protected', 'public'] as $prop) {
     try {
         $test->$prop = 42;
     } catch (Error $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ": ", $e->getMessage(), "\n";
     }
 }
 
@@ -27,7 +27,7 @@ int(1)
 int(2)
 int(3)
 int(4)
-Cannot modify readonly property Test::$default
-Cannot modify readonly property Test::$private
-Cannot modify readonly property Test::$protected
-Cannot modify readonly property Test::$public
+Error: Cannot modify readonly property Test::$default
+Error: Cannot modify readonly property Test::$private
+Error: Cannot modify readonly property Test::$protected
+Error: Cannot modify readonly property Test::$public

@@ -13,7 +13,7 @@ readonly class Foo
         try {
             $this->bar = 2;
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ": ", $e->getMessage(), "\n";
         }
     }
 }
@@ -25,12 +25,12 @@ var_dump($foo->nullable);
 try {
     $foo->bar = 3;
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ": ", $e->getMessage(), "\n";
 }
 
 ?>
 --EXPECT--
-Cannot modify readonly property Foo::$bar
+Error: Cannot modify readonly property Foo::$bar
 int(1)
 NULL
-Cannot modify readonly property Foo::$bar
+Error: Cannot modify readonly property Foo::$bar

@@ -21,7 +21,7 @@ class TestWithDefault {
         try {
             $this->prop = 2;
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ": ", $e->getMessage(), "\n";
         }
     }
 }
@@ -94,5 +94,5 @@ array(0) {
 }
 Cannot indirectly modify readonly property Test::$prop2
 Cannot indirectly modify readonly property Test::$prop2
-Cannot modify readonly property TestWithDefault::$prop
+Error: Cannot modify readonly property TestWithDefault::$prop
 int(1)

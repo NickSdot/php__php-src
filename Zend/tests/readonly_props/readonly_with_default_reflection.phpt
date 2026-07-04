@@ -18,7 +18,7 @@ $test = new Foo();
 try {
     $rp->setValue($test, 2);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ": ", $e->getMessage(), "\n";
 }
 
 ?>
@@ -32,4 +32,4 @@ array(2) {
   ["nullable"]=>
   NULL
 }
-Cannot modify readonly property Foo::$prop
+Error: Cannot modify readonly property Foo::$prop
