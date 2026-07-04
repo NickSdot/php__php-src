@@ -26,7 +26,7 @@ var_dump($test->enumString);
 try {
     $test->prop = 2;
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ": ", $e->getMessage(), "\n";
 }
 
 ?>
@@ -42,4 +42,4 @@ array(2) {
 }
 enum(E::Case)
 string(4) "Case"
-Cannot modify readonly property Test::$prop
+Error: Cannot modify readonly property Test::$prop
