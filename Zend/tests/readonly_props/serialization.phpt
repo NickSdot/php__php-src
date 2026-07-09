@@ -29,6 +29,22 @@ var_dump(unserialize("O:11:\"TestDefault\":0:{}"));
 var_dump(unserialize("O:11:\"TestDefault\":1:{s:4:\"prop\";i:2;}"));
 var_dump(unserialize("O:11:\"TestDefault\":2:{s:4:\"prop\";i:2;s:4:\"prop\";i:3;}"));
 
+class TestDefaultWithUnserialize {
+    public readonly int $prop = 1;
+
+    public function __unserialize(array $data): void {
+        foreach ($data as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+}
+
+try {
+    var_dump(unserialize("O:26:\"TestDefaultWithUnserialize\":1:{s:4:\"prop\";i:2;}"));
+} catch (Error $e) {
+    echo $e::class, ": ", $e->getMessage(), "\n";
+}
+
 ?>
 --EXPECT--
 string(30) "O:4:"Test":1:{s:4:"prop";i:1;}"
@@ -61,3 +77,4 @@ object(TestDefault)#1 (1) {
   ["prop"]=>
   int(3)
 }
+Error: Cannot modify readonly property TestDefaultWithUnserialize::$prop
