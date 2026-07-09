@@ -24,7 +24,6 @@ class TestDefault {
 var_dump($s = serialize(new TestDefault));
 var_dump(unserialize($s));
 
-// Unserialization still bypasses normal readonly assignment semantics.
 var_dump(unserialize("O:11:\"TestDefault\":0:{}"));
 var_dump(unserialize("O:11:\"TestDefault\":1:{s:4:\"prop\";i:2;}"));
 var_dump(unserialize("O:11:\"TestDefault\":2:{s:4:\"prop\";i:2;s:4:\"prop\";i:3;}"));
@@ -39,8 +38,11 @@ class TestDefaultWithUnserialize {
     }
 }
 
+$testDefaultWithUnserialize = unserialize("O:26:\"TestDefaultWithUnserialize\":1:{s:4:\"prop\";i:2;}");
+var_dump($testDefaultWithUnserialize);
+
 try {
-    var_dump(unserialize("O:26:\"TestDefaultWithUnserialize\":1:{s:4:\"prop\";i:2;}"));
+    $testDefaultWithUnserialize->prop = 3;
 } catch (Error $e) {
     echo $e::class, ": ", $e->getMessage(), "\n";
 }
@@ -76,5 +78,9 @@ object(TestDefault)#1 (1) {
 object(TestDefault)#1 (1) {
   ["prop"]=>
   int(3)
+}
+object(TestDefaultWithUnserialize)#1 (1) {
+  ["prop"]=>
+  int(2)
 }
 Error: Cannot modify readonly property TestDefaultWithUnserialize::$prop
