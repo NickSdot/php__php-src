@@ -44,7 +44,7 @@ var_dump($testDefaultWithUnserialize);
 try {
     $testDefaultWithUnserialize->prop = 3;
 } catch (Error $e) {
-    echo $e::class, ": ", $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
