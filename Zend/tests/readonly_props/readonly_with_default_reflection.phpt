@@ -18,7 +18,7 @@ $test = new Foo();
 try {
     $rp->setValue($test, 2);
 } catch (Error $e) {
-    echo $e::class, ": ", $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

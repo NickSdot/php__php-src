@@ -13,7 +13,7 @@ readonly class Foo
         try {
             $this->bar = 2;
         } catch (Error $e) {
-            echo $e::class, ": ", $e->getMessage(), "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 }
@@ -25,7 +25,7 @@ var_dump($foo->nullable);
 try {
     $foo->bar = 3;
 } catch (Error $e) {
-    echo $e::class, ": ", $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

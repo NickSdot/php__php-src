@@ -17,7 +17,7 @@ foreach (['default', 'private', 'protected', 'public'] as $prop) {
     try {
         $test->$prop = 42;
     } catch (Error $e) {
-        echo $e::class, ": ", $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

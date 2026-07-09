@@ -26,7 +26,7 @@ var_dump($test->enumString);
 try {
     $test->prop = 2;
 } catch (Error $e) {
-    echo $e::class, ": ", $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
