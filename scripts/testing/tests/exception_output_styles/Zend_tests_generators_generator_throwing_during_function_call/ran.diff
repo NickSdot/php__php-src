@@ -1,0 +1,18 @@
+--- old.phpt
++++ new.phpt
+@@ -20,7 +20,7 @@
+ try {
+     $gen->next();
+ } catch (Exception $e) {
+-    echo 'Caught exception with message "', $e->getMessage(), '"', "\n";
++    echo 'Caught exception with message "', $e::class . ": " . $e->getMessage(), '"', "\n";
+ }
+ 
+ var_dump($gen->current());
+@@ -28,5 +28,5 @@
+ ?>
+ --EXPECT--
+ string(3) "foo"
+-Caught exception with message "test"
++Caught exception with message "Exception: test"
+ NULL

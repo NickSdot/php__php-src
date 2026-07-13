@@ -1,0 +1,16 @@
+--- old.phpt
++++ new.phpt
+@@ -11,11 +11,11 @@
+     } && new class(42) extends stdclass {
+     });
+ } catch (AssertionError $e) {
+-    echo "Assertion failure: ", $e->getMessage(), "\n";
++    echo "Assertion failure: ", $e::class . ": " . $e->getMessage(), "\n";
+ }
+ 
+ ?>
+ --EXPECT--
+-Assertion failure: assert(0 && new class {
++Assertion failure: AssertionError: assert(0 && new class {
+ } && new class(42) extends stdclass {
+ })

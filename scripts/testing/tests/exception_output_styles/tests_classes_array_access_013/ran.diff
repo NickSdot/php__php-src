@@ -1,0 +1,46 @@
+--- old.phpt
++++ new.phpt
+@@ -19,7 +19,7 @@
+ }
+ catch(Exception $e)
+ {
+-    echo "Caught in " . $e->getMessage() . "()\n";
++    echo "Caught in " . $e::class . ": " . $e->getMessage() . "()\n";
+ }
+ 
+ try
+@@ -28,7 +28,7 @@
+ }
+ catch(Exception $e)
+ {
+-    echo "Caught in " . $e->getMessage() . "()\n";
++    echo "Caught in " . $e::class . ": " . $e->getMessage() . "()\n";
+ }
+ 
+ try
+@@ -37,7 +37,7 @@
+ }
+ catch(Exception $e)
+ {
+-    echo "Caught in " . $e->getMessage() . "()\n";
++    echo "Caught in " . $e::class . ": " . $e->getMessage() . "()\n";
+ }
+ 
+ try
+@@ -46,11 +46,11 @@
+ }
+ catch(Exception $e)
+ {
+-    echo "Caught in " . $e->getMessage() . "()\n";
++    echo "Caught in " . $e::class . ": " . $e->getMessage() . "()\n";
+ }
+ ?>
+ --EXPECT--
+-Caught in Test::offsetExists()
+-Caught in Test::offsetGet()
+-Caught in Test::offsetSet()
+-Caught in Test::offsetUnset()
++Caught in Exception: Test::offsetExists()
++Caught in Exception: Test::offsetGet()
++Caught in Exception: Test::offsetSet()
++Caught in Exception: Test::offsetUnset()
