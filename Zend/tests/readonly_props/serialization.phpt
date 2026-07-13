@@ -30,6 +30,7 @@ var_dump(unserialize("O:11:\"TestDefault\":2:{s:4:\"prop\";i:2;s:4:\"prop\";i:3;
 
 class TestDefaultWithUnserialize {
     public readonly int $prop = 1;
+    public public(set) readonly int $lock= 1;
 
     public function __unserialize(array $data): void {
         foreach ($data as $key => $value) {
@@ -43,6 +44,12 @@ var_dump($testDefaultWithUnserialize);
 
 try {
     $testDefaultWithUnserialize->prop = 3;
+} catch (Error $e) {
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+}
+
+try {
+    $testDefaultWithUnserialize->lock = 3;
 } catch (Error $e) {
     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
@@ -79,8 +86,11 @@ object(TestDefault)#1 (1) {
   ["prop"]=>
   int(3)
 }
-object(TestDefaultWithUnserialize)#1 (1) {
+object(TestDefaultWithUnserialize)#1 (2) {
   ["prop"]=>
   int(2)
+  ["lock"]=>
+  int(1)
 }
 Error: Cannot modify readonly property TestDefaultWithUnserialize::$prop
+Error: Cannot modify readonly property TestDefaultWithUnserialize::$lock
