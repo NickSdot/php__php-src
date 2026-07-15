@@ -32,6 +32,7 @@
  * and functions these names refer to. */
 
 #define ZEND_MARKUP_ELEMENT_FQ        "Markup\\Element"
+#define ZEND_MARKUP_HTML_FQ           "Markup\\Html"
 #define ZEND_MARKUP_FRAGMENT_FQ       "Markup\\Fragment"
 #define ZEND_MARKUP_LAZY_FRAGMENT_FQ  "Markup\\LazyFragment"
 #define ZEND_MARKUP_RAW_FQ            "Markup\\raw"

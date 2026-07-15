@@ -406,6 +406,10 @@ struct _zend_php_scanner_globals {
 	 * ST_IN_SCRIPTING is in operand position (begins native markup) or operator
 	 * position (a comparison). See zend_language_scanner.l. */
 	int last_token;
+	bool markup_statement_position;
+	bool markup_pending_statement_end;
+	bool markup_implicit_semicolon;
+	uint32_t markup_statement_stack_depth;
 
 	/* hooks */
 	void (*on_event)(

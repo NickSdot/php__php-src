@@ -351,7 +351,8 @@ identifier:
 ;
 
 top_statement_list:
-		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); }
+		top_statement_list top_statement
+			{ $$ = zend_ast_list_add($1, $2); LANG_SCNG(markup_statement_position) = true; }
 	|	%empty { $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
 
@@ -506,7 +507,7 @@ const_list:
 
 inner_statement_list:
 		inner_statement_list inner_statement
-			{ $$ = zend_ast_list_add($1, $2); }
+			{ $$ = zend_ast_list_add($1, $2); LANG_SCNG(markup_statement_position) = true; }
 	|	%empty
 			{ $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
@@ -541,7 +542,15 @@ statement:
 	|	T_STATIC static_var_list ';'	{ $$ = $2; }
 	|	T_ECHO echo_expr_list ';'		{ $$ = $2; }
 	|	T_INLINE_HTML { $$ = zend_ast_create(ZEND_AST_ECHO, $1); }
-	|	expr ';' { $$ = $1; }
+	|	expr ';' {
+			if (LANG_SCNG(markup_implicit_semicolon) && $1->kind == ZEND_AST_MARKUP) {
+				LANG_SCNG(markup_implicit_semicolon) = false;
+				$$ = zend_ast_create(ZEND_AST_MARKUP_STMT, $1);
+			} else {
+				LANG_SCNG(markup_implicit_semicolon) = false;
+				$$ = $1;
+			}
+		}
 	|	T_UNSET '(' unset_variables possible_comma ')' ';' { $$ = $3; }
 	|	T_FOREACH '(' expr T_AS foreach_variable ')' foreach_statement
 			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $5, NULL, $7); }
@@ -1317,7 +1326,7 @@ expr:
 		variable
 			{ $$ = $1; }
 	|	markup_element
-			{ $$ = $1; }
+			{ $$ = zend_ast_create(ZEND_AST_MARKUP, $1); }
 	|	T_LIST '(' array_pair_list ')' '=' expr
 			{ $3->attr = ZEND_ARRAY_SYNTAX_LIST; $$ = zend_ast_create(ZEND_AST_ASSIGN, $3, $6); }
 	|	'[' array_pair_list ']' '=' expr
