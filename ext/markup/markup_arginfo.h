@@ -1,5 +1,5 @@
 /* This is a generated file, edit markup.stub.php instead.
- * Stub hash: cb000da0eb9834044c54724f28afc3ae7ad4a0da */
+ * Stub hash: 622f492b5a8f11cad12b9aa8e122dd4959b030c2 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_Markup_raw, 0, 1, Markup\\Html, 0)
 	ZEND_ARG_TYPE_INFO(0, html, IS_STRING, 0)
@@ -7,6 +7,11 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_Markup_escape, 0, 1, Markup\\Html, 0)
 	ZEND_ARG_TYPE_INFO(0, text, IS_STRING, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_Markup_render_bound, 0, 2, Markup\\Html, 0)
+	ZEND_ARG_OBJ_INFO(0, target, Markup\\Renderable, 0)
+	ZEND_ARG_OBJ_INFO(0, body, Markup\\Html, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_Markup_render_component, 0, 1, Markup\\Html, 0)
@@ -83,6 +88,7 @@ ZEND_END_ARG_INFO()
 
 ZEND_FUNCTION(Markup_raw);
 ZEND_FUNCTION(Markup_escape);
+ZEND_FUNCTION(Markup_render_bound);
 ZEND_FUNCTION(Markup_render_component);
 ZEND_FUNCTION(Markup_render_dynamic);
 ZEND_FUNCTION(Markup_register_component_factory);
@@ -105,6 +111,7 @@ ZEND_METHOD(Markup_LazyFragment, __toString);
 static const zend_function_entry ext_functions[] = {
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "raw"), zif_Markup_raw, arginfo_Markup_raw, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "escape"), zif_Markup_escape, arginfo_Markup_escape, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "render_bound"), zif_Markup_render_bound, arginfo_Markup_render_bound, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "render_component"), zif_Markup_render_component, arginfo_Markup_render_component, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "render_dynamic"), zif_Markup_render_dynamic, arginfo_Markup_render_dynamic, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Markup", "register_component_factory"), zif_Markup_register_component_factory, arginfo_Markup_register_component_factory, 0, NULL, NULL)
@@ -148,13 +155,23 @@ static const zend_function_entry class_Markup_LazyFragment_methods[] = {
 	ZEND_FE_END
 };
 
-static zend_class_entry *register_class_Markup_Html(zend_class_entry *class_entry_Stringable)
+static zend_class_entry *register_class_Markup_Renderable(void)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_NS_CLASS_ENTRY(ce, "Markup", "Renderable", NULL);
+	class_entry = zend_register_internal_interface(&ce);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_Markup_Html(zend_class_entry *class_entry_Stringable, zend_class_entry *class_entry_Markup_Renderable)
 {
 	zend_class_entry ce, *class_entry;
 
 	INIT_NS_CLASS_ENTRY(ce, "Markup", "Html", class_Markup_Html_methods);
 	class_entry = zend_register_internal_interface(&ce);
-	zend_class_implements(class_entry, 1, class_entry_Stringable);
+	zend_class_implements(class_entry, 2, class_entry_Stringable, class_entry_Markup_Renderable);
 
 	return class_entry;
 }

@@ -211,6 +211,8 @@ typedef struct _zend_oparray_context {
 	bool       markup_body_enabled;
 	bool       markup_body_seen;
 	uint32_t   markup_body_cv;
+	uint32_t   markup_body_counter;
+	uint32_t   markup_body_this_cv;
 } zend_oparray_context;
 
 /* Class, property and method flags                  class|meth.|prop.|const*/

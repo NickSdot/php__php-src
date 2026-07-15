@@ -180,6 +180,9 @@ char *get_token_type_name(int token_type)
 		case T_MARKUP_ATTR_VALUE: return "T_MARKUP_ATTR_VALUE";
 		case T_MARKUP_COMMENT: return "T_MARKUP_COMMENT";
 		case T_MARKUP_OPEN: return "T_MARKUP_OPEN";
+		case T_MARKUP_BIND_OPEN: return "T_MARKUP_BIND_OPEN";
+		case T_MARKUP_BIND_TAG_END: return "T_MARKUP_BIND_TAG_END";
+		case T_MARKUP_BIND_CLOSE: return "T_MARKUP_BIND_CLOSE";
 		case T_MARKUP_CLOSE_OPEN: return "T_MARKUP_CLOSE_OPEN";
 		case T_MARKUP_TAG_END: return "T_MARKUP_TAG_END";
 		case T_MARKUP_SELF_CLOSE: return "T_MARKUP_SELF_CLOSE";

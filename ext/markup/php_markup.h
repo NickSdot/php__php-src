@@ -39,6 +39,7 @@ extern zend_module_entry markup_module_entry;
 ZEND_BEGIN_MODULE_GLOBALS(markup)
 	HashTable *component_factories;
 	HashTable *component_decorators;
+	HashTable *renderable_bodies;
 ZEND_END_MODULE_GLOBALS(markup)
 
 ZEND_EXTERN_MODULE_GLOBALS(markup)

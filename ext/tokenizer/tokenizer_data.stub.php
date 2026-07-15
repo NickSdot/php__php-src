@@ -789,6 +789,21 @@ const T_MARKUP_COMMENT = UNKNOWN;
 const T_MARKUP_OPEN = UNKNOWN;
 /**
  * @var int
+ * @cvalue T_MARKUP_BIND_OPEN
+ */
+const T_MARKUP_BIND_OPEN = UNKNOWN;
+/**
+ * @var int
+ * @cvalue T_MARKUP_BIND_TAG_END
+ */
+const T_MARKUP_BIND_TAG_END = UNKNOWN;
+/**
+ * @var int
+ * @cvalue T_MARKUP_BIND_CLOSE
+ */
+const T_MARKUP_BIND_CLOSE = UNKNOWN;
+/**
+ * @var int
  * @cvalue T_MARKUP_CLOSE_OPEN
  */
 const T_MARKUP_CLOSE_OPEN = UNKNOWN;
