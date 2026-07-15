@@ -2578,6 +2578,13 @@ simple_list:
 		case ZEND_AST_MARKUP_STMT:
 			ast = ast->child[0];
 			goto tail_call;
+		case ZEND_AST_MARKUP_BIND:
+			smart_str_appends(str, "markup_bind(");
+			zend_ast_export_ex(str, ast->child[0], 0, indent);
+			smart_str_appends(str, ", ");
+			zend_ast_export_ex(str, ast->child[1], 0, indent);
+			smart_str_appendc(str, ')');
+			break;
 		case ZEND_AST_ASSIGN:            BINARY_OP(" = ",   90, 91, 90);
 		case ZEND_AST_ASSIGN_REF:        BINARY_OP(" =& ",  90, 91, 90);
 		case ZEND_AST_ASSIGN_OP:

@@ -6,7 +6,17 @@ namespace Markup {
 
     require "Zend/zend_attributes.stub.php";
 
-    interface Html extends \Stringable
+    /**
+     * @property-read \Markup\Html $renderable
+     *
+     * Marker interface for objects that may be used as `$this` in layout-binding
+     * syntax (`<<{$renderable}>> ... <</>>`). The engine provides `$renderable`
+     * while a bound `toHtml()` call is active, so renderers can wrap or place the
+     * body without userland storage or a withBody() method.
+     */
+    interface Renderable {}
+
+    interface Html extends \Stringable, \Markup\Renderable
     {
         /**
          * Produces the markup this value renders as: ultimately an
@@ -123,6 +133,13 @@ namespace Markup {
      * through later serialization without being escaped a second time.
      */
     function escape(string $text): \Markup\Html {}
+
+    /**
+     * Compiler target for `<<{$target}>> ... <</>>`: runs `toHtml()` with the
+     * body available through `$target->renderable` when the target also
+     * implements Markup\Html, otherwise returns the body fragment unchanged.
+     */
+    function render_bound(\Markup\Renderable $target, \Markup\Html $body): \Markup\Html {}
 
     /**
      * Dispatches a component and returns the Markup\Html it

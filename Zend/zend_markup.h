@@ -33,9 +33,11 @@
 
 #define ZEND_MARKUP_ELEMENT_FQ        "Markup\\Element"
 #define ZEND_MARKUP_HTML_FQ           "Markup\\Html"
+#define ZEND_MARKUP_RENDERABLE_FQ     "Markup\\Renderable"
 #define ZEND_MARKUP_FRAGMENT_FQ       "Markup\\Fragment"
 #define ZEND_MARKUP_LAZY_FRAGMENT_FQ  "Markup\\LazyFragment"
 #define ZEND_MARKUP_RAW_FQ            "Markup\\raw"
+#define ZEND_MARKUP_BOUND_FQ          "Markup\\render_bound"
 #define ZEND_MARKUP_COMPONENT_FQ      "Markup\\render_component"
 #define ZEND_MARKUP_DYNAMIC_FQ        "Markup\\render_dynamic"
 

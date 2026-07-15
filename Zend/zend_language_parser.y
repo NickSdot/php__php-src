@@ -260,6 +260,9 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token <ast> T_MARKUP_COMMENT "markup comment"
 %token T_MARKUP_OPEN "markup tag start"
 %token MARKUP_STATEMENT_OPEN "markup statement tag start"
+%token T_MARKUP_BIND_OPEN "markup bind start"
+%token T_MARKUP_BIND_TAG_END "markup bind target end"
+%token T_MARKUP_BIND_CLOSE "markup bind end"
 %token T_MARKUP_CLOSE_OPEN "markup closing tag start"
 %token T_MARKUP_TAG_END "markup tag end"
 %token T_MARKUP_SELF_CLOSE "markup self-close"
@@ -299,7 +302,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> attributed_statement attributed_top_statement attributed_class_statement attributed_parameter
 %type <ast> attribute_decl attribute attributes attribute_group namespace_declaration_name
 %type <ast> match match_arm_list non_empty_match_arm_list match_arm match_arm_cond_list
-%type <ast> markup_statement_element markup_element markup_element_tail markup_children markup_child
+%type <ast> markup_statement_element markup_bind_element markup_element markup_element_tail markup_children markup_child
 %type <ast> markup_attributes markup_attribute
 %type <ast> enum_declaration_statement enum_backing_type enum_case enum_case_expr
 %type <ast> function_name non_empty_member_modifiers
@@ -525,7 +528,7 @@ inner_statement:
 
 
 statement:
-		'{' inner_statement_list '}' { $$ = $2; }
+		'{' inner_statement_list '}' { $$ = $2; LANG_SCNG(markup_statement_position) = true; }
 	|	if_stmt { $$ = $1; }
 	|	alt_if_stmt { $$ = $1; }
 	|	T_WHILE '(' expr ')' markup_statement_start while_statement
@@ -1277,6 +1280,11 @@ markup_statement_element:
 		MARKUP_STATEMENT_OPEN markup_element_tail { $$ = $2; }
 ;
 
+markup_bind_element:
+		T_MARKUP_BIND_OPEN expr '}' T_MARKUP_BIND_TAG_END markup_statement_start inner_statement_list T_MARKUP_BIND_CLOSE
+			{ $$ = zend_ast_create(ZEND_AST_MARKUP_BIND, $2, $6); }
+;
+
 markup_element:
 		T_MARKUP_OPEN markup_element_tail { $$ = $2; }
 ;
@@ -1330,6 +1338,8 @@ markup_child:
 
 expr:
 		variable
+			{ $$ = $1; }
+	|	markup_bind_element
 			{ $$ = $1; }
 	|	markup_element
 			{ $$ = zend_ast_create(ZEND_AST_MARKUP, $1); }

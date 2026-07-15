@@ -407,6 +407,7 @@ struct _zend_php_scanner_globals {
 	 * position (a comparison). See zend_language_scanner.l. */
 	int last_token;
 	bool markup_statement_position;
+	uint32_t markup_bind_body_depth;
 
 	/* hooks */
 	void (*on_event)(

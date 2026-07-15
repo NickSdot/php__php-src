@@ -197,6 +197,7 @@ void startup_scanner(void)
 	SCNG(heredoc_scan_ahead) = 0;
 	SCNG(last_token) = 0;
 	SCNG(markup_statement_position) = false;
+	SCNG(markup_bind_body_depth) = 0;
 }
 
 static void heredoc_label_dtor(zend_heredoc_label *heredoc_label) {
@@ -238,6 +239,7 @@ ZEND_API void zend_save_lexical_state(zend_lex_state *lex_state)
 	lex_state->yy_state = YYSTATE;
 	lex_state->last_token = SCNG(last_token);
 	lex_state->markup_statement_position = SCNG(markup_statement_position);
+	lex_state->markup_bind_body_depth = SCNG(markup_bind_body_depth);
 	lex_state->filename = CG(compiled_filename);
 	lex_state->lineno = CG(zend_lineno);
 	CG(compiled_filename) = NULL;
@@ -280,6 +282,7 @@ ZEND_API void zend_restore_lexical_state(zend_lex_state *lex_state)
 	YYSETCONDITION(lex_state->yy_state);
 	SCNG(last_token) = lex_state->last_token;
 	SCNG(markup_statement_position) = lex_state->markup_statement_position;
+	SCNG(markup_bind_body_depth) = lex_state->markup_bind_body_depth;
 	CG(zend_lineno) = lex_state->lineno;
 	zend_restore_compiled_filename(lex_state->filename);
 
@@ -552,6 +555,7 @@ ZEND_API zend_result open_file_for_scanning(zend_file_handle *file_handle)
 	SCNG(yy_start) = NULL;
 	SCNG(last_token) = 0;
 	SCNG(markup_statement_position) = false;
+	SCNG(markup_bind_body_depth) = 0;
 
 	if (size != (size_t)-1) {
 		if (CG(multibyte)) {
@@ -1485,16 +1489,15 @@ static bool zend_markup_operand_position(void)
  * the parser is ready to accept a statement, so a root "<tag" opener should
  * start markup rather than lex as the less-than operator. The parser sets
  * markup_statement_position after reducing a statement-list item; the token
- * allowlist covers the first statement in a block/list, plus a statement after
- * a closed block where the parser needs lookahead before reducing. */
+ * allowlist covers the first statement in a block/list. */
 static bool zend_markup_statement_position(void)
 {
 	switch (SCNG(last_token)) {
 		case 0:
 		case T_OPEN_TAG:
+		case T_MARKUP_BIND_TAG_END:
 		case ';':
 		case '{':
-		case '}':
 			return true;
 		case ':':
 			return SCNG(markup_statement_position);
@@ -2089,6 +2092,23 @@ OPTIONAL_WHITESPACE_OR_COMMENTS ({WHITESPACE}|{MULTI_LINE_COMMENT}|{SINGLE_LINE_
 	RETURN_TOKEN_WITH_IDENT(T_LOGICAL_XOR);
 }
 
+<ST_IN_SCRIPTING>"<<{" {
+	yy_push_state(ST_MARKUP_BIND_TARGET);
+	yy_push_state(ST_IN_SCRIPTING);
+	enter_nesting('{');
+	RETURN_TOKEN(T_MARKUP_BIND_OPEN);
+}
+
+<ST_IN_SCRIPTING>"<</>>" {
+	if (SCNG(markup_bind_body_depth) > 0) {
+		SCNG(markup_bind_body_depth)--;
+		yy_pop_state();
+		RETURN_TOKEN(T_MARKUP_BIND_CLOSE);
+	}
+	yyless(2);
+	RETURN_TOKEN(T_SL);
+}
+
 <ST_IN_SCRIPTING>"<<" {
 	RETURN_TOKEN(T_SL);
 }
@@ -2153,6 +2173,23 @@ OPTIONAL_WHITESPACE_OR_COMMENTS ({WHITESPACE}|{MULTI_LINE_COMMENT}|{SINGLE_LINE_
 	 * whitespace (a bare restart would freeze line numbers and swallow the
 	 * whitespace from token_get_all). */
 	goto return_whitespace;
+}
+
+<ST_MARKUP_BIND_TARGET>{WHITESPACE} {
+	goto return_whitespace;
+}
+
+<ST_MARKUP_BIND_TARGET>">>" {
+	SCNG(markup_bind_body_depth)++;
+	BEGIN(ST_IN_SCRIPTING);
+	RETURN_TOKEN(T_MARKUP_BIND_TAG_END);
+}
+
+<ST_MARKUP_BIND_TARGET>{ANY_CHAR} {
+	if (YYCURSOR > YYLIMIT) {
+		RETURN_END_TOKEN;
+	}
+	RETURN_TOKEN(T_ERROR);
 }
 
 <ST_MARKUP_TAG,ST_MARKUP_CLOSE>"\\"?{MARKUP_LABEL}("\\"{MARKUP_LABEL})* {

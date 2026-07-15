@@ -351,6 +351,8 @@ void zend_oparray_context_begin(zend_oparray_context *prev_context, zend_op_arra
 	CG(context).markup_body_enabled = false;
 	CG(context).markup_body_seen = false;
 	CG(context).markup_body_cv = (uint32_t) -1;
+	CG(context).markup_body_counter = 0;
+	CG(context).markup_body_this_cv = (uint32_t) -1;
 }
 /* }}} */
 
@@ -568,8 +570,26 @@ static uint32_t lookup_cv(zend_string *name) /* {{{ */{
 
 #define ZEND_MARKUP_BODY_VAR "\0__markup_body"
 #define ZEND_MARKUP_BODY_VAR_LEN (sizeof(ZEND_MARKUP_BODY_VAR) - 1)
+#define ZEND_MARKUP_THIS_VAR "\0__markup_this"
+#define ZEND_MARKUP_THIS_VAR_LEN (sizeof(ZEND_MARKUP_THIS_VAR) - 1)
 
-static zend_ast *zend_ast_create_markup_body_fragment(void)
+static uint32_t zend_compile_markup_hidden_cv(const char *base, size_t base_len)
+{
+	char name_buf[64];
+	ZEND_ASSERT(base_len + 16 < sizeof(name_buf));
+
+	memcpy(name_buf, base, base_len);
+	size_t len = base_len + snprintf(
+		name_buf + base_len, sizeof(name_buf) - base_len, "#%u",
+		CG(context).markup_body_counter++);
+
+	zend_string *name = zend_string_init(name_buf, len, 0);
+	uint32_t cv = lookup_cv(name);
+	zend_string_release(name);
+	return cv;
+}
+
+static zend_ast *zend_ast_create_markup_body_fragment(uint32_t markup_body_cv)
 {
 	zend_ast *class_name = zend_ast_create_zval_from_str(
 		zend_string_init_interned(ZEND_STRL(ZEND_MARKUP_FRAGMENT_FQ), false));
@@ -577,10 +597,31 @@ static zend_ast *zend_ast_create_markup_body_fragment(void)
 
 	znode cv_node;
 	cv_node.op_type = IS_CV;
-	cv_node.u.op.var = CG(context).markup_body_cv;
+	cv_node.u.op.var = markup_body_cv;
 
 	return zend_ast_create(ZEND_AST_NEW, class_name,
 		zend_ast_create_list(1, ZEND_AST_ARG_LIST, zend_ast_create_znode(&cv_node)));
+}
+
+static zend_ast *zend_ast_create_markup_bound_render(uint32_t target_cv, uint32_t markup_body_cv)
+{
+	zend_ast *fn = zend_ast_create_zval_from_str(
+		zend_string_init_interned(ZEND_STRL(ZEND_MARKUP_BOUND_FQ), false));
+	fn->attr = ZEND_NAME_FQ;
+
+	znode target_node;
+	target_node.op_type = IS_CV;
+	target_node.u.op.var = target_cv;
+
+	return zend_ast_create(ZEND_AST_CALL, fn,
+		zend_ast_create_list(2, ZEND_AST_ARG_LIST,
+			zend_ast_create_znode(&target_node),
+			zend_ast_create_markup_body_fragment(markup_body_cv)));
+}
+
+static bool zend_markup_body_has_bound_this(void)
+{
+	return CG(context).markup_body_this_cv != (uint32_t) -1;
 }
 
 static bool zend_type_contains_markup_html(zend_type type)
@@ -624,6 +665,10 @@ static bool zend_ast_contains_markup_stmt(zend_ast *ast)
 		return true;
 	}
 
+	if (ast->kind == ZEND_AST_MARKUP_BIND) {
+		return false;
+	}
+
 	if (zend_ast_is_decl(ast)) {
 		return false;
 	}
@@ -653,9 +698,8 @@ static bool zend_ast_contains_markup_stmt(zend_ast *ast)
 
 static void zend_compile_markup_body_init(void)
 {
-	zend_string *name = zend_string_init(ZEND_MARKUP_BODY_VAR, ZEND_MARKUP_BODY_VAR_LEN, 0);
-	CG(context).markup_body_cv = lookup_cv(name);
-	zend_string_release(name);
+	CG(context).markup_body_cv = zend_compile_markup_hidden_cv(
+		ZEND_MARKUP_BODY_VAR, ZEND_MARKUP_BODY_VAR_LEN);
 
 	znode cv_node, array_node;
 	cv_node.op_type = IS_CV;
@@ -696,8 +740,48 @@ static void zend_compile_markup_stmt(zend_ast *ast)
 
 static void zend_compile_markup_body_return(void)
 {
-	zend_ast *return_ast = zend_ast_create(ZEND_AST_RETURN, zend_ast_create_markup_body_fragment());
+	zend_ast *return_ast = zend_ast_create(
+		ZEND_AST_RETURN, zend_ast_create_markup_body_fragment(CG(context).markup_body_cv));
 	zend_compile_return(return_ast);
+}
+
+static void zend_compile_markup_bind_target_verify(znode *target_cv_node);
+
+static void zend_compile_markup_bind(znode *result, zend_ast *ast)
+{
+	zend_ast *target_ast = ast->child[0];
+	zend_ast *body_ast = ast->child[1];
+
+	bool old_markup_body_enabled = CG(context).markup_body_enabled;
+	bool old_markup_body_seen = CG(context).markup_body_seen;
+	uint32_t old_markup_body_cv = CG(context).markup_body_cv;
+	uint32_t old_markup_body_this_cv = CG(context).markup_body_this_cv;
+
+	uint32_t target_cv = zend_compile_markup_hidden_cv(
+		ZEND_MARKUP_THIS_VAR, ZEND_MARKUP_THIS_VAR_LEN);
+	znode target_cv_node;
+	target_cv_node.op_type = IS_CV;
+	target_cv_node.u.op.var = target_cv;
+
+	znode target_node;
+	zend_compile_expr(&target_node, target_ast);
+	zend_emit_op(NULL, ZEND_ASSIGN, &target_cv_node, &target_node);
+	zend_compile_markup_bind_target_verify(&target_cv_node);
+
+	CG(context).markup_body_enabled = true;
+	CG(context).markup_body_seen = false;
+	CG(context).markup_body_this_cv = target_cv;
+	zend_compile_markup_body_init();
+	uint32_t body_cv = CG(context).markup_body_cv;
+
+	zend_compile_stmt(body_ast);
+
+	CG(context).markup_body_enabled = old_markup_body_enabled;
+	CG(context).markup_body_seen = old_markup_body_seen;
+	CG(context).markup_body_cv = old_markup_body_cv;
+	CG(context).markup_body_this_cv = old_markup_body_this_cv;
+
+	zend_compile_expr(result, zend_ast_create_markup_bound_render(target_cv, body_cv));
 }
 
 zend_string *zval_make_interned_string(zval *zv)
@@ -2594,6 +2678,34 @@ static inline void zend_update_jump_target_to_next(uint32_t opnum_jump) /* {{{ *
 }
 /* }}} */
 
+static void zend_compile_markup_bind_target_verify(znode *target_cv_node)
+{
+	znode check_node;
+	zend_op *opline = zend_emit_op_tmp(&check_node, ZEND_INSTANCEOF, target_cv_node, NULL);
+	opline->op2_type = IS_CONST;
+	opline->op2.constant = zend_add_class_name_literal(
+		zend_string_init_interned(ZEND_STRL(ZEND_MARKUP_RENDERABLE_FQ), false));
+	opline->extended_value = zend_alloc_cache_slot();
+
+	uint32_t opnum_jmp = zend_emit_cond_jump(ZEND_JMPNZ, &check_node, 0);
+
+	zend_ast *class_name = zend_ast_create_zval_from_str(
+		zend_string_init_interned(ZEND_STRL("TypeError"), false));
+	class_name->attr = ZEND_NAME_FQ;
+
+	zend_ast *message = zend_ast_create_zval_from_str(
+		zend_string_init_interned(
+			ZEND_STRL("Markup layout binding target must implement Markup\\Renderable"), false));
+	zend_ast *exception_ast = zend_ast_create(
+		ZEND_AST_NEW, class_name, zend_ast_create_list(1, ZEND_AST_ARG_LIST, message));
+
+	znode exception_node;
+	zend_compile_expr(&exception_node, exception_ast);
+	zend_emit_op(NULL, ZEND_THROW, &exception_node, NULL);
+
+	zend_update_jump_target_to_next(opnum_jmp);
+}
+
 static inline zend_op *zend_delayed_emit_op(znode *result, uint8_t opcode, znode *op1, znode *op2) /* {{{ */
 {
 	zend_op tmp_opline;
@@ -3174,6 +3286,11 @@ static bool this_guaranteed_exists(void) /* {{{ */
 static zend_op *zend_compile_simple_var(znode *result, const zend_ast *ast, uint32_t type, bool delayed) /* {{{ */
 {
 	if (is_this_fetch(ast)) {
+		if (zend_markup_body_has_bound_this()) {
+			result->op_type = IS_CV;
+			result->u.op.var = CG(context).markup_body_this_cv;
+			return NULL;
+		}
 		zend_op *opline = zend_emit_op(result, ZEND_FETCH_THIS, NULL, NULL);
 		if ((type == BP_VAR_R) || (type == BP_VAR_IS)) {
 			opline->result_type = IS_TMP_VAR;
@@ -3303,7 +3420,7 @@ static zend_op *zend_delayed_compile_prop(znode *result, zend_ast *ast, uint32_t
 	zend_op *opline;
 	bool nullsafe = ast->kind == ZEND_AST_NULLSAFE_PROP;
 
-	if (is_this_fetch(obj_ast)) {
+	if (is_this_fetch(obj_ast) && !zend_markup_body_has_bound_this()) {
 		if (this_guaranteed_exists()) {
 			obj_node.op_type = IS_UNUSED;
 		} else {
@@ -4033,7 +4150,12 @@ static uint32_t zend_compile_args(
 				do {
 					if (arg->kind == ZEND_AST_VAR) {
 						CG(zend_lineno) = zend_ast_get_lineno(ast);
-						if (is_this_fetch(arg)) {
+						if (is_this_fetch(arg) && zend_markup_body_has_bound_this()) {
+							arg_node.op_type = IS_CV;
+							arg_node.u.op.var = CG(context).markup_body_this_cv;
+							opcode = ZEND_SEND_VAR_EX;
+							break;
+						} else if (is_this_fetch(arg)) {
 							zend_emit_op(&arg_node, ZEND_FETCH_THIS, NULL, NULL);
 							opcode = ZEND_SEND_VAR_EX;
 							CG(active_op_array)->fn_flags |= ZEND_ACC_USES_THIS;
@@ -5633,7 +5755,7 @@ static void zend_compile_method_call(znode *result, zend_ast *ast, uint32_t type
 	bool nullsafe = ast->kind == ZEND_AST_NULLSAFE_METHOD_CALL;
 	uint32_t short_circuiting_checkpoint = zend_short_circuiting_checkpoint();
 
-	if (is_this_fetch(obj_ast)) {
+	if (is_this_fetch(obj_ast) && !zend_markup_body_has_bound_this()) {
 		if (this_guaranteed_exists()) {
 			obj_node.op_type = IS_UNUSED;
 		} else {
@@ -11318,7 +11440,11 @@ static void zend_compile_isset_or_empty(znode *result, const zend_ast *ast) /* {
 	zend_short_circuiting_mark_inner(var_ast);
 	switch (var_ast->kind) {
 		case ZEND_AST_VAR:
-			if (is_this_fetch(var_ast)) {
+			if (is_this_fetch(var_ast) && zend_markup_body_has_bound_this()) {
+				var_node.op_type = IS_CV;
+				var_node.u.op.var = CG(context).markup_body_this_cv;
+				opline = zend_emit_op(result, ZEND_ISSET_ISEMPTY_CV, &var_node, NULL);
+			} else if (is_this_fetch(var_ast)) {
 				opline = zend_emit_op(result, ZEND_ISSET_ISEMPTY_THIS, NULL, NULL);
 				CG(active_op_array)->fn_flags |= ZEND_ACC_USES_THIS;
 			} else if (zend_try_compile_cv(&var_node, var_ast, BP_VAR_IS) == SUCCESS) {
@@ -12284,6 +12410,9 @@ static void zend_compile_expr_inner(znode *result, zend_ast *ast) /* {{{ */
 	switch (ast->kind) {
 		case ZEND_AST_MARKUP:
 			zend_compile_expr(result, ast->child[0]);
+			return;
+		case ZEND_AST_MARKUP_BIND:
+			zend_compile_markup_bind(result, ast);
 			return;
 		case ZEND_AST_ZVAL:
 			ZVAL_COPY(&result->u.constant, zend_ast_get_zval(ast));

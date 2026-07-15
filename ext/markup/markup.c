@@ -50,11 +50,17 @@
 ZEND_DECLARE_MODULE_GLOBALS(markup)
 
 zend_class_entry *markup_ce_Html;
+zend_class_entry *markup_ce_Renderable;
 zend_class_entry *markup_ce_Element;
 zend_class_entry *markup_ce_Fragment;
 zend_class_entry *markup_ce_Raw;
 zend_class_entry *markup_ce_Slot;
 zend_class_entry *markup_ce_LazyFragment;
+
+typedef struct {
+	zend_object *object;
+	zval body;
+} markup_renderable_body_frame;
 
 /* Markup\LazyFragment carries internal state a plain property bag cannot: a
  * Closure thunk plus a memoized result that is written on first render. A
@@ -67,6 +73,7 @@ typedef struct {
 } markup_lazy_fragment;
 
 static zend_object_handlers markup_lazy_fragment_handlers;
+static zend_object_handlers markup_renderable_object_handlers;
 
 static zend_always_inline markup_lazy_fragment *markup_lazy_fragment_from_obj(zend_object *obj)
 {
@@ -106,6 +113,7 @@ static HashTable *markup_lazy_fragment_get_gc(zend_object *obj, zval **table, in
  * Html classes (see markup_implement_html). Permanent interned. */
 static zend_string *markup_str_tostring;    /* "__toString" */
 static zend_string *markup_str_tostring_lc; /* "__tostring" */
+static zend_string *markup_str_renderable;  /* "renderable" */
 
 /* arg_info for the injected default __toString(). The raw generated arginfo
  * uses the registration-time zend_internal_arg_info layout; a function living
@@ -604,6 +612,146 @@ static zend_string *markup_render_html(zval *value)
 	return result;
 }
 
+static void markup_renderable_body_frame_dtor(zval *zv)
+{
+	markup_renderable_body_frame *frame = Z_PTR_P(zv);
+	zval_ptr_dtor(&frame->body);
+	OBJ_RELEASE(frame->object);
+	efree(frame);
+}
+
+static void markup_renderable_body_push(zend_object *object, zval *body)
+{
+	if (MARKUP_G(renderable_bodies) == NULL) {
+		ALLOC_HASHTABLE(MARKUP_G(renderable_bodies));
+		zend_hash_init(MARKUP_G(renderable_bodies), 4, NULL, markup_renderable_body_frame_dtor, 0);
+	}
+
+	markup_renderable_body_frame *frame = emalloc(sizeof(markup_renderable_body_frame));
+	GC_ADDREF(object);
+	frame->object = object;
+	ZVAL_COPY(&frame->body, body);
+	zend_hash_next_index_insert_ptr(MARKUP_G(renderable_bodies), frame);
+}
+
+static void markup_renderable_body_pop(zend_object *object)
+{
+	HashTable *stack = MARKUP_G(renderable_bodies);
+	ZEND_ASSERT(stack != NULL);
+	ZEND_ASSERT(zend_hash_num_elements(stack) > 0);
+
+	zend_ulong idx = 0;
+	markup_renderable_body_frame *frame = NULL;
+	ZEND_HASH_REVERSE_FOREACH_NUM_KEY_PTR(stack, idx, frame) {
+		break;
+	} ZEND_HASH_FOREACH_END();
+	ZEND_ASSERT(frame != NULL);
+	ZEND_ASSERT(frame->object == object);
+
+	zend_hash_index_del(stack, idx);
+	if (zend_hash_num_elements(stack) == 0) {
+		zend_hash_release(stack);
+		MARKUP_G(renderable_bodies) = NULL;
+	}
+}
+
+static zval *markup_renderable_body_current(zend_object *object)
+{
+	HashTable *stack = MARKUP_G(renderable_bodies);
+	if (stack == NULL) {
+		return NULL;
+	}
+
+	markup_renderable_body_frame *frame;
+	ZEND_HASH_REVERSE_FOREACH_PTR(stack, frame) {
+		if (frame->object == object) {
+			return &frame->body;
+		}
+	} ZEND_HASH_FOREACH_END();
+
+	return NULL;
+}
+
+static zend_always_inline bool markup_is_renderable_property(zend_string *name)
+{
+	return zend_string_equals(name, markup_str_renderable);
+}
+
+static zval *markup_renderable_read_property(zend_object *object, zend_string *name, int type, void **cache_slot, zval *rv)
+{
+	if (!markup_is_renderable_property(name)) {
+		return zend_std_read_property(object, name, type, cache_slot, rv);
+	}
+
+	if (type == BP_VAR_W || type == BP_VAR_RW || type == BP_VAR_UNSET) {
+		zend_throw_error(NULL, "Indirect modification of %s::$renderable is not allowed",
+			ZSTR_VAL(object->ce->name));
+		return &EG(uninitialized_zval);
+	}
+
+	zval *body = markup_renderable_body_current(object);
+	if (body == NULL) {
+		zend_throw_error(NULL, "Markup renderable content is not available");
+		return &EG(uninitialized_zval);
+	}
+
+	ZVAL_COPY(rv, body);
+	return rv;
+}
+
+static zval *markup_renderable_write_property(zend_object *object, zend_string *name, zval *value, void **cache_slot)
+{
+	if (!markup_is_renderable_property(name)) {
+		return zend_std_write_property(object, name, value, cache_slot);
+	}
+
+	zend_throw_error(NULL, "Cannot write to get-only virtual property %s::$renderable",
+		ZSTR_VAL(object->ce->name));
+	return &EG(error_zval);
+}
+
+static zval *markup_renderable_get_property_ptr_ptr(zend_object *object, zend_string *name, int type, void **cache_slot)
+{
+	if (markup_is_renderable_property(name)) {
+		return NULL;
+	}
+
+	return zend_std_get_property_ptr_ptr(object, name, type, cache_slot);
+}
+
+static int markup_renderable_has_property(zend_object *object, zend_string *name, int has_set_exists, void **cache_slot)
+{
+	if (!markup_is_renderable_property(name)) {
+		return zend_std_has_property(object, name, has_set_exists, cache_slot);
+	}
+
+	if (has_set_exists == ZEND_PROPERTY_EXISTS) {
+		return 1;
+	}
+
+	zval *body = markup_renderable_body_current(object);
+	if (body == NULL) {
+		return 0;
+	}
+
+	if (has_set_exists == ZEND_PROPERTY_NOT_EMPTY) {
+		return zend_is_true(body);
+	}
+
+	return Z_TYPE_P(body) != IS_NULL;
+}
+
+static void markup_renderable_unset_property(zend_object *object, zend_string *name, void **cache_slot)
+{
+	if (!markup_is_renderable_property(name)) {
+		zend_std_unset_property(object, name, cache_slot);
+		return;
+	}
+
+	zend_throw_error(NULL, "Cannot unset get-only virtual property %s::$renderable",
+		ZSTR_VAL(object->ce->name));
+}
+
 /* The default __toString() injected into userland Html classes at
  * class-link time (see markup_implement_html): render via toHtml(). */
 static ZEND_NAMED_FUNCTION(markup_html_default_tostring)
@@ -705,6 +853,31 @@ static int markup_implement_html(zend_class_entry *iface, zend_class_entry *ce)
 		zend_hash_add_new_ptr(&ce->function_table, markup_str_tostring_lc, zif);
 	}
 	ce->__tostring = (zend_function *) zif;
+
+	return SUCCESS;
+}
+
+/* interface_gets_implemented handler for Markup\Renderable: expose the active
+ * layout body as a read-only virtual `$this->renderable` property while
+ * Markup\render_bound() is running. This is intentionally object-handler state,
+ * not userland storage or a magic method. */
+static int markup_implement_renderable(zend_class_entry *iface, zend_class_entry *ce)
+{
+	if (ce->type != ZEND_USER_CLASS) {
+		return SUCCESS;
+	}
+
+	if (ce->default_object_handlers == &markup_renderable_object_handlers) {
+		return SUCCESS;
+	}
+
+	if (ce->default_object_handlers != &std_object_handlers) {
+		zend_error_noreturn(E_COMPILE_ERROR,
+			"Class %s cannot implement Markup\\Renderable because it uses custom object handlers",
+			ZSTR_VAL(ce->name));
+	}
+
+	ce->default_object_handlers = &markup_renderable_object_handlers;
 
 	return SUCCESS;
 }
@@ -923,6 +1096,42 @@ PHP_FUNCTION(Markup_escape)
 	zend_string *escaped = markup_escape_string(ZSTR_VAL(text), ZSTR_LEN(text));
 	markup_return_raw(return_value, escaped);
 	zend_string_release(escaped);
+}
+
+PHP_FUNCTION(Markup_render_bound)
+{
+	zval *target;
+	zval *body;
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_OBJECT_OF_CLASS(target, markup_ce_Renderable)
+		Z_PARAM_OBJECT_OF_CLASS(body, markup_ce_Html)
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (!instanceof_function(Z_OBJCE_P(target), markup_ce_Html)) {
+		RETURN_COPY(body);
+	}
+
+	zval rendered;
+	ZVAL_UNDEF(&rendered);
+
+	markup_renderable_body_push(Z_OBJ_P(target), body);
+	zend_call_method_with_0_params(Z_OBJ_P(target), Z_OBJCE_P(target), NULL, "tohtml", &rendered);
+	markup_renderable_body_pop(Z_OBJ_P(target));
+
+	if (EG(exception)) {
+		zval_ptr_dtor(&rendered);
+		RETURN_THROWS();
+	}
+
+	if (Z_TYPE(rendered) != IS_OBJECT || !instanceof_function(Z_OBJCE(rendered), markup_ce_Html)) {
+		zend_throw_error(NULL,
+			"%s::toHtml() did not return a Markup\\Html", ZSTR_VAL(Z_OBJCE_P(target)->name));
+		zval_ptr_dtor(&rendered);
+		RETURN_THROWS();
+	}
+
+	RETURN_COPY_VALUE(&rendered);
 }
 
 /* Merge explicit props with body content routed via a #[Markup\Slot] parameter
@@ -1620,6 +1829,7 @@ static PHP_GINIT_FUNCTION(markup)
 {
 	markup_globals->component_factories = NULL;
 	markup_globals->component_decorators = NULL;
+	markup_globals->renderable_bodies = NULL;
 }
 
 PHP_RSHUTDOWN_FUNCTION(markup)
@@ -1633,19 +1843,33 @@ PHP_RSHUTDOWN_FUNCTION(markup)
 		zend_hash_release(MARKUP_G(component_decorators));
 		MARKUP_G(component_decorators) = NULL;
 	}
+	if (MARKUP_G(renderable_bodies) != NULL) {
+		zend_hash_release(MARKUP_G(renderable_bodies));
+		MARKUP_G(renderable_bodies) = NULL;
+	}
 	return SUCCESS;
 }
 
 PHP_MINIT_FUNCTION(markup)
 {
-	markup_ce_Html = register_class_Markup_Html(zend_ce_stringable);
+	markup_ce_Renderable = register_class_Markup_Renderable();
+	markup_ce_Renderable->interface_gets_implemented = markup_implement_renderable;
+	markup_ce_Html = register_class_Markup_Html(zend_ce_stringable, markup_ce_Renderable);
 	markup_ce_Html->interface_gets_implemented = markup_implement_html;
 	markup_str_tostring = zend_string_init_interned(ZEND_STRL("__toString"), true);
 	markup_str_tostring_lc = zend_string_init_interned(ZEND_STRL("__tostring"), true);
+	markup_str_renderable = zend_string_init_interned(ZEND_STRL("renderable"), true);
 	for (size_t i = 0; i < sizeof(markup_zarginfo_default_tostring) / sizeof(zend_arg_info); i++) {
 		zend_convert_internal_arg_info(&markup_zarginfo_default_tostring[i],
 			&arginfo_class_Markup_Html___toString[i], i == 0, true);
 	}
+
+	memcpy(&markup_renderable_object_handlers, &std_object_handlers, sizeof(zend_object_handlers));
+	markup_renderable_object_handlers.read_property = markup_renderable_read_property;
+	markup_renderable_object_handlers.write_property = markup_renderable_write_property;
+	markup_renderable_object_handlers.get_property_ptr_ptr = markup_renderable_get_property_ptr_ptr;
+	markup_renderable_object_handlers.has_property = markup_renderable_has_property;
+	markup_renderable_object_handlers.unset_property = markup_renderable_unset_property;
 
 	markup_ce_Element = register_class_Markup_Element(markup_ce_Html);
 	markup_ce_Fragment = register_class_Markup_Fragment(markup_ce_Html);
@@ -1662,6 +1886,7 @@ PHP_MINIT_FUNCTION(markup)
 
 	/* The parser lowers markup to these fully-qualified names (zend_markup.h);
 	 * assert the runtime registers exactly them so the two can never drift. */
+	ZEND_ASSERT(zend_string_equals_literal(markup_ce_Renderable->name, ZEND_MARKUP_RENDERABLE_FQ));
 	ZEND_ASSERT(zend_string_equals_literal(markup_ce_Element->name, ZEND_MARKUP_ELEMENT_FQ));
 	ZEND_ASSERT(zend_string_equals_literal(markup_ce_Fragment->name, ZEND_MARKUP_FRAGMENT_FQ));
 	ZEND_ASSERT(zend_string_equals_literal(markup_ce_LazyFragment->name, ZEND_MARKUP_LAZY_FRAGMENT_FQ));

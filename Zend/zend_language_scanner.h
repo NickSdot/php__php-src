@@ -32,6 +32,7 @@ typedef struct _zend_lex_state {
 	int yy_state;
 	int last_token; /* operand-vs-operator position for native markup */
 	bool markup_statement_position;
+	uint32_t markup_bind_body_depth;
 	zend_stack state_stack;
 	zend_ptr_stack heredoc_label_stack;
 	zend_stack nest_location_stack; /* for syntax error reporting */
