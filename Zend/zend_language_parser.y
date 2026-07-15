@@ -259,6 +259,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token <ast> T_MARKUP_ATTR_VALUE "markup attribute value"
 %token <ast> T_MARKUP_COMMENT "markup comment"
 %token T_MARKUP_OPEN "markup tag start"
+%token MARKUP_STATEMENT_OPEN "markup statement tag start"
 %token T_MARKUP_CLOSE_OPEN "markup closing tag start"
 %token T_MARKUP_TAG_END "markup tag end"
 %token T_MARKUP_SELF_CLOSE "markup self-close"
@@ -298,7 +299,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> attributed_statement attributed_top_statement attributed_class_statement attributed_parameter
 %type <ast> attribute_decl attribute attributes attribute_group namespace_declaration_name
 %type <ast> match match_arm_list non_empty_match_arm_list match_arm match_arm_cond_list
-%type <ast> markup_element markup_children markup_child
+%type <ast> markup_statement_element markup_element markup_element_tail markup_children markup_child
 %type <ast> markup_attributes markup_attribute
 %type <ast> enum_declaration_statement enum_backing_type enum_case enum_case_expr
 %type <ast> function_name non_empty_member_modifiers
@@ -351,7 +352,8 @@ identifier:
 ;
 
 top_statement_list:
-		top_statement_list top_statement { $$ = zend_ast_list_add($1, $2); }
+		top_statement_list top_statement
+			{ $$ = zend_ast_list_add($1, $2); LANG_SCNG(markup_statement_position) = true; }
 	|	%empty { $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
 
@@ -506,7 +508,7 @@ const_list:
 
 inner_statement_list:
 		inner_statement_list inner_statement
-			{ $$ = zend_ast_list_add($1, $2); }
+			{ $$ = zend_ast_list_add($1, $2); LANG_SCNG(markup_statement_position) = true; }
 	|	%empty
 			{ $$ = zend_ast_create_list(0, ZEND_AST_STMT_LIST); }
 ;
@@ -526,12 +528,12 @@ statement:
 		'{' inner_statement_list '}' { $$ = $2; }
 	|	if_stmt { $$ = $1; }
 	|	alt_if_stmt { $$ = $1; }
-	|	T_WHILE '(' expr ')' while_statement
-			{ $$ = zend_ast_create(ZEND_AST_WHILE, $3, $5); }
-	|	T_DO statement T_WHILE '(' expr ')' ';'
-			{ $$ = zend_ast_create(ZEND_AST_DO_WHILE, $2, $5); }
-	|	T_FOR '(' for_exprs ';' for_cond_exprs ';' for_exprs ')' for_statement
-			{ $$ = zend_ast_create(ZEND_AST_FOR, $3, $5, $7, $9); }
+	|	T_WHILE '(' expr ')' markup_statement_start while_statement
+			{ $$ = zend_ast_create(ZEND_AST_WHILE, $3, $6); }
+	|	T_DO markup_statement_start statement T_WHILE '(' expr ')' ';'
+			{ $$ = zend_ast_create(ZEND_AST_DO_WHILE, $3, $6); }
+	|	T_FOR '(' for_exprs ';' for_cond_exprs ';' for_exprs ')' markup_statement_start for_statement
+			{ $$ = zend_ast_create(ZEND_AST_FOR, $3, $5, $7, $10); }
 	|	T_SWITCH '(' expr ')' switch_case_list
 			{ $$ = zend_ast_create(ZEND_AST_SWITCH, $3, $5); }
 	|	T_BREAK optional_expr ';'		{ $$ = zend_ast_create(ZEND_AST_BREAK, $2); }
@@ -541,13 +543,14 @@ statement:
 	|	T_STATIC static_var_list ';'	{ $$ = $2; }
 	|	T_ECHO echo_expr_list ';'		{ $$ = $2; }
 	|	T_INLINE_HTML { $$ = zend_ast_create(ZEND_AST_ECHO, $1); }
+	|	markup_statement_element { $$ = zend_ast_create(ZEND_AST_MARKUP_STMT, zend_ast_create(ZEND_AST_MARKUP, $1)); }
 	|	expr ';' { $$ = $1; }
 	|	T_UNSET '(' unset_variables possible_comma ')' ';' { $$ = $3; }
-	|	T_FOREACH '(' expr T_AS foreach_variable ')' foreach_statement
-			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $5, NULL, $7); }
+	|	T_FOREACH '(' expr T_AS foreach_variable ')' markup_statement_start foreach_statement
+			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $5, NULL, $8); }
 	|	T_FOREACH '(' expr T_AS foreach_variable T_DOUBLE_ARROW foreach_variable ')'
-		foreach_statement
-			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $7, $5, $9); }
+		markup_statement_start foreach_statement
+			{ $$ = zend_ast_create(ZEND_AST_FOREACH, $3, $7, $5, $10); }
 	|	T_DECLARE '(' const_list ')'
 			{ if (!zend_handle_encoding_declaration($3)) { YYERROR; } }
 		declare_statement
@@ -558,6 +561,10 @@ statement:
 	|	T_GOTO T_STRING ';' { $$ = zend_ast_create(ZEND_AST_GOTO, $2); }
 	|	T_STRING ':' { $$ = zend_ast_create(ZEND_AST_LABEL, $1); }
 	|	T_VOID_CAST expr ';' { $$ = zend_ast_create(ZEND_AST_CAST_VOID, $2); }
+;
+
+markup_statement_start:
+		%empty { LANG_SCNG(markup_statement_position) = true; }
 ;
 
 catch_list:
@@ -707,17 +714,17 @@ foreach_variable:
 
 for_statement:
 		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDFOR ';' { $$ = $2; }
+	|	':' markup_statement_start inner_statement_list T_ENDFOR ';' { $$ = $3; }
 ;
 
 foreach_statement:
 		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDFOREACH ';' { $$ = $2; }
+	|	':' markup_statement_start inner_statement_list T_ENDFOREACH ';' { $$ = $3; }
 ;
 
 declare_statement:
 		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDDECLARE ';' { $$ = $2; }
+	|	':' markup_statement_start inner_statement_list T_ENDDECLARE ';' { $$ = $3; }
 ;
 
 switch_case_list:
@@ -729,12 +736,12 @@ switch_case_list:
 
 case_list:
 		%empty { $$ = zend_ast_create_list(0, ZEND_AST_SWITCH_LIST); }
-	|	case_list T_CASE expr ':' inner_statement_list
-			{ $$ = zend_ast_list_add($1, zend_ast_create(ZEND_AST_SWITCH_CASE, $3, $5)); }
+	|	case_list T_CASE expr ':' markup_statement_start inner_statement_list
+			{ $$ = zend_ast_list_add($1, zend_ast_create(ZEND_AST_SWITCH_CASE, $3, $6)); }
 	|	case_list T_CASE expr ';' inner_statement_list
 			{ $$ = zend_ast_list_add($1, zend_ast_create_ex(ZEND_AST_SWITCH_CASE, ZEND_ALT_CASE_SYNTAX, $3, $5)); }
-	|	case_list T_DEFAULT ':' inner_statement_list
-			{ $$ = zend_ast_list_add($1, zend_ast_create(ZEND_AST_SWITCH_CASE, NULL, $4)); }
+	|	case_list T_DEFAULT ':' markup_statement_start inner_statement_list
+			{ $$ = zend_ast_list_add($1, zend_ast_create(ZEND_AST_SWITCH_CASE, NULL, $5)); }
 	|	case_list T_DEFAULT ';' inner_statement_list
 			{ $$ = zend_ast_list_add($1, zend_ast_create_ex(ZEND_AST_SWITCH_CASE, ZEND_ALT_CASE_SYNTAX, NULL, $4)); }
 ;
@@ -770,7 +777,7 @@ match_arm_cond_list:
 
 while_statement:
 		statement { $$ = $1; }
-	|	':' inner_statement_list T_ENDWHILE ';' { $$ = $2; }
+	|	':' markup_statement_start inner_statement_list T_ENDWHILE ';' { $$ = $3; }
 ;
 
 
@@ -790,19 +797,19 @@ if_stmt:
 ;
 
 alt_if_stmt_without_else:
-		T_IF '(' expr ')' ':' inner_statement_list
+		T_IF '(' expr ')' ':' markup_statement_start inner_statement_list
 			{ $$ = zend_ast_create_list(1, ZEND_AST_IF,
-			      zend_ast_create(ZEND_AST_IF_ELEM, $3, $6)); }
-	|	alt_if_stmt_without_else T_ELSEIF '(' expr ')' ':' inner_statement_list
+			      zend_ast_create(ZEND_AST_IF_ELEM, $3, $7)); }
+	|	alt_if_stmt_without_else T_ELSEIF '(' expr ')' ':' markup_statement_start inner_statement_list
 			{ $$ = zend_ast_list_add($1,
-			      zend_ast_create(ZEND_AST_IF_ELEM, $4, $7)); }
+			      zend_ast_create(ZEND_AST_IF_ELEM, $4, $8)); }
 ;
 
 alt_if_stmt:
 		alt_if_stmt_without_else T_ENDIF ';' { $$ = $1; }
-	|	alt_if_stmt_without_else T_ELSE ':' inner_statement_list T_ENDIF ';'
+	|	alt_if_stmt_without_else T_ELSE ':' markup_statement_start inner_statement_list T_ENDIF ';'
 			{ $$ = zend_ast_list_add($1,
-			      zend_ast_create(ZEND_AST_IF_ELEM, NULL, $4)); }
+			      zend_ast_create(ZEND_AST_IF_ELEM, NULL, $5)); }
 ;
 
 parameter_list:
@@ -1266,21 +1273,29 @@ new_non_dereferenceable:
 			{ $$ = zend_ast_create(ZEND_AST_NEW, $2, zend_ast_create_list(0, ZEND_AST_ARG_LIST)); }
 ;
 
+markup_statement_element:
+		MARKUP_STATEMENT_OPEN markup_element_tail { $$ = $2; }
+;
+
 markup_element:
-		T_MARKUP_OPEN T_MARKUP_NAME markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_NAME T_MARKUP_TAG_END
-			{ $$ = zend_ast_create_markup_checked($2, $3, $5, $7, false); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_MARKUP_NAME markup_attributes T_MARKUP_SELF_CLOSE
-			{ $$ = zend_ast_create_markup_element($2, $3, NULL); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_TAG_END
-			{ $$ = zend_ast_create_markup_element(NULL, NULL, $3); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_VARIABLE markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_VARIABLE T_MARKUP_TAG_END
-			{ $$ = zend_ast_create_markup_checked($2, $3, $5, $7, true); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_VARIABLE markup_attributes T_MARKUP_SELF_CLOSE
-			{ $$ = zend_ast_create_markup_dynamic($2, $3, NULL); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_MARKUP_INTERP_START expr '}' markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_TAG_END
-			{ $$ = zend_ast_create_markup_dynamic_expr($3, $5, $7); if (!$$) { YYERROR; } }
-	|	T_MARKUP_OPEN T_MARKUP_INTERP_START expr '}' markup_attributes T_MARKUP_SELF_CLOSE
-			{ $$ = zend_ast_create_markup_dynamic_expr($3, $5, NULL); if (!$$) { YYERROR; } }
+		T_MARKUP_OPEN markup_element_tail { $$ = $2; }
+;
+
+markup_element_tail:
+		T_MARKUP_NAME markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_NAME T_MARKUP_TAG_END
+			{ $$ = zend_ast_create_markup_checked($1, $2, $4, $6, false); if (!$$) { YYERROR; } }
+	|	T_MARKUP_NAME markup_attributes T_MARKUP_SELF_CLOSE
+			{ $$ = zend_ast_create_markup_element($1, $2, NULL); if (!$$) { YYERROR; } }
+	|	T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_TAG_END
+			{ $$ = zend_ast_create_markup_element(NULL, NULL, $2); if (!$$) { YYERROR; } }
+	|	T_VARIABLE markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_VARIABLE T_MARKUP_TAG_END
+			{ $$ = zend_ast_create_markup_checked($1, $2, $4, $6, true); if (!$$) { YYERROR; } }
+	|	T_VARIABLE markup_attributes T_MARKUP_SELF_CLOSE
+			{ $$ = zend_ast_create_markup_dynamic($1, $2, NULL); if (!$$) { YYERROR; } }
+	|	T_MARKUP_INTERP_START expr '}' markup_attributes T_MARKUP_TAG_END markup_children T_MARKUP_CLOSE_OPEN T_MARKUP_TAG_END
+			{ $$ = zend_ast_create_markup_dynamic_expr($2, $4, $6); if (!$$) { YYERROR; } }
+	|	T_MARKUP_INTERP_START expr '}' markup_attributes T_MARKUP_SELF_CLOSE
+			{ $$ = zend_ast_create_markup_dynamic_expr($2, $4, NULL); if (!$$) { YYERROR; } }
 ;
 
 markup_attributes:
@@ -1317,7 +1332,7 @@ expr:
 		variable
 			{ $$ = $1; }
 	|	markup_element
-			{ $$ = $1; }
+			{ $$ = zend_ast_create(ZEND_AST_MARKUP, $1); }
 	|	T_LIST '(' array_pair_list ')' '=' expr
 			{ $3->attr = ZEND_ARRAY_SYNTAX_LIST; $$ = zend_ast_create(ZEND_AST_ASSIGN, $3, $6); }
 	|	'[' array_pair_list ']' '=' expr

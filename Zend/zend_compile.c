@@ -38,6 +38,7 @@
 #include "zend_call_stack.h"
 #include "zend_frameless_function.h"
 #include "zend_property_hooks.h"
+#include "zend_markup.h"
 
 #define SET_NODE(target, src) do { \
 		target ## _type = (src)->op_type; \
@@ -93,6 +94,7 @@ ZEND_API zend_executor_globals executor_globals;
 #endif
 
 static zend_op *zend_emit_op(znode *result, uint8_t opcode, znode *op1, znode *op2);
+static inline zend_op *zend_emit_op_data(znode *value);
 static bool zend_try_ct_eval_array(zval *result, zend_ast *ast);
 static void zend_eval_const_expr(zend_ast **ast_ptr);
 
@@ -101,6 +103,7 @@ static zend_op *zend_delayed_compile_var(znode *result, zend_ast *ast, uint32_t 
 static void zend_compile_expr(znode *result, zend_ast *ast);
 static void zend_compile_stmt(zend_ast *ast);
 static void zend_compile_assign(znode *result, zend_ast *ast, bool stmt, uint32_t type);
+static void zend_compile_return(const zend_ast *ast);
 
 #ifdef ZEND_CHECK_STACK_LIMIT
 zend_never_inline static void zend_stack_limit_error(void)
@@ -345,6 +348,9 @@ void zend_oparray_context_begin(zend_oparray_context *prev_context, zend_op_arra
 	CG(context).in_jmp_frameless_branch = false;
 	CG(context).active_property_info_name = NULL;
 	CG(context).active_property_hook_kind = (zend_property_hook_kind)-1;
+	CG(context).markup_body_enabled = false;
+	CG(context).markup_body_seen = false;
+	CG(context).markup_body_cv = (uint32_t) -1;
 }
 /* }}} */
 
@@ -559,6 +565,140 @@ static uint32_t lookup_cv(zend_string *name) /* {{{ */{
 	return EX_NUM_TO_VAR(i);
 }
 /* }}} */
+
+#define ZEND_MARKUP_BODY_VAR "\0__markup_body"
+#define ZEND_MARKUP_BODY_VAR_LEN (sizeof(ZEND_MARKUP_BODY_VAR) - 1)
+
+static zend_ast *zend_ast_create_markup_body_fragment(void)
+{
+	zend_ast *class_name = zend_ast_create_zval_from_str(
+		zend_string_init_interned(ZEND_STRL(ZEND_MARKUP_FRAGMENT_FQ), false));
+	class_name->attr = ZEND_NAME_FQ;
+
+	znode cv_node;
+	cv_node.op_type = IS_CV;
+	cv_node.u.op.var = CG(context).markup_body_cv;
+
+	return zend_ast_create(ZEND_AST_NEW, class_name,
+		zend_ast_create_list(1, ZEND_AST_ARG_LIST, zend_ast_create_znode(&cv_node)));
+}
+
+static bool zend_type_contains_markup_html(zend_type type)
+{
+	if (ZEND_TYPE_HAS_LIST(type)) {
+		const zend_type *single_type;
+
+		if (ZEND_TYPE_IS_INTERSECTION(type)) {
+			return false;
+		}
+
+		ZEND_TYPE_LIST_FOREACH(ZEND_TYPE_LIST(type), single_type) {
+			if (zend_type_contains_markup_html(*single_type)) {
+				return true;
+			}
+		} ZEND_TYPE_LIST_FOREACH_END();
+
+		return false;
+	}
+
+	return ZEND_TYPE_HAS_NAME(type)
+		&& zend_string_equals_literal_ci(ZEND_TYPE_NAME(type), ZEND_MARKUP_HTML_FQ);
+}
+
+static bool zend_return_type_is_markup_html(void)
+{
+	if (!(CG(active_op_array)->fn_flags & ZEND_ACC_HAS_RETURN_TYPE)) {
+		return false;
+	}
+
+	return zend_type_contains_markup_html(CG(active_op_array)->arg_info[-1].type);
+}
+
+static bool zend_ast_contains_markup_stmt(zend_ast *ast)
+{
+	if (ast == NULL) {
+		return false;
+	}
+
+	if (ast->kind == ZEND_AST_MARKUP_STMT) {
+		return true;
+	}
+
+	if (zend_ast_is_decl(ast)) {
+		return false;
+	}
+
+	if (zend_ast_is_list(ast)) {
+		zend_ast_list *list = zend_ast_get_list(ast);
+		for (uint32_t i = 0; i < list->children; i++) {
+			if (zend_ast_contains_markup_stmt(list->child[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if (ast->kind < ZEND_AST_VAR) {
+		return false;
+	}
+
+	uint32_t children = zend_ast_get_num_children(ast);
+	for (uint32_t i = 0; i < children; i++) {
+		if (zend_ast_contains_markup_stmt(ast->child[i])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static void zend_compile_markup_body_init(void)
+{
+	zend_string *name = zend_string_init(ZEND_MARKUP_BODY_VAR, ZEND_MARKUP_BODY_VAR_LEN, 0);
+	CG(context).markup_body_cv = lookup_cv(name);
+	zend_string_release(name);
+
+	znode cv_node, array_node;
+	cv_node.op_type = IS_CV;
+	cv_node.u.op.var = CG(context).markup_body_cv;
+
+	array_node.op_type = IS_CONST;
+	ZVAL_EMPTY_ARRAY(&array_node.u.constant);
+
+	zend_emit_op(NULL, ZEND_ASSIGN, &cv_node, &array_node);
+}
+
+static void zend_compile_markup_body_append(znode *expr_node)
+{
+	znode cv_node;
+	cv_node.op_type = IS_CV;
+	cv_node.u.op.var = CG(context).markup_body_cv;
+
+	zend_emit_op(NULL, ZEND_ASSIGN_DIM, &cv_node, NULL);
+	zend_emit_op_data(expr_node);
+}
+
+static void zend_compile_markup_stmt(zend_ast *ast)
+{
+	if (!CG(context).markup_body_enabled) {
+		zend_error_noreturn(E_COMPILE_ERROR,
+			"Markup statements are only allowed in functions returning Markup\\Html");
+	}
+
+	zend_ast *expr_ast = ast->child[0];
+	if (expr_ast->kind == ZEND_AST_MARKUP) {
+		expr_ast = expr_ast->child[0];
+	}
+
+	znode expr_node;
+	zend_compile_expr(&expr_node, expr_ast);
+	zend_compile_markup_body_append(&expr_node);
+}
+
+static void zend_compile_markup_body_return(void)
+{
+	zend_ast *return_ast = zend_ast_create(ZEND_AST_RETURN, zend_ast_create_markup_body_fragment());
+	zend_compile_return(return_ast);
+}
 
 zend_string *zval_make_interned_string(zval *zv)
 {
@@ -6065,6 +6205,11 @@ static void zend_compile_echo(const zend_ast *ast) /* {{{ */
 	znode expr_node;
 	zend_compile_expr(&expr_node, expr_ast);
 
+	if (CG(context).markup_body_enabled) {
+		zend_compile_markup_body_append(&expr_node);
+		return;
+	}
+
 	opline = zend_emit_op(NULL, ZEND_ECHO, &expr_node, NULL);
 	opline->extended_value = 0;
 }
@@ -8842,6 +8987,19 @@ static zend_op_array *zend_compile_func_decl_ex(
 
 	zend_compile_params(params_ast, return_type_ast,
 		is_method && zend_string_equals_literal(lcname, ZEND_TOSTRING_FUNC_LCNAME) ? IS_STRING : 0);
+	if (zend_ast_contains_markup_stmt(stmt_ast)) {
+		if (!zend_return_type_is_markup_html()) {
+			zend_error_noreturn(E_COMPILE_ERROR,
+				"Markup statements are only allowed in functions returning Markup\\Html");
+		}
+		if (op_array->fn_flags & ZEND_ACC_RETURN_REFERENCE) {
+			zend_error_noreturn(E_COMPILE_ERROR,
+				"Markup statements cannot be used in functions returning by reference");
+		}
+		CG(context).markup_body_enabled = true;
+		CG(context).markup_body_seen = true;
+		zend_compile_markup_body_init();
+	}
 	if (CG(active_op_array)->fn_flags & ZEND_ACC_GENERATOR) {
 		zend_mark_function_as_generator();
 		zend_emit_op(NULL, ZEND_GENERATOR_CREATE, NULL, NULL);
@@ -8907,7 +9065,11 @@ static zend_op_array *zend_compile_func_decl_ex(
 	CG(zend_lineno) = decl->end_lineno;
 
 	zend_do_extended_stmt(NULL);
-	zend_emit_final_return(false);
+	if (CG(context).markup_body_seen) {
+		zend_compile_markup_body_return();
+	} else {
+		zend_emit_final_return(false);
+	}
 
 	pass_two(CG(active_op_array));
 	zend_oparray_context_end(&orig_oparray_context);
@@ -12013,6 +12175,9 @@ static void zend_compile_stmt(zend_ast *ast) /* {{{ */
 		case ZEND_AST_CONTINUE:
 			zend_compile_break_continue(ast);
 			break;
+		case ZEND_AST_MARKUP_STMT:
+			zend_compile_markup_stmt(ast);
+			break;
 		case ZEND_AST_GOTO:
 			zend_compile_goto(ast);
 			break;
@@ -12117,6 +12282,9 @@ static void zend_compile_expr_inner(znode *result, zend_ast *ast) /* {{{ */
 	}
 
 	switch (ast->kind) {
+		case ZEND_AST_MARKUP:
+			zend_compile_expr(result, ast->child[0]);
+			return;
 		case ZEND_AST_ZVAL:
 			ZVAL_COPY(&result->u.constant, zend_ast_get_zval(ast));
 			result->op_type = IS_CONST;

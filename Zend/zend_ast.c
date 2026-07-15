@@ -2574,6 +2574,10 @@ simple_list:
 			}
 			smart_str_appends(str, "::class");
 			break;
+		case ZEND_AST_MARKUP:
+		case ZEND_AST_MARKUP_STMT:
+			ast = ast->child[0];
+			goto tail_call;
 		case ZEND_AST_ASSIGN:            BINARY_OP(" = ",   90, 91, 90);
 		case ZEND_AST_ASSIGN_REF:        BINARY_OP(" =& ",  90, 91, 90);
 		case ZEND_AST_ASSIGN_OP:
