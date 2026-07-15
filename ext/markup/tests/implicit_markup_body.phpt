@@ -117,10 +117,45 @@ class Hello implements Markup\Html
         if("2" === $two):
             <p>And two was {$two}</p> // could we get this work without the wrapping html element?
         endif;
+
+        echo \PHP_EOL . Hello::class . \PHP_EOL;
+        echo "Hey";
     }
 }
 
 echo new Hello('Nick & Co'), "\n";
+
+class LabelValue
+{
+    public function __construct(public string $prop) {}
+}
+
+class InterfaceTypedExamples implements Markup\Html
+{
+    public function __construct(private array $values) {}
+
+    public function toHtml(): Markup\Html
+    {
+        $object = new LabelValue('from new & property');
+        <p>{$object->prop}</p>
+
+        $anonymous = new class('anonymous value') {
+            public function __construct(public string $prop) {}
+        };
+        <p>{$anonymous->prop}</p>
+
+        $wrap = function (string $value): Markup\Html {
+            <span>{$value}</span>
+        };
+        <div>{array_map($wrap, $this->values)}</div>
+
+        $make = fn (string $value): LabelValue => new LabelValue($value);
+        $made = $make('from callback new');
+        <p>{$made->prop}</p>
+    }
+}
+
+echo new InterfaceTypedExamples(['a & b', 'c']), "\n";
 
 eval('function missing_markup_return_type() { <p>nope</p> }');
 ?>
@@ -135,5 +170,8 @@ eval('function missing_markup_return_type() { <p>nope</p> }');
 []
 <strong>override</strong>
 <h1 class="title">Hello, Nick &amp; Co!</h1><p>Hello: 2</p><p>It was indeed Hello</p><p>And two was 2</p>
+Hello
+Hey
+<p>from new &amp; property</p><p>anonymous value</p><div><span>a &amp; b</span><span>c</span></div><p>from callback new</p>
 
 Fatal error: Markup statements are only allowed in functions returning Markup\Html in %simplicit_markup_body.php(%d) : eval()'d code on line 1

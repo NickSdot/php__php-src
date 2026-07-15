@@ -667,6 +667,16 @@ static void zend_compile_markup_body_init(void)
 	zend_emit_op(NULL, ZEND_ASSIGN, &cv_node, &array_node);
 }
 
+static void zend_compile_markup_body_append(znode *expr_node)
+{
+	znode cv_node;
+	cv_node.op_type = IS_CV;
+	cv_node.u.op.var = CG(context).markup_body_cv;
+
+	zend_emit_op(NULL, ZEND_ASSIGN_DIM, &cv_node, NULL);
+	zend_emit_op_data(expr_node);
+}
+
 static void zend_compile_markup_stmt(zend_ast *ast)
 {
 	if (!CG(context).markup_body_enabled) {
@@ -679,13 +689,9 @@ static void zend_compile_markup_stmt(zend_ast *ast)
 		expr_ast = expr_ast->child[0];
 	}
 
-	znode cv_node, expr_node;
-	cv_node.op_type = IS_CV;
-	cv_node.u.op.var = CG(context).markup_body_cv;
-
+	znode expr_node;
 	zend_compile_expr(&expr_node, expr_ast);
-	zend_emit_op(NULL, ZEND_ASSIGN_DIM, &cv_node, NULL);
-	zend_emit_op_data(&expr_node);
+	zend_compile_markup_body_append(&expr_node);
 }
 
 static void zend_compile_markup_body_return(void)
@@ -6198,6 +6204,11 @@ static void zend_compile_echo(const zend_ast *ast) /* {{{ */
 
 	znode expr_node;
 	zend_compile_expr(&expr_node, expr_ast);
+
+	if (CG(context).markup_body_enabled) {
+		zend_compile_markup_body_append(&expr_node);
+		return;
+	}
 
 	opline = zend_emit_op(NULL, ZEND_ECHO, &expr_node, NULL);
 	opline->extended_value = 0;

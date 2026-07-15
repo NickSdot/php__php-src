@@ -197,9 +197,6 @@ void startup_scanner(void)
 	SCNG(heredoc_scan_ahead) = 0;
 	SCNG(last_token) = 0;
 	SCNG(markup_statement_position) = false;
-	SCNG(markup_pending_statement_end) = false;
-	SCNG(markup_implicit_semicolon) = false;
-	SCNG(markup_statement_stack_depth) = 0;
 }
 
 static void heredoc_label_dtor(zend_heredoc_label *heredoc_label) {
@@ -241,9 +238,6 @@ ZEND_API void zend_save_lexical_state(zend_lex_state *lex_state)
 	lex_state->yy_state = YYSTATE;
 	lex_state->last_token = SCNG(last_token);
 	lex_state->markup_statement_position = SCNG(markup_statement_position);
-	lex_state->markup_pending_statement_end = SCNG(markup_pending_statement_end);
-	lex_state->markup_implicit_semicolon = SCNG(markup_implicit_semicolon);
-	lex_state->markup_statement_stack_depth = SCNG(markup_statement_stack_depth);
 	lex_state->filename = CG(compiled_filename);
 	lex_state->lineno = CG(zend_lineno);
 	CG(compiled_filename) = NULL;
@@ -286,9 +280,6 @@ ZEND_API void zend_restore_lexical_state(zend_lex_state *lex_state)
 	YYSETCONDITION(lex_state->yy_state);
 	SCNG(last_token) = lex_state->last_token;
 	SCNG(markup_statement_position) = lex_state->markup_statement_position;
-	SCNG(markup_pending_statement_end) = lex_state->markup_pending_statement_end;
-	SCNG(markup_implicit_semicolon) = lex_state->markup_implicit_semicolon;
-	SCNG(markup_statement_stack_depth) = lex_state->markup_statement_stack_depth;
 	CG(zend_lineno) = lex_state->lineno;
 	zend_restore_compiled_filename(lex_state->filename);
 
@@ -561,9 +552,6 @@ ZEND_API zend_result open_file_for_scanning(zend_file_handle *file_handle)
 	SCNG(yy_start) = NULL;
 	SCNG(last_token) = 0;
 	SCNG(markup_statement_position) = false;
-	SCNG(markup_pending_statement_end) = false;
-	SCNG(markup_implicit_semicolon) = false;
-	SCNG(markup_statement_stack_depth) = 0;
 
 	if (size != (size_t)-1) {
 		if (CG(multibyte)) {
@@ -767,9 +755,6 @@ ZEND_API void zend_prepare_string_for_scanning(zval *str, zend_string *filename)
 	SCNG(yy_start) = NULL;
 	SCNG(last_token) = 0;
 	SCNG(markup_statement_position) = false;
-	SCNG(markup_pending_statement_end) = false;
-	SCNG(markup_implicit_semicolon) = false;
-	SCNG(markup_statement_stack_depth) = 0;
 
 	buf = Z_STRVAL_P(str);
 	size = old_len;
@@ -1497,127 +1482,27 @@ static bool zend_markup_operand_position(void)
 }
 
 /* Native markup statement position is narrower than operand position: it means
- * the parser is ready to accept a statement, so a root markup expression may be
- * terminated by layout rather than an explicit semicolon. The parser sets
+ * the parser is ready to accept a statement, so a root "<tag" opener should
+ * start markup rather than lex as the less-than operator. The parser sets
  * markup_statement_position after reducing a statement-list item; the token
  * allowlist covers the first statement in a block/list, plus a statement after
  * a closed block where the parser needs lookahead before reducing. */
 static bool zend_markup_statement_position(void)
 {
-	if (SCNG(markup_statement_position)) {
-		return true;
-	}
-
 	switch (SCNG(last_token)) {
 		case 0:
 		case T_OPEN_TAG:
 		case ';':
 		case '{':
 		case '}':
-		case ':':
 			return true;
-		default:
-			return false;
-	}
-}
-
-static bool zend_markup_next_is_opener(const unsigned char *p)
-{
-	return p[0] == '<' && (
-		(p[1] >= 'a' && p[1] <= 'z') ||
-		(p[1] >= 'A' && p[1] <= 'Z') ||
-		p[1] == '\\' ||
-		p[1] == '>' ||
-		p[1] == '$' ||
-		p[1] == '{');
-}
-
-static const unsigned char *zend_markup_skip_ws_and_comments(const unsigned char *p, const unsigned char *end)
-{
-	for (;;) {
-		while (p < end && (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')) {
-			p++;
-		}
-		if (p + 1 < end && p[0] == '/' && p[1] == '/') {
-			p += 2;
-			while (p < end && *p != '\n' && *p != '\r') {
-				p++;
-			}
-			continue;
-		}
-		if (p + 1 < end && p[0] == '/' && p[1] == '*') {
-			const unsigned char *q = p + 2;
-			while (q + 1 < end && !(q[0] == '*' && q[1] == '/')) {
-				q++;
-			}
-			if (q + 1 >= end) {
-				return p;
-			}
-			p = q + 2;
-			continue;
-		}
-		if (p < end && p[0] == '#' && !(p + 1 < end && p[1] == '[')) {
-			p++;
-			while (p < end && *p != '\n' && *p != '\r') {
-				p++;
-			}
-			continue;
-		}
-		return p;
-	}
-}
-
-static bool zend_markup_should_insert_statement_end(void)
-{
-	const unsigned char *p = zend_markup_skip_ws_and_comments(YYCURSOR, YYLIMIT);
-
-	if (p >= YYLIMIT) {
-		return true;
-	}
-
-	if (*p == ';') {
-		return false;
-	}
-
-	/* Keep ordinary expression continuations ordinary. A following markup opener
-	 * is intentionally not a continuation here: it begins the next markup
-	 * statement. */
-	if (zend_markup_next_is_opener(p)) {
-		return true;
-	}
-
-	switch (*p) {
-		case ',':
-		case '.':
-		case '+':
-		case '-':
-		case '*':
-		case '/':
-		case '%':
-		case '|':
-		case '&':
-		case '^':
-		case '?':
 		case ':':
-		case '=':
-		case '>':
-		case '!':
-		case ')':
-		case ']':
-			return false;
+			return SCNG(markup_statement_position);
 		default:
-			return true;
+			break;
 	}
-}
 
-static void zend_markup_maybe_finish_statement(bool parser_mode)
-{
-	if (parser_mode
-			&& SCNG(markup_statement_stack_depth) != 0
-			&& SCNG(markup_statement_stack_depth) == zend_stack_count(&SCNG(state_stack))) {
-		SCNG(markup_statement_stack_depth) = 0;
-		SCNG(markup_pending_statement_end) = true;
-	}
+	return SCNG(markup_statement_position) && !zend_markup_operand_position();
 }
 
 int ZEND_FASTCALL lex_scan(zval *zendlval, zend_parser_stack_elem *elem)
@@ -1627,15 +1512,6 @@ int offset;
 uint32_t start_line = CG(zend_lineno);
 
 	ZVAL_UNDEF(zendlval);
-	if (PARSER_MODE() && SCNG(markup_pending_statement_end)) {
-		SCNG(markup_pending_statement_end) = false;
-		if (zend_markup_should_insert_statement_end()) {
-			SCNG(yy_text) = YYCURSOR;
-			yyleng = 0;
-			SCNG(markup_implicit_semicolon) = true;
-			RETURN_TOKEN(';');
-		}
-	}
 restart:
 	SCNG(yy_text) = YYCURSOR;
 
@@ -2263,10 +2139,7 @@ OPTIONAL_WHITESPACE_OR_COMMENTS ({WHITESPACE}|{MULTI_LINE_COMMENT}|{SINGLE_LINE_
 	if (statement_position || zend_markup_operand_position()) {
 		yyless(1);
 		yy_push_state(ST_MARKUP_TAG);
-		if (PARSER_MODE() && statement_position) {
-			SCNG(markup_statement_stack_depth) = zend_stack_count(&SCNG(state_stack));
-		}
-		RETURN_TOKEN(T_MARKUP_OPEN);
+		RETURN_TOKEN(PARSER_MODE() && statement_position ? MARKUP_STATEMENT_OPEN : T_MARKUP_OPEN);
 	}
 	if (yytext[1] == '>') {
 		RETURN_TOKEN(T_IS_NOT_EQUAL);
@@ -2328,7 +2201,6 @@ OPTIONAL_WHITESPACE_OR_COMMENTS ({WHITESPACE}|{MULTI_LINE_COMMENT}|{SINGLE_LINE_
 }
 
 <ST_MARKUP_TAG>"/>" {
-	zend_markup_maybe_finish_statement(PARSER_MODE());
 	yy_pop_state();
 	RETURN_TOKEN(T_MARKUP_SELF_CLOSE);
 }
@@ -2339,7 +2211,6 @@ OPTIONAL_WHITESPACE_OR_COMMENTS ({WHITESPACE}|{MULTI_LINE_COMMENT}|{SINGLE_LINE_
 }
 
 <ST_MARKUP_CLOSE>">" {
-	zend_markup_maybe_finish_statement(PARSER_MODE());
 	yy_pop_state();
 	RETURN_TOKEN(T_MARKUP_TAG_END);
 }
@@ -3677,9 +3548,6 @@ emit_token:
 	if (token != T_WHITESPACE && token != T_COMMENT && token != T_DOC_COMMENT) {
 		SCNG(last_token) = token;
 		SCNG(markup_statement_position) = false;
-		if (token != ';' || !SCNG(markup_implicit_semicolon)) {
-			SCNG(markup_implicit_semicolon) = false;
-		}
 	}
 	if (SCNG(on_event)) {
 		SCNG(on_event)(ON_TOKEN, token, start_line, yytext, yyleng, SCNG(on_event_context));
@@ -3689,7 +3557,6 @@ emit_token:
 emit_token_with_ident:
 	SCNG(last_token) = token;
 	SCNG(markup_statement_position) = false;
-	SCNG(markup_implicit_semicolon) = false;
 	if (PARSER_MODE()) {
 		elem->ident = SCNG(yy_text);
 	}
