@@ -12,7 +12,7 @@ class MyPhpToken1 extends PhpToken {
 try {
     var_dump(MyPhpToken1::tokenize("<?php foo"));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 abstract class MyPhpToken2 extends PhpToken {
@@ -21,10 +21,10 @@ abstract class MyPhpToken2 extends PhpToken {
 try {
     var_dump(MyPhpToken2::tokenize("<?php foo"));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Undefined constant "UNKNOWN"
-Cannot instantiate abstract class MyPhpToken2
+Error: Undefined constant "UNKNOWN"
+Error: Cannot instantiate abstract class MyPhpToken2
