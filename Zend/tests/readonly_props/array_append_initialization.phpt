@@ -22,16 +22,16 @@ function init() {
 try {
     (new C)->init();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     init();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot indirectly modify readonly property C::$a
-Cannot indirectly modify readonly property C::$a
+Error: Cannot indirectly modify readonly property C::$a
+Error: Cannot indirectly modify readonly property C::$a

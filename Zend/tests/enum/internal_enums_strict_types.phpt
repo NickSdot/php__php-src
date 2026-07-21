@@ -12,17 +12,17 @@ var_dump(ZendTestStringEnum::from("Test2"));
 try {
     var_dump(ZendTestStringEnum::from(42));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(ZendTestStringEnum::tryFrom(43));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
 enum(ZendTestStringEnum::Bar)
-ZendTestStringEnum::from(): Argument #1 ($value) must be of type string, int given
-ZendTestStringEnum::tryFrom(): Argument #1 ($value) must be of type string, int given
+TypeError: ZendTestStringEnum::from(): Argument #1 ($value) must be of type string, int given
+TypeError: ZendTestStringEnum::tryFrom(): Argument #1 ($value) must be of type string, int given

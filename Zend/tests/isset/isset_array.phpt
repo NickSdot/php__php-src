@@ -25,13 +25,13 @@ var_dump(isset($array[STDIN]));
 try {
     isset($array[[]]);
 } catch (TypeError $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     isset($array[new stdClass()]);
 } catch (TypeError $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--
@@ -48,5 +48,5 @@ bool(false)
 
 Warning: Resource ID#%d used as offset, casting to integer (%d) in %s on line %d
 bool(false)
-Cannot access offset of type array in isset or empty
-Cannot access offset of type stdClass in isset or empty
+TypeError: Cannot access offset of type array in isset or empty
+TypeError: Cannot access offset of type stdClass in isset or empty

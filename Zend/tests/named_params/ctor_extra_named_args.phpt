@@ -8,16 +8,16 @@ class Test {}
 try {
     new stdClass(x: "nope");
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new Test(x: "nope");
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Unknown named parameter $x
-Unknown named parameter $x
+Error: Unknown named parameter $x
+Error: Unknown named parameter $x

@@ -10,9 +10,9 @@ set_error_handler(function($_, $m) {
 try {
     $foo?->foo;
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Undefined variable $foo
+Exception: Undefined variable $foo

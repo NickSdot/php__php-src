@@ -7,51 +7,51 @@ $x = [];
 try {
     $x += "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x -= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x *= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x /= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x **= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x %= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x <<= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x >>= "1";
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Unsupported operand types: array + string
-Unsupported operand types: array - string
-Unsupported operand types: array * string
-Unsupported operand types: array / string
-Unsupported operand types: array ** string
-Unsupported operand types: array % string
-Unsupported operand types: array << string
-Unsupported operand types: array >> string
+TypeError: Unsupported operand types: array + string
+TypeError: Unsupported operand types: array - string
+TypeError: Unsupported operand types: array * string
+TypeError: Unsupported operand types: array / string
+TypeError: Unsupported operand types: array ** string
+TypeError: Unsupported operand types: array % string
+TypeError: Unsupported operand types: array << string
+TypeError: Unsupported operand types: array >> string

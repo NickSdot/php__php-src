@@ -13,9 +13,9 @@ enum Suit: string {
 try {
     var_dump(Suit::from('A'));
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-"A" is not a valid backing value for enum Suit
+ValueError: "A" is not a valid backing value for enum Suit

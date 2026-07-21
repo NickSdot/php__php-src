@@ -8,16 +8,16 @@ function test($a) {}
 try {
     test(a: 1, a: 2);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     test(1, a: 2);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Named parameter $a overwrites previous argument
-Named parameter $a overwrites previous argument
+Error: Named parameter $a overwrites previous argument
+Error: Named parameter $a overwrites previous argument

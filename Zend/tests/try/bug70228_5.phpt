@@ -13,8 +13,8 @@ function test() {
 try {
     test();
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-ops
+Exception: ops

@@ -12,17 +12,17 @@ class Test {
         try {
             self::$a;
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
         try {
             self::$b;
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
         try {
             self::$c;
         } catch (Error $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 }
@@ -31,6 +31,6 @@ Test::run();
 
 ?>
 --EXPECT--
-Typed static property Test::$a must not be accessed before initialization
-Typed static property Test::$b must not be accessed before initialization
-Typed static property Test::$c must not be accessed before initialization
+Error: Typed static property Test::$a must not be accessed before initialization
+Error: Typed static property Test::$b must not be accessed before initialization
+Error: Typed static property Test::$c must not be accessed before initialization

@@ -10,17 +10,17 @@ $ref =& $obj->prop;
 try {
     $ref = [1];
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $ary = [1];
     $ref = $ary;
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 var_dump($ref);
 ?>
 --EXPECT--
-Cannot assign array to reference held by property Test::$prop of type ?Type
-Cannot assign array to reference held by property Test::$prop of type ?Type
+TypeError: Cannot assign array to reference held by property Test::$prop of type ?Type
+TypeError: Cannot assign array to reference held by property Test::$prop of type ?Type
 NULL

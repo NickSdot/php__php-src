@@ -14,8 +14,8 @@ function generator() {
 try {
     var_dump([...generator()]);
 } catch (Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-exception
+Exception: exception

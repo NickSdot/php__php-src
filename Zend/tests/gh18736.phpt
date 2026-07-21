@@ -16,9 +16,9 @@ try {
     $x = &test();
     var_dump($x);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-test(): Return value must be of type int, string returned
+TypeError: test(): Return value must be of type int, string returned

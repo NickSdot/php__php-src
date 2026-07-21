@@ -12,9 +12,9 @@ try {
         throw $e;
     }
 } catch (Exception $e2) {
-    echo $e2->getMessage(), "\n";
+    echo $e2::class, ': ', $e2->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Test
+Exception: Test

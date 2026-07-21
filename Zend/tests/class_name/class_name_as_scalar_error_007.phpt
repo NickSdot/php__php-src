@@ -6,15 +6,15 @@ Cannot access self::class when no class scope is active
 try {
     var_dump(self::class);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump([self::class]);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot use "self" in the global scope
-Cannot use "self" in the global scope
+Error: Cannot use "self" in the global scope
+Error: Cannot use "self" in the global scope

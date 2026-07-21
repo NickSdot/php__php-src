@@ -11,38 +11,38 @@ set_error_handler("exception_error_handler");
 try {
     $foo->a();
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new $foo();
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     throw $foo;
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $foo();
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $foo::b();
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 
 try {
     $b = clone $foo;
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 class b {
@@ -51,14 +51,14 @@ class b {
 try {
     b::$foo();
 } catch(Throwable $e) {
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
-string(23) "Undefined variable $foo"
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo
+Exception: Undefined variable $foo

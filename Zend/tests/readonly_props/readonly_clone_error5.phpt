@@ -35,30 +35,30 @@ class TestSetTwice {
 try {
     var_dump(clone (new TestSetOnce()));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(clone (new TestSetOnce()));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(clone (new TestSetTwice()));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump(clone (new TestSetTwice()));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot indirectly modify readonly property TestSetOnce::$prop
-Cannot indirectly modify readonly property TestSetOnce::$prop
-Cannot indirectly modify readonly property TestSetTwice::$prop
-Cannot indirectly modify readonly property TestSetTwice::$prop
+Error: Cannot indirectly modify readonly property TestSetOnce::$prop
+Error: Cannot indirectly modify readonly property TestSetOnce::$prop
+Error: Cannot indirectly modify readonly property TestSetTwice::$prop
+Error: Cannot indirectly modify readonly property TestSetTwice::$prop

@@ -7,7 +7,7 @@ class A {
         try {
             throw new Exception("2");
         } catch (Exception $e) {
-            echo $e->getMessage() . "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 }
@@ -21,9 +21,9 @@ class B {
 try {
     $b = new B();
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-2
-1
+Exception: 2
+Exception: 1

@@ -11,7 +11,7 @@ foreach ($containers as $container) {
         $r = &$container[];
         var_dump($container, $r);
     } catch (\Throwable $e) {
-        echo $e::class, ': ', $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

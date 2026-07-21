@@ -8,29 +8,29 @@ $fn = function() {
     try {
         self::${$str . "bar"};
     } catch (Error $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     try {
         unset(self::${$str . "bar"});
     } catch (Error $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     try {
         isset(self::${$str . "bar"});
     } catch (Error $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     try {
         self::{$str . "bar"}();
     } catch (Error $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 };
 $fn();
 
 ?>
 --EXPECT--
-Cannot access "self" when no class scope is active
-Cannot access "self" when no class scope is active
-Cannot access "self" when no class scope is active
-Cannot access "self" when no class scope is active
+Error: Cannot access "self" when no class scope is active
+Error: Cannot access "self" when no class scope is active
+Error: Cannot access "self" when no class scope is active
+Error: Cannot access "self" when no class scope is active

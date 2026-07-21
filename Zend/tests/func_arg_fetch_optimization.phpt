@@ -8,8 +8,8 @@ function test($x) {
 try {
     test([]);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Cannot use [] for reading
+Error: Cannot use [] for reading
