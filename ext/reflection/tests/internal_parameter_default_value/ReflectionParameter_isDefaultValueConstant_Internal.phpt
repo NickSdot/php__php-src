@@ -9,7 +9,7 @@ foreach ($method->getParameters() as $parameter) {
     try {
         var_dump($parameter->isDefaultValueConstant());
     } catch (ReflectionException $exception) {
-        echo $exception->getMessage() . "\n";
+        echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
     }
 }
 
@@ -22,13 +22,13 @@ foreach ($method->getParameters() as $parameter) {
     try {
         var_dump($parameter->isDefaultValueConstant());
     } catch (ReflectionException $exception) {
-        echo $exception->getMessage() . "\n";
+        echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
     }
 }
 ?>
 --EXPECT--
-Internal error: Failed to retrieve the default value
-Internal error: Failed to retrieve the default value
+ReflectionException: Internal error: Failed to retrieve the default value
+ReflectionException: Internal error: Failed to retrieve the default value
 bool(false)
 bool(false)
 ----------

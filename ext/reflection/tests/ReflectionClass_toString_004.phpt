@@ -9,9 +9,9 @@ class A {
 try {
     echo new ReflectionClass(A::class);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Undefined constant self::UNKNOWN
+Error: Undefined constant self::UNKNOWN

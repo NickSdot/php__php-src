@@ -95,23 +95,23 @@ function test($scope, $class, $prop) {
     try {
         $propertyReflection->setRawValue($object, 42);
     } catch (Throwable $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     try {
         var_dump($propertyReflection->getRawValue($object));
     } catch (Throwable $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 
     try {
         $propertyReflection->setRawValueWithoutLazyInitialization($object, 43);
     } catch (Throwable $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     try {
         var_dump($propertyReflection->getRawValue($object));
     } catch (Throwable $e) {
-        echo $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
     if ($prop === 'privateProp') {
         printf(
@@ -155,15 +155,15 @@ int(43)
 int(42)
 int(43)
 # Accessing Base->virtualProp from scope Base
-Must not write to virtual property Base::$virtualProp
-Must not read from virtual property Base::$virtualProp
-Can not use setRawValueWithoutLazyInitialization on virtual property Base::$virtualProp
-Must not read from virtual property Base::$virtualProp
+Error: Must not write to virtual property Base::$virtualProp
+Error: Must not read from virtual property Base::$virtualProp
+ReflectionException: Can not use setRawValueWithoutLazyInitialization on virtual property Base::$virtualProp
+Error: Must not read from virtual property Base::$virtualProp
 # Accessing Test->dynamicProp from scope Base
 int(42)
 int(43)
 # Accessing Test->changedProp from scope Base
-May not use setRawValue on static properties
-May not use getRawValue on static properties
-Can not use setRawValueWithoutLazyInitialization on static property Test::$changedProp
-May not use getRawValue on static properties
+ReflectionException: May not use setRawValue on static properties
+ReflectionException: May not use getRawValue on static properties
+ReflectionException: Can not use setRawValueWithoutLazyInitialization on static property Test::$changedProp
+ReflectionException: May not use getRawValue on static properties

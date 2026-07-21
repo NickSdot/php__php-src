@@ -45,7 +45,7 @@ var_dump($g->invoke($test));
 try {
     $s->invoke($test, 42);
 } catch (ReflectionException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 $s->invoke($test, 42);
 var_dump($test->prop2);

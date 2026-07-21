@@ -38,14 +38,14 @@ try {
     var_dump($rcA->setStaticPropertyValue("protectedDoesNotExist", "new value 8"));
     echo "you should not see this";
 } catch (Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump($rcA->setStaticPropertyValue("privateDoesNotExist", "new value 9"));
     echo "you should not see this";
 } catch (Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
@@ -73,5 +73,5 @@ Array
 )
 
 Set non-existent values from A with no default value:
-Class A does not have a property named protectedDoesNotExist
-Class A does not have a property named privateDoesNotExist
+ReflectionException: Class A does not have a property named protectedDoesNotExist
+ReflectionException: Class A does not have a property named privateDoesNotExist
