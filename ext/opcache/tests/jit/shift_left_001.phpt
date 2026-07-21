@@ -19,12 +19,12 @@ var_dump(shl(-1, 2));
 try {
     var_dump(shl(1, 64));
 } catch (Throwable $e) {
-    echo "Exception " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(shl(1, -1));
 } catch (Throwable $e) {
-    echo "Exception (" . get_class($e) . "): " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
@@ -33,4 +33,4 @@ int(2)
 int(4)
 int(-4)
 int(0)
-Exception (ArithmeticError): Bit shift by negative number
+ArithmeticError: Bit shift by negative number

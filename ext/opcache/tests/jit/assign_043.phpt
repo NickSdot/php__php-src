@@ -14,8 +14,8 @@ try {
     $a = $b;
     NOT_REACHED;
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Undefined variable $b
+Exception: Undefined variable $b

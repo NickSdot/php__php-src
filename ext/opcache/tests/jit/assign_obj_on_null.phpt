@@ -23,14 +23,14 @@ function test2() {
 try {
     test();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     test2();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Attempt to assign property "y" on null
-Attempt to assign property "y" on null
+Error: Attempt to assign property "y" on null
+Error: Attempt to assign property "y" on null

@@ -18,16 +18,16 @@ function test2($o) {
 try {
     test1(null);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     test2(null);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Attempt to assign property "x" on null
-Attempt to assign property "x" on null
+Error: Attempt to assign property "x" on null
+Error: Attempt to assign property "x" on null
