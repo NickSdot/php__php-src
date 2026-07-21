@@ -50,7 +50,7 @@ foreach($files_arr as $file) {
   try {
     var_dump( is_executable($file) );
   } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
   }
   $counter++;
   clearstatcache();

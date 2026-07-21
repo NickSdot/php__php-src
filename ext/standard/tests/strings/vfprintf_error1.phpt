@@ -17,12 +17,12 @@ $extra_arg = 10;
 try {
     var_dump( vfprintf( $fp, $format, $args, $extra_arg ) );
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump( vfprintf( $fp, "Foo %d", array(6), "bar" ) );
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 // Close handle
@@ -38,5 +38,5 @@ unlink( $file );
 ?>
 --EXPECT--
 -- Testing vfprintf() function with more than expected no. of arguments --
-vfprintf() expects exactly 3 arguments, 4 given
-vfprintf() expects exactly 3 arguments, 4 given
+ArgumentCountError: vfprintf() expects exactly 3 arguments, 4 given
+ArgumentCountError: vfprintf() expects exactly 3 arguments, 4 given

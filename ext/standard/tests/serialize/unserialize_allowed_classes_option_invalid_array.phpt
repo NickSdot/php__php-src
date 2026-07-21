@@ -11,42 +11,42 @@ $s = serialize($z);
 try {
     unserialize($s, ["allowed_classes" => [null]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [false]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [true]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [42]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [15.2]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [[]]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [STDERR]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => [new stdClass]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
