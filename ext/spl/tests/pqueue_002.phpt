@@ -18,25 +18,25 @@ try {
     $h->insert(3, 1);
     echo "inserted 3\n";
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $h->insert(4, 1);
     echo "inserted 4\n";
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     var_dump($h->extract());
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($h->extract());
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "Recovering..\n";
@@ -45,20 +45,20 @@ $h->recoverFromCorruption();
 try {
     var_dump($h->extract());
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($h->extract());
 } catch(Exception $e) {
-    echo "Exception: ".$e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
 inserted 1
 Exception: foo
-Exception: Heap is corrupted, heap properties are no longer ensured.
-Exception: Heap is corrupted, heap properties are no longer ensured.
-Exception: Heap is corrupted, heap properties are no longer ensured.
+RuntimeException: Heap is corrupted, heap properties are no longer ensured.
+RuntimeException: Heap is corrupted, heap properties are no longer ensured.
+RuntimeException: Heap is corrupted, heap properties are no longer ensured.
 Recovering..
 int(1)
 int(2)

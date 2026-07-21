@@ -8,7 +8,7 @@ $ao = new ArrayObject();
 try {
     $ao->uasort('not_a_valid_function');
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

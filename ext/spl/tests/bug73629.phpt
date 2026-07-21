@@ -6,13 +6,13 @@ $q = new SplQueue();
 try {
     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_FIFO);
 } catch (Exception $e) {
-    echo 'unexpected exception: ' . $e->getMessage() . "\n";
+    echo 'unexpected: ', $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $q->setIteratorMode(SplDoublyLinkedList::IT_MODE_LIFO);
 } catch (Exception $e) {
-    echo 'expected exception: ' . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-expected exception: Iterators' LIFO/FIFO modes for SplStack/SplQueue objects are frozen
+RuntimeException: Iterators' LIFO/FIFO modes for SplStack/SplQueue objects are frozen

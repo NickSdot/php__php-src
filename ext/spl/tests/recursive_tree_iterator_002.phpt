@@ -7,8 +7,8 @@ error_reporting=E_ALL&~E_NOTICE
 try {
     new RecursiveTreeIterator();
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-RecursiveTreeIterator::__construct() expects at least 1 argument, 0 given
+ArgumentCountError: RecursiveTreeIterator::__construct() expects at least 1 argument, 0 given

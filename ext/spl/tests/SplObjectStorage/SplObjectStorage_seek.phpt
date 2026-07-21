@@ -25,12 +25,12 @@ echo "--- Error cases ---\n";
 try {
     $storage->seek(-1);
 } catch (OutOfBoundsException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $storage->seek(5);
 } catch (OutOfBoundsException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 var_dump($storage->key());
@@ -76,14 +76,14 @@ foreach (range(0, 2) as $index) {
 try {
     $storage->seek(3);
 } catch (OutOfBoundsException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
 --- Error cases ---
-Seek position -1 is out of range
-Seek position 5 is out of range
+OutOfBoundsException: Seek position -1 is out of range
+OutOfBoundsException: Seek position 5 is out of range
 int(0)
 object(Test)#1 (1) {
   ["marker"]=>
@@ -136,4 +136,4 @@ object(Test)#5 (1) {
   ["marker"]=>
   string(1) "e"
 }
-Seek position 3 is out of range
+OutOfBoundsException: Seek position 3 is out of range
