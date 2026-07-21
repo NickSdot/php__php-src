@@ -5,19 +5,19 @@ stream_filter_register() and invalid arguments
 try {
     stream_filter_register("", "");
 } catch (ValueError $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     stream_filter_register("test", "");
 } catch (ValueError $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     stream_filter_register("", "test");
 } catch (ValueError $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 var_dump(stream_filter_register("------", "nonexistentclass"));
@@ -25,8 +25,8 @@ var_dump(stream_filter_register("------", "nonexistentclass"));
 echo "Done\n";
 ?>
 --EXPECT--
-stream_filter_register(): Argument #1 ($filter_name) must be a non-empty string
-stream_filter_register(): Argument #2 ($class) must be a non-empty string
-stream_filter_register(): Argument #1 ($filter_name) must be a non-empty string
+ValueError: stream_filter_register(): Argument #1 ($filter_name) must be a non-empty string
+ValueError: stream_filter_register(): Argument #2 ($class) must be a non-empty string
+ValueError: stream_filter_register(): Argument #1 ($filter_name) must be a non-empty string
 bool(true)
 Done

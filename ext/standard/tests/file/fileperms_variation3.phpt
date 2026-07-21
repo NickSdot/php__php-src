@@ -38,7 +38,7 @@ foreach($files_arr as $file) {
   try {
     var_dump( fileperms( $file_path."/".$file ) );
   } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
   }
   clearstatcache();
   $count++;

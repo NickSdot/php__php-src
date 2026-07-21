@@ -7,8 +7,8 @@ foreach ($options as $k => &$v) {}
 try {
     request_parse_body($options);
 } catch (Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Request does not provide a content type
+RequestParseBodyException: Request does not provide a content type

@@ -11,32 +11,32 @@ $s = serialize($z);
 try {
     unserialize($s, ["allowed_classes" => [""]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => ["245blerg"]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => ["  whitespace  "]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => ["name\nwith whitespace"]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => ['$dollars']]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unserialize($s, ["allowed_classes" => ["have\0nul_byte"]]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

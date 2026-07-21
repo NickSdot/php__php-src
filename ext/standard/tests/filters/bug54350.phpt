@@ -10,7 +10,7 @@ class user_filter extends php_user_filter {
         try {
             fclose($this->stream);
         } catch (TypeError $e) {
-            echo $e->getMessage(), "\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
         return 0;
     }
@@ -23,4 +23,4 @@ fwrite($fd, "foo");
 ?>
 --EXPECTF--
 Warning: fclose(): cannot close the provided stream, as it must not be manually closed in %s on line %d
-fclose(): Argument #1 ($stream) must be an open stream resource
+TypeError: fclose(): Argument #1 ($stream) must be an open stream resource

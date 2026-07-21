@@ -17,19 +17,19 @@ var_dump($watcher->isActive());
 try {
     $watcher->remove();
 } catch (Io\Poll\InactiveWatcherException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $watcher->modifyEvents([Io\Poll\Event::Write]);
 } catch (Io\Poll\InactiveWatcherException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "done\n";
 ?>
 --EXPECT--
 bool(false)
-Cannot remove inactive watcher
-Cannot modify inactive watcher
+Io\Poll\InactiveWatcherException: Cannot remove inactive watcher
+Io\Poll\InactiveWatcherException: Cannot modify inactive watcher
 done

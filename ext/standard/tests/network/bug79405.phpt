@@ -6,14 +6,14 @@ $host = "localhost\0.example.com";
 try {
 	var_dump(gethostbyname($host));
 } catch(Error $e) {
-	print $e->getMessage()."\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
 var_dump(gethostbynamel($host));
 } catch(Error $e) {
-	print $e->getMessage()."\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-gethostbyname(): Argument #1 ($hostname) must not contain any null bytes
-gethostbynamel(): Argument #1 ($hostname) must not contain any null bytes
+ValueError: gethostbyname(): Argument #1 ($hostname) must not contain any null bytes
+ValueError: gethostbynamel(): Argument #1 ($hostname) must not contain any null bytes

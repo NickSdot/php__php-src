@@ -10,9 +10,9 @@ try {
         ]
     ]);
 } catch (\ValueError $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Stream error handling options cannot be set on the default context
+ValueError: Stream error handling options cannot be set on the default context
