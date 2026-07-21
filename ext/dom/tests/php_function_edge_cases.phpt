@@ -13,15 +13,15 @@ $xpath->registerPHPFunctions();
 try {
     $xpath->query("//a[php:function(3)]");
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $xpath->query("//a[php:function()]");
 } catch (Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Handler name must be a string
-Function name must be passed as the first argument
+TypeError: Handler name must be a string
+Error: Function name must be passed as the first argument

@@ -10,20 +10,20 @@ $dom = Dom\HTMLDocument::createEmpty();
 try {
     $dom->append("bar");
 } catch (DOMException $e) {
-    echo "Exception: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $dom->append($dom->createTextNode("bar"));
 } catch (DOMException $e) {
-    echo "Exception: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $text = $dom->createTextNode("bar");
 try {
     $dom->append($text);
 } catch (DOMException $e) {
-    echo "Exception: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 var_dump($text->parentNode);
@@ -34,14 +34,14 @@ $text = $element->appendChild($dom->createTextNode("text"));
 try {
     $dom->append($text);
 } catch (DOMException $e) {
-    echo "Exception: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Exception: Cannot insert text as a child of a document
-Exception: Cannot insert text as a child of a document
-Exception: Cannot insert text as a child of a document
+DOMException: Cannot insert text as a child of a document
+DOMException: Cannot insert text as a child of a document
+DOMException: Cannot insert text as a child of a document
 NULL
 string(3) "bar"
-Exception: Cannot insert text as a child of a document
+DOMException: Cannot insert text as a child of a document

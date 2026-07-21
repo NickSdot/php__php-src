@@ -11,8 +11,8 @@ $doctype = new DOMDocumentType();
 try {
     $publicId = $doctype->publicId;
 } catch (DOMException $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Invalid State Error
+DOMException: Invalid State Error

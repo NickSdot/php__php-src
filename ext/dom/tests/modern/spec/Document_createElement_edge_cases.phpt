@@ -9,15 +9,15 @@ $dom = Dom\HTMLDocument::createEmpty();
 try {
     $dom->createElement('');
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $dom->createElement('$');
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Invalid Character Error
-Invalid Character Error
+DOMException: Invalid Character Error
+DOMException: Invalid Character Error

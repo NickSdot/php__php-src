@@ -11,8 +11,8 @@ $doc->appendChild($doc->createElement('container'));
 try {
     $doc->documentElement->setAttributeNodeNS($doc);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-DOMElement::setAttributeNodeNS(): Argument #1 ($attr) must be of type DOMAttr, DOMDocument given
+TypeError: DOMElement::setAttributeNodeNS(): Argument #1 ($attr) must be of type DOMAttr, DOMDocument given

@@ -12,9 +12,9 @@ $child = $comment->nextSibling;
 try {
     $comment->removeChild($child);
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Not Found Error
+DOMException: Not Found Error

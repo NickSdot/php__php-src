@@ -9,21 +9,21 @@ $dom = Dom\XMLDocument::createEmpty();
 try {
     $dom->implementation->createDocumentType("invalid name", "public", "system");
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $dom->implementation->createDocumentType("", "public", "system");
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $dom->implementation->createDocumentType("@", "", "");
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Namespace Error
-Namespace Error
-Namespace Error
+DOMException: Namespace Error
+DOMException: Namespace Error
+DOMException: Namespace Error

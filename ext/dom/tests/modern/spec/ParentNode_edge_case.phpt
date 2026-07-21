@@ -10,9 +10,9 @@ $container = $dom->createElement('container');
 try {
     $container->append($dom);
 } catch (DOMException $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Hierarchy Request Error
+DOMException: Hierarchy Request Error
