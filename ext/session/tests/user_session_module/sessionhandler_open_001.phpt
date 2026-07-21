@@ -11,33 +11,33 @@ $x = new SessionHandler;
 try {
     $x->open('','');
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     $x->open('','');
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     $x->open('','');
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     $x->open('','');
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 print "Done!\n";
 
 ?>
 --EXPECT--
-Session is not active
-Session is not active
-Session is not active
-Session is not active
+Error: Session is not active
+Error: Session is not active
+Error: Session is not active
+Error: Session is not active
 Done!

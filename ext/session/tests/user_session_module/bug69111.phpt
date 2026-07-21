@@ -12,23 +12,23 @@ session_set_save_handler($sh);
 try {
     $sh->open('path', 'name');
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     $sh->write("foo", "bar");
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 try {
     $sh->read("");
 } catch (Error $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception::class, ': ', $exception->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Session is not active
-Session is not active
-Session is not active
+Error: Session is not active
+Error: Session is not active
+Error: Session is not active
