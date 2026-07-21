@@ -14,9 +14,9 @@ class CustomXMLWriter extends XMLWriter {
 try {
     CustomXMLWriter::toMemory();
 } catch (Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-nope
+Error: nope
