@@ -15,45 +15,45 @@ $sxe = new MySXE;
 try {
     var_dump($sxe->count());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->xpath(''));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->getDocNamespaces());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->children());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->attributes());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->registerXPathNamespace('', ''));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($sxe->foo);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
-SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
+Error: SimpleXMLElement is not properly initialized
