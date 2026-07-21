@@ -19,7 +19,7 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught in " . $e->getMessage() . "()\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try
@@ -28,7 +28,7 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught in " . $e->getMessage() . "()\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try
@@ -37,7 +37,7 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught in " . $e->getMessage() . "()\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try
@@ -46,11 +46,11 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught in " . $e->getMessage() . "()\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Caught in Test::offsetExists()
-Caught in Test::offsetGet()
-Caught in Test::offsetSet()
-Caught in Test::offsetUnset()
+Exception: Test::offsetExists
+Exception: Test::offsetGet
+Exception: Test::offsetSet
+Exception: Test::offsetUnset

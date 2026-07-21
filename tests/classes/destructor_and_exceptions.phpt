@@ -22,7 +22,7 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 class FatalException extends Exception
@@ -42,17 +42,17 @@ try
 }
 catch(Exception $e)
 {
-    echo "Caught Exception: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 catch(FatalException $e)
 {
-    echo "Caught FatalException: " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
 FailClass::__destruct
-Caught: FailClass
+Exception: FailClass
 FatalException::__construct
 FailClass::__destruct
-Caught Exception: FailClass
+Exception: FailClass
