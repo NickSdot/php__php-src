@@ -24,25 +24,25 @@ class Foo {
 try {
     (new Foo())->throwException();
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     Foo::staticThrowException();
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     throw true ? new Exception('Ternary true 1') : new Exception('Ternary true 2');
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     throw false ? new Exception('Ternary false 1') : new Exception('Ternary false 2');
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -50,7 +50,7 @@ try {
     $exception2 = new Exception('Coalesce non-null 2');
     throw $exception1 ?? $exception2;
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -58,27 +58,27 @@ try {
     $exception2 = new Exception('Coalesce null 2');
     throw $exception1 ?? $exception2;
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     throw $exception = new Exception('Assignment');
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $exception = null;
     throw $exception ??= new Exception('Coalesce assignment null');
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $exception = new Exception('Coalesce assignment non-null 1');
     throw $exception ??= new Exception('Coalesce assignment non-null 2');
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $andConditionalTest = function ($condition1, $condition2) {
@@ -90,39 +90,39 @@ $andConditionalTest = function ($condition1, $condition2) {
 try {
     $andConditionalTest(false, false);
 } catch(Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $andConditionalTest(false, true);
 } catch (Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $andConditionalTest(true, false);
 } catch (Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $andConditionalTest(true, true);
 } catch (Exception $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Not found
-Static not found
-Ternary true 1
-Ternary false 2
-Coalesce non-null 1
-Coalesce null 2
-Assignment
-Coalesce assignment null
-Coalesce assignment non-null 1
-And in conditional 2
-And in conditional 2
-And in conditional 2
-And in conditional 1
+Exception: Not found
+Exception: Static not found
+Exception: Ternary true 1
+Exception: Ternary false 2
+Exception: Coalesce non-null 1
+Exception: Coalesce null 2
+Exception: Assignment
+Exception: Coalesce assignment null
+Exception: Coalesce assignment non-null 1
+Exception: And in conditional 2
+Exception: And in conditional 2
+Exception: And in conditional 2
+Exception: And in conditional 1

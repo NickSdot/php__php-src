@@ -26,7 +26,7 @@ class Proxy
         }
         catch(Exception $e)
         {
-            echo 'Caught: '.$e->getMessage()."\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 
@@ -39,7 +39,7 @@ class Proxy
         }
         catch(Exception $e)
         {
-            echo 'Caught: '.$e->getMessage()."\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 
@@ -52,7 +52,7 @@ class Proxy
         }
         catch(Exception $e)
         {
-            echo 'Caught: '.$e->getMessage()."\n";
+            echo $e::class, ': ', $e->getMessage(), PHP_EOL;
         }
     }
 }
@@ -64,6 +64,6 @@ $p->callTwo();
 $p->callThree();
 ?>
 --EXPECT--
-Caught: NONE
-Caught: NONE
-Caught: NONE
+Exception: NONE
+Exception: NONE
+Exception: NONE

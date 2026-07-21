@@ -10,8 +10,8 @@ $gen = gen();
 try {
     $gen->send($gen);
 } catch (Throwable $e) {
-    echo $e->getMessage() . "\n";	
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;	
 }
 ?>
 --EXPECT--
-Cannot resume an already running generator
+Error: Cannot resume an already running generator

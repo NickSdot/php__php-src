@@ -17,16 +17,16 @@ var_dump($test->_prop);
 try {
     var_dump($test->prop);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(isset($test->prop));
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
 int(42)
-Cannot read from set-only virtual property Test::$prop
-Cannot read from set-only virtual property Test::$prop
+Error: Cannot read from set-only virtual property Test::$prop
+Error: Cannot read from set-only virtual property Test::$prop

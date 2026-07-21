@@ -8,9 +8,9 @@ enum Foo {}
 try {
     (new \ReflectionClass(Foo::class))->newInstanceWithoutConstructor();
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot instantiate enum Foo
+Error: Cannot instantiate enum Foo

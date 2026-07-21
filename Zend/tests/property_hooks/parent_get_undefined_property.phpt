@@ -17,9 +17,9 @@ $c = new C();
 try {
     var_dump($c->prop);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Undefined property P::$prop
+Error: Undefined property P::$prop

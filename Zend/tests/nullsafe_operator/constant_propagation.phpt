@@ -8,9 +8,9 @@ class Bar { const FOO = "foo"; }
 try {
     Bar::FOO?->length();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Call to a member function length() on string
+Error: Call to a member function length() on string

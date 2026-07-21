@@ -19,7 +19,7 @@ try {
    var_dump(foo("para"));
 } catch (Exception $e) {
     "caught exception" . PHP_EOL;
-    var_dump($e->getMessage());
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

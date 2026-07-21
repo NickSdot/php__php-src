@@ -15,9 +15,9 @@ $y = 5;
 try {
     $test->x =& $y;
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Foobar
+Exception: Foobar

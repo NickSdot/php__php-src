@@ -11,9 +11,9 @@ $gen = gen();
 try {
     $gen->prop = new stdClass;
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot create dynamic property Generator::$prop
+Error: Cannot create dynamic property Generator::$prop

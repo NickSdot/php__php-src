@@ -8,8 +8,8 @@ function test() {
 try {
     test();
 } catch (TypeError $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Cannot access offset of type stdClass on array
+TypeError: Cannot access offset of type stdClass on array

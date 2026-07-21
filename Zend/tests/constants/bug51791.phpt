@@ -9,9 +9,9 @@ class A  {
 try {
     constant('A::B1');
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Undefined constant A::B1
+Error: Undefined constant A::B1

@@ -20,7 +20,7 @@ $a = new A();
 try {
     $a->prop = new B();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $a = new A();
@@ -28,10 +28,10 @@ $a->prop = '';
 try {
     $a->prop = new B();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Object was released while assigning to property A::$prop
-Object was released while assigning to property A::$prop
+Error: Object was released while assigning to property A::$prop
+Error: Object was released while assigning to property A::$prop

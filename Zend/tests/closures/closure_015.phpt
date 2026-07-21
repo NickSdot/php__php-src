@@ -7,15 +7,15 @@ $x = function() { return 1; };
 try {
     print (string) $x;
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     print $x;
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Object of class Closure could not be converted to string
-Object of class Closure could not be converted to string
+Error: Object of class Closure could not be converted to string
+Error: Object of class Closure could not be converted to string

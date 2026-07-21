@@ -19,9 +19,9 @@ $b = new B();
 try {
     var_dump($b->prop);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-A::$prop::get() expects exactly 0 arguments, 1 given
+ArgumentCountError: A::$prop::get() expects exactly 0 arguments, 1 given

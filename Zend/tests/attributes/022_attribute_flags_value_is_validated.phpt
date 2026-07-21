@@ -12,9 +12,9 @@ class Foo { }
 try {
     var_dump((new ReflectionClass(Foo::class))->getAttributes()[0]->newInstance());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Invalid attribute flags specified
+Error: Invalid attribute flags specified

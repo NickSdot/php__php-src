@@ -17,14 +17,14 @@ $x = new Foo;
 try {
     $x->test1();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     $x->test2();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Non-static method Foo::bar() cannot be called statically
-Non-static method Foo::bar() cannot be called statically
+Error: Non-static method Foo::bar() cannot be called statically
+Error: Non-static method Foo::bar() cannot be called statically
