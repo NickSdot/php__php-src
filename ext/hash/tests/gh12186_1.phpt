@@ -9,9 +9,9 @@ hash_final($c);
 try {
     hash_copy($c);
 } catch (Throwable $ex) {
-    echo $ex->getMessage() . "\n";
+    echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECTF--
-hash_copy(): Argument #1 ($context) must be a valid, non-finalized HashContext
+TypeError: hash_copy(): Argument #1 ($context) must be a valid, non-finalized HashContext
