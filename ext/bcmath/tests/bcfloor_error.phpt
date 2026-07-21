@@ -7,15 +7,15 @@ bcmath
 try {
     bcfloor('hoge');
 } catch (Throwable $e) {
-    echo $e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     bcfloor('0.00.1');
 } catch (Throwable $e) {
-    echo $e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-bcfloor(): Argument #1 ($num) is not well-formed
-bcfloor(): Argument #1 ($num) is not well-formed
+ValueError: bcfloor(): Argument #1 ($num) is not well-formed
+ValueError: bcfloor(): Argument #1 ($num) is not well-formed

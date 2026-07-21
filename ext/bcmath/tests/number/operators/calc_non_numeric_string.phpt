@@ -9,43 +9,43 @@ $num = new BcMath\Number(100);
 try {
     $num + 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $num - 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $num * 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $num / 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $num % 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     $num ** 'a';
 } catch (Error $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Right string operand cannot be converted to BcMath\Number
-Right string operand cannot be converted to BcMath\Number
-Right string operand cannot be converted to BcMath\Number
-Right string operand cannot be converted to BcMath\Number
-Right string operand cannot be converted to BcMath\Number
-Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number
+ValueError: Right string operand cannot be converted to BcMath\Number

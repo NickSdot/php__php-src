@@ -7,15 +7,15 @@ bcmath
 try {
     bcround('hoge');
 } catch (Throwable $e) {
-    echo $e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     bcround('0.00.1');
 } catch (Throwable $e) {
-    echo $e->getMessage()."\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-bcround(): Argument #1 ($num) is not well-formed
-bcround(): Argument #1 ($num) is not well-formed
+ValueError: bcround(): Argument #1 ($num) is not well-formed
+ValueError: bcround(): Argument #1 ($num) is not well-formed
