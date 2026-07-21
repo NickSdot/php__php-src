@@ -13,7 +13,7 @@ $extra_arg = 99;
 try {
     new DateTimeZone($timezone, $extra_arg);
 } catch (ArgumentCountError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

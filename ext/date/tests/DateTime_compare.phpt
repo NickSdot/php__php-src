@@ -19,25 +19,25 @@ var_dump($DT < $DTI);
 try {
 	var_dump($DT < $MDT);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($MDT < $DT);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($DTI < $MDT);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($MDT < $DTI);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

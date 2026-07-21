@@ -23,7 +23,7 @@ foreach( $propertySets as $propertySet )
 		$d = DateTime::__set_state( $propertySet );
 		echo "OK\n";
 	} catch (\Error $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 ?>

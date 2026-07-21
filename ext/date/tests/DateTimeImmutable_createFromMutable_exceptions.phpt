@@ -16,7 +16,7 @@ $i = new MyDateTime();
 try {
 	$m = DateTimeImmutable::createFromMutable( $i );
 } catch (\DateObjectError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

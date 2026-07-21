@@ -21,7 +21,7 @@ foreach ($strings as $string)
 	try {
 		$tz = new \DateTimeZone($string);
 	} catch (DateInvalidTimeZoneException $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 
 	echo "\n\n";
@@ -70,4 +70,3 @@ Parsing 'UTC xx':
 Warning: timezone_open(): Unknown or bad timezone (UTC xx) in %sbug78139.php on line %d
 bool(false)
 DateInvalidTimeZoneException: DateTimeZone::__construct(): Unknown or bad timezone (UTC xx)
-

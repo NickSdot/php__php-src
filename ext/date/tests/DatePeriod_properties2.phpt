@@ -20,20 +20,20 @@ foreach ($properties as $property) {
     try {
         $period->$property = "new";
     } catch (Error $e) {
-        echo $e::class, ': ', $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 
     try {
         $period->$property[] = "extra";
     } catch (Error $e) {
-        echo $e::class, ': ', $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 
 try {
     $period->start->modify("+1 hour");
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

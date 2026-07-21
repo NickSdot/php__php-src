@@ -23,13 +23,13 @@ try {
     $d = new _d;
     var_dump($d->format("Y-m-d H:i:s"));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new DateTime("1am todax");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $t = new DateTimeZone("UTC");
@@ -39,25 +39,25 @@ try {
     $t = new _t;
     var_dump($t->getName());
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new DateTimeZone("GottaFindThisOne");
 } catch (DateInvalidTimeZoneException $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $p = new _p;
 try {
     var_dump($p->getStartDate());
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($p->getDateInterval());
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "DONE\n";

@@ -7,7 +7,7 @@ $serialized = 'O:12:"DateTimeZone":2:{s:13:"timezone_type";i:3;s:8:"timezone";s:
 try {
 	$tz = unserialize($serialized);
 } catch (Throwable $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

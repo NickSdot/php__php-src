@@ -7,13 +7,13 @@ date_default_timezone_set('Europe/Oslo');
 try {
     $dp = new DatePeriod('2D');
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     DatePeriod::createFromISO8601String('2D');
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $begin = new DateTime( "2008-07-20T22:44:53+0200" );

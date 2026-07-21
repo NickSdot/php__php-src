@@ -10,13 +10,13 @@ var_dump(MyDatePeriod::createFromISO8601String("R4/2012-07-01T00:00:00Z/P7D"));
 try {
     MyDatePeriod::createFromISO8601String("R4/2012-07-01T00:/P7D");
 } catch (DateMalformedPeriodStringException $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDatePeriod::createFromISO8601String("R4/2012-07-01T00:00:00Z");
 } catch (DateMalformedPeriodStringException $e) {
-    echo $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
@@ -65,5 +65,5 @@ object(MyDatePeriod)#1 (7) {
   ["include_end_date"]=>
   bool(false)
 }
-Unknown or bad format (R4/2012-07-01T00:/P7D)
-DatePeriod::createFromISO8601String(): ISO interval must contain an interval, "R4/2012-07-01T00:00:00Z" given
+DateMalformedPeriodStringException: Unknown or bad format (R4/2012-07-01T00:/P7D)
+DateMalformedPeriodStringException: DatePeriod::createFromISO8601String(): ISO interval must contain an interval, "R4/2012-07-01T00:00:00Z" given

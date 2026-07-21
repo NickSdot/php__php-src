@@ -35,7 +35,7 @@ var_dump($now->add($e));
 try {
 	var_dump($now->sub($e));
 } catch (DateInvalidOperationException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

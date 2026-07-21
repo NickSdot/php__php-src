@@ -7,7 +7,7 @@ $datetime = new DateTimeImmutable;
 try {
 	var_dump($datetime->modify(''));
 } catch (DateMalformedStringException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

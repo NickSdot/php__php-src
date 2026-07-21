@@ -10,12 +10,12 @@ date.timezone=UTC
 try {
     var_dump(timezone_identifiers_list(DateTimeZone::PER_COUNTRY));
 } catch (\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(timezone_identifiers_list(DateTimeZone::PER_COUNTRY, 'A'));
 } catch (\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

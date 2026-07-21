@@ -9,7 +9,7 @@ function check(callable $c)
 	try {
 		var_dump($c());
 	} catch (\DateMalformedIntervalStringException $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 

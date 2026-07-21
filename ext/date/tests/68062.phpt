@@ -10,7 +10,7 @@ echo $tz->getOffset($dt), "\n";
 try {
     echo $tz->getOffset(1);
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

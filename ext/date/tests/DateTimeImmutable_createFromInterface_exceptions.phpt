@@ -22,14 +22,14 @@ $i = new MyDateTime();
 try {
 	$m = DateTimeImmutable::createFromInterface( $i );
 } catch (\DateObjectError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $i = new MyDateTimeImmutable();
 try {
 	$m = DateTimeImmutable::createFromInterface( $i );
 } catch (\DateObjectError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

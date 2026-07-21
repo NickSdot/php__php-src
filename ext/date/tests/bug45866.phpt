@@ -16,7 +16,7 @@ $date = new DateTime( '2009-07-29 16:44:23 Europe/London' );
 try {
 	$date->modify( "£61538461538 day" );
 } catch (DateMalformedStringException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 echo $date->format( 'r' ), "\n";
 ?>

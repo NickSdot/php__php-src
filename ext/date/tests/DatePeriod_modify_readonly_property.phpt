@@ -11,13 +11,13 @@ $dp = new \DatePeriod(
 try {
 	$dp->interval = "foo";
 } catch( \Error $e ) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	$foo =& $dp->interval;
 } catch( \Error $e ) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

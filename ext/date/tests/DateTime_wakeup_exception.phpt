@@ -18,7 +18,7 @@ foreach( $propertySets as $propertySet )
 		$d = unserialize($propertySet);
 		echo "OK? ", gettype($d), "\n";
 	} catch (\Error $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 ?>

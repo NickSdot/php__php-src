@@ -13,7 +13,7 @@ foreach ($formats as $format) {
 	try {
 		$d = DateInterval::createFromDateString($format);
 	} catch (DateMalformedIntervalStringException $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 

@@ -17,7 +17,7 @@ foreach ($timezones as [$timezone1, $timezone2]) {
 try {
 	var_dump(new DateTimeZone('Europe/Berlin') == new DateTimeZone('CET'));
 } catch (DateException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 function compare_timezones($timezone1, $timezone2)
@@ -45,7 +45,7 @@ $tz2 = new MyDateTimeZone();
 try {
     var_dump($tz1 == $tz2);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

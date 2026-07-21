@@ -21,7 +21,7 @@ foreach( $propertySets as $propertySet )
 		$d = DateTimeImmutable::__set_state( $propertySet );
 		echo "OK\n";
 	} catch (\Error $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 ?>

@@ -18,65 +18,65 @@ abstract class MyDateTimeImmutable extends DateTimeImmutable {
 try {
     MyDatePeriod::createFromISO8601String('R5');
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTime::createFromFormat('Y-m-d', '2025-01-01');
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTime::createFromImmutable(new DateTimeImmutable());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTime::createFromInterface(new DateTimeImmutable());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTime::createFromTimestamp(0);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTimeImmutable::createFromFormat('Y-m-d', '2025-01-01');
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTimeImmutable::createFromMutable(new DateTime());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTimeImmutable::createFromInterface(new DateTime());
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     MyDateTimeImmutable::createFromTimestamp(0);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Cannot instantiate abstract class MyDatePeriod
-Cannot instantiate abstract class MyDateTime
-Cannot instantiate abstract class MyDateTime
-Cannot instantiate abstract class MyDateTime
-Cannot instantiate abstract class MyDateTime
-Cannot instantiate abstract class MyDateTimeImmutable
-Cannot instantiate abstract class MyDateTimeImmutable
-Cannot instantiate abstract class MyDateTimeImmutable
-Cannot instantiate abstract class MyDateTimeImmutable
+Error: Cannot instantiate abstract class MyDatePeriod
+Error: Cannot instantiate abstract class MyDateTime
+Error: Cannot instantiate abstract class MyDateTime
+Error: Cannot instantiate abstract class MyDateTime
+Error: Cannot instantiate abstract class MyDateTime
+Error: Cannot instantiate abstract class MyDateTimeImmutable
+Error: Cannot instantiate abstract class MyDateTimeImmutable
+Error: Cannot instantiate abstract class MyDateTimeImmutable
+Error: Cannot instantiate abstract class MyDateTimeImmutable
