@@ -16,7 +16,7 @@ $r = new ReflectionProperty('A', 'a');
 try {
     $r->isReadable(null, new A);
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 $rc = new ReflectionClass('A');

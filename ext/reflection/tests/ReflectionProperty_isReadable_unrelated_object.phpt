@@ -19,7 +19,7 @@ function test($obj) {
     try {
         var_dump($r->isReadable(null, $obj));
     } catch (Exception $e) {
-        echo $e::class, ': ', $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 

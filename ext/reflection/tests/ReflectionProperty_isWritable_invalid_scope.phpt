@@ -12,7 +12,7 @@ $r = new ReflectionProperty('A', 'prop');
 try {
     $r->isWritable('B', null);
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
