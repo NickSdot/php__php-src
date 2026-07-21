@@ -6,12 +6,12 @@ $timezone = "Europe/Zurich\0Foo";
 try {
     var_dump(timezone_open($timezone));
 } catch (\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(new DateTimeZone($timezone));
 } catch (\ValueError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

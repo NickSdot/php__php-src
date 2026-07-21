@@ -5,7 +5,7 @@ Test DateInterval::createFromDateString() function : nonsense data
 try {
 	$i = DateInterval::createFromDateString("foobar");
 } catch (DateMalformedIntervalStringException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

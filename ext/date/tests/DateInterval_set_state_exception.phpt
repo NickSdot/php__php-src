@@ -13,7 +13,7 @@ foreach( $propertySets as $propertySet )
 		$d = DateInterval::__set_state( [ 'date_string' => $propertySet ] );
 		echo "OK\n";
 	} catch (\Error $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 ?>

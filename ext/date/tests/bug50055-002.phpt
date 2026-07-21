@@ -12,7 +12,7 @@ echo date_add($da1, $i)->format( DateTime::ISO8601 ), "\n";
 try {
 	$ds1->sub($i);
 } catch (DateInvalidOperationException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 //negative DateInterval
@@ -24,7 +24,7 @@ echo date_add($da2, $i2)->format( DateTime::ISO8601 ), "\n";//works
 try {
 	$ds2->sub($i);
 } catch (DateInvalidOperationException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

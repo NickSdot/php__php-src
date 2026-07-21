@@ -18,25 +18,25 @@ $dtzUTC = new DateTimeZone("-5:00");
 try {
 	var_dump($mdtz < $dtzID);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($dtzID < $mdtz);
 } catch (\DateObjectError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($dtzID < $dtzAbbr);
 } catch (\DateException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
 	var_dump($dtzAbbr < $dtzUTC);
 } catch (\DateException $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

@@ -21,7 +21,7 @@ foreach($intervals as $iv) {
     }
     catch ( \DateMalformedIntervalStringException $e )
     {
-        echo $e::class, ': ', $e->getMessage(), "\n";
+        echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 }
 echo "==DONE==\n";

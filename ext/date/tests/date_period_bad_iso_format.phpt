@@ -6,37 +6,37 @@ Test bad ISO date formats passed to DatePeriod constructor
 try {
     new DatePeriod("R4");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     DatePeriod::createFromISO8601String("R4");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new DatePeriod("R4/2012-07-01T00:00:00Z");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     DatePeriod::createFromISO8601String("R4/2012-07-01T00:00:00Z");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     new DatePeriod("2012-07-01T00:00:00Z/P7D");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
     DatePeriod::createFromISO8601String("2012-07-01T00:00:00Z/P7D");
 } catch (Exception $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

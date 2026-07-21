@@ -17,7 +17,7 @@ var_dump( $i->format('Y-m-d H:i:s') === $current );
 try {
     DateTime::createFromImmutable( date_create( $current ) );
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

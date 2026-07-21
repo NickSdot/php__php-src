@@ -11,7 +11,7 @@ echo "\n-- Testing mktime() function with Zero arguments --\n";
 try {
     var_dump( mktime() );
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 echo "\n-- Testing mktime() function with more than expected no. of arguments --\n";
@@ -25,7 +25,7 @@ $extra_arg = 10;
 try {
     var_dump( mktime($hour, $minute, $sec, $month, $day, $year, $extra_arg) );
 } catch (TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

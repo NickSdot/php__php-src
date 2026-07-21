@@ -18,7 +18,7 @@ try {
 	$dp = new DatePeriod("2023-01-13 17:24:58", DateInterval::createFromDateString("tomorrow"), 4);
 	echo "OK\n";
 } catch (\TypeError $e) {
-	echo $e::class, ': ', $e->getMessage(), "\n";
+	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECTF--

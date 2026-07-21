@@ -23,7 +23,7 @@ foreach ($aTz as $sTz) {
     try {
         $oDateTime = new DateTime($sDate);
     } catch (Exception $oException) {
-        var_dump($oException->getMessage());
+        echo $oException::class, ': ', $oException->getMessage(), PHP_EOL;
         print_r(DateTime::getLastErrors());
     }
 }

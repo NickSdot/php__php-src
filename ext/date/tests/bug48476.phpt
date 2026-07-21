@@ -13,14 +13,14 @@ $o = new MyDateTime;
 try {
     var_dump($o->format("d"));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 $x = clone $o;
 
 try {
     var_dump($x->format("d"));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 clone $o;
@@ -28,7 +28,7 @@ clone $o;
 try {
     var_dump(timezone_location_get(clone new MyDateTimezone));
 } catch (Error $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

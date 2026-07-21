@@ -11,7 +11,7 @@ foreach ( [ '+99:60', '+99:62', '-99:62', '-99:60', '+9960', '-9960', '+9959', '
 		$d = new DateTimeZone($test);
 		echo $d->getName(), "\n";
 	} catch (Exception $e) {
-		echo $e::class, ': ', $e->getMessage(), "\n";
+		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 }
 
