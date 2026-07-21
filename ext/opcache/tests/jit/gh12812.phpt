@@ -12,12 +12,12 @@ $dimension = '7';
 try {
     var_dump($container['7']);
 } catch (\Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($container[$dimension]);
 } catch (\Throwable $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>

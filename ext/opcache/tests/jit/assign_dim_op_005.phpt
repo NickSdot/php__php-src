@@ -18,14 +18,14 @@ function test2() {
 try {
     test1();
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     test2();
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-Undefined variable $undef
-Undefined variable $a
+Exception: Undefined variable $undef
+Exception: Undefined variable $a

@@ -33,12 +33,12 @@ var_dump(modNeg33(-125));
 try {
     var_dump(modNeg1(125));
 } catch (Throwable $e) {
-    echo "Exception " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump(mod0(125));
 } catch (Throwable $e) {
-    echo "Exception (" . get_class($e) . "): " . $e->getMessage() . "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
@@ -49,4 +49,4 @@ int(-29)
 int(26)
 int(-26)
 int(0)
-Exception (DivisionByZeroError): Modulo by zero
+DivisionByZeroError: Modulo by zero
