@@ -11,9 +11,9 @@ $it = new MyDirectoryIterator;
 try {
     $it->key();
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Object not initialized
+Error: Object not initialized

@@ -11,12 +11,12 @@ try {
         $a[] = new stdClass;
     }
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 print "ok\n";
 
 ?>
 --EXPECT--
-[] operator not supported for SplFixedArray
+Error: [] operator not supported for SplFixedArray
 ok

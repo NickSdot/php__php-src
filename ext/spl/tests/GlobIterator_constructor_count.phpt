@@ -7,8 +7,8 @@ $in = $rc->newInstanceWithoutConstructor();
 try {
     count($in);
 } catch (Error $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--
-GlobIterator is not initialized
+Error: GlobIterator is not initialized

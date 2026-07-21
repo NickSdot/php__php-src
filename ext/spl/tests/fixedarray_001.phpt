@@ -7,17 +7,17 @@ $a = new SplFixedArray(0);
 try {
     $a[0] = "value1";
 } catch (RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     var_dump($a["asdf"]);
 } catch (\TypeError $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 try {
     unset($a[-1]);
 } catch (RuntimeException $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 $a->setSize(10);
 
