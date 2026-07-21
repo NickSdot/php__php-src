@@ -7,7 +7,7 @@ pcntl
 try {
     pcntl_exec('cmd', ['-n', "value\0null\0byte"]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -17,7 +17,7 @@ try {
         ['var1' => 'value1', 'var2' => "value\0null\0byte"],
     );
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -27,7 +27,7 @@ try {
         ['var1' => 'value1', "key\0null\0byte" => "value2"],
     );
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

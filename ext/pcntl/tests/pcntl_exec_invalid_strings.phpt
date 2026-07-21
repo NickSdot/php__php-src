@@ -7,7 +7,7 @@ pcntl
 try {
     pcntl_exec('cmd', ['-n', new stdClass()]);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 try {
@@ -17,7 +17,7 @@ try {
         ['var1' => 'value1', 'var2' => new stdClass()],
     );
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
 --EXPECT--

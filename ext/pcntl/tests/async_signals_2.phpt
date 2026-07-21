@@ -22,9 +22,9 @@ try {
         array_fill(0, 360, 0)
     );
 } catch (Exception $e) {
-    echo $e->getMessage(), "\n";
+    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
 ?>
 --EXPECT--
-Alarm!
+Exception: Alarm!
