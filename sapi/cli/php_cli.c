@@ -42,6 +42,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
 
 #include <signal.h>
 #include <locale.h>
@@ -151,8 +154,217 @@ const opt_struct OPTIONS[] = {
 	/* Internal testing option -- may be changed or removed without notice,
 	 * including in patch releases. */
 	{16,  1, "repeat"},
+	{17,  1, "test-fork-server"},
 	{'-', 0, NULL} /* end of args */
 };
+
+typedef struct {
+	char file[MAXPATHLEN];
+	size_t index;
+	const char *token;
+} php_cli_test_batch;
+
+typedef enum {
+	PHP_CLI_TEST_BATCH_ERROR = -1,
+	PHP_CLI_TEST_BATCH_CHILD,
+	PHP_CLI_TEST_BATCH_PARENT,
+	PHP_CLI_TEST_BATCH_DONE,
+} php_cli_test_batch_result;
+
+#if defined(HAVE_FORK) && !defined(ZTS)
+static volatile sig_atomic_t php_cli_test_child_pid;
+
+static void php_cli_test_batch_signal(int signal) /* {{{ */
+{
+	if (php_cli_test_child_pid > 0) {
+		kill(php_cli_test_child_pid, SIGKILL);
+	}
+	_exit(128 + signal);
+}
+/* }}} */
+#endif
+
+static bool php_cli_test_batch_init(php_cli_test_batch *batch, const char *token) /* {{{ */
+{
+	size_t token_length = strlen(token);
+
+	if (token_length == 0 || token_length > 64) {
+		fprintf(stderr, "Invalid test token length\n");
+		return false;
+	}
+	for (size_t i = 0; i < token_length; i++) {
+		if (!isalnum((unsigned char) token[i])) {
+			fprintf(stderr, "Invalid test token\n");
+			return false;
+		}
+	}
+
+	batch->token = token;
+	return true;
+}
+/* }}} */
+
+static int php_cli_test_batch_next(php_cli_test_batch *batch) /* {{{ */
+{
+	while (fgets(batch->file, sizeof(batch->file), stdin)) {
+		size_t length = strlen(batch->file);
+
+		while (length > 0 && (batch->file[length - 1] == '\n' || batch->file[length - 1] == '\r')) {
+			batch->file[--length] = '\0';
+		}
+		if (length == 0) {
+			continue;
+		}
+		if (length == sizeof(batch->file) - 1 && !feof(stdin)) {
+			fprintf(stderr, "Test path exceeds MAXPATHLEN\n");
+			return -1;
+		}
+		return 1;
+	}
+
+	return ferror(stdin) ? -1 : 0;
+}
+/* }}} */
+
+static void php_cli_test_batch_marker(
+	const php_cli_test_batch *batch,
+	char type,
+	int exit_status
+) /* {{{ */
+{
+	fputc('\0', stdout);
+	if (type == 'B') {
+		fprintf(stdout, "%s:B:%zu", batch->token, batch->index);
+	} else {
+		fprintf(stdout, "%s:E:%zu:%d", batch->token, batch->index, exit_status);
+	}
+	fputc('\0', stdout);
+	fflush(stdout);
+}
+/* }}} */
+
+#if defined(HAVE_FORK) && !defined(ZTS)
+static bool php_cli_test_batch_relay_output(int fd) /* {{{ */
+{
+	char buffer[8192];
+	ssize_t bytes_read;
+
+	while (true) {
+		bytes_read = read(fd, buffer, sizeof(buffer));
+		if (bytes_read > 0) {
+			if (fwrite(buffer, 1, bytes_read, stdout) != (size_t) bytes_read) {
+				return false;
+			}
+			fflush(stdout);
+			continue;
+		}
+		if (bytes_read < 0 && errno == EINTR) {
+			continue;
+		}
+		return bytes_read == 0;
+	}
+}
+/* }}} */
+#endif
+
+static php_cli_test_batch_result php_cli_test_batch_start(
+	php_cli_test_batch *batch,
+	char **script_file
+) /* {{{ */
+{
+#if !defined(HAVE_FORK) || defined(ZTS)
+	fprintf(stderr, "--test-fork-server requires a non-ZTS build with fork()\n");
+	return PHP_CLI_TEST_BATCH_ERROR;
+#else
+	int test_output[2];
+	int has_test = php_cli_test_batch_next(batch);
+
+	if (has_test < 0) {
+		fprintf(stderr, "Unable to read test path\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	if (has_test == 0) {
+		return PHP_CLI_TEST_BATCH_DONE;
+	}
+
+	*script_file = batch->file;
+	if (setenv("PATH_TRANSLATED", *script_file, 1) < 0
+			|| setenv("SCRIPT_FILENAME", *script_file, 1) < 0) {
+		fprintf(stderr, "Unable to set test environment\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	if (pipe(test_output) < 0) {
+		fprintf(stderr, "Unable to create test output pipe\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	php_cli_test_batch_marker(batch, 'B', 0);
+
+	pid_t test_pid = fork();
+	if (test_pid < 0) {
+		close(test_output[0]);
+		close(test_output[1]);
+		fprintf(stderr, "Unable to fork test process\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	if (test_pid > 0) {
+		int status;
+		pid_t waited;
+
+		close(test_output[1]);
+		php_cli_test_child_pid = test_pid;
+		bool output_relayed = php_cli_test_batch_relay_output(test_output[0]);
+		close(test_output[0]);
+		do {
+			waited = waitpid(test_pid, &status, 0);
+		} while (waited < 0 && errno == EINTR);
+		php_cli_test_child_pid = 0;
+
+		if (!output_relayed || waited < 0) {
+			fprintf(stderr, "Unable to collect test process output\n");
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
+
+		if (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+			fprintf(stderr, "Unexpected test process status\n");
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
+		int exit_status = WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status);
+		php_cli_test_batch_marker(batch, 'E', exit_status);
+		batch->index++;
+		return PHP_CLI_TEST_BATCH_PARENT;
+	}
+
+	close(test_output[0]);
+	if (dup2(test_output[1], STDOUT_FILENO) < 0
+			|| dup2(test_output[1], STDERR_FILENO) < 0) {
+		fprintf(stderr, "Unable to redirect test output\n");
+		close(test_output[1]);
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	close(test_output[1]);
+	php_cli_test_child_pid = 0;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGTERM, SIG_DFL);
+	php_child_init();
+
+	/* Match proc_open() with a closed write end: an empty pipe, not /dev/null. */
+	int test_input[2];
+	if (pipe(test_input) < 0) {
+		fprintf(stderr, "Unable to create test input pipe\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	close(test_input[1]);
+	if (dup2(test_input[0], STDIN_FILENO) < 0) {
+		fprintf(stderr, "Unable to redirect test input\n");
+		close(test_input[0]);
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	close(test_input[0]);
+
+	return PHP_CLI_TEST_BATCH_CHILD;
+#endif
+}
+/* }}} */
 
 static int module_name_cmp(Bucket *f, Bucket *s) /* {{{ */
 {
@@ -592,6 +804,11 @@ static int do_cli(int argc, char **argv) /* {{{ */
 	char *exec_direct = NULL, *exec_run = NULL, *exec_begin = NULL, *exec_end = NULL;
 	char *arg_free = NULL, **arg_excp = &arg_free;
 	char *script_file = NULL, *translated_path = NULL;
+	char *test_argv[2] = {NULL, NULL};
+	char *test_batch_token = NULL;
+	php_cli_test_batch test_batch = {0};
+	bool test_batch_complete = false;
+	bool test_batch_failed = false;
 	bool interactive = false;
 	const char *param_error = NULL;
 	bool hide_argv = false;
@@ -817,10 +1034,23 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			case 16:
 				num_repeats = atoi(php_optarg);
 				break;
+			case 17:
+				test_batch_token = php_optarg;
+				break;
 			default:
 				break;
 			}
 		}
+
+		if (test_batch_token && !php_cli_test_batch_init(&test_batch, test_batch_token)) {
+			param_error = "Unable to initialize test batch.\n";
+		}
+#if defined(HAVE_FORK) && !defined(ZTS)
+		if (test_batch.token) {
+			signal(SIGINT, php_cli_test_batch_signal);
+			signal(SIGTERM, php_cli_test_batch_signal);
+		}
+#endif
 
 		if (param_error) {
 			PUTS(param_error);
@@ -853,6 +1083,22 @@ static int do_cli(int argc, char **argv) /* {{{ */
 		}
 
 do_repeat:
+		if (test_batch.token) {
+			php_cli_test_batch_result result = php_cli_test_batch_start(&test_batch, &script_file);
+			if (result == PHP_CLI_TEST_BATCH_PARENT) {
+				goto do_repeat;
+			}
+			if (result == PHP_CLI_TEST_BATCH_DONE) {
+				test_batch_complete = true;
+				goto out;
+			}
+			if (result == PHP_CLI_TEST_BATCH_ERROR) {
+				EG(exit_status) = 1;
+				test_batch_failed = true;
+				goto out;
+			}
+		}
+
 		/* only set script_file if not set already and not in direct mode and not at end of parameter list */
 		if (argc > php_optind
 		  && !script_file
@@ -890,16 +1136,24 @@ do_repeat:
 
 		/* before registering argv to module exchange the *new* argv[0] */
 		/* we can achieve this without allocating more memory */
-		SG(request_info).argc = argc - php_optind + 1;
-		arg_excp = argv + php_optind - 1;
-		arg_free = argv[php_optind - 1];
 		SG(request_info).path_translated = translated_path ? translated_path : php_self;
-		argv[php_optind - 1] = php_self;
-		SG(request_info).argv = argv + php_optind - 1;
+		if (test_batch.token) {
+			test_argv[0] = php_self;
+			SG(request_info).argc = 1;
+			SG(request_info).argv = test_argv;
+		} else {
+			SG(request_info).argc = argc - php_optind + 1;
+			arg_excp = argv + php_optind - 1;
+			arg_free = argv[php_optind - 1];
+			argv[php_optind - 1] = php_self;
+			SG(request_info).argv = argv + php_optind - 1;
+		}
 		SG(server_context) = &context;
 
 		if (php_request_startup() == FAILURE) {
-			*arg_excp = arg_free;
+			if (!test_batch.token) {
+				*arg_excp = arg_free;
+			}
 			PUTS("Could not startup.\n");
 			goto err;
 		}
@@ -911,7 +1165,9 @@ do_repeat:
 			is_ps_title_available() == PS_TITLE_SUCCESS,
 			0, 0);
 
-		*arg_excp = arg_free; /* reconstruct argv */
+		if (!test_batch.token) {
+			*arg_excp = arg_free; /* reconstruct argv */
+		}
 
 		if (hide_argv) {
 			int i;
@@ -1153,6 +1409,10 @@ out:
 	if (translated_path) {
 		free(translated_path);
 		translated_path = NULL;
+	}
+	if (test_batch.token && (test_batch_complete || test_batch_failed || pid != getpid())) {
+		int exit_status = EG(exit_status);
+		return test_batch_complete ? 0 : exit_status;
 	}
 	if (context.mode == PHP_CLI_MODE_LINT && argc > php_optind && strcmp(argv[php_optind], "--")) {
 		script_file = NULL;
