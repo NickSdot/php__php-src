@@ -50,11 +50,64 @@ class PDOTest {
         return $db;
     }
 
-    static function skip() {
+    private static function getSkipCacheFile(): ?string {
+        $directory = getenv('TEST_PHP_SHARED_CACHE_DIR');
+        if (!is_string($directory) || !is_dir($directory)) {
+            return null;
+        }
+
+        $configuration = [
+            getenv('PDOTEST_DSN'),
+            getenv('PDOTEST_USER'),
+            getenv('PDOTEST_PASS'),
+            getenv('PDOTEST_ATTR'),
+        ];
+        return $directory . DIRECTORY_SEPARATOR . 'pdo-' . hash('sha256', serialize($configuration));
+    }
+
+    private static function connectOrSkip(): void {
         try {
-            $db = PDOTest::factory();
+            PDOTest::factory();
         } catch (PDOException $e) {
             die("skip " . $e->getMessage());
+        }
+    }
+
+    static function skip() {
+        $cacheFile = self::getSkipCacheFile();
+        if ($cacheFile === null) {
+            self::connectOrSkip();
+            return;
+        }
+
+        $cache = @fopen($cacheFile, 'c+');
+        if ($cache === false || !flock($cache, LOCK_EX)) {
+            if (is_resource($cache)) {
+                fclose($cache);
+            }
+            self::connectOrSkip();
+            return;
+        }
+
+        $cached = stream_get_contents($cache);
+        $reason = $cached !== '' ? @unserialize($cached, ['allowed_classes' => false]) : null;
+        if (!is_string($reason)) {
+            // Only failures are shared; successful checks still create their own connection.
+            try {
+                PDOTest::factory();
+            } catch (PDOException $e) {
+                $reason = $e->getMessage();
+                rewind($cache);
+                ftruncate($cache, 0);
+                fwrite($cache, serialize($reason));
+                fflush($cache);
+            }
+        }
+
+        flock($cache, LOCK_UN);
+        fclose($cache);
+        if (is_string($reason)) {
+            die("skip $reason");
         }
     }
 
