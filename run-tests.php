@@ -2163,15 +2163,17 @@ function create_parallel_worker_test_environment(array $env, int $workerId): arr
         return $env;
     }
 
-    $cacheDirectory = $env['TEST_PHP_SHARED_CACHE_DIR'] ?? null;
-    if ($cacheDirectory === null) {
-        return $env;
+    $cacheDirectory = $env['TEST_PHP_SHARED_CACHE_DIR'] ?? $env['TEMP'];
+    $randomStateFile = tempnam($cacheDirectory, 'php-openssl-random-state-');
+    if ($randomStateFile === false) {
+        error("Failed to create OpenSSL random state for worker $workerId");
     }
-
-    $randomStateFile = $cacheDirectory . DIRECTORY_SEPARATOR . "openssl-random-state-$workerId";
     if (file_put_contents($randomStateFile, random_bytes(1024)) !== 1024) {
         error("Failed to initialize OpenSSL random state for worker $workerId");
     }
+    register_shutdown_function(static function () use ($randomStateFile): void {
+        @unlink($randomStateFile);
+    });
     $env['RANDFILE'] = $randomStateFile;
     return $env;
 }
