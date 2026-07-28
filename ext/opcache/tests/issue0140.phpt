@@ -25,7 +25,6 @@ var_dump(is_readable(FILENAME));
 include(FILENAME);
 var_dump(filemtime(FILENAME));
 
-sleep(2);
 unlink(FILENAME);
 
 var_dump(is_readable(FILENAME));
