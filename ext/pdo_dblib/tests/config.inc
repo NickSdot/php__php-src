@@ -55,6 +55,13 @@ function getDbConnection(string $class = PDO::class, ?array $attributes = null) 
     return $db;
 }
 
+function skipIfNoDbConnection(): void {
+    $attributes = getenv('PDO_DBLIB_TEST_DSN') === false
+        ? [Pdo\Dblib::ATTR_CONNECTION_TIMEOUT => 1]
+        : null;
+    getDbConnection(PDO::class, $attributes);
+}
+
 function connectToDb() {
     [$dsn, $user, $pass] = getCredentials();
 

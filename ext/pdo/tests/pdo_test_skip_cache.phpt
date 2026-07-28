@@ -42,7 +42,7 @@ $helper = var_export($helperDirectory . '/pdo_test.inc', true);
 $code = "require $helper; PDOTest::skip();";
 $first = run_pdo_skip_check($code);
 
-$configuration = [$dsn, 'test', 'test', false];
+$configuration = [$dsn, 'test', 'test', false, getenv('PDOTEST_SKIP_ATTR')];
 $cacheFile = getenv('TEST_PHP_SHARED_CACHE_DIR')
     . DIRECTORY_SEPARATOR
     . 'pdo-'

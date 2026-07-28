@@ -18,24 +18,26 @@ if (getenv('PDOTEST_DSN') === false) {
 class PDOTest {
     // create an instance of the PDO driver, based on
     // the current environment
-    static function factory($classname = PDO::class, bool $useConnectMethod = false) {
+    static function factory($classname = PDO::class, bool $useConnectMethod = false, ?array $attributes = null) {
         $dsn = getenv('PDOTEST_DSN');
         $user = getenv('PDOTEST_USER');
         $pass = getenv('PDOTEST_PASS');
-        $attr = getenv('PDOTEST_ATTR');
-        if (is_string($attr) && strlen($attr)) {
-            $attr = unserialize($attr);
-        } else {
-            $attr = null;
+        if ($attributes === null) {
+            $attributes = getenv('PDOTEST_ATTR');
+            if (is_string($attributes) && strlen($attributes)) {
+                $attributes = unserialize($attributes);
+            } else {
+                $attributes = null;
+            }
         }
 
         if ($user === false) $user = NULL;
         if ($pass === false) $pass = NULL;
 
         if ($useConnectMethod) {
-            $db = $classname::connect($dsn, $user, $pass, $attr);
+            $db = $classname::connect($dsn, $user, $pass, $attributes);
         } else {
-            $db = new $classname($dsn, $user, $pass, $attr);
+            $db = new $classname($dsn, $user, $pass, $attributes);
         }
 
         if (!$db) {
@@ -61,13 +63,24 @@ class PDOTest {
             getenv('PDOTEST_USER'),
             getenv('PDOTEST_PASS'),
             getenv('PDOTEST_ATTR'),
+            getenv('PDOTEST_SKIP_ATTR'),
         ];
         return $directory . DIRECTORY_SEPARATOR . 'pdo-' . hash('sha256', serialize($configuration));
     }
 
+    static function factoryForSkip() {
+        $attributes = getenv('PDOTEST_SKIP_ATTR');
+        if (is_string($attributes) && strlen($attributes)) {
+            $attributes = unserialize($attributes);
+        } else {
+            $attributes = null;
+        }
+        return PDOTest::factory(PDO::class, false, $attributes);
+    }
+
     private static function connectOrSkip(): void {
         try {
-            PDOTest::factory();
+            self::factoryForSkip();
         } catch (PDOException $e) {
             die("skip " . $e->getMessage());
         }
@@ -94,7 +107,7 @@ class PDOTest {
         if (!is_string($reason)) {
             // Only failures are shared; successful checks still create their own connection.
             try {
-                PDOTest::factory();
+                self::factoryForSkip();
             } catch (PDOException $e) {
                 $reason = $e->getMessage();
                 rewind($cache);
