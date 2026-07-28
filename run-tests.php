@@ -1334,6 +1334,233 @@ function system_with_timeout(
     return $data;
 }
 
+final class TestForkServer
+{
+    /** @var resource */
+    private $process;
+    /** @var array<int, resource> */
+    private array $pipes = [];
+    private string $token;
+    private string $buffer = '';
+    private int $index = 0;
+    private bool $stopped = false;
+    private ?string $startupOutput = null;
+
+    public function __construct(string $command, array $env)
+    {
+        $this->token = bin2hex(random_bytes(16));
+        $descriptors = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['redirect', 1],
+        ];
+        $this->process = proc_open(
+            "exec $command --test-fork-server {$this->token}",
+            $descriptors,
+            $this->pipes,
+            TEST_PHP_SRCDIR,
+            $env,
+            ['suppress_errors' => true]
+        );
+        if (!is_resource($this->process)) {
+            throw new RuntimeException('Unable to start test fork server');
+        }
+        stream_set_blocking($this->pipes[1], false);
+    }
+
+    public function run(string $file, int $timeout): ?string
+    {
+        if ($this->stopped || fwrite($this->pipes[0], "$file\n") === false) {
+            $this->abort();
+            return null;
+        }
+        fflush($this->pipes[0]);
+
+        $beginMarker = "\0{$this->token}:B:{$this->index}\0";
+        $endMarker = "\0{$this->token}:E:{$this->index}:";
+        $deadline = microtime(true) + $timeout;
+
+        while (true) {
+            try {
+                $result = $this->extractResult($beginMarker, $endMarker);
+            } catch (UnexpectedValueException) {
+                $this->abort();
+                return null;
+            }
+            if ($result !== null) {
+                [$output, $status] = $result;
+                $this->index++;
+                if ($status > 128 && $status < 160) {
+                    $output .= "\nTermsig=" . ($status - 128) . "\n";
+                }
+                return $output;
+            }
+
+            $remaining = $deadline - microtime(true);
+            if ($remaining <= 0) {
+                $this->abort();
+                return "\n ** ERROR: process timed out **\n";
+            }
+
+            $read = [$this->pipes[1]];
+            $write = null;
+            $except = null;
+            $seconds = (int) $remaining;
+            $microseconds = (int) (($remaining - $seconds) * 1_000_000);
+            $ready = @stream_select($read, $write, $except, $seconds, $microseconds);
+            if ($ready === false) {
+                $this->abort();
+                return null;
+            }
+            if ($ready === 0) {
+                continue;
+            }
+
+            $chunk = fread($this->pipes[1], 8192);
+            if ($chunk === false || ($chunk === '' && feof($this->pipes[1]))) {
+                $this->abort();
+                return null;
+            }
+            $this->buffer .= $chunk;
+        }
+    }
+
+    /**
+     * @return null|array{string, int}
+     */
+    private function extractResult(string $beginMarker, string $endMarker): ?array
+    {
+        $begin = strpos($this->buffer, $beginMarker);
+        if ($begin === false) {
+            return null;
+        }
+
+        $outputStart = $begin + strlen($beginMarker);
+        $end = strpos($this->buffer, $endMarker, $outputStart);
+        if ($end === false) {
+            return null;
+        }
+
+        $statusStart = $end + strlen($endMarker);
+        $statusEnd = strpos($this->buffer, "\0", $statusStart);
+        if ($statusEnd === false) {
+            return null;
+        }
+
+        $status = substr($this->buffer, $statusStart, $statusEnd - $statusStart);
+        if (!ctype_digit($status)) {
+            throw new UnexpectedValueException('Invalid test fork server status');
+        }
+
+        $prefix = substr($this->buffer, 0, $begin);
+        if ($this->startupOutput === null) {
+            $this->startupOutput = $prefix;
+            $prefix = '';
+        }
+        $output = $this->startupOutput
+            . $prefix
+            . substr($this->buffer, $outputStart, $end - $outputStart);
+        $this->buffer = substr($this->buffer, $statusEnd + 1);
+        return [$output, (int) $status];
+    }
+
+    private function abort(): void
+    {
+        if ($this->stopped) {
+            return;
+        }
+        $this->stopped = true;
+        proc_terminate($this->process);
+        foreach ($this->pipes as $pipe) {
+            fclose($pipe);
+        }
+        proc_close($this->process);
+    }
+
+    public function __destruct()
+    {
+        if ($this->stopped) {
+            return;
+        }
+        fclose($this->pipes[0]);
+        fclose($this->pipes[1]);
+        proc_close($this->process);
+    }
+}
+
+function can_run_in_test_fork_server(TestFile $test, bool $uses_cgi): bool
+{
+    global $environment, $file_cache, $IN_REDIRECT, $num_repeats, $preload, $valgrind;
+
+    return !IS_WINDOWS
+        && !PHP_ZTS
+        && getenv('TEST_PHP_FORK_SERVER') !== '0'
+        && !isset($environment['SKIP_ASAN'])
+        && !$uses_cgi
+        && !$valgrind
+        && !$preload
+        && $file_cache === null
+        && $num_repeats === 1
+        && !is_array($IN_REDIRECT)
+        && !($test->hasSection('SKIPIF') && str_contains($test->getSection('SKIPIF'), 'SKIP_REPEAT'))
+        && !$test->hasAnySections(
+            'ARGS',
+            'CAPTURE_STDIO',
+            'CGI',
+            'COOKIE',
+            'DEFLATE_POST',
+            'ENV',
+            'GET',
+            'GZIP_POST',
+            'INI',
+            'PHPDBG',
+            'POST',
+            'POST_RAW',
+            'PUT',
+            'REDIRECTTEST',
+            'STDIN',
+            'XLEAK'
+        );
+}
+
+function system_with_test_fork_server(
+    string $command,
+    string $file,
+    array $env
+): ?string {
+    static $server = null;
+    static $serverCommand = null;
+    static $unsupported = [];
+
+    if (strpbrk($file, "\r\n") !== false || isset($unsupported[$command])) {
+        return null;
+    }
+    if ($serverCommand !== $command) {
+        $server = null;
+        $serverCommand = $command;
+    }
+    if ($server === null) {
+        try {
+            $server = new TestForkServer($command, $env);
+        } catch (Throwable) {
+            $unsupported[$command] = true;
+            return null;
+        }
+    }
+
+    $timeout = (int) ($env['TEST_TIMEOUT'] ?? 60);
+    if (isset($env['SKIP_ASAN'])) {
+        $timeout *= 3;
+    }
+
+    $output = $server->run($file, $timeout);
+    if ($output === null) {
+        $server = null;
+        $unsupported[$command] = true;
+    }
+    return $output;
+}
+
 function run_all_tests(array $test_files, array $env, ?string $redir_tested = null): void
 {
     global $test_results, $failed_tests_file, $result_tests_file, $php, $test_idx, $file_cache, $shuffle;
@@ -2555,7 +2782,13 @@ COMMAND $cmd
     $startTime = $hrtime[0] * 1000000000 + $hrtime[1];
 
     $stdin = $test->hasSection('STDIN') ? $test->getSection('STDIN') : null;
-    $out = system_with_timeout($cmd, $env, $stdin, $captureStdIn, $captureStdOut, $captureStdErr);
+    $out = null;
+    if (can_run_in_test_fork_server($test, $uses_cgi)) {
+        $out = system_with_test_fork_server("$php $pass_options $ini_settings", $test_file, $env);
+    }
+    if ($out === null) {
+        $out = system_with_timeout($cmd, $env, $stdin, $captureStdIn, $captureStdOut, $captureStdErr);
+    }
 
     $junit->stopTimer($shortname);
     $hrtime = hrtime();
