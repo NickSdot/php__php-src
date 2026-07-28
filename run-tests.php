@@ -1644,6 +1644,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
     }
     // Only settings that are safe to initialize in the parent process belong here.
     static $safeSettings = [
+        'date.timezone' => true,
         'phar.readonly' => true,
         'phar.require_hash' => true,
         'precision' => true,
