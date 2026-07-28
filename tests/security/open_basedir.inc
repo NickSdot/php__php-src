@@ -40,7 +40,7 @@ function recursive_delete_directory($directory) {
         if ($item != '.') {
              if ($item != '..') {
                 $path = ($directory.'/'.$item);
-                if (is_dir($path) == TRUE) {
+                if (is_dir($path) == TRUE && !is_link($path)) {
                     recursive_delete_directory($path);
                 } else {
                     @chmod($path, 0777);

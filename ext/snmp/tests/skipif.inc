@@ -29,14 +29,14 @@ function get_snmp_test_agent_unavailable_reason(): ?string
     }
 
     $cached = stream_get_contents($cache);
-    $reason = $cached !== '' ? @unserialize($cached, ['allowed_classes' => false]) : null;
-    if (!is_string($reason)) {
+    $reason = $cached !== '' ? $cached : null;
+    if ($reason === null) {
         // Only failures are shared; successful checks still probe the configured agent.
         $reason = $probe();
         if (is_string($reason)) {
             rewind($cache);
             ftruncate($cache, 0);
-            fwrite($cache, serialize($reason));
+            fwrite($cache, $reason);
             fflush($cache);
         }
     }

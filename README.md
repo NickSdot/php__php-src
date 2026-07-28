@@ -97,9 +97,8 @@ can be determined using `nproc`.
 PHP ships with an extensive test suite, the command `make test` is used after
 successful compilation of the sources to run this test suite.
 
-Tests run in parallel by default, using the detected number of logical
-processors. Set `-jN` in `TEST_PHP_ARGS` or `TESTS` to override the worker
-count:
+Tests run in parallel by default, using up to 10 detected logical processors.
+Set `-jN` in `TEST_PHP_ARGS` or `TESTS` to override the worker count:
 
 ```shell
 make TEST_PHP_ARGS=-j4 test

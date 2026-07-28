@@ -12,9 +12,7 @@ if (getenv('SKIP_REPEAT')) die("skip Not repeatable");
 pcntl_setqos_class(Pcntl\QosClass::Default);
 var_dump(Pcntl\QosClass::Default === pcntl_getqos_class());
 pcntl_setqos_class(Pcntl\QosClass::Background);
-$isBackground = Pcntl\QosClass::Background == pcntl_getqos_class();
-pcntl_setqos_class(Pcntl\QosClass::Default);
-var_dump($isBackground);
+var_dump(Pcntl\QosClass::Background == pcntl_getqos_class());
 ?>
 --EXPECT--
 bool(true)

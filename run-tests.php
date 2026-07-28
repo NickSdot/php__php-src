@@ -839,7 +839,7 @@ function get_default_worker_count(): ?int
 {
     if (IS_WINDOWS) {
         $workerCount = getenv('NUMBER_OF_PROCESSORS');
-        return is_string($workerCount) ? parse_worker_count($workerCount) : null;
+        return is_string($workerCount) ? parse_default_worker_count($workerCount) : null;
     }
 
     $commands = [
@@ -851,7 +851,10 @@ function get_default_worker_count(): ?int
     ];
     foreach ($commands as $command) {
         $workerCount = shell_exec($command);
-        if (is_string($workerCount) && ($workerCount = parse_worker_count($workerCount)) !== null) {
+        if (
+            is_string($workerCount)
+            && ($workerCount = parse_default_worker_count($workerCount)) !== null
+        ) {
             return $workerCount;
         }
     }
@@ -859,78 +862,24 @@ function get_default_worker_count(): ?int
     return null;
 }
 
-function parse_worker_count(string $workerCount): ?int
+function parse_default_worker_count(string $workerCount): ?int
 {
     $workerCount = filter_var(trim($workerCount), FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 2],
     ]);
 
-    return $workerCount !== false ? $workerCount : null;
+    return $workerCount !== false ? min($workerCount, 10) : null;
 }
 
 function can_create_parallel_worker_socket(): bool
 {
-    if (!IS_WINDOWS && can_create_parallel_worker_socket_pair()) {
-        return true;
-    }
-
-    $server = create_parallel_worker_server();
-    if ($server === null) {
+    $socket = @stream_socket_server('tcp://127.0.0.1:0');
+    if ($socket === false) {
         return false;
     }
 
-    fclose($server['socket']);
+    fclose($socket);
     return true;
-}
-
-function can_create_parallel_worker_socket_pair(): bool
-{
-    $sockets = create_parallel_worker_socket_pair();
-    if ($sockets === false) {
-        return false;
-    }
-
-    fclose($sockets[0]);
-    fclose($sockets[1]);
-    return true;
-}
-
-/**
- * @return array{socket: resource, uri: string}|null
- */
-function create_parallel_worker_server(): ?array
-{
-    $server = @stream_socket_server('tcp://127.0.0.1:0');
-    if ($server === false) {
-        return null;
-    }
-
-    $name = stream_socket_get_name($server, false);
-    if ($name === false) {
-        fclose($server);
-        return null;
-    }
-
-    // PHP returns IPv6 addresses without enclosing them in square brackets.
-    $portPos = strrpos($name, ':');
-    $host = substr($name, 0, $portPos);
-    if (strpos($host, ':') !== false) {
-        $host = "[$host]";
-    }
-    $port = substr($name, $portPos + 1);
-
-    return [
-        'socket' => $server,
-        'uri' => "tcp://$host:$port",
-    ];
-}
-
-/**
- * @return array{0: resource, 1: resource}|false
- */
-function create_parallel_worker_socket_pair()
-{
-    return @stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
 }
 
 function verify_config(string $php): void
@@ -1220,11 +1169,11 @@ function create_shared_test_cache_directory(): ?string
 
 function rmdir_recursive($dir)
 {
-    if (!file_exists($dir)) {
+    if (!file_exists($dir) && !is_link($dir)) {
         return;
     }
-    if (!is_dir($dir)) {
-        unlink($dir);
+    if (is_link($dir) || !is_dir($dir)) {
+        @unlink($dir);
         return;
     }
 
@@ -1843,7 +1792,12 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
     }
 
     /* Ignore -jN if there is only one file to analyze. */
-    if ($workers !== null && count($test_files) > 1 && !$workerID) {
+    if (
+        $workers !== null
+        && count($test_files) > 1
+        && !$workerID
+        && $redir_tested === null
+    ) {
         run_all_tests_parallel($test_files, $env, $redir_tested);
         return;
     }
@@ -1909,22 +1863,6 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
     $workerProcs = [];
     $workerSocks = [];
-    $workerTestEnvironments = [];
-
-    $selectedDirectories = array_unique(array_map('dirname', $test_files));
-    $focusedDirectory = count($selectedDirectories) === 1
-        ? reset($selectedDirectories)
-        : null;
-    $focusedMaxConcurrency = null;
-    if ($focusedDirectory !== null) {
-        $focusedMaxConcurrencyFile = $focusedDirectory . '/FOCUSED_MAX_CONCURRENCY';
-        if (file_exists($focusedMaxConcurrencyFile)) {
-            $focusedMaxConcurrency = parse_max_concurrency(
-                file_get_contents($focusedMaxConcurrencyFile),
-                $focusedMaxConcurrencyFile,
-            );
-        }
-    }
 
     // Each test may specify a list of conflict keys. While a test that conflicts with
     // key K is running, no other test that conflicts with K may run. Conflict keys are
@@ -1939,17 +1877,9 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     foreach ($test_files as $i => $file) {
         $dir = dirname($file);
         if (!array_key_exists($dir, $dirMaxConcurrency)) {
-            $maxConcurrencyFile = null;
-            if ($dir === $focusedDirectory && $focusedMaxConcurrency !== null) {
-                $dirMaxConcurrency[$dir] = $focusedMaxConcurrency;
-            } else {
-                $maxConcurrencyFile = $dir . '/MAX_CONCURRENCY';
-                $dirMaxConcurrency[$dir] = null;
-            }
-            if (
-                $maxConcurrencyFile !== null
-                && file_exists($maxConcurrencyFile)
-            ) {
+            $maxConcurrencyFile = $dir . '/MAX_CONCURRENCY';
+            $dirMaxConcurrency[$dir] = null;
+            if (file_exists($maxConcurrencyFile)) {
                 $dirMaxConcurrency[$dir] = parse_max_concurrency(
                     file_get_contents($maxConcurrencyFile),
                     $maxConcurrencyFile,
@@ -1968,9 +1898,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
             // Cache per-directory conflicts in a separate map, so we compute these only once.
             if (!isset($dirConflictsWith[$dir])) {
                 $dirConflicts = [];
-                $useFocusedConcurrency = $dir === $focusedDirectory
-                    && $focusedMaxConcurrency !== null;
-                if (!$useFocusedConcurrency && file_exists($dir . '/CONFLICTS')) {
+                if (file_exists($dir . '/CONFLICTS')) {
                     $contents = file_get_contents($dir . '/CONFLICTS');
                     $dirConflicts = parse_conflicts($contents);
                 }
@@ -2007,59 +1935,37 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     echo "Spawning $workers workers... ";
 
     // We use sockets rather than STDIN/STDOUT for comms because those can't
-    // be non-blocking on Windows. POSIX workers inherit one end of a socket
-    // pair directly, while other platforms connect to a TCP server.
-    $useSocketPairs = !IS_WINDOWS && can_create_parallel_worker_socket_pair();
-    $workerServer = null;
-    if (!$useSocketPairs) {
-        $workerServer = create_parallel_worker_server();
-        if ($workerServer === null) {
-            error("Couldn't create worker socket.");
-        }
+    // be non-blocking on Windows.
+    $listenSock = stream_socket_server("tcp://127.0.0.1:0")
+        or error("Couldn't create socket on localhost.");
+    $sockName = stream_socket_get_name($listenSock, false);
+    // PHP returns IPv6 addresses without enclosing them in square brackets.
+    $portPos = strrpos($sockName, ":");
+    $sockHost = substr($sockName, 0, $portPos);
+    if (strpos($sockHost, ":") !== false) {
+        $sockHost = "[$sockHost]";
     }
+    $sockPort = substr($sockName, $portPos + 1);
+    $sockUri = "tcp://$sockHost:$sockPort";
     $totalFileCount = count($test_files);
 
     $startTime = microtime(true);
     for ($i = 1; $i <= $workers; $i++) {
-        $workerTestEnvironments[$i] = create_parallel_worker_test_environment($env, $i);
-        $descriptors = [];
-        $workerEnvironment = [
-            "TEST_PHP_WORKER" => $i,
-            "TEST_PHP_FD" => "",
-            "TEST_PHP_URI" => "",
-        ];
-        if (!$useSocketPairs) {
-            $workerEnvironment["TEST_PHP_URI"] = $workerServer['uri'];
-        } else {
-            $sockets = create_parallel_worker_socket_pair();
-            if ($sockets === false) {
-                kill_children($workerProcs);
-                error("Failed to create socket pair for worker $i");
-            }
-            $workerSocks[$i] = $sockets[0];
-            $descriptors[3] = $sockets[1];
-            $workerEnvironment["TEST_PHP_FD"] = 3;
-        }
-
         $proc = proc_open(
             [$thisPHP, $thisScript],
-            $descriptors,
+            [],
             $pipes,
             null,
-            array_replace($GLOBALS['environment'], $workerEnvironment),
+            $GLOBALS['environment'] + [
+                "TEST_PHP_WORKER" => $i,
+                "TEST_PHP_URI" => $sockUri,
+            ],
             [
                 "suppress_errors" => true,
                 'create_new_console' => true,
             ]
         );
-        if ($useSocketPairs) {
-            fclose($sockets[1]);
-        }
         if ($proc === false) {
-            if ($useSocketPairs) {
-                fclose($sockets[0]);
-                unset($workerSocks[$i]);
-            }
             kill_children($workerProcs);
             error("Failed to spawn worker $i");
         }
@@ -2067,14 +1973,10 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     }
 
     for ($i = 1; $i <= $workers; $i++) {
-        if (!$useSocketPairs) {
-            $workerSock = stream_socket_accept($workerServer['socket'], 5);
-            if ($workerSock === false) {
-                kill_children($workerProcs);
-                error("Failed to accept connection from worker.");
-            }
-        } else {
-            $workerSock = $workerSocks[$i];
+        $workerSock = stream_socket_accept($listenSock, 5);
+        if ($workerSock === false) {
+            kill_children($workerProcs);
+            error("Failed to accept connection from worker.");
         }
 
         $greeting = base64_encode(serialize([
@@ -2110,9 +2012,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         $workerID = $reply["workerID"];
         $workerSocks[$workerID] = $workerSock;
     }
-    if (!$useSocketPairs) {
-        fclose($workerServer['socket']);
-    }
+    fclose($listenSock);
     printf("Done in %.2fs\n", microtime(true) - $startTime);
     echo "=====================================================================\n";
     echo "\n";
@@ -2264,7 +2164,7 @@ escape:
                                 send_message($workerSocks[$i], [
                                     "type" => "run_tests",
                                     "test_files" => $files,
-                                    "env" => $workerTestEnvironments[$i],
+                                    "env" => $env,
                                     "redir_tested" => $redir_tested
                                 ]);
                             } else {
@@ -2346,27 +2246,6 @@ escape:
     }
 }
 
-function create_parallel_worker_test_environment(array $env, int $workerId): array
-{
-    if (isset($env['RANDFILE'])) {
-        return $env;
-    }
-
-    $cacheDirectory = $env['TEST_PHP_SHARED_CACHE_DIR'] ?? $env['TEMP'];
-    $randomStateFile = tempnam($cacheDirectory, 'php-openssl-random-state-');
-    if ($randomStateFile === false) {
-        error("Failed to create OpenSSL random state for worker $workerId");
-    }
-    if (file_put_contents($randomStateFile, random_bytes(1024)) !== 1024) {
-        error("Failed to initialize OpenSSL random state for worker $workerId");
-    }
-    register_shutdown_function(static function () use ($randomStateFile): void {
-        @unlink($randomStateFile);
-    });
-    $env['RANDFILE'] = $randomStateFile;
-    return $env;
-}
-
 /**
  * Calls fwrite and retries when network writes fail with errors such as "Resource temporarily unavailable"
  *
@@ -2426,15 +2305,9 @@ function run_worker(): void
 
     global $junit;
 
-    $workerFd = getenv("TEST_PHP_FD");
-    if ($workerFd !== false && $workerFd !== '') {
-        $workerSock = fopen("php://fd/$workerFd", "r+")
-            or error("Couldn't open worker socket on file descriptor $workerFd");
-    } else {
-        $sockUri = getenv("TEST_PHP_URI");
-        $workerSock = stream_socket_client($sockUri, $_, $_, 5)
-            or error("Couldn't connect to $sockUri");
-    }
+    $sockUri = getenv("TEST_PHP_URI");
+    $workerSock = stream_socket_client($sockUri, $_, $_, 5)
+        or error("Couldn't connect to $sockUri");
 
     $greeting = fgets($workerSock);
     $greeting = unserialize(base64_decode($greeting)) or die("Could not decode greeting\n");

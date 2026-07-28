@@ -46,8 +46,8 @@ $cacheFile = getenv('TEST_PHP_SHARED_CACHE_DIR')
     . DIRECTORY_SEPARATOR
     . 'snmp-'
     . hash('sha256', serialize($configuration));
-$cachedReason = unserialize(file_get_contents($cacheFile));
-file_put_contents($cacheFile, serialize('cached agent failure'));
+$cachedReason = file_get_contents($cacheFile);
+file_put_contents($cacheFile, 'cached agent failure');
 
 $second = run_snmp_skip_check($code);
 echo "$first\n";

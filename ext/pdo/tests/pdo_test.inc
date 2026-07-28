@@ -103,8 +103,8 @@ class PDOTest {
         }
 
         $cached = stream_get_contents($cache);
-        $reason = $cached !== '' ? @unserialize($cached, ['allowed_classes' => false]) : null;
-        if (!is_string($reason)) {
+        $reason = $cached !== '' ? $cached : null;
+        if ($reason === null) {
             // Only failures are shared; successful checks still create their own connection.
             try {
                 self::factoryForSkip();
@@ -112,7 +112,7 @@ class PDOTest {
                 $reason = $e->getMessage();
                 rewind($cache);
                 ftruncate($cache, 0);
-                fwrite($cache, serialize($reason));
+                fwrite($cache, $reason);
                 fflush($cache);
             }
         }

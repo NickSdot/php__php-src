@@ -56,7 +56,8 @@ function startOomTest(string $php, string $file, string $class): ?array
 
 function finishOomTest(array $test): bool
 {
-    if (proc_get_status($test['process'])['running']) {
+    $status = proc_get_status($test['process']);
+    if ($status['running']) {
         return false;
     }
 
@@ -65,7 +66,10 @@ function finishOomTest(array $test): bool
     $output = stream_get_contents($test['output']);
     fclose($test['output']);
 
-    if ($output && preg_match('(^\nFatal error: Allowed memory size of [0-9]+ bytes exhausted[^\r\n]* \(tried to allocate [0-9]+ bytes\) in [^\r\n]+ on line [0-9]+\nStack trace:\n(#[0-9]+ [^\r\n]+\n)+$)', $output) !== 1) {
+    if ($status['signaled']) {
+        echo "Class {$test['class']} failed\n";
+        echo "Process terminated by signal {$status['termsig']}\n";
+    } elseif ($output && preg_match('(^\nFatal error: Allowed memory size of [0-9]+ bytes exhausted[^\r\n]* \(tried to allocate [0-9]+ bytes\) in [^\r\n]+ on line [0-9]+\nStack trace:\n(#[0-9]+ [^\r\n]+\n)+$)', $output) !== 1) {
         echo "Class {$test['class']} failed\n";
         echo $output, "\n";
     }
