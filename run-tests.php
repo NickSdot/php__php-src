@@ -1654,6 +1654,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
         'precision' => true,
         'serialize_precision' => true,
         'soap.wsdl_cache_enabled' => true,
+        'zend.enable_gc' => true,
     ];
 
     foreach (preg_split('/[\r\n]+/', $test->getSection('INI')) as $setting) {
