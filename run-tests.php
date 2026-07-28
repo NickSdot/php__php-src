@@ -1649,6 +1649,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
         'date.timezone' => true,
         'default_charset' => true,
         'internal_encoding' => true,
+        'intl.default_locale' => true,
         'open_basedir' => true,
         'phar.readonly' => true,
         'phar.require_hash' => true,
