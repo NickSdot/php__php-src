@@ -3150,7 +3150,16 @@ COMMAND $cmd
                 'opcache.file_cache_only=0',
                 $test_clean,
             ];
-            $clean_output = system_with_timeout($cleanCommand, $env);
+            $cleanEnv = $env;
+            if (!IS_WINDOWS) {
+                unset(
+                    $cleanEnv['REQUEST_METHOD'],
+                    $cleanEnv['QUERY_STRING'],
+                    $cleanEnv['PATH_TRANSLATED'],
+                    $cleanEnv['SCRIPT_FILENAME'],
+                );
+            }
+            $clean_output = system_with_timeout($cleanCommand, $cleanEnv);
         }
 
         if (!$cfg['keep']['clean']) {
