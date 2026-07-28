@@ -1666,6 +1666,11 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
     // Only settings that are safe to initialize in the parent process belong here.
     static $safeSettings = [
         'allow_url_fopen' => true,
+        'assert.active' => true,
+        'assert.bail' => true,
+        'assert.callback' => true,
+        'assert.exception' => true,
+        'assert.warning' => true,
         'bcmath.scale' => true,
         'date.timezone' => true,
         'default_charset' => true,
@@ -1678,6 +1683,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
         'precision' => true,
         'serialize_precision' => true,
         'soap.wsdl_cache_enabled' => true,
+        'zend.assertions' => true,
         'zend.enable_gc' => true,
     ];
 
