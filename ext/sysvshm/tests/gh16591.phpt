@@ -20,6 +20,8 @@ try {
     echo $e->getMessage(), "\n";
 }
 
+shm_remove(shm_attach(1));
+
 ?>
 --EXPECT--
 Shared memory block has been destroyed by the serialization function
