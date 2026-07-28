@@ -1692,22 +1692,64 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     $workerProcs = [];
     $workerSocks = [];
 
+    $selectedDirectories = array_unique(array_map('dirname', $test_files));
+    $focusedDirectory = count($selectedDirectories) === 1
+        ? reset($selectedDirectories)
+        : null;
+    $focusedMaxConcurrency = null;
+    if ($focusedDirectory !== null) {
+        $focusedMaxConcurrencyFile = $focusedDirectory . '/FOCUSED_MAX_CONCURRENCY';
+        if (file_exists($focusedMaxConcurrencyFile)) {
+            $focusedMaxConcurrency = parse_max_concurrency(
+                file_get_contents($focusedMaxConcurrencyFile),
+                $focusedMaxConcurrencyFile,
+            );
+        }
+    }
+
     // Each test may specify a list of conflict keys. While a test that conflicts with
     // key K is running, no other test that conflicts with K may run. Conflict keys are
     // specified either in the --CONFLICTS-- section, or CONFLICTS file inside a directory.
     $dirConflictsWith = [];
     $fileConflictsWith = [];
+    // A MAX_CONCURRENCY file limits how many workers may run tests from that directory.
+    $dirMaxConcurrency = [];
+    $fileConcurrencyDirectory = [];
     $sequentialTests = [];
     foreach ($test_files as $i => $file) {
+        $dir = dirname($file);
+        if (!array_key_exists($dir, $dirMaxConcurrency)) {
+            $maxConcurrencyFile = null;
+            if ($dir === $focusedDirectory && $focusedMaxConcurrency !== null) {
+                $dirMaxConcurrency[$dir] = $focusedMaxConcurrency;
+            } else {
+                $maxConcurrencyFile = $dir . '/MAX_CONCURRENCY';
+                $dirMaxConcurrency[$dir] = null;
+            }
+            if (
+                $maxConcurrencyFile !== null
+                && file_exists($maxConcurrencyFile)
+            ) {
+                $dirMaxConcurrency[$dir] = parse_max_concurrency(
+                    file_get_contents($maxConcurrencyFile),
+                    $maxConcurrencyFile,
+                );
+            }
+        }
+        if ($dirMaxConcurrency[$dir] !== null) {
+            $fileConcurrencyDirectory[$file] = $dir;
+        }
+
         $contents = file_get_contents($file);
         if (preg_match('/^--CONFLICTS--(.+?)^--/ms', $contents, $matches)) {
             $conflicts = parse_conflicts($matches[1]);
         } else {
             // Cache per-directory conflicts in a separate map, so we compute these only once.
-            $dir = dirname($file);
             if (!isset($dirConflictsWith[$dir])) {
                 $dirConflicts = [];
-                if (file_exists($dir . '/CONFLICTS')) {
+                $useFocusedConcurrency = $dir === $focusedDirectory
+                    && $focusedMaxConcurrency !== null;
+                if (!$useFocusedConcurrency && file_exists($dir . '/CONFLICTS')) {
                     $contents = file_get_contents($dir . '/CONFLICTS');
                     $dirConflicts = parse_conflicts($contents);
                 }
@@ -1826,6 +1868,12 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     $activeConflicts = [];
     // Tests waiting due to conflicts. Map from conflict key to array.
     $waitingTests = [];
+    // Maps capped directories to the workers currently running tests from them.
+    $activeConcurrencyDirectories = [];
+    // Maps workers to the capped directories acquired for their current batch.
+    $workerConcurrencyDirectories = [];
+    // Tests waiting for capacity in a capped directory.
+    $waitingConcurrencyTests = [];
 
 escape:
     while ($test_files || $sequentialTests || $testsInProgress > 0) {
@@ -1867,6 +1915,16 @@ escape:
                             break;
                         case "tests_finished":
                             $testsInProgress--;
+                            foreach ($workerConcurrencyDirectories[$i] ?? [] as $dir) {
+                                unset($activeConcurrencyDirectories[$dir][$i]);
+                                if (isset($waitingConcurrencyTests[$dir])) {
+                                    while ($test = array_pop($waitingConcurrencyTests[$dir])) {
+                                        $test_files[] = $test;
+                                    }
+                                    unset($waitingConcurrencyTests[$dir]);
+                                }
+                            }
+                            unset($workerConcurrencyDirectories[$i]);
                             foreach ($activeConflicts as $key => $workerId) {
                                 if ($workerId === $i) {
                                     unset($activeConflicts[$key]);
@@ -1892,6 +1950,7 @@ escape:
                             // - If this is running a small enough number of tests,
                             //   reduce the batch size to give batches to more workers.
                             $files = [];
+                            $batchConcurrencyDirectories = [];
                             $maxBatchSize = $valgrind ? 1 : 4;
                             $averageFilesPerWorker = max(1, (int) ceil($totalFileCount / count($workerProcs)));
                             $batchSize = min($maxBatchSize, $averageFilesPerWorker);
@@ -1902,13 +1961,30 @@ escape:
                                         continue 2;
                                     }
                                 }
+                                $concurrencyDirectory = $fileConcurrencyDirectory[$file] ?? null;
+                                if (
+                                    $concurrencyDirectory !== null
+                                    && !isset($batchConcurrencyDirectories[$concurrencyDirectory])
+                                    && count($activeConcurrencyDirectories[$concurrencyDirectory] ?? [])
+                                        >= $dirMaxConcurrency[$concurrencyDirectory]
+                                ) {
+                                    $waitingConcurrencyTests[$concurrencyDirectory][] = $file;
+                                    continue;
+                                }
                                 $files[] = $file;
+                                if ($concurrencyDirectory !== null) {
+                                    $batchConcurrencyDirectories[$concurrencyDirectory] = true;
+                                }
                             }
                             if ($files) {
                                 foreach ($files as $file) {
                                     foreach ($fileConflictsWith[$file] as $conflictKey) {
                                         $activeConflicts[$conflictKey] = $i;
                                     }
+                                }
+                                $workerConcurrencyDirectories[$i] = array_keys($batchConcurrencyDirectories);
+                                foreach ($workerConcurrencyDirectories[$i] as $dir) {
+                                    $activeConcurrencyDirectories[$dir][$i] = true;
                                 }
                                 $testsInProgress++;
                                 send_message($workerSocks[$i], [
@@ -3599,6 +3675,19 @@ function parse_conflicts(string $text): array
     // Strip comments
     $text = preg_replace('/#.*/', '', $text);
     return array_map('trim', explode("\n", trim($text)));
+}
+
+function parse_max_concurrency(string $text, string $file): int
+{
+    // Strip comments
+    $text = trim(preg_replace('/#.*/', '', $text));
+    $maxConcurrency = filter_var($text, FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1],
+    ]);
+    if ($maxConcurrency === false) {
+        error("Invalid positive integer in $file");
+    }
+    return $maxConcurrency;
 }
 
 function show_result(
