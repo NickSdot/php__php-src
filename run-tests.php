@@ -1658,6 +1658,10 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
             continue;
         }
         $name = strtolower(trim(explode('=', $setting, 2)[0]));
+        // Session request state is initialized in the child after the fork.
+        if (str_starts_with($name, 'session.')) {
+            continue;
+        }
         if (!isset($safeSettings[$name])) {
             return false;
         }
