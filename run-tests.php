@@ -3167,11 +3167,13 @@ COMMAND $cmd
     $stdin = $test->hasSection('STDIN') ? $test->getSection('STDIN') : null;
     $out = null;
     if (can_run_in_test_fork_server($test, $uses_cgi)) {
+        $hasTestIni = $test->sectionNotEmpty('INI');
         $out = system_with_test_fork_server(
             "$php $pass_options $ini_settings",
             $test_file,
             $env,
-            deferUntilRepeated: $test->sectionNotEmpty('INI'),
+            channel: $hasTestIni ? 'test-ini' : 'test',
+            deferUntilRepeated: $hasTestIni,
         );
     }
     if ($out === null) {
