@@ -1617,6 +1617,7 @@ function can_run_in_test_fork_server(TestFile $test, bool $uses_cgi): bool
         && $num_repeats === 1
         && !is_array($IN_REDIRECT)
         && !($test->hasSection('SKIPIF') && str_contains($test->getSection('SKIPIF'), 'SKIP_REPEAT'))
+        && has_only_fork_safe_ini_settings($test)
         && !$test->hasAnySections(
             'ARGS',
             'CAPTURE_STDIO',
@@ -1626,7 +1627,6 @@ function can_run_in_test_fork_server(TestFile $test, bool $uses_cgi): bool
             'ENV',
             'GET',
             'GZIP_POST',
-            'INI',
             'PHPDBG',
             'POST',
             'POST_RAW',
@@ -1635,6 +1635,32 @@ function can_run_in_test_fork_server(TestFile $test, bool $uses_cgi): bool
             'STDIN',
             'XLEAK'
         );
+}
+
+function has_only_fork_safe_ini_settings(TestFile $test): bool
+{
+    if (!$test->sectionNotEmpty('INI')) {
+        return true;
+    }
+    // Only settings that are safe to initialize in the parent process belong here.
+    static $safeSettings = [
+        'phar.readonly' => true,
+        'phar.require_hash' => true,
+        'soap.wsdl_cache_enabled' => true,
+    ];
+
+    foreach (preg_split('/[\r\n]+/', $test->getSection('INI')) as $setting) {
+        $setting = trim($setting);
+        if ($setting === '' || $setting[0] === ';') {
+            continue;
+        }
+        $name = strtolower(trim(explode('=', $setting, 2)[0]));
+        if (!isset($safeSettings[$name])) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 function can_run_with_structured_test_command(TestFile $test): bool
@@ -1686,10 +1712,12 @@ function system_with_test_fork_server(
     array $env,
     string $channel = 'test',
     bool $setScriptEnvironment = true,
-    bool $captureStdErr = true
+    bool $captureStdErr = true,
+    bool $deferUntilRepeated = false
 ): ?string {
     static $servers = [];
     static $serverCommands = [];
+    static $pendingCommands = [];
     static $unsupported = [];
 
     $commandKey = serialize([$command, $captureStdErr]);
@@ -1697,8 +1725,15 @@ function system_with_test_fork_server(
         return null;
     }
     if (($serverCommands[$channel] ?? null) !== $commandKey) {
+        if ($deferUntilRepeated && ($pendingCommands[$channel] ?? null) !== $commandKey) {
+            $pendingCommands[$channel] = $commandKey;
+            return null;
+        }
+        unset($pendingCommands[$channel]);
         unset($servers[$channel]);
         $serverCommands[$channel] = $commandKey;
+    } else {
+        unset($pendingCommands[$channel]);
     }
     if (!isset($servers[$channel])) {
         try {
@@ -3125,7 +3160,12 @@ COMMAND $cmd
     $stdin = $test->hasSection('STDIN') ? $test->getSection('STDIN') : null;
     $out = null;
     if (can_run_in_test_fork_server($test, $uses_cgi)) {
-        $out = system_with_test_fork_server("$php $pass_options $ini_settings", $test_file, $env);
+        $out = system_with_test_fork_server(
+            "$php $pass_options $ini_settings",
+            $test_file,
+            $env,
+            deferUntilRepeated: $test->sectionNotEmpty('INI'),
+        );
     }
     if ($out === null) {
         $useStructuredCommand = can_run_with_structured_test_command($test);
