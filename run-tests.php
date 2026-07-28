@@ -1644,6 +1644,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
     }
     // Only settings that are safe to initialize in the parent process belong here.
     static $safeSettings = [
+        'allow_url_fopen' => true,
         'date.timezone' => true,
         'default_charset' => true,
         'internal_encoding' => true,
