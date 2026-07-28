@@ -1745,6 +1745,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
     $workerProcs = [];
     $workerSocks = [];
+    $workerTestEnvironments = [];
 
     $selectedDirectories = array_unique(array_map('dirname', $test_files));
     $focusedDirectory = count($selectedDirectories) === 1
@@ -1849,6 +1850,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
     $startTime = microtime(true);
     for ($i = 1; $i <= $workers; $i++) {
+        $workerTestEnvironments[$i] = create_parallel_worker_test_environment($env, $i);
         $descriptors = [];
         $workerEnvironment = [
             "TEST_PHP_WORKER" => $i,
@@ -2073,7 +2075,7 @@ escape:
                                 send_message($workerSocks[$i], [
                                     "type" => "run_tests",
                                     "test_files" => $files,
-                                    "env" => $env,
+                                    "env" => $workerTestEnvironments[$i],
                                     "redir_tested" => $redir_tested
                                 ]);
                             } else {
@@ -2153,6 +2155,25 @@ escape:
     if ($testsInProgress < 0) {
         error("$testsInProgress test batches “in progress”, which is less than zero. THIS SHOULD NOT HAPPEN.");
     }
+}
+
+function create_parallel_worker_test_environment(array $env, int $workerId): array
+{
+    if (isset($env['RANDFILE'])) {
+        return $env;
+    }
+
+    $cacheDirectory = $env['TEST_PHP_SHARED_CACHE_DIR'] ?? null;
+    if ($cacheDirectory === null) {
+        return $env;
+    }
+
+    $randomStateFile = $cacheDirectory . DIRECTORY_SEPARATOR . "openssl-random-state-$workerId";
+    if (file_put_contents($randomStateFile, random_bytes(1024)) !== 1024) {
+        error("Failed to initialize OpenSSL random state for worker $workerId");
+    }
+    $env['RANDFILE'] = $randomStateFile;
+    return $env;
 }
 
 /**
