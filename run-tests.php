@@ -1648,6 +1648,7 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
         'bcmath.scale' => true,
         'date.timezone' => true,
         'default_charset' => true,
+        'ffi.enable' => true,
         'internal_encoding' => true,
         'intl.default_locale' => true,
         'open_basedir' => true,
