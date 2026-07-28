@@ -45,6 +45,9 @@
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
+#ifndef PHP_WIN32
+#include <fcntl.h>
+#endif
 
 #include <signal.h>
 #include <locale.h>
@@ -162,6 +165,8 @@ typedef struct {
 	char file[MAXPATHLEN];
 	size_t index;
 	const char *token;
+	bool set_script_environment;
+	bool capture_stderr;
 } php_cli_test_batch;
 
 typedef enum {
@@ -218,6 +223,20 @@ static int php_cli_test_batch_next(php_cli_test_batch *batch) /* {{{ */
 		if (length == sizeof(batch->file) - 1 && !feof(stdin)) {
 			fprintf(stderr, "Test path exceeds MAXPATHLEN\n");
 			return -1;
+		}
+		batch->set_script_environment = true;
+		batch->capture_stderr = true;
+		if ((batch->file[0] == '+' || batch->file[0] == '-')
+				&& (batch->file[1] == '+' || batch->file[1] == '-')
+				&& batch->file[2] == '\t') {
+			batch->set_script_environment = batch->file[0] == '+';
+			batch->capture_stderr = batch->file[1] == '+';
+			memmove(batch->file, batch->file + 3, length - 2);
+			length -= 3;
+			if (length == 0) {
+				fprintf(stderr, "Test path is empty\n");
+				return -1;
+			}
 		}
 		return 1;
 	}
@@ -288,11 +307,6 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 	}
 
 	*script_file = batch->file;
-	if (setenv("PATH_TRANSLATED", *script_file, 1) < 0
-			|| setenv("SCRIPT_FILENAME", *script_file, 1) < 0) {
-		fprintf(stderr, "Unable to set test environment\n");
-		return PHP_CLI_TEST_BATCH_ERROR;
-	}
 	if (pipe(test_output) < 0) {
 		fprintf(stderr, "Unable to create test output pipe\n");
 		return PHP_CLI_TEST_BATCH_ERROR;
@@ -335,16 +349,43 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 	}
 
 	close(test_output[0]);
-	if (dup2(test_output[1], STDOUT_FILENO) < 0
-			|| dup2(test_output[1], STDERR_FILENO) < 0) {
+	if (dup2(test_output[1], STDOUT_FILENO) < 0) {
 		fprintf(stderr, "Unable to redirect test output\n");
 		close(test_output[1]);
 		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	if (batch->capture_stderr) {
+		if (dup2(test_output[1], STDERR_FILENO) < 0) {
+			fprintf(stderr, "Unable to redirect test error output\n");
+			close(test_output[1]);
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
+	} else {
+		int null_fd = open("/dev/null", O_WRONLY);
+		if (null_fd < 0 || dup2(null_fd, STDERR_FILENO) < 0) {
+			fprintf(stderr, "Unable to discard test error output\n");
+			if (null_fd >= 0) {
+				close(null_fd);
+			}
+			close(test_output[1]);
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
+		close(null_fd);
 	}
 	close(test_output[1]);
 	php_cli_test_child_pid = 0;
 	signal(SIGINT, SIG_DFL);
 	signal(SIGTERM, SIG_DFL);
+	if (batch->set_script_environment) {
+		if (setenv("PATH_TRANSLATED", *script_file, 1) < 0
+				|| setenv("SCRIPT_FILENAME", *script_file, 1) < 0) {
+			fprintf(stderr, "Unable to set test environment\n");
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
+	} else if (unsetenv("PATH_TRANSLATED") < 0 || unsetenv("SCRIPT_FILENAME") < 0) {
+		fprintf(stderr, "Unable to unset test environment\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
 	php_child_init();
 
 	/* Match proc_open() with a closed write end: an empty pipe, not /dev/null. */

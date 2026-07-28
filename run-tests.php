@@ -1445,16 +1445,24 @@ final class TestForkServer
     private bool $stopped = false;
     private ?string $startupOutput = null;
 
-    public function __construct(string $command, array $env)
+    public function __construct(string|array $command, array $env, bool $captureStdErr = true)
     {
         $this->token = bin2hex(random_bytes(16));
         $descriptors = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
-            2 => ['redirect', 1],
+            2 => $captureStdErr
+                ? ['redirect', 1]
+                : ['file', '/dev/null', 'a'],
         ];
+        if (is_array($command)) {
+            $command[] = '--test-fork-server';
+            $command[] = $this->token;
+        } else {
+            $command = "exec $command --test-fork-server {$this->token}";
+        }
         $this->process = proc_open(
-            "exec $command --test-fork-server {$this->token}",
+            $command,
             $descriptors,
             $this->pipes,
             TEST_PHP_SRCDIR,
@@ -1467,9 +1475,16 @@ final class TestForkServer
         stream_set_blocking($this->pipes[1], false);
     }
 
-    public function run(string $file, int $timeout): ?string
+    public function run(
+        string $file,
+        int $timeout,
+        bool $setScriptEnvironment = true,
+        bool $captureStdErr = true
+    ): ?string
     {
-        if ($this->stopped || fwrite($this->pipes[0], "$file\n") === false) {
+        $environmentMode = $setScriptEnvironment ? '+' : '-';
+        $errorMode = $captureStdErr ? '+' : '-';
+        if ($this->stopped || fwrite($this->pipes[0], "$environmentMode$errorMode\t$file\n") === false) {
             $this->abort();
             return null;
         }
@@ -1666,26 +1681,30 @@ function create_structured_test_command(
 }
 
 function system_with_test_fork_server(
-    string $command,
+    string|array $command,
     string $file,
-    array $env
+    array $env,
+    string $channel = 'test',
+    bool $setScriptEnvironment = true,
+    bool $captureStdErr = true
 ): ?string {
-    static $server = null;
-    static $serverCommand = null;
+    static $servers = [];
+    static $serverCommands = [];
     static $unsupported = [];
 
-    if (strpbrk($file, "\r\n") !== false || isset($unsupported[$command])) {
+    $commandKey = serialize([$command, $captureStdErr]);
+    if (strpbrk($file, "\r\n") !== false || isset($unsupported[$commandKey])) {
         return null;
     }
-    if ($serverCommand !== $command) {
-        $server = null;
-        $serverCommand = $command;
+    if (($serverCommands[$channel] ?? null) !== $commandKey) {
+        unset($servers[$channel]);
+        $serverCommands[$channel] = $commandKey;
     }
-    if ($server === null) {
+    if (!isset($servers[$channel])) {
         try {
-            $server = new TestForkServer($command, $env);
+            $servers[$channel] = new TestForkServer($command, $env, $captureStdErr);
         } catch (Throwable) {
-            $unsupported[$command] = true;
+            $unsupported[$commandKey] = true;
             return null;
         }
     }
@@ -1695,10 +1714,15 @@ function system_with_test_fork_server(
         $timeout *= 3;
     }
 
-    $output = $server->run($file, $timeout);
+    $output = $servers[$channel]->run(
+        $file,
+        $timeout,
+        $setScriptEnvironment,
+        $captureStdErr,
+    );
     if ($output === null) {
-        $server = null;
-        $unsupported[$command] = true;
+        unset($servers[$channel]);
+        $unsupported[$commandKey] = true;
     }
     return $output;
 }
@@ -2755,7 +2779,14 @@ TEST $file
             '-d',
             'display_startup_errors=0',
         ];
-        $output = $skipCache->checkSkip($commandLine, $test->getSection('SKIPIF'), $test_skipif, $temp_skipif, $env);
+        $output = $skipCache->checkSkip(
+            $commandLine,
+            $test->getSection('SKIPIF'),
+            $test_skipif,
+            $temp_skipif,
+            $env,
+            can_run_in_test_fork_server($test, $uses_cgi),
+        );
 
         $time = microtime(true) - $startTime;
         $junit->stopTimer($shortname);
@@ -3148,7 +3179,6 @@ COMMAND $cmd
                 'opcache.file_cache=',
                 '-d',
                 'opcache.file_cache_only=0',
-                $test_clean,
             ];
             $cleanEnv = $env;
             if (!IS_WINDOWS) {
@@ -3159,7 +3189,21 @@ COMMAND $cmd
                     $cleanEnv['SCRIPT_FILENAME'],
                 );
             }
-            $clean_output = system_with_timeout($cleanCommand, $cleanEnv);
+            $clean_output = null;
+            if (can_run_in_test_fork_server($test, $uses_cgi)) {
+                $clean_output = system_with_test_fork_server(
+                    $cleanCommand,
+                    $test_clean,
+                    $cleanEnv,
+                    'clean',
+                    false,
+                    false,
+                );
+            }
+            if ($clean_output === null) {
+                $cleanCommand[] = $test_clean;
+                $clean_output = system_with_timeout($cleanCommand, $cleanEnv);
+            }
         }
 
         if (!$cfg['keep']['clean']) {
@@ -4276,7 +4320,14 @@ class SkipCache
         $this->keepFile = $keepFile;
     }
 
-    public function checkSkip(string|array $command, string $code, string $checkFile, string $tempFile, array $env): string
+    public function checkSkip(
+        string|array $command,
+        string $code,
+        string $checkFile,
+        string $tempFile,
+        array $env,
+        bool $useForkServer
+    ): string
     {
         // Extension tests frequently use something like <?php require 'skipif.inc';
         // for skip checks. This forces us to cache per directory to avoid pollution.
@@ -4292,12 +4343,26 @@ class SkipCache
         }
 
         save_text($checkFile, $code, $tempFile);
-        if (is_array($command)) {
-            $command[] = $checkFile;
-        } else {
-            $command .= " \"$checkFile\"";
+        $result = null;
+        if ($useForkServer) {
+            $result = system_with_test_fork_server(
+                $command,
+                $checkFile,
+                $env,
+                'skip',
+                false,
+                false,
+            );
         }
-        $result = trim(system_with_timeout($command, $env));
+        if ($result === null) {
+            if (is_array($command)) {
+                $command[] = $checkFile;
+            } else {
+                $command .= " \"$checkFile\"";
+            }
+            $result = system_with_timeout($command, $env);
+        }
+        $result = trim($result);
         if (strpos($result, 'nocache') === 0) {
             $result = '';
         } else if ($this->enable) {
