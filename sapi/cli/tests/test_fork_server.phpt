@@ -34,6 +34,7 @@ echo "first\n";
 $stat = fstat(STDIN);
 echo ($stat['mode'] & 0170000) === 0010000 ? "pipe\n" : "not pipe\n";
 echo fread(STDIN, 1) === '' ? "empty\n" : "not empty\n";
+echo getenv('SCRIPT_FILENAME') === __FILE__ ? "script env\n" : "wrong script env\n";
 PHP,
     __DIR__ . '/test_fork_server_2.php' => <<<'PHP'
 <?php
@@ -48,6 +49,25 @@ PHP,
 <?php
 echo "after\n";
 PHP,
+    __DIR__ . '/test_fork_server_5.php' => <<<'PHP'
+<?php
+echo getenv('SCRIPT_FILENAME') === false && getenv('PATH_TRANSLATED') === false
+    ? "unset env\n"
+    : "unexpected env\n";
+$extraArgs = getenv('TEST_PHP_EXTRA_ARGS');
+echo strlen($extraArgs) === 1508
+        && str_starts_with($extraArgs, '-d test=')
+        && substr($extraArgs, 8) === str_repeat('x', 1500)
+    ? "extra args\n"
+    : "unexpected extra args\n";
+fwrite(STDERR, "hidden error\n");
+PHP,
+    __DIR__ . '/test_fork_server_6.php' => <<<'PHP'
+<?php
+echo getenv('TEST_PHP_EXTRA_ARGS') === 'server defaults'
+    ? "restored extra args\n"
+    : "leaked extra args\n";
+PHP,
 ];
 
 foreach ($scripts as $file => $code) {
@@ -55,6 +75,8 @@ foreach ($scripts as $file => $code) {
 }
 
 $token = 'TESTTOKEN';
+$processEnv = getenv();
+$processEnv['TEST_PHP_EXTRA_ARGS'] = 'server defaults';
 $process = proc_open(
     [$php, '-n', '--test-fork-server', $token],
     [
@@ -63,9 +85,17 @@ $process = proc_open(
         2 => ['redirect', 1],
     ],
     $pipes,
+    null,
+    $processEnv,
 );
-foreach (array_keys($scripts) as $file) {
-    fwrite($pipes[0], "$file\n");
+$files = array_keys($scripts);
+foreach ($files as $index => $file) {
+    if ($index === array_key_last($files) - 1) {
+        $extraArgs = '-d test=' . str_repeat('x', 1500);
+        fwrite($pipes[0], "@--\t" . strlen($extraArgs) . "\n$extraArgs\n$file\n");
+    } else {
+        fwrite($pipes[0], "$file\n");
+    }
 }
 fclose($pipes[0]);
 $output = stream_get_contents($pipes[1]);
@@ -83,6 +113,10 @@ var_dump($exitCode);
 |TESTTOKEN:B:0|first
 pipe
 empty
+script env
 |TESTTOKEN:E:0:0||TESTTOKEN:B:1|isolated
 |TESTTOKEN:E:1:0||TESTTOKEN:B:2||TESTTOKEN:E:2:23||TESTTOKEN:B:3|after
-|TESTTOKEN:E:3:0|int(0)
+|TESTTOKEN:E:3:0||TESTTOKEN:B:4|unset env
+extra args
+|TESTTOKEN:E:4:0||TESTTOKEN:B:5|restored extra args
+|TESTTOKEN:E:5:0|int(0)
