@@ -15,8 +15,8 @@ $algos = [
 ];
 
 foreach ($algos as $algo) {
-  $hash = password_hash("foo", $algo);
-  var_dump($hash === crypt("foo", $hash));
+    $hash = password_hash("foo", $algo, ['cost' => 4]);
+    var_dump($hash === crypt("foo", $hash));
 }
 
 echo "OK!";
