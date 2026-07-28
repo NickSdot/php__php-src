@@ -708,6 +708,16 @@ would otherwise contend excessively for a shared resource.
 
 **Format:** A positive integer. Comment lines starting with # are also allowed.
 
+``FOCUSED_MAX_CONCURRENCY`` file
+--------------------------------
+
+**Description:** This file has the same format as ``MAX_CONCURRENCY``, but only applies when every
+selected test is from its directory. In that case, it replaces the directory-wide ``CONFLICTS``
+file with the specified concurrency limit. Per-test ``--CONFLICTS--`` sections are still honored.
+For mixed or full-suite runs, the directory's normal ``CONFLICTS`` file remains in effect.
+
+**Required:** No.
+
 ``--WHITESPACE_SENSITIVE--``
 ----------------------------
 

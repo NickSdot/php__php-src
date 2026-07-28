@@ -1692,6 +1692,21 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     $workerProcs = [];
     $workerSocks = [];
 
+    $selectedDirectories = array_unique(array_map('dirname', $test_files));
+    $focusedDirectory = count($selectedDirectories) === 1
+        ? reset($selectedDirectories)
+        : null;
+    $focusedMaxConcurrency = null;
+    if ($focusedDirectory !== null) {
+        $focusedMaxConcurrencyFile = $focusedDirectory . '/FOCUSED_MAX_CONCURRENCY';
+        if (file_exists($focusedMaxConcurrencyFile)) {
+            $focusedMaxConcurrency = parse_max_concurrency(
+                file_get_contents($focusedMaxConcurrencyFile),
+                $focusedMaxConcurrencyFile,
+            );
+        }
+    }
+
     // Each test may specify a list of conflict keys. While a test that conflicts with
     // key K is running, no other test that conflicts with K may run. Conflict keys are
     // specified either in the --CONFLICTS-- section, or CONFLICTS file inside a directory.
@@ -1704,9 +1719,17 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     foreach ($test_files as $i => $file) {
         $dir = dirname($file);
         if (!array_key_exists($dir, $dirMaxConcurrency)) {
-            $maxConcurrencyFile = $dir . '/MAX_CONCURRENCY';
-            $dirMaxConcurrency[$dir] = null;
-            if (file_exists($maxConcurrencyFile)) {
+            $maxConcurrencyFile = null;
+            if ($dir === $focusedDirectory && $focusedMaxConcurrency !== null) {
+                $dirMaxConcurrency[$dir] = $focusedMaxConcurrency;
+            } else {
+                $maxConcurrencyFile = $dir . '/MAX_CONCURRENCY';
+                $dirMaxConcurrency[$dir] = null;
+            }
+            if (
+                $maxConcurrencyFile !== null
+                && file_exists($maxConcurrencyFile)
+            ) {
                 $dirMaxConcurrency[$dir] = parse_max_concurrency(
                     file_get_contents($maxConcurrencyFile),
                     $maxConcurrencyFile,
@@ -1724,7 +1747,9 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
             // Cache per-directory conflicts in a separate map, so we compute these only once.
             if (!isset($dirConflictsWith[$dir])) {
                 $dirConflicts = [];
-                if (file_exists($dir . '/CONFLICTS')) {
+                $useFocusedConcurrency = $dir === $focusedDirectory
+                    && $focusedMaxConcurrency !== null;
+                if (!$useFocusedConcurrency && file_exists($dir . '/CONFLICTS')) {
                     $contents = file_get_contents($dir . '/CONFLICTS');
                     $dirConflicts = parse_conflicts($contents);
                 }
