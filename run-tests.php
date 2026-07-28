@@ -718,7 +718,7 @@ function main(): void
             $configurationFile = realpath($conf_passed);
             $pass_options .= " -c '" . $configurationFile . "'";
             $pass_options_args[] = '-c';
-            $pass_options_args[] = $configurationFile;
+            $pass_options_args[] = (string) $configurationFile;
         }
     }
 
@@ -1331,7 +1331,8 @@ function system_with_timeout(
     ?string $stdin = null,
     bool $captureStdIn = true,
     bool $captureStdOut = true,
-    bool $captureStdErr = true
+    bool $captureStdErr = true,
+    bool $mergeStdErr = false
 ) {
     global $valgrind;
 
@@ -1357,7 +1358,9 @@ function system_with_timeout(
         $descriptorspec[1] = ['pipe', 'w'];
     }
     if ($captureStdErr) {
-        $descriptorspec[2] = ['pipe', 'w'];
+        $descriptorspec[2] = $mergeStdErr
+            ? ['redirect', 1]
+            : ['pipe', 'w'];
     }
     $proc = proc_open($commandline, $descriptorspec, $pipes, TEST_PHP_SRCDIR, $bin_env, ['suppress_errors' => true]);
 
@@ -1617,6 +1620,49 @@ function can_run_in_test_fork_server(TestFile $test, bool $uses_cgi): bool
             'STDIN',
             'XLEAK'
         );
+}
+
+function can_run_with_structured_test_command(TestFile $test): bool
+{
+    global $preload, $valgrind;
+
+    return !$valgrind
+        && !$preload
+        && !$test->hasAnySections(
+            'ARGS',
+            'CAPTURE_STDIO',
+            'DEFLATE_POST',
+            'GZIP_POST',
+            'POST',
+            'POST_RAW',
+            'PUT',
+        );
+}
+
+function create_structured_test_command(
+    string $php,
+    array $sapiOptionArgs,
+    array $passOptionArgs,
+    array $iniSettings,
+    string $testFile,
+    int $numRepeats
+): array {
+    $command = [
+        $php,
+        ...$sapiOptionArgs,
+        ...$passOptionArgs,
+    ];
+    if ($numRepeats > 1) {
+        $command[] = '--repeat';
+        $command[] = (string) $numRepeats;
+    }
+
+    return [
+        ...$command,
+        ...settings2arguments($iniSettings),
+        '-f',
+        $testFile,
+    ];
 }
 
 function system_with_test_fork_server(
@@ -2673,6 +2719,7 @@ TEST $file
         }
     }
 
+    $testIniSettings = $ini_settings;
     $ini_settings = settings2params($ini_settings);
 
     $env['TEST_PHP_EXTRA_ARGS'] = $pass_options . ' ' . $ini_settings;
@@ -3050,7 +3097,26 @@ COMMAND $cmd
         $out = system_with_test_fork_server("$php $pass_options $ini_settings", $test_file, $env);
     }
     if ($out === null) {
-        $out = system_with_timeout($cmd, $env, $stdin, $captureStdIn, $captureStdOut, $captureStdErr);
+        $useStructuredCommand = can_run_with_structured_test_command($test);
+        $testCommand = $useStructuredCommand
+            ? create_structured_test_command(
+                $phpExecutable,
+                $sapiOptionArgs,
+                $pass_options_args,
+                $testIniSettings,
+                $test_file,
+                $num_repeats,
+            )
+            : $cmd;
+        $out = system_with_timeout(
+            $testCommand,
+            $env,
+            $stdin,
+            $captureStdIn,
+            $captureStdOut,
+            $captureStdErr,
+            $useStructuredCommand && $captureStdOut && $captureStdErr,
+        );
     }
 
     $junit->stopTimer($shortname);
