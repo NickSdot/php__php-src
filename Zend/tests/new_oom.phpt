@@ -1,5 +1,5 @@
 --TEST--
-Test OOM on new of each class
+Test OOM on new of each instantiable class
 --SKIPIF--
 <?php
 if (getenv("USE_ZEND_ALLOC") === "0") die("skip requires zmm");
@@ -75,7 +75,10 @@ function finishOomTest(array $test): bool
 
 $file = __DIR__ . '/new_oom.inc';
 $php = PHP_BINARY;
-$classes = get_declared_classes();
+$classes = array_filter(
+    get_declared_classes(),
+    static fn(string $class): bool => (new ReflectionClass($class))->isInstantiable(),
+);
 $tests = [];
 $processCount = getOomProcessCount();
 
