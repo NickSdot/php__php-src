@@ -1931,6 +1931,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     // specified either in the --CONFLICTS-- section, or CONFLICTS file inside a directory.
     $dirConflictsWith = [];
     $fileConflictsWith = [];
+    $fileConflictGroups = [];
     // A MAX_CONCURRENCY file limits how many workers may run tests from that directory.
     $dirMaxConcurrency = [];
     $fileConcurrencyDirectory = [];
@@ -1960,6 +1961,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         }
 
         $contents = file_get_contents($file);
+        $conflictGroup = null;
         if (preg_match('/^--CONFLICTS--(.+?)^--/ms', $contents, $matches)) {
             $conflicts = parse_conflicts($matches[1]);
         } else {
@@ -1975,6 +1977,10 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
                 $dirConflictsWith[$dir] = $dirConflicts;
             }
             $conflicts = $dirConflictsWith[$dir];
+            if ($conflicts && $dirMaxConcurrency[$dir] !== null) {
+                // A capped directory may share its directory-level conflicts internally.
+                $conflictGroup = $dir;
+            }
         }
 
         // For tests conflicting with "all", no other tests may run in parallel. We'll run these
@@ -1985,6 +1991,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         }
 
         $fileConflictsWith[$file] = $conflicts;
+        $fileConflictGroups[$file] = $conflictGroup;
     }
 
     // Some tests assume that they are executed in a certain order. We will be popping from
@@ -2113,7 +2120,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     $rawMessageBuffers = [];
     $testsInProgress = 0;
 
-    // Map from conflict key to worker ID.
+    // Maps conflict keys to worker IDs and their optional internally compatible group.
     $activeConflicts = [];
     // Tests waiting due to conflicts. Map from conflict key to array.
     $waitingTests = [];
@@ -2174,15 +2181,18 @@ escape:
                                 }
                             }
                             unset($workerConcurrencyDirectories[$i]);
-                            foreach ($activeConflicts as $key => $workerId) {
-                                if ($workerId === $i) {
-                                    unset($activeConflicts[$key]);
-                                    if (isset($waitingTests[$key])) {
-                                        while ($test = array_pop($waitingTests[$key])) {
-                                            $test_files[] = $test;
-                                        }
-                                        unset($waitingTests[$key]);
+                            foreach ($activeConflicts as $key => $activeGroups) {
+                                unset($activeGroups[$i]);
+                                if ($activeGroups) {
+                                    $activeConflicts[$key] = $activeGroups;
+                                    continue;
+                                }
+                                unset($activeConflicts[$key]);
+                                if (isset($waitingTests[$key])) {
+                                    while ($test = array_pop($waitingTests[$key])) {
+                                        $test_files[] = $test;
                                     }
+                                    unset($waitingTests[$key]);
                                 }
                             }
                             $junit->mergeResults($message["junit"]);
@@ -2204,8 +2214,15 @@ escape:
                             $averageFilesPerWorker = max(1, (int) ceil($totalFileCount / count($workerProcs)));
                             $batchSize = min($maxBatchSize, $averageFilesPerWorker);
                             while (count($files) < $batchSize && $file = array_pop($test_files)) {
+                                $conflictGroup = $fileConflictGroups[$file];
                                 foreach ($fileConflictsWith[$file] as $conflictKey) {
-                                    if (isset($activeConflicts[$conflictKey])) {
+                                    if (
+                                        isset($activeConflicts[$conflictKey])
+                                        && has_active_conflict(
+                                            $activeConflicts[$conflictKey],
+                                            $conflictGroup,
+                                        )
+                                    ) {
                                         $waitingTests[$conflictKey][] = $file;
                                         continue 2;
                                     }
@@ -2227,8 +2244,16 @@ escape:
                             }
                             if ($files) {
                                 foreach ($files as $file) {
+                                    $conflictGroup = $fileConflictGroups[$file];
                                     foreach ($fileConflictsWith[$file] as $conflictKey) {
-                                        $activeConflicts[$conflictKey] = $i;
+                                        if (
+                                            array_key_exists($i, $activeConflicts[$conflictKey] ?? [])
+                                            && $activeConflicts[$conflictKey][$i] !== $conflictGroup
+                                        ) {
+                                            $activeConflicts[$conflictKey][$i] = null;
+                                        } else {
+                                            $activeConflicts[$conflictKey][$i] = $conflictGroup;
+                                        }
                                     }
                                 }
                                 $workerConcurrencyDirectories[$i] = array_keys($batchConcurrencyDirectories);
@@ -4057,6 +4082,22 @@ function parse_conflicts(string $text): array
     // Strip comments
     $text = preg_replace('/#.*/', '', $text);
     return array_map('trim', explode("\n", trim($text)));
+}
+
+/**
+ * @param array<int, ?string> $activeGroups
+ */
+function has_active_conflict(array $activeGroups, ?string $candidateGroup): bool
+{
+    if ($candidateGroup === null) {
+        return true;
+    }
+    foreach ($activeGroups as $activeGroup) {
+        if ($activeGroup !== $candidateGroup) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function parse_max_concurrency(string $text, string $file): int
