@@ -13,6 +13,7 @@ pcntl_setqos_class(Pcntl\QosClass::Default);
 var_dump(Pcntl\QosClass::Default === pcntl_getqos_class());
 pcntl_setqos_class(Pcntl\QosClass::Background);
 var_dump(Pcntl\QosClass::Background == pcntl_getqos_class());
+pcntl_setqos_class(Pcntl\QosClass::Default);
 ?>
 --EXPECT--
 bool(true)
