@@ -55,11 +55,11 @@ function getDbConnection(string $class = PDO::class, ?array $attributes = null) 
     return $db;
 }
 
-function skipIfNoDbConnection(): void {
+function skipIfNoDbConnection(): PDO {
     $attributes = getenv('PDO_DBLIB_TEST_DSN') === false
         ? [Pdo\Dblib::ATTR_CONNECTION_TIMEOUT => 1]
         : null;
-    getDbConnection(PDO::class, $attributes);
+    return getDbConnection(PDO::class, $attributes);
 }
 
 function connectToDb() {
