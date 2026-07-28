@@ -862,13 +862,67 @@ function parse_worker_count(string $workerCount): ?int
 
 function can_create_parallel_worker_socket(): bool
 {
-    $socket = @stream_socket_server('tcp://127.0.0.1:0');
-    if ($socket === false) {
+    if (!IS_WINDOWS && can_create_parallel_worker_socket_pair()) {
+        return true;
+    }
+
+    $server = create_parallel_worker_server();
+    if ($server === null) {
         return false;
     }
 
-    fclose($socket);
+    fclose($server['socket']);
     return true;
+}
+
+function can_create_parallel_worker_socket_pair(): bool
+{
+    $sockets = create_parallel_worker_socket_pair();
+    if ($sockets === false) {
+        return false;
+    }
+
+    fclose($sockets[0]);
+    fclose($sockets[1]);
+    return true;
+}
+
+/**
+ * @return array{socket: resource, uri: string}|null
+ */
+function create_parallel_worker_server(): ?array
+{
+    $server = @stream_socket_server('tcp://127.0.0.1:0');
+    if ($server === false) {
+        return null;
+    }
+
+    $name = stream_socket_get_name($server, false);
+    if ($name === false) {
+        fclose($server);
+        return null;
+    }
+
+    // PHP returns IPv6 addresses without enclosing them in square brackets.
+    $portPos = strrpos($name, ':');
+    $host = substr($name, 0, $portPos);
+    if (strpos($host, ':') !== false) {
+        $host = "[$host]";
+    }
+    $port = substr($name, $portPos + 1);
+
+    return [
+        'socket' => $server,
+        'uri' => "tcp://$host:$port",
+    ];
+}
+
+/**
+ * @return array{0: resource, 1: resource}|false
+ */
+function create_parallel_worker_socket_pair()
+{
+    return @stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
 }
 
 function verify_config(string $php): void
@@ -1780,37 +1834,59 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
     echo "Spawning $workers workers... ";
 
-    // We use sockets rather than STDIN/STDOUT for comms because on Windows,
-    // those can't be non-blocking for some reason.
-    $listenSock = stream_socket_server("tcp://127.0.0.1:0") or error("Couldn't create socket on localhost.");
-    $sockName = stream_socket_get_name($listenSock, false);
-    // PHP is terrible and returns IPv6 addresses not enclosed by []
-    $portPos = strrpos($sockName, ":");
-    $sockHost = substr($sockName, 0, $portPos);
-    if (false !== strpos($sockHost, ":")) {
-        $sockHost = "[$sockHost]";
+    // We use sockets rather than STDIN/STDOUT for comms because those can't
+    // be non-blocking on Windows. POSIX workers inherit one end of a socket
+    // pair directly, while other platforms connect to a TCP server.
+    $useSocketPairs = !IS_WINDOWS && can_create_parallel_worker_socket_pair();
+    $workerServer = null;
+    if (!$useSocketPairs) {
+        $workerServer = create_parallel_worker_server();
+        if ($workerServer === null) {
+            error("Couldn't create worker socket.");
+        }
     }
-    $sockPort = substr($sockName, $portPos + 1);
-    $sockUri = "tcp://$sockHost:$sockPort";
     $totalFileCount = count($test_files);
 
     $startTime = microtime(true);
     for ($i = 1; $i <= $workers; $i++) {
+        $descriptors = [];
+        $workerEnvironment = [
+            "TEST_PHP_WORKER" => $i,
+            "TEST_PHP_FD" => "",
+            "TEST_PHP_URI" => "",
+        ];
+        if (!$useSocketPairs) {
+            $workerEnvironment["TEST_PHP_URI"] = $workerServer['uri'];
+        } else {
+            $sockets = create_parallel_worker_socket_pair();
+            if ($sockets === false) {
+                kill_children($workerProcs);
+                error("Failed to create socket pair for worker $i");
+            }
+            $workerSocks[$i] = $sockets[0];
+            $descriptors[3] = $sockets[1];
+            $workerEnvironment["TEST_PHP_FD"] = 3;
+        }
+
         $proc = proc_open(
             [$thisPHP, $thisScript],
-            [], // Inherit our stdin, stdout and stderr
+            $descriptors,
             $pipes,
             null,
-            $GLOBALS['environment'] + [
-                "TEST_PHP_WORKER" => $i,
-                "TEST_PHP_URI" => $sockUri,
-            ],
+            array_replace($GLOBALS['environment'], $workerEnvironment),
             [
                 "suppress_errors" => true,
                 'create_new_console' => true,
             ]
         );
+        if ($useSocketPairs) {
+            fclose($sockets[1]);
+        }
         if ($proc === false) {
+            if ($useSocketPairs) {
+                fclose($sockets[0]);
+                unset($workerSocks[$i]);
+            }
             kill_children($workerProcs);
             error("Failed to spawn worker $i");
         }
@@ -1818,10 +1894,14 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     }
 
     for ($i = 1; $i <= $workers; $i++) {
-        $workerSock = stream_socket_accept($listenSock, 5);
-        if ($workerSock === false) {
-            kill_children($workerProcs);
-            error("Failed to accept connection from worker.");
+        if (!$useSocketPairs) {
+            $workerSock = stream_socket_accept($workerServer['socket'], 5);
+            if ($workerSock === false) {
+                kill_children($workerProcs);
+                error("Failed to accept connection from worker.");
+            }
+        } else {
+            $workerSock = $workerSocks[$i];
         }
 
         $greeting = base64_encode(serialize([
@@ -1856,6 +1936,9 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
         $workerID = $reply["workerID"];
         $workerSocks[$workerID] = $workerSock;
+    }
+    if (!$useSocketPairs) {
+        fclose($workerServer['socket']);
     }
     printf("Done in %.2fs\n", microtime(true) - $startTime);
     echo "=====================================================================\n";
@@ -2131,9 +2214,15 @@ function run_worker(): void
 
     global $junit;
 
-    $sockUri = getenv("TEST_PHP_URI");
-
-    $workerSock = stream_socket_client($sockUri, $_, $_, 5) or error("Couldn't connect to $sockUri");
+    $workerFd = getenv("TEST_PHP_FD");
+    if ($workerFd !== false && $workerFd !== '') {
+        $workerSock = fopen("php://fd/$workerFd", "r+")
+            or error("Couldn't open worker socket on file descriptor $workerFd");
+    } else {
+        $sockUri = getenv("TEST_PHP_URI");
+        $workerSock = stream_socket_client($sockUri, $_, $_, 5)
+            or error("Couldn't connect to $sockUri");
+    }
 
     $greeting = fgets($workerSock);
     $greeting = unserialize(base64_decode($greeting)) or die("Could not decode greeting\n");
