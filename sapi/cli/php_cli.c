@@ -163,11 +163,16 @@ const opt_struct OPTIONS[] = {
 
 typedef struct {
 	char file[MAXPATHLEN];
+	char *test_php_extra_args;
+	size_t test_php_extra_args_length;
 	size_t index;
 	const char *token;
 	bool set_script_environment;
 	bool capture_stderr;
+	bool has_test_php_extra_args;
 } php_cli_test_batch;
+
+#define PHP_CLI_TEST_BATCH_MAX_EXTRA_ARGS (1024 * 1024)
 
 typedef enum {
 	PHP_CLI_TEST_BATCH_ERROR = -1,
@@ -209,39 +214,108 @@ static bool php_cli_test_batch_init(php_cli_test_batch *batch, const char *token
 }
 /* }}} */
 
-static int php_cli_test_batch_next(php_cli_test_batch *batch) /* {{{ */
+static int php_cli_test_batch_read_line(char *buffer, size_t size) /* {{{ */
 {
-	while (fgets(batch->file, sizeof(batch->file), stdin)) {
-		size_t length = strlen(batch->file);
+	while (fgets(buffer, size, stdin)) {
+		size_t length = strlen(buffer);
 
-		while (length > 0 && (batch->file[length - 1] == '\n' || batch->file[length - 1] == '\r')) {
-			batch->file[--length] = '\0';
+		while (length > 0 && (buffer[length - 1] == '\n' || buffer[length - 1] == '\r')) {
+			buffer[--length] = '\0';
 		}
 		if (length == 0) {
 			continue;
 		}
-		if (length == sizeof(batch->file) - 1 && !feof(stdin)) {
-			fprintf(stderr, "Test path exceeds MAXPATHLEN\n");
+		if (length == size - 1 && !feof(stdin)) {
+			fprintf(stderr, "Test request exceeds MAXPATHLEN\n");
 			return -1;
-		}
-		batch->set_script_environment = true;
-		batch->capture_stderr = true;
-		if ((batch->file[0] == '+' || batch->file[0] == '-')
-				&& (batch->file[1] == '+' || batch->file[1] == '-')
-				&& batch->file[2] == '\t') {
-			batch->set_script_environment = batch->file[0] == '+';
-			batch->capture_stderr = batch->file[1] == '+';
-			memmove(batch->file, batch->file + 3, length - 2);
-			length -= 3;
-			if (length == 0) {
-				fprintf(stderr, "Test path is empty\n");
-				return -1;
-			}
 		}
 		return 1;
 	}
 
 	return ferror(stdin) ? -1 : 0;
+}
+/* }}} */
+
+static bool php_cli_test_batch_read_bytes(char *buffer, size_t length) /* {{{ */
+{
+	while (length > 0) {
+		size_t bytes_read = fread(buffer, 1, length, stdin);
+		if (bytes_read == 0) {
+			return false;
+		}
+		buffer += bytes_read;
+		length -= bytes_read;
+	}
+	return true;
+}
+/* }}} */
+
+static int php_cli_test_batch_next(php_cli_test_batch *batch) /* {{{ */
+{
+	free(batch->test_php_extra_args);
+	batch->test_php_extra_args = NULL;
+	batch->test_php_extra_args_length = 0;
+	batch->has_test_php_extra_args = false;
+
+	int has_line = php_cli_test_batch_read_line(batch->file, sizeof(batch->file));
+
+	if (has_line <= 0) {
+		return has_line;
+	}
+
+	size_t length = strlen(batch->file);
+	batch->set_script_environment = true;
+	batch->capture_stderr = true;
+	/* A length-prefixed request is followed by extra args, a newline, then the test path. */
+	if (batch->file[0] == '@'
+			&& (batch->file[1] == '+' || batch->file[1] == '-')
+			&& (batch->file[2] == '+' || batch->file[2] == '-')
+			&& batch->file[3] == '\t') {
+		char *end;
+		errno = 0;
+		unsigned long long extra_args_length = strtoull(batch->file + 4, &end, 10);
+		if (errno || end == batch->file + 4 || *end != '\0'
+				|| extra_args_length > PHP_CLI_TEST_BATCH_MAX_EXTRA_ARGS) {
+			fprintf(stderr, "Invalid TEST_PHP_EXTRA_ARGS length\n");
+			return -1;
+		}
+
+		batch->set_script_environment = batch->file[1] == '+';
+		batch->capture_stderr = batch->file[2] == '+';
+		batch->test_php_extra_args_length = (size_t) extra_args_length;
+		batch->test_php_extra_args = malloc(batch->test_php_extra_args_length + 1);
+		if (!batch->test_php_extra_args
+				|| !php_cli_test_batch_read_bytes(
+					batch->test_php_extra_args, batch->test_php_extra_args_length)
+				|| fgetc(stdin) != '\n') {
+			fprintf(stderr, "Unable to read TEST_PHP_EXTRA_ARGS\n");
+			free(batch->test_php_extra_args);
+			batch->test_php_extra_args = NULL;
+			batch->test_php_extra_args_length = 0;
+			return -1;
+		}
+		batch->test_php_extra_args[batch->test_php_extra_args_length] = '\0';
+		batch->has_test_php_extra_args = true;
+
+		has_line = php_cli_test_batch_read_line(batch->file, sizeof(batch->file));
+		if (has_line <= 0) {
+			fprintf(stderr, "Test path is missing\n");
+			return -1;
+		}
+		return 1;
+	}
+	if ((batch->file[0] == '+' || batch->file[0] == '-')
+			&& (batch->file[1] == '+' || batch->file[1] == '-')
+			&& batch->file[2] == '\t') {
+		batch->set_script_environment = batch->file[0] == '+';
+		batch->capture_stderr = batch->file[1] == '+';
+		memmove(batch->file, batch->file + 3, length - 2);
+		if (length == 3) {
+			fprintf(stderr, "Test path is empty\n");
+			return -1;
+		}
+	}
+	return 1;
 }
 /* }}} */
 
@@ -385,6 +459,13 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 	} else if (unsetenv("PATH_TRANSLATED") < 0 || unsetenv("SCRIPT_FILENAME") < 0) {
 		fprintf(stderr, "Unable to unset test environment\n");
 		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+	if (batch->has_test_php_extra_args) {
+		if (memchr(batch->test_php_extra_args, '\0', batch->test_php_extra_args_length)
+				|| setenv("TEST_PHP_EXTRA_ARGS", batch->test_php_extra_args, 1) < 0) {
+			fprintf(stderr, "Unable to set TEST_PHP_EXTRA_ARGS\n");
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
 	}
 	php_child_init();
 
@@ -1453,6 +1534,7 @@ out:
 	}
 	if (test_batch.token && (test_batch_complete || test_batch_failed || pid != getpid())) {
 		int exit_status = EG(exit_status);
+		free(test_batch.test_php_extra_args);
 		return test_batch_complete ? 0 : exit_status;
 	}
 	if (context.mode == PHP_CLI_MODE_LINT && argc > php_optind && strcmp(argv[php_optind], "--")) {
