@@ -9,7 +9,7 @@ if (!defined('PASSWORD_ARGON2ID')) die('skip password_hash not built with Argon2
 <?php
 
 $password = "the password for testing 12345!";
-$options = ['time_cost' => 3];
+$options = ['memory_cost' => 8, 'time_cost' => 3];
 
 $algos = [
     PASSWORD_ARGON2I,
