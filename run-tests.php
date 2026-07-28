@@ -2376,6 +2376,7 @@ function run_test(string $php, $file, array $env): string
         $skipCache = new SkipCache($enableSkipCache, $cfg['keep']['skip']);
     }
 
+    $originalPhpExecutable = $php;
     $phpExecutable = $php;
     $sapiOptionArgs = [];
     $php = escapeshellarg($php);
@@ -3072,9 +3073,18 @@ COMMAND $cmd
         save_text($test_clean, trim($test->getSection('CLEAN')), $temp_clean);
 
         if (!$no_clean) {
-            $extra = !IS_WINDOWS ?
-                "unset REQUEST_METHOD; unset QUERY_STRING; unset PATH_TRANSLATED; unset SCRIPT_FILENAME; unset REQUEST_METHOD;" : "";
-            $clean_output = system_with_timeout("$extra $orig_php $pass_options -q $orig_ini_settings $no_file_cache \"$test_clean\"", $env);
+            $cleanCommand = [
+                $originalPhpExecutable,
+                ...$pass_options_args,
+                '-q',
+                ...$orig_ini_settings_args,
+                '-d',
+                'opcache.file_cache=',
+                '-d',
+                'opcache.file_cache_only=0',
+                $test_clean,
+            ];
+            $clean_output = system_with_timeout($cleanCommand, $env);
         }
 
         if (!$cfg['keep']['clean']) {
