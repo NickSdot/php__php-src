@@ -1646,6 +1646,8 @@ function has_only_fork_safe_ini_settings(TestFile $test): bool
     static $safeSettings = [
         'phar.readonly' => true,
         'phar.require_hash' => true,
+        'precision' => true,
+        'serialize_precision' => true,
         'soap.wsdl_cache_enabled' => true,
     ];
 
