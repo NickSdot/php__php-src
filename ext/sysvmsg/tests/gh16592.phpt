@@ -14,6 +14,7 @@ try {
 } catch (\TypeError $e) {
 	echo $e->getMessage();
 }
+msg_remove_queue($q);
 ?>
 --EXPECT--
 Test::__serialize() must return an array
