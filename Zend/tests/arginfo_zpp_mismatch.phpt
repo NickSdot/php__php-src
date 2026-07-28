@@ -10,6 +10,16 @@ if (getenv('SKIP_MSAN')) die("skip msan misses interceptors for some functions")
 
 require __DIR__ . "/arginfo_zpp_mismatch.inc";
 
+function cleanupIpcResult($result) {
+    if ($result instanceof SysvMessageQueue) {
+        msg_remove_queue($result);
+    } elseif ($result instanceof SysvSemaphore) {
+        sem_remove($result);
+    } elseif ($result instanceof SysvSharedMemory) {
+        shm_remove($result);
+    }
+}
+
 function test($function) {
     if (skipFunction($function)) {
         return;
@@ -22,39 +32,51 @@ function test($function) {
         echo "Testing " . get_class($function[0]) . "::$function[1]\n";
     }
     try {
-        @$function();
+        cleanupIpcResult(@$function());
     } catch (Throwable) {
     }
     try {
-        @$function(null);
+        if ($function === 'msg_queue_exists') {
+            @$function(1);
+        } else {
+            cleanupIpcResult(@$function(null));
+        }
     } catch (Throwable) {
     }
     try {
-        @$function(null, null);
+        cleanupIpcResult(@$function(null, null));
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null);
+        if ($function === 'sem_get' || $function === 'shm_attach') {
+            cleanupIpcResult(@$function(null, null, 0600));
+        } else {
+            cleanupIpcResult(@$function(null, null, null));
+        }
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null, null);
+        if ($function === 'sem_get') {
+            cleanupIpcResult(@$function(null, null, 0600, null));
+        } else {
+            cleanupIpcResult(@$function(null, null, null, null));
+        }
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null, null, null);
+        cleanupIpcResult(@$function(null, null, null, null, null));
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null, null, null, null);
+        cleanupIpcResult(@$function(null, null, null, null, null, null));
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null, null, null, null, null);
+        cleanupIpcResult(@$function(null, null, null, null, null, null, null));
     } catch (Throwable) {
     }
     try {
-        @$function(null, null, null, null, null, null, null, null);
+        cleanupIpcResult(@$function(null, null, null, null, null, null, null, null));
     } catch (Throwable) {
     }
     ob_end_clean();
