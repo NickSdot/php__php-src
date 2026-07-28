@@ -14,9 +14,11 @@ $source = __DIR__ . '/bug13727.tmp';
 file_put_contents($source, '');
 
 $phar = new Phar($archive, 0, 'DataArchive.phar');
+$phar->startBuffering();
 for ($i = 0; $i < 4 * 1024; $i++) {
     $phar->addFile($source, __DIR__);
 }
+$phar->stopBuffering();
 
 var_dump($i);
 ?>
