@@ -7,6 +7,7 @@ sockets
 if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
     die('skip not valid for Windows.');
 }
+require __DIR__ . '/unix_dgram_skipif.inc';
 ?>
 --FILE--
 <?php
