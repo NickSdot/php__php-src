@@ -696,6 +696,28 @@ Example 1 (snippet):
 
 Example 1 (full): :ref:`conflicts_1.phpt`
 
+``MAX_CONCURRENCY`` file
+------------------------
+
+**Description:** This file is only relevant for parallel test execution. It limits how many workers
+may simultaneously execute tests from its directory. Unlike a ``CONFLICTS`` file, which enforces
+mutual exclusion, this allows a bounded amount of parallelism for tests that are safe to overlap but
+would otherwise contend excessively for a shared resource.
+
+**Required:** No.
+
+**Format:** A positive integer. Comment lines starting with # are also allowed.
+
+``FOCUSED_MAX_CONCURRENCY`` file
+--------------------------------
+
+**Description:** This file has the same format as ``MAX_CONCURRENCY``, but only applies when every
+selected test is from its directory. In that case, it replaces the directory-wide ``CONFLICTS``
+file with the specified concurrency limit. Per-test ``--CONFLICTS--`` sections are still honored.
+For mixed or full-suite runs, the directory's normal ``CONFLICTS`` file remains in effect.
+
+**Required:** No.
+
 ``--WHITESPACE_SENSITIVE--``
 ----------------------------
 
