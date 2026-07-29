@@ -370,6 +370,8 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 	return PHP_CLI_TEST_BATCH_ERROR;
 #else
 	int test_output[2];
+	sigset_t termination_signals;
+	sigset_t previous_signal_mask;
 	int has_test = php_cli_test_batch_next(batch);
 
 	if (has_test < 0) {
@@ -387,10 +389,21 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 	}
 	php_cli_test_batch_marker(batch, 'B', 0);
 
+	sigemptyset(&termination_signals);
+	sigaddset(&termination_signals, SIGINT);
+	sigaddset(&termination_signals, SIGTERM);
+	if (sigprocmask(SIG_BLOCK, &termination_signals, &previous_signal_mask) < 0) {
+		close(test_output[0]);
+		close(test_output[1]);
+		fprintf(stderr, "Unable to block termination signals\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
+
 	pid_t test_pid = fork();
 	if (test_pid < 0) {
 		close(test_output[0]);
 		close(test_output[1]);
+		sigprocmask(SIG_SETMASK, &previous_signal_mask, NULL);
 		fprintf(stderr, "Unable to fork test process\n");
 		return PHP_CLI_TEST_BATCH_ERROR;
 	}
@@ -400,6 +413,16 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 
 		close(test_output[1]);
 		php_cli_test_child_pid = test_pid;
+		if (sigprocmask(SIG_SETMASK, &previous_signal_mask, NULL) < 0) {
+			kill(test_pid, SIGKILL);
+			php_cli_test_child_pid = 0;
+			close(test_output[0]);
+			do {
+				waited = waitpid(test_pid, &status, 0);
+			} while (waited < 0 && errno == EINTR);
+			fprintf(stderr, "Unable to restore termination signals\n");
+			return PHP_CLI_TEST_BATCH_ERROR;
+		}
 		bool output_relayed = php_cli_test_batch_relay_output(test_output[0]);
 		close(test_output[0]);
 		do {
@@ -422,6 +445,13 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 		return PHP_CLI_TEST_BATCH_PARENT;
 	}
 
+	php_cli_test_child_pid = 0;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGTERM, SIG_DFL);
+	if (sigprocmask(SIG_SETMASK, &previous_signal_mask, NULL) < 0) {
+		fprintf(stderr, "Unable to restore termination signals\n");
+		return PHP_CLI_TEST_BATCH_ERROR;
+	}
 	close(test_output[0]);
 	if (dup2(test_output[1], STDOUT_FILENO) < 0) {
 		fprintf(stderr, "Unable to redirect test output\n");
@@ -447,9 +477,6 @@ static php_cli_test_batch_result php_cli_test_batch_start(
 		close(null_fd);
 	}
 	close(test_output[1]);
-	php_cli_test_child_pid = 0;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGTERM, SIG_DFL);
 	if (batch->set_script_environment) {
 		if (setenv("PATH_TRANSLATED", *script_file, 1) < 0
 				|| setenv("SCRIPT_FILENAME", *script_file, 1) < 0) {

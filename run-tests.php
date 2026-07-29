@@ -1699,6 +1699,22 @@ function create_structured_test_command(
     ];
 }
 
+function test_fork_server_cache_key(
+    string|array $command,
+    array $env,
+    bool $captureStdErr,
+    ?string $testPhpExtraArgs
+): string {
+    // A server inherits its environment only when it is created. These values are sent
+    // explicitly with each request and therefore do not belong to the inherited state.
+    unset($env['PATH_TRANSLATED'], $env['SCRIPT_FILENAME']);
+    if ($testPhpExtraArgs !== null) {
+        unset($env['TEST_PHP_EXTRA_ARGS']);
+    }
+    ksort($env);
+    return serialize([$command, $captureStdErr, $env, $testPhpExtraArgs !== null]);
+}
+
 function system_with_test_fork_server(
     string|array $command,
     string $file,
@@ -1710,35 +1726,35 @@ function system_with_test_fork_server(
     ?string $testPhpExtraArgs = null
 ): ?string {
     static $servers = [];
-    static $serverCommands = [];
-    static $pendingCommands = [];
+    static $serverKeys = [];
+    static $pendingKeys = [];
     static $unsupported = [];
 
-    $commandKey = serialize([$command, $captureStdErr]);
+    $serverKey = test_fork_server_cache_key($command, $env, $captureStdErr, $testPhpExtraArgs);
     if (
         strpbrk($file, "\r\n") !== false
         || ($testPhpExtraArgs !== null
             && strlen($testPhpExtraArgs) > TestForkServer::MAX_EXTRA_ARGS_LENGTH)
-        || isset($unsupported[$commandKey])
+        || isset($unsupported[$serverKey])
     ) {
         return null;
     }
-    if (($serverCommands[$channel] ?? null) !== $commandKey) {
-        if ($deferUntilRepeated && ($pendingCommands[$channel] ?? null) !== $commandKey) {
-            $pendingCommands[$channel] = $commandKey;
+    if (($serverKeys[$channel] ?? null) !== $serverKey) {
+        if ($deferUntilRepeated && ($pendingKeys[$channel] ?? null) !== $serverKey) {
+            $pendingKeys[$channel] = $serverKey;
             return null;
         }
-        unset($pendingCommands[$channel]);
+        unset($pendingKeys[$channel]);
         unset($servers[$channel]);
-        $serverCommands[$channel] = $commandKey;
+        $serverKeys[$channel] = $serverKey;
     } else {
-        unset($pendingCommands[$channel]);
+        unset($pendingKeys[$channel]);
     }
     if (!isset($servers[$channel])) {
         try {
             $servers[$channel] = new TestForkServer($command, $env, $captureStdErr);
         } catch (Throwable) {
-            $unsupported[$commandKey] = true;
+            $unsupported[$serverKey] = true;
             return null;
         }
     }
@@ -1757,7 +1773,7 @@ function system_with_test_fork_server(
     );
     if ($output === null) {
         unset($servers[$channel]);
-        $unsupported[$commandKey] = true;
+        $unsupported[$serverKey] = true;
     }
     return $output;
 }
