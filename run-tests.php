@@ -1866,8 +1866,10 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
 
     // Each test may specify a list of conflict keys. While a test that conflicts with
     // key K is running, no other test that conflicts with K may run. Conflict keys are
-    // specified either in the --CONFLICTS-- section, or CONFLICTS file inside a directory.
+    // specified either in the --CONFLICTS-- section, or a CONFLICTS or SCOPED_CONFLICTS
+    // file inside a directory.
     $dirConflictsWith = [];
+    $dirScopedConflictsWith = [];
     $fileConflictsWith = [];
     $fileConflictGroups = [];
     // A MAX_CONCURRENCY file limits how many workers may run tests from that directory.
@@ -1891,7 +1893,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         }
 
         $contents = file_get_contents($file);
-        $conflictGroup = null;
+        $conflictGroups = [];
         if (preg_match('/^--CONFLICTS--(.+?)^--/ms', $contents, $matches)) {
             $conflicts = parse_conflicts($matches[1]);
         } else {
@@ -1905,9 +1907,21 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
                 $dirConflictsWith[$dir] = $dirConflicts;
             }
             $conflicts = $dirConflictsWith[$dir];
-            if ($conflicts && $dirMaxConcurrency[$dir] !== null) {
-                // A capped directory may share its directory-level conflicts internally.
-                $conflictGroup = $dir;
+
+            if (!isset($dirScopedConflictsWith[$dir])) {
+                $dirScopedConflicts = [];
+                $scopedConflictsFile = $dir . '/SCOPED_CONFLICTS';
+                if (file_exists($scopedConflictsFile)) {
+                    $dirScopedConflicts = parse_conflicts(file_get_contents($scopedConflictsFile));
+                }
+                $dirScopedConflictsWith[$dir] = $dirScopedConflicts;
+            }
+            foreach ($dirScopedConflictsWith[$dir] as $conflictKey) {
+                if (in_array($conflictKey, $conflicts, true)) {
+                    error("Conflict key '$conflictKey' is listed in both CONFLICTS and SCOPED_CONFLICTS in $dir");
+                }
+                $conflicts[] = $conflictKey;
+                $conflictGroups[$conflictKey] = $dir;
             }
         }
 
@@ -1919,7 +1933,7 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         }
 
         $fileConflictsWith[$file] = $conflicts;
-        $fileConflictGroups[$file] = $conflictGroup;
+        $fileConflictGroups[$file] = $conflictGroups;
     }
 
     // Some tests assume that they are executed in a certain order. We will be popping from
@@ -2114,8 +2128,8 @@ escape:
                             $averageFilesPerWorker = max(1, (int) ceil($totalFileCount / count($workerProcs)));
                             $batchSize = min($maxBatchSize, $averageFilesPerWorker);
                             while (count($files) < $batchSize && $file = array_pop($test_files)) {
-                                $conflictGroup = $fileConflictGroups[$file];
                                 foreach ($fileConflictsWith[$file] as $conflictKey) {
+                                    $conflictGroup = $fileConflictGroups[$file][$conflictKey] ?? null;
                                     if (
                                         isset($activeConflicts[$conflictKey])
                                         && has_active_conflict(
@@ -2144,8 +2158,8 @@ escape:
                             }
                             if ($files) {
                                 foreach ($files as $file) {
-                                    $conflictGroup = $fileConflictGroups[$file];
                                     foreach ($fileConflictsWith[$file] as $conflictKey) {
+                                        $conflictGroup = $fileConflictGroups[$file][$conflictKey] ?? null;
                                         if (
                                             array_key_exists($i, $activeConflicts[$conflictKey] ?? [])
                                             && $activeConflicts[$conflictKey][$i] !== $conflictGroup

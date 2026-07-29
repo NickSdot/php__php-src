@@ -1,5 +1,5 @@
 --TEST--
-Directory conflicts with a concurrency cap are scoped to that directory
+Scoped directory conflicts allow internal concurrency
 --ENV--
 TEST_PHP_FORK_SERVER=0
 --FILE--
@@ -24,7 +24,7 @@ $external = $root . '/z-external';
 $results = $root . '/results.txt';
 mkdir($group, recursive: true);
 mkdir($external);
-file_put_contents($group . '/CONFLICTS', "shared\n");
+file_put_contents($group . '/SCOPED_CONFLICTS', "shared\n");
 file_put_contents($group . '/MAX_CONCURRENCY', "2\n");
 
 $rootExpression = var_export($root, true);
