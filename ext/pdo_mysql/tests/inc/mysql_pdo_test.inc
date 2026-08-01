@@ -43,9 +43,7 @@ class MySQLPDOTest extends PDOTest {
     static function factoryForSkip() {
         $database = null;
         $exception = null;
-        $attributes = PDO_MYSQL_TEST_ATTR;
-        $attributes = is_string($attributes) && strlen($attributes) ? unserialize($attributes) : null;
-        $configuration = [self::getDSN(), PDO_MYSQL_TEST_USER, PDO_MYSQL_TEST_PASS, $attributes];
+        $configuration = [self::getDSN(), PDO_MYSQL_TEST_USER, PDO_MYSQL_TEST_PASS, PDO_MYSQL_TEST_ATTR];
         $reason = ProbeCache::getFailure('pdo', $configuration, static function () use (&$database, &$exception): ?string {
             try {
                 $database = self::factory();
