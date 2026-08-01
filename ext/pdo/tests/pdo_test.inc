@@ -18,14 +18,6 @@ if (getenv('PDOTEST_DSN') === false) {
 }
 
 class PDOTest {
-    private static function getAttributes(string $environmentVariable): ?array {
-        $attributes = getenv($environmentVariable);
-        if (is_string($attributes) && strlen($attributes)) {
-            return unserialize($attributes);
-        }
-        return null;
-    }
-
     // create an instance of the PDO driver, based on
     // the current environment
     static function factory($classname = PDO::class, bool $useConnectMethod = false, ?array $attributes = null) {
@@ -133,6 +125,14 @@ class PDOTest {
             "firebird" => @$db->exec("DROP TABLE $tableName"),
             default => $db->exec("DROP TABLE IF EXISTS $tableName"),
         };
+    }
+
+    private static function getAttributes(string $environmentVariable): ?array {
+        $attributes = getenv($environmentVariable);
+        if (is_string($attributes) && strlen($attributes)) {
+            return unserialize($attributes);
+        }
+        return null;
     }
 }
 /** See https://stackoverflow.com/a/3732466 */
