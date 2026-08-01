@@ -46,13 +46,13 @@ $helper = var_export(__DIR__ . '/skipif.inc', true);
 $code = "require $helper; echo \"available\\n\";";
 $first = run_snmp_skip_check($code, $environment);
 
-$cacheFiles = glob($cacheDirectory . '/snmp-*');
+$cacheFiles = glob($cacheDirectory . '/probe-*');
 if (count($cacheFiles) !== 1) {
     throw new Exception('Expected exactly one cache file');
 }
 $cacheFile = $cacheFiles[0];
-$cachedReason = file_get_contents($cacheFile);
-file_put_contents($cacheFile, 'cached agent failure');
+$cachedReason = substr(file_get_contents($cacheFile), 1);
+file_put_contents($cacheFile, 'fcached agent failure');
 
 $second = run_snmp_skip_check($code, $environment);
 echo "$first\n";

@@ -48,13 +48,13 @@ $helper = var_export($helperDirectory . '/pdo_test.inc', true);
 $code = "require $helper; PDOTest::skip();";
 $first = run_pdo_skip_check($code, $environment);
 
-$cacheFiles = glob($cacheDirectory . '/pdo-*');
+$cacheFiles = glob($cacheDirectory . '/probe-*');
 if (count($cacheFiles) !== 1) {
     throw new Exception('Expected exactly one cache file');
 }
 $cacheFile = $cacheFiles[0];
-$cachedReason = file_get_contents($cacheFile);
-file_put_contents($cacheFile, 'cached connection failure');
+$cachedReason = substr(file_get_contents($cacheFile), 1);
+file_put_contents($cacheFile, 'fcached connection failure');
 
 $second = run_pdo_skip_check($code, $environment);
 echo "$first\n$cachedReason\n$second\n";
