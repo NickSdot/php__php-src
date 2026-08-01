@@ -1,10 +1,10 @@
 --TEST--
-Shared test probe cache only caches failures for the same configuration
+Shared test probe cache caches failures across processes
 --FILE--
 <?php
 require dirname(__DIR__) . '/probe_cache.inc';
 
-function run_probe_cache_process(string $code, array $environment): string
+function start_probe_cache_process(string $code, array $environment): array
 {
     $command = getenv('TEST_PHP_EXECUTABLE_ESCAPED')
         . ' '
@@ -22,6 +22,12 @@ function run_probe_cache_process(string $code, array $environment): string
         $environment,
         ['bypass_shell' => true],
     );
+
+    return [$process, $pipes];
+}
+
+function finish_probe_cache_process($process, array $pipes): string
+{
     $output = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
 
@@ -30,6 +36,12 @@ function run_probe_cache_process(string $code, array $environment): string
     }
 
     return $output;
+}
+
+function run_probe_cache_process(string $code, array $environment): string
+{
+    [$process, $pipes] = start_probe_cache_process($code, $environment);
+    return finish_probe_cache_process($process, $pipes);
 }
 
 $cacheDirectory = __DIR__ . '/test_probe_cache_dir_' . getmypid();
@@ -46,6 +58,30 @@ $second = run_probe_cache_process(
     "require $helper; echo ProbeCache::getFailure('service', ['shared'], static function (): ?string { throw new Exception('Probe should not run'); });",
     $environment,
 );
+echo "$first\n$second\n";
+
+$probeStarted = $cacheDirectory . '/probe_started';
+$probeStartedCode = var_export($probeStarted, true);
+[$firstProcess, $firstPipes] = start_probe_cache_process(
+    "require $helper; echo ProbeCache::getFailure('service', ['concurrent'], static function (): ?string { file_put_contents($probeStartedCode, 'started'); usleep(1000000); return 'concurrent failure'; });",
+    $environment,
+);
+
+$deadline = microtime(true) + 5;
+while (!file_exists($probeStarted) && microtime(true) < $deadline) {
+    usleep(1000);
+}
+if (!file_exists($probeStarted)) {
+    $output = finish_probe_cache_process($firstProcess, $firstPipes);
+    throw new Exception("Concurrent probe did not start: $output");
+}
+
+[$secondProcess, $secondPipes] = start_probe_cache_process(
+    "require $helper; echo ProbeCache::getFailure('service', ['concurrent'], static function (): ?string { throw new Exception('Concurrent probe should not run'); });",
+    $environment,
+);
+$first = finish_probe_cache_process($firstProcess, $firstPipes);
+$second = finish_probe_cache_process($secondProcess, $secondPipes);
 echo "$first\n$second\n";
 
 putenv("TEST_PHP_SHARED_CACHE_DIR=$cacheDirectory");
@@ -86,6 +122,8 @@ foreach (glob(__DIR__ . '/test_probe_cache_dir_*') ?: [] as $directory) {
 --EXPECT--
 shared failure
 shared failure
+concurrent failure
+concurrent failure
 string(9) "failure 1"
 string(9) "failure 1"
 string(9) "failure 2"
