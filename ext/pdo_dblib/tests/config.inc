@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
+
 // bug #72969 reflects a bug with FreeTDS, not with pdo_dblib
 // this function will version detect so the relevant tests can XFAILIF
 // assume this bug isn't present if not using FreeTDS
@@ -59,7 +61,25 @@ function skipIfNoDbConnection(): PDO {
     $attributes = getenv('PDO_DBLIB_TEST_DSN') === false
         ? [Pdo\Dblib::ATTR_CONNECTION_TIMEOUT => 1]
         : null;
-    return getDbConnection(PDO::class, $attributes);
+    [$dsn, $user, $pass] = getCredentials();
+    $db = null;
+    $reason = ProbeCache::getFailure('pdo', [$dsn, $user, $pass, $attributes], static function () use (&$db, $dsn, $user, $pass, $attributes): ?string {
+        try {
+            $db = new PDO($dsn, $user, $pass, $attributes);
+            if ($attributes === null) {
+                setAttributes($db);
+            }
+            return null;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    });
+
+    if (is_string($reason)) {
+        die("skip $reason");
+    }
+
+    return $db;
 }
 
 function connectToDb() {

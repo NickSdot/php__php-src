@@ -1,6 +1,6 @@
 <?php
 require_once (dirname(__FILE__).'/snmp_include.inc');
-require_once dirname(__DIR__, 3) . '/tests/run-test/test_probe_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
 
 function get_snmp_test_agent_unavailable_reason(): ?string
 {
@@ -12,7 +12,7 @@ function get_snmp_test_agent_unavailable_reason(): ?string
             : null;
 
     $configuration = [$hostname, $community, $timeout];
-    return run_test_cache_probe_failure('snmp', $configuration, $probe);
+    return ProbeCache::getFailure('snmp', $configuration, $probe);
 }
 
 //test server is available

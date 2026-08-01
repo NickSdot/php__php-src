@@ -1,7 +1,7 @@
 <?php
 # PDO test framework utilities
 
-require_once dirname(__DIR__, 3) . '/tests/run-test/test_probe_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
 
 if (getenv('PDOTEST_DSN') === false) {
     $common = '';
@@ -63,28 +63,37 @@ class PDOTest {
         if ($skipAttributes !== null) {
             $attributes = $skipAttributes + ($attributes ?? []);
         }
-        return PDOTest::factory(PDO::class, false, $attributes);
-    }
 
-    static function skip() {
+        $database = null;
+        $exception = null;
         $configuration = [
             getenv('PDOTEST_DSN'),
             getenv('PDOTEST_USER'),
             getenv('PDOTEST_PASS'),
-            getenv('PDOTEST_ATTR'),
-            getenv('PDOTEST_SKIP_ATTR'),
+            $attributes,
         ];
-        $reason = run_test_cache_probe_failure('pdo', $configuration, static function (): ?string {
+        $reason = ProbeCache::getFailure('pdo', $configuration, static function () use (&$database, &$exception, $attributes): ?string {
             try {
-                self::factoryForSkip();
+                $database = PDOTest::factory(PDO::class, false, $attributes);
+                return null;
             } catch (PDOException $e) {
+                $exception = $e;
                 return $e->getMessage();
             }
-            return null;
         });
 
         if (is_string($reason)) {
-            die("skip $reason");
+            throw $exception ?? new PDOException($reason);
+        }
+
+        return $database;
+    }
+
+    static function skip() {
+        try {
+            self::factoryForSkip();
+        } catch (PDOException $e) {
+            die("skip " . $e->getMessage());
         }
     }
 

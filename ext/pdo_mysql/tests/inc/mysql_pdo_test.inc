@@ -40,6 +40,29 @@ class MySQLPDOTest extends PDOTest {
         return self::factory('PDO', null, $attr);
     }
 
+    static function factoryForSkip() {
+        $database = null;
+        $exception = null;
+        $attributes = PDO_MYSQL_TEST_ATTR;
+        $attributes = is_string($attributes) && strlen($attributes) ? unserialize($attributes) : null;
+        $configuration = [self::getDSN(), PDO_MYSQL_TEST_USER, PDO_MYSQL_TEST_PASS, $attributes];
+        $reason = ProbeCache::getFailure('pdo', $configuration, static function () use (&$database, &$exception): ?string {
+            try {
+                $database = self::factory();
+                return null;
+            } catch (PDOException $e) {
+                $exception = $e;
+                return $e->getMessage();
+            }
+        });
+
+        if (is_string($reason)) {
+            throw $exception ?? new PDOException($reason);
+        }
+
+        return $database;
+    }
+
     static function createTestTable($table, $db, $engine = null) {
         if (!$engine)
             $engine = PDO_MYSQL_TEST_ENGINE;
@@ -168,7 +191,7 @@ class MySQLPDOTest extends PDOTest {
 
     static function skip() {
         try {
-            $db = self::factory();
+            self::factoryForSkip();
         } catch (PDOException $e) {
             die('skip could not connect');
         }
