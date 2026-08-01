@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 4) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 4) . '/tests/probe_cache.inc';
 
 function get_default_host(): string {
     static $host = null;

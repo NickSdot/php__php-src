@@ -2,7 +2,7 @@
 Shared test probe cache only caches failures for the same configuration
 --FILE--
 <?php
-require dirname(__DIR__) . '/test_cache.inc';
+require dirname(__DIR__) . '/probe_cache.inc';
 
 function run_probe_cache_process(string $code, array $environment): string
 {
@@ -37,7 +37,7 @@ mkdir($cacheDirectory);
 $environment = getenv();
 $environment['TEST_PHP_SHARED_CACHE_DIR'] = $cacheDirectory;
 
-$helper = var_export(dirname(__DIR__) . '/test_cache.inc', true);
+$helper = var_export(dirname(__DIR__) . '/probe_cache.inc', true);
 $first = run_probe_cache_process(
     "require $helper; echo ProbeCache::getFailure('service', ['shared'], static fn(): ?string => 'shared failure');",
     $environment,

@@ -8,7 +8,7 @@
 
 include("config.inc");
 include("lcmess.inc");
-require_once dirname(__DIR__, 4) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 4) . '/tests/probe_cache.inc';
 
 if (getenv("SKIP_REPEAT")) {
     // pgsql tests are order-dependent.

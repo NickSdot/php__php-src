@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/probe_cache.inc';
 
 // bug #72969 reflects a bug with FreeTDS, not with pdo_dblib
 // this function will version detect so the relevant tests can XFAILIF

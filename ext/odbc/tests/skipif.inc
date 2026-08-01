@@ -1,7 +1,7 @@
 <?php
 
 include 'config.inc';
-require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/probe_cache.inc';
 
 $reason = ProbeCache::getFailure('odbc', [$dsn, $user, $pass], static function () use ($dsn, $user, $pass): ?string {
     $conn = @odbc_connect($dsn, $user, $pass);

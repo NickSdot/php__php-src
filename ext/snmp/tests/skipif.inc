@@ -1,6 +1,6 @@
 <?php
 require_once (dirname(__FILE__).'/snmp_include.inc');
-require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/probe_cache.inc';
 
 function get_snmp_test_agent_unavailable_reason(): ?string
 {

@@ -1,6 +1,6 @@
 <?php
 require_once 'connect.inc';
-require_once dirname(__DIR__, 3) . '/tests/test_cache.inc';
+require_once dirname(__DIR__, 3) . '/tests/probe_cache.inc';
 
 if ($skip_on_bind_failure) {
     $configuration = [$uri, $user, $passwd, $protocol_version];
