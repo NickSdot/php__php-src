@@ -43,29 +43,16 @@ function setAttributes(PDO $db) {
 }
 
 function getDbConnection(string $class = PDO::class, ?array $attributes = null) {
-    [$dsn, $user, $pass] = getCredentials();
-
-    try {
-        $db = new $class($dsn, $user, $pass, $attributes);
-        if ($attributes === null) {
-            setAttributes($db);
-        }
-    } catch (PDOException $e) {
-        die('skip ' . $e->getMessage());
+    $connectionAttributes = $attributes;
+    if ($connectionAttributes === null && getenv('PDO_DBLIB_TEST_DSN') === false) {
+        $connectionAttributes = [Pdo\Dblib::ATTR_CONNECTION_TIMEOUT => 1];
     }
-
-    return $db;
-}
-
-function skipIfNoDbConnection(): PDO {
-    $attributes = getenv('PDO_DBLIB_TEST_DSN') === false
-        ? [Pdo\Dblib::ATTR_CONNECTION_TIMEOUT => 1]
-        : null;
     [$dsn, $user, $pass] = getCredentials();
+
     $db = null;
-    $reason = ProbeCache::getFailure('pdo', [$dsn, $user, $pass, $attributes], static function () use (&$db, $dsn, $user, $pass, $attributes): ?string {
+    $reason = ProbeCache::getFailure('pdo', [$dsn, $user, $pass, $connectionAttributes], static function () use (&$db, $class, $dsn, $user, $pass, $attributes, $connectionAttributes): ?string {
         try {
-            $db = new PDO($dsn, $user, $pass, $attributes);
+            $db = new $class($dsn, $user, $pass, $connectionAttributes);
             if ($attributes === null) {
                 setAttributes($db);
             }
@@ -76,7 +63,7 @@ function skipIfNoDbConnection(): PDO {
     });
 
     if (is_string($reason)) {
-        die("skip $reason");
+        die('skip ' . $reason);
     }
 
     return $db;
