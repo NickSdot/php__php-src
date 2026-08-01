@@ -232,6 +232,8 @@ function main(): void
         }
     }
 
+    SkipCache::setUp($environment);
+
     if (IS_WINDOWS && empty($environment["SystemRoot"])) {
         $environment["SystemRoot"] = getenv("SystemRoot");
     }
@@ -1856,7 +1858,7 @@ function run_test(string $php, $file, array $env): string
     static $skipCache;
     if (!$skipCache) {
         $enableSkipCache = !($env['DISABLE_SKIP_CACHE'] ?? '0');
-        $skipCache = new SkipCache($enableSkipCache, $cfg['keep']['skip']);
+        $skipCache = new SkipCache($enableSkipCache, $cfg['keep']['skip'], $workerID);
     }
 
     $php = escapeshellarg($php);
@@ -3597,6 +3599,7 @@ class SkipCache
 {
     private bool $enable;
     private bool $keepFile;
+    private ?string $sharedCacheDirectory;
 
     private array $skips = [];
     private array $extensions = [];
@@ -3606,18 +3609,40 @@ class SkipCache
     private int $extHits = 0;
     private int $extMisses = 0;
 
-    public function __construct(bool $enable, bool $keepFile)
+    public static function setUp(array &$environment): void
+    {
+        unset($environment['TEST_PHP_SKIP_CACHE_DIR']);
+        if (getenv('TEST_PHP_SKIP_CACHE') === '0') {
+            return;
+        }
+
+        $directory = self::createSharedCacheDirectory();
+        if ($directory === null) {
+            return;
+        }
+
+        $environment['TEST_PHP_SKIP_CACHE_DIR'] = $directory;
+        register_shutdown_function(static function () use ($directory): void {
+            rmdir_recursive($directory);
+        });
+    }
+
+    public function __construct(bool $enable, bool $keepFile, int $workerID)
     {
         $this->enable = $enable;
         $this->keepFile = $keepFile;
+
+        $directory = getenv('TEST_PHP_SKIP_CACHE_DIR');
+        $this->sharedCacheDirectory = $workerID !== 0 && is_string($directory) && is_dir($directory)
+            ? $directory
+            : null;
     }
 
     public function checkSkip(string $php, string $code, string $checkFile, string $tempFile, array $env): string
     {
         // Extension tests frequently use something like <?php require 'skipif.inc';
         // for skip checks. This forces us to cache per directory to avoid pollution.
-        $dir = dirname($checkFile);
-        $key = "$php => $dir";
+        $key = $this->getKey($php, dirname($checkFile));
 
         if (isset($this->skips[$key][$code])) {
             $this->hits++;
@@ -3627,18 +3652,56 @@ class SkipCache
             return $this->skips[$key][$code];
         }
 
-        save_text($checkFile, $code, $tempFile);
-        $result = trim(system_with_timeout("$php \"$checkFile\"", $env));
+        if ($this->enable && $this->sharedCacheDirectory !== null) {
+            $cacheFile = $this->sharedCacheDirectory
+                . DIRECTORY_SEPARATOR
+                . 'skipif-'
+                . hash('sha256', $key . "\0" . $code);
+
+            $cache = @fopen($cacheFile, 'c+');
+
+            if ($cache !== false && flock($cache, LOCK_EX)) {
+                try {
+                    $cached = stream_get_contents($cache);
+                    if (is_string($cached) && str_starts_with($cached, 'result:')) {
+                        $this->hits++;
+                        if ($this->keepFile) {
+                            save_text($checkFile, $code, $tempFile);
+                        }
+                        return substr($cached, strlen('result:'));
+                    }
+
+                    $result = $this->runSkipIf($php, $code, $checkFile, $tempFile, $env);
+                    $this->misses++;
+                    if (strpos($result, 'nocache') === 0) {
+                        return '';
+                    }
+
+                    $this->skips[$key][$code] = $result;
+                    rewind($cache);
+                    ftruncate($cache, 0);
+                    fwrite($cache, 'result:' . $result);
+                    fflush($cache);
+
+                    return $result;
+                } finally {
+                    flock($cache, LOCK_UN);
+                    fclose($cache);
+                }
+            }
+
+            if (is_resource($cache)) {
+                fclose($cache);
+            }
+        }
+
+        $result = $this->runSkipIf($php, $code, $checkFile, $tempFile, $env);
         if (strpos($result, 'nocache') === 0) {
             $result = '';
         } else if ($this->enable) {
             $this->skips[$key][$code] = $result;
         }
         $this->misses++;
-
-        if (!$this->keepFile) {
-            @unlink($checkFile);
-        }
 
         return $result;
     }
@@ -3659,6 +3722,37 @@ class SkipCache
         $this->extMisses++;
 
         return $result;
+    }
+
+    private function getKey(string $php, string $directory): string
+    {
+        $php = preg_replace('/ -d "opcache\\.cache_id=worker\\d+"/', '', $php);
+
+        return "$php => $directory";
+    }
+
+    private function runSkipIf(string $php, string $code, string $checkFile, string $tempFile, array $env): string
+    {
+        save_text($checkFile, $code, $tempFile);
+        $result = trim(system_with_timeout("$php \"$checkFile\"", $env));
+
+        if (!$this->keepFile) {
+            @unlink($checkFile);
+        }
+
+        return $result;
+    }
+
+    private static function createSharedCacheDirectory(): ?string
+    {
+        try {
+            $suffix = bin2hex(random_bytes(8));
+        } catch (Exception) {
+            return null;
+        }
+
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-run-tests-skipif-' . $suffix;
+        return @mkdir($directory, 0700) ? $directory : null;
     }
 }
 
