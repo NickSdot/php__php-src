@@ -16,10 +16,12 @@ if (getenv("SKIP_REPEAT")) {
     die("skip Cannot repeat pgsql tests");
 }
 $conn = null;
+
 $reason = ProbeCache::getFailure('pgsql', [$conn_str], static function () use (&$conn, $conn_str): ?string {
     $conn = @pg_connect($conn_str);
     return $conn ? null : 'could not connect';
 });
+
 if (is_string($reason)) {
     die("skip $reason\n");
 }

@@ -124,6 +124,7 @@ function mysqli_connect_or_skip(): mysqli {
         get_default_socket(),
         get_environment_connection_flags(),
     ];
+
     $reason = ProbeCache::getFailure('mysqli', $configuration, static function () use (&$connection): ?string {
         try {
             $connection = default_mysqli_connect();

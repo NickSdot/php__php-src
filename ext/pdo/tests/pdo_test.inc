@@ -44,6 +44,7 @@ class PDOTest {
         $database = null;
         $exception = null;
         $configuration = [$classname, $useConnectMethod, $dsn, $user, $pass, $attributes];
+
         $reason = ProbeCache::getFailure('pdo', $configuration, static function () use (&$database, &$exception, $classname, $useConnectMethod, $dsn, $user, $pass, $attributes): ?string {
             try {
                 $database = self::createConnection($classname, $useConnectMethod, $dsn, $user, $pass, $attributes);

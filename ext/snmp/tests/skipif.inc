@@ -12,6 +12,7 @@ function get_snmp_test_agent_unavailable_reason(): ?string
             : null;
 
     $configuration = [$hostname, $community, $timeout];
+
     return ProbeCache::getFailure('snmp', $configuration, $probe);
 }
 

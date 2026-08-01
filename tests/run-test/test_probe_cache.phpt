@@ -44,10 +44,12 @@ function run_probe_cache_process(string $code, array $environment): string
     return finish_probe_cache_process($process, $pipes);
 }
 
-$cacheDirectory = __DIR__ . '/test_probe_cache_dir_' . getmypid();
-mkdir($cacheDirectory);
+$cacheDirectory = getenv('TEST_PHP_SHARED_CACHE_DIR');
+if (!is_string($cacheDirectory)) {
+    throw new Exception('Missing shared test cache directory');
+}
+
 $environment = getenv();
-$environment['TEST_PHP_SHARED_CACHE_DIR'] = $cacheDirectory;
 
 $helper = var_export(dirname(__DIR__) . '/probe_cache.inc', true);
 $first = run_probe_cache_process(
@@ -109,15 +111,6 @@ var_dump($successCalls);
 
 putenv('TEST_PHP_SHARED_CACHE_DIR');
 var_dump(ProbeCache::getFailure('service', ['uncached'], static fn(): ?string => 'uncached failure'));
-?>
---CLEAN--
-<?php
-foreach (glob(__DIR__ . '/test_probe_cache_dir_*') ?: [] as $directory) {
-    foreach (glob($directory . '/*') ?: [] as $file) {
-        @unlink($file);
-    }
-    @rmdir($directory);
-}
 ?>
 --EXPECT--
 shared failure

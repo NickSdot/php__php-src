@@ -19,7 +19,9 @@ final class ProbeCache
             . DIRECTORY_SEPARATOR
             . 'probe-'
             . hash('sha256', serialize([$namespace, $configuration]));
+
         $cache = @fopen($cacheFile, 'c+');
+
         if ($cache === false || !flock($cache, LOCK_EX)) {
             if (is_resource($cache)) {
                 fclose($cache);

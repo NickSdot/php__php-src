@@ -27,6 +27,7 @@ class MySQLPDOTest extends PDOTest {
         $database = null;
         $exception = null;
         $configuration = [$classname, $useConnectMethod, $dsn, $user, $pass, $attr];
+
         $reason = ProbeCache::getFailure('pdo', $configuration, static function () use (&$database, &$exception, $classname, $useConnectMethod, $dsn, $user, $pass, $attr): ?string {
             try {
                 $database = self::createConnection($classname, $useConnectMethod, $dsn, $user, $pass, $attr);

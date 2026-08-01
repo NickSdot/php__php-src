@@ -12,6 +12,7 @@ $reason = ProbeCache::getFailure('odbc', [$dsn, $user, $pass], static function (
     odbc_close($conn);
     return null;
 });
+
 if (is_string($reason)) {
     die("skip $reason");
 }

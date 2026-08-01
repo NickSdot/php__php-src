@@ -62,6 +62,7 @@ function getDbConnection(string $class = PDO::class, ?array $attributes = null) 
             return $e->getMessage();
         }
     };
+
     $reason = $evaluatingSkipif
         ? ProbeCache::getFailure('pdo', [$class, false, $dsn, $user, $pass, $connectionAttributes], $probe)
         : $probe();

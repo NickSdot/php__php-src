@@ -4,6 +4,7 @@ require_once dirname(__DIR__, 3) . '/tests/probe_cache.inc';
 
 if ($skip_on_bind_failure) {
     $configuration = [$uri, $user, $passwd, $protocol_version];
+
     $reason = ProbeCache::getFailure('ldap.bind', $configuration, static function () use ($uri, $user, $passwd, $protocol_version): ?string {
         $link = ldap_connect($uri);
         ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
@@ -14,6 +15,7 @@ if ($skip_on_bind_failure) {
         ldap_unbind($link);
         return null;
     });
+
     if (is_string($reason)) {
         die("skip $reason");
     }
