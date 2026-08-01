@@ -3685,6 +3685,7 @@ class SkipCache
         }
 
         save_text($checkFile, $code, $tempFile);
+        $env['TEST_PHP_EVALUATING_SKIPIF'] = '1';
         $result = trim(system_with_timeout("$php \"$checkFile\"", $env));
         if (strpos($result, 'nocache') === 0) {
             $result = '';
