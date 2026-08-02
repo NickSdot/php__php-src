@@ -80,6 +80,7 @@ jobs:
           name: "${{ github.job }}"
           cc: clang-20
           cxx: clang++-20
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-alpine
         with:
@@ -161,6 +162,7 @@ jobs:
           # GitHub has no way to query the job name (github.job is the
           # job id, not the job name)
           name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -267,6 +269,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "LINUX_X32_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: System info
         run: |
           echo "::group::Show host CPU info"
@@ -329,6 +332,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "MACOS_${{ matrix.arch }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-macos
         with:
@@ -453,6 +457,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "COMMUNITY_${{ matrix.type }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -666,6 +671,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -730,6 +736,7 @@ jobs:
           name: "${{ github.job }}"
           cc: clang
           cxx: clang++
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         run: |
           export CFLAGS="-DZEND_TRACK_ARENA_ALLOC"
@@ -982,6 +989,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         run: |
           set -x
