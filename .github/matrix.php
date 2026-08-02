@@ -154,6 +154,7 @@ function select_jobs($repository, $trigger, $nightly, $labels, $php_version, $re
             version_compare($php_version, '8.4', '>=') => ['vs_crt_version' => 'vs17', 'runs_on' => 'windows-2022'],
             default => ['vs_crt_version' => 'vs16', 'runs_on' => 'windows-2022'],
         };
+        $jobs['WINDOWS']['config']['parallel_build'] = version_compare($php_version, '8.6', '>=');
     }
     if ($all_jobs || !$no_jobs || $test_freebsd) {
         $jobs['FREEBSD']['matrix'] = $all_variations && version_compare($php_version, '8.3', '>=')
