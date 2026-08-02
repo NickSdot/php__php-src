@@ -25,6 +25,7 @@ function get_branches() {
         $current_commit_hash = trim(shell_exec('git rev-parse origin/' . $branch['ref']));
 
         if ($previous_commit_hash !== $current_commit_hash) {
+            $branch['sha'] = $current_commit_hash;
             $changed_branches[] = $branch;
         }
 
@@ -177,7 +178,12 @@ $branch = $argv[3] ?? 'master';
 $nightly = $trigger === 'schedule' || $trigger === 'workflow_dispatch';
 $branches = $nightly && $branch === 'master'
     ? get_branches()
-    : [['name' => 'Suite', 'ref' => $branch, 'version' => get_current_version()]];
+    : [[
+        'name' => 'Suite',
+        'ref' => $branch,
+        'sha' => $argv[6] ?? null,
+        'version' => get_current_version(),
+    ]];
 
 $labels = json_decode($argv[4] ?? '[]', true) ?? [];
 $labels = array_column($labels, 'name');

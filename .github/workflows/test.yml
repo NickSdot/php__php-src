@@ -58,7 +58,7 @@ jobs:
             nightly-
       - name: Generate Matrix
         id: set-matrix
-        run: php .github/matrix.php "${{ github.event_name }}" "${{ github.run_attempt }}" "${{ github.event_name == 'pull_request' && github.ref || github.ref_name }}" '${{ toJSON(github.event.pull_request.labels) }}' "${{ github.repository }}"
+        run: php .github/matrix.php "${{ github.event_name }}" "${{ github.run_attempt }}" "${{ github.event_name == 'pull_request' && github.ref || github.ref_name }}" '${{ toJSON(github.event.pull_request.labels) }}' "${{ github.repository }}" "${{ github.sha }}"
   TEST:
     needs: GENERATE_MATRIX
     if: ${{ needs.GENERATE_MATRIX.outputs.branches != '[]' }}
@@ -72,3 +72,26 @@ jobs:
       all_variations: ${{ needs.GENERATE_MATRIX.outputs.all_variations == 'true' }}
       branch: ${{ toJSON(matrix.branch) }}
     secrets: inherit
+  CLEANUP_COMPILER_CACHES:
+    name: Clean up old compiler caches
+    needs: TEST
+    if: >-
+      ${{ always()
+          && github.repository == 'php/php-src'
+          && (github.event_name == 'push'
+              || github.event_name == 'schedule'
+              || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: read
+    concurrency:
+      group: compiler-cache-cleanup
+      cancel-in-progress: false
+    steps:
+      - name: git checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Keep the newest compiler cache for each configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: .github/scripts/cleanup_compiler_caches.sh
