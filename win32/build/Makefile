@@ -35,6 +35,8 @@ PKG_SUFFIX_PART=-$(PKG_SUFFIX)
 !endif
 
 MCFILE=$(BUILD_DIR)\wsyslog.rc
+BUILD_DIR_STAMP=$(BUILD_DIR)\build_dirs.stamp
+GENERATED_FILES_STAMP=$(BUILD_DIR)\generated_files.stamp
 BUILD_DIR_DEV_NAME=php-$(PHP_VERSION_STRING)-devel-$(PHP_COMPILER_SHORT)-$(PHP_ARCHITECTURE)$(SIMD_SUFFIX)$(PKG_SUFFIX_PART)
 BUILD_DIR_DEV=$(BUILD_DIR)\$(BUILD_DIR_DEV_NAME)
 
@@ -54,44 +56,65 @@ DEBUGGER_ARGS=
 
 all: generated_files $(EXT_TARGETS) $(PECL_TARGETS) $(SAPI_TARGETS) test_helpers
 
-build_dirs: $(BUILD_DIR) $(BUILD_DIRS_SUB) $(BUILD_DIR_DEV)
+build_dirs: $(BUILD_DIR_STAMP)
 
 !if $(RE2C) == ""
-generated_files: build_dirs \
-	Zend\zend_ini_parser.c Zend\zend_ini_parser.h \
-	Zend\zend_language_parser.c \
-	sapi\phpdbg\phpdbg_parser.c \
+$(GENERATED_FILES_STAMP): \
+	$(BUILD_DIR)\zend_ini_parser.stamp \
+	$(BUILD_DIR)\zend_language_parser.stamp \
+	$(BUILD_DIR)\phpdbg_parser.stamp \
 	$(PHPDEF) $(MCFILE)
 !else
-generated_files: build_dirs \
-	Zend\zend_ini_parser.c Zend\zend_ini_parser.h \
-	Zend\zend_language_parser.c \
-	Zend\zend_ini_scanner.c Zend\zend_ini_scanner_defs.h \
-	Zend\zend_language_scanner.c Zend\zend_language_scanner_defs.h \
-	sapi\phpdbg\phpdbg_parser.c sapi\phpdbg\phpdbg_lexer.c \
+$(GENERATED_FILES_STAMP): \
+	$(BUILD_DIR)\zend_ini_parser.stamp \
+	$(BUILD_DIR)\zend_language_parser.stamp \
+	$(BUILD_DIR)\zend_ini_scanner.stamp \
+	$(BUILD_DIR)\zend_language_scanner.stamp \
+	$(BUILD_DIR)\phpdbg_parser.stamp \
+	sapi\phpdbg\phpdbg_lexer.c \
 	$(PHPDEF) $(MCFILE)
 !endif
+	@echo generated>$(GENERATED_FILES_STAMP)
 
-$(BUILD_DIR)\$(PHPDLL).def: $(PHP_DLL_DEF_SOURCES)
+generated_files: $(GENERATED_FILES_STAMP)
+
+$(BUILD_DIR)\$(PHPDLL).def: $(BUILD_DIR_STAMP) $(PHP_DLL_DEF_SOURCES)
 	type $(PHP_DLL_DEF_SOURCES) > $(BUILD_DIR)\$(PHPDLL).def
 
-Zend\zend_ini_parser.c Zend\zend_ini_parser.h: Zend\zend_ini_parser.y
-	$(BISON) $(BISON_FLAGS) --output=Zend/zend_ini_parser.c -v -d Zend/zend_ini_parser.y
+# Bison and re2c generate multiple files per invocation. A stamp gives the
+# recipe one owner, so both nmake and parallel NMAKE-compatible tools run it once.
+Zend\zend_ini_parser.c Zend\zend_ini_parser.h: $(BUILD_DIR)\zend_ini_parser.stamp
 
-Zend\zend_language_parser.c Zend\zend_language_parser.h: Zend\zend_language_parser.y
+$(BUILD_DIR)\zend_ini_parser.stamp: $(BUILD_DIR_STAMP) Zend\zend_ini_parser.y
+	$(BISON) $(BISON_FLAGS) --output=Zend/zend_ini_parser.c -v -d Zend/zend_ini_parser.y
+	@echo generated>$(BUILD_DIR)\zend_ini_parser.stamp
+
+Zend\zend_language_parser.c Zend\zend_language_parser.h: $(BUILD_DIR)\zend_language_parser.stamp
+
+$(BUILD_DIR)\zend_language_parser.stamp: $(BUILD_DIR_STAMP) Zend\zend_language_parser.y
 	$(BISON) $(BISON_FLAGS) --output=Zend/zend_language_parser.c -v -d Zend/zend_language_parser.y
 	@if "$(SED)" neq "" $(SED) -i "s,^int zendparse\(.*\),ZEND_API int zendparse\1,g" Zend/zend_language_parser.c
 	@if "$(SED)" neq "" $(SED) -i "s,^int zendparse\(.*\),ZEND_API int zendparse\1,g" Zend/zend_language_parser.h
+	@echo generated>$(BUILD_DIR)\zend_language_parser.stamp
 
-sapi\phpdbg\phpdbg_parser.c sapi\phpdbg\phpdbg_parser.h: sapi\phpdbg\phpdbg_parser.y
+sapi\phpdbg\phpdbg_parser.c sapi\phpdbg\phpdbg_parser.h: $(BUILD_DIR)\phpdbg_parser.stamp
+
+$(BUILD_DIR)\phpdbg_parser.stamp: $(BUILD_DIR_STAMP) sapi\phpdbg\phpdbg_parser.y
 	$(BISON) $(BISON_FLAGS) --output=sapi/phpdbg/phpdbg_parser.c -v -d sapi/phpdbg/phpdbg_parser.y
+	@echo generated>$(BUILD_DIR)\phpdbg_parser.stamp
 
 !if $(RE2C) != ""
-Zend\zend_ini_scanner.c Zend\zend_ini_scanner_defs.h: Zend\zend_ini_scanner.l
-	$(RE2C) $(RE2C_FLAGS) --case-inverted -cbdFt Zend/zend_ini_scanner_defs.h -oZend/zend_ini_scanner.c Zend/zend_ini_scanner.l
+Zend\zend_ini_scanner.c Zend\zend_ini_scanner_defs.h: $(BUILD_DIR)\zend_ini_scanner.stamp
 
-Zend\zend_language_scanner.c Zend\zend_language_scanner_defs.h: Zend\zend_language_scanner.l
+$(BUILD_DIR)\zend_ini_scanner.stamp: $(BUILD_DIR_STAMP) Zend\zend_ini_scanner.l
+	$(RE2C) $(RE2C_FLAGS) --case-inverted -cbdFt Zend/zend_ini_scanner_defs.h -oZend/zend_ini_scanner.c Zend/zend_ini_scanner.l
+	@echo generated>$(BUILD_DIR)\zend_ini_scanner.stamp
+
+Zend\zend_language_scanner.c Zend\zend_language_scanner_defs.h: $(BUILD_DIR)\zend_language_scanner.stamp
+
+$(BUILD_DIR)\zend_language_scanner.stamp: $(BUILD_DIR_STAMP) Zend\zend_language_scanner.l
 	$(RE2C) $(RE2C_FLAGS) --case-inverted -cbdFt Zend/zend_language_scanner_defs.h -oZend/zend_language_scanner.c Zend/zend_language_scanner.l
+	@echo generated>$(BUILD_DIR)\zend_language_scanner.stamp
 
 sapi\phpdbg\phpdbg_lexer.c: sapi\phpdbg\phpdbg_lexer.l
 	$(RE2C) $(RE2C_FLAGS) -cbdFo sapi/phpdbg/phpdbg_lexer.c sapi/phpdbg/phpdbg_lexer.l
@@ -111,7 +134,7 @@ PHP8_PGD_OPTION=
 
 PHPDLL_RES=$(BUILD_DIR)\$(PHPDLL).res
 
-$(MCFILE): win32\build\wsyslog.mc
+$(MCFILE): $(BUILD_DIR_STAMP) win32\build\wsyslog.mc
 	$(MC) -h win32\ -r $(BUILD_DIR)\ -x $(BUILD_DIR)\ win32\build\wsyslog.mc
 
 #	$(RC) /fo $(MCFILE) $(BUILD_DIR)\wsyslog.rc
@@ -124,13 +147,13 @@ _VC_MANIFEST_EMBED_EXE= if exist $@.manifest $(MT) -nologo -manifest $@.manifest
 _VC_MANIFEST_EMBED_DLL= if exist $@.manifest $(MT) -nologo -manifest $@.manifest -outputresource:$@;2
 !endif
 
-$(PHPDLL_RES): win32\build\template.rc
+$(PHPDLL_RES): $(GENERATED_FILES_STAMP) $(MCFILE) win32\build\template.rc
 	$(RC) /nologo /fo $(PHPDLL_RES) /d FILE_DESCRIPTION="\"PHP Script Interpreter\"" \
 		/d FILE_NAME="\"$(PHPDLL)\"" /d PRODUCT_NAME="\"PHP Script Interpreter\"" \
 		/I$(BUILD_DIR) /d MC_INCLUDE="\"$(MCFILE)\"" \
 		win32\build\template.rc
 
-$(BUILD_DIR)\$(PHPDLL): generated_files $(PHPDEF) $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(PHPDLL_RES) $(ASM_OBJS) $(MCFILE)
+$(BUILD_DIR)\$(PHPDLL): $(GENERATED_FILES_STAMP) $(PHPDEF) $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(PHPDLL_RES) $(ASM_OBJS) $(MCFILE)
 	@copy win32\build\default.manifest $(BUILD_DIR)\$(PHPDLL).manifest >nul
 #	@$(CC) $(PHP_GLOBAL_OBJS) $(STATIC_EXT_OBJS) $(STATIC_EXT_LIBS) $(LIBS) $(PHPDLL_RES) /link /out:$(BUILD_DIR)\$(PHPDLL) $(PHP8_PGD_OPTION) $(PHP_LDFLAGS) $(LDFLAGS) $(STATIC_EXT_LDFLAGS)
 	@"$(LINK)" $(PHP_GLOBAL_OBJS_RESP) $(STATIC_EXT_OBJS_RESP) $(STATIC_EXT_LIBS) $(LIBS) $(ASM_OBJS) $(PHPDLL_RES) /out:$(BUILD_DIR)\$(PHPDLL) $(PHP8_PGD_OPTION) $(PHP_LDFLAGS) $(LDFLAGS) $(STATIC_EXT_LDFLAGS)
@@ -138,13 +161,14 @@ $(BUILD_DIR)\$(PHPDLL): generated_files $(PHPDEF) $(PHP_GLOBAL_OBJS) $(STATIC_EX
 
 $(BUILD_DIR)\$(PHPLIB): $(BUILD_DIR)\$(PHPDLL)
 
-$(BUILD_DIR) $(BUILD_DIRS_SUB) $(BUILD_DIR_DEV):
+$(BUILD_DIR_STAMP):
 	@echo Recreating build dirs
 	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
 	@cd $(BUILD_DIR)
 	@for %D in ($(BUILD_DIRS_SUB)) do @if not exist %D @mkdir %D > NUL
 	@if not exist $(BUILD_DIR_DEV) @mkdir $(BUILD_DIR_DEV) > NUL
 	@cd "$(PHP_SRC_DIR)"
+	@echo generated>$(BUILD_DIR_STAMP)
 
 
 clean-sapi:
@@ -159,7 +183,7 @@ clean: clean-sapi
 	@cd $(BUILD_DIR)
 	@for %D in (_x $(BUILD_DIRS_SUB)) do @if exist %D @del /F /Q %D\*.* > NUL
 	@cd "$(PHP_SRC_DIR)"
-	-@del /F /Q $(BUILD_DIR)\*.res $(BUILD_DIR)\*.manifest $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.ilk $(BUILD_DIR)\*.pdb $(BUILD_DIR)\*.exp $(PHPDEF) $(BUILD_DIR)\php-$(PHP_VERSION_STRING)-Win32.zip $(BUILD_DIR)\pecl-$(PHP_VERSION_STRING)-Win32.zip > NUL
+	-@del /F /Q $(BUILD_DIR)\*.res $(BUILD_DIR)\*.manifest $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.ilk $(BUILD_DIR)\*.pdb $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.stamp $(PHPDEF) $(BUILD_DIR)\php-$(PHP_VERSION_STRING)-Win32.zip $(BUILD_DIR)\pecl-$(PHP_VERSION_STRING)-Win32.zip > NUL
 	-rd /s /q $(BUILD_DIR)\php-$(PHP_VERSION_STRING)
 
 clean-pecl:
@@ -171,7 +195,7 @@ clean-all:
 	@cd $(BUILD_DIR)
 	@for %D in (_x $(BUILD_DIRS_SUB)) do @if exist %D @rd /s /q %D
 	@cd "$(PHP_SRC_DIR)"
-	-@del /f /q $(BUILD_DIR)\*.res $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.ilk $(BUILD_DIR)\*.pdb $(BUILD_DIR)\*.exp $(PHPDEF) $(BUILD_DIR)\*.rc $(BUILD_DIR)\*.manifest $(BUILD_DIR)\*.dbg $(BUILD_DIR)\*.bin $(BUILD_DIR)\php*.dll $(BUILD_DIR)\php*.exe > NUL
+	-@del /f /q $(BUILD_DIR)\*.res $(BUILD_DIR)\*.lib $(BUILD_DIR)\*.ilk $(BUILD_DIR)\*.pdb $(BUILD_DIR)\*.exp $(BUILD_DIR)\*.stamp $(PHPDEF) $(BUILD_DIR)\*.rc $(BUILD_DIR)\*.manifest $(BUILD_DIR)\*.dbg $(BUILD_DIR)\*.bin $(BUILD_DIR)\php*.dll $(BUILD_DIR)\php*.exe > NUL
 
 clean-pgo: clean-all
 	-rd /s /q $(BUILD_DIR)\php-$(PHP_VERSION_STRING)
