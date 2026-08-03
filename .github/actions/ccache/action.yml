@@ -11,6 +11,9 @@ inputs:
   cxx:
     required: false
     default: 'g++'
+  save:
+    required: false
+    default: true
 runs:
   using: composite
   steps:
