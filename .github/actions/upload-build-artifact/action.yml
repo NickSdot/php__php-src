@@ -1,0 +1,25 @@
+name: Upload PHP build
+description: Package and upload a completed PHP build for test jobs in this workflow run
+inputs:
+  name:
+    description: Artifact name, unique within the workflow run
+    required: true
+  source_sha:
+    description: Commit from which the build was produced
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Package PHP build
+      shell: bash
+      env:
+        PHP_BUILD_SOURCE_SHA: ${{ inputs.source_sha }}
+      run: .github/scripts/package_build_artifact.sh
+    - name: Upload PHP build
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/php-build-artifact
+        compression-level: 1
+        if-no-files-found: error
+        retention-days: 1
