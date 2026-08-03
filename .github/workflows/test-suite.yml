@@ -52,9 +52,56 @@ jobs:
             --asan -x
       - name: Extra tests
         uses: ./.github/actions/extra-tests
+  ALPINE_BUILD:
+    if: ${{ fromJson(inputs.branch).jobs.ALPINE && !inputs.all_variations }}
+    name: ALPINE_X64_ASAN_DBG_ZTS_BUILD
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container:
+      image: 'alpine:3.22'
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apk
+        uses: ./.github/actions/apk
+      - name: ccache
+        uses: ./.github/actions/ccache
+        with:
+          name: ALPINE
+          cc: clang-20
+          cxx: clang++-20
+          source_sha: ${{ fromJson(inputs.branch).sha }}
+          save: true
+      - name: ./configure
+        uses: ./.github/actions/configure-alpine
+        with:
+          configurationParameters: >-
+            CFLAGS="-fsanitize=undefined,address -fno-sanitize=function -DZEND_TRACK_ARENA_ALLOC"
+            LDFLAGS="-fsanitize=undefined,address -fno-sanitize=function"
+            --enable-debug
+            --enable-zts
+          skipSlow: true
+      - name: make
+        run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Stage PHP installation
+        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
+      - name: Upload PHP build
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
   ALPINE:
-    if: ${{ fromJson(inputs.branch).jobs.ALPINE }}
-    name: ALPINE_X64_ASAN_DEBUG_ZTS
+    needs: ALPINE_BUILD
+    if: >-
+      ${{ always()
+          && fromJson(inputs.branch).jobs.ALPINE
+          && (inputs.all_variations || needs.ALPINE_BUILD.result == 'success') }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.branch).jobs.ALPINE.matrix }}
+    name: "ALPINE_X64_ASAN_DEBUG_ZTS${{ matrix.test_shards > 1 && format('_SHARD_{0}_OF_{1}', matrix.test_shard, matrix.test_shards) || '' }}"
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     container:
@@ -75,13 +122,16 @@ jobs:
           apk list
           echo "::endgroup::"
       - name: ccache
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
           cc: clang-20
           cxx: clang++-20
           source_sha: ${{ fromJson(inputs.branch).sha }}
+          save: ${{ matrix.test_shard == 1 && 'true' || 'false' }}
       - name: ./configure
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/configure-alpine
         with:
           configurationParameters: >-
@@ -91,9 +141,22 @@ jobs:
             --enable-zts
           skipSlow: true # FIXME: This should likely include slow extensions
       - name: make
+        if: ${{ inputs.all_variations }}
         run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Download PHP build
+        if: ${{ !inputs.all_variations }}
+        uses: ./.github/actions/download-build-artifact
+        with:
+          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: make install
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/install-alpine
+      - name: Configure installed PHP
+        if: ${{ !inputs.all_variations }}
+        run: |
+          sudo mkdir -p /etc/php.d
+          sudo chmod 777 /etc/php.d
       - name: Test Tracing JIT
         uses: ./.github/actions/test-alpine
         with:
@@ -101,8 +164,117 @@ jobs:
           jitType: tracing
           runTestsParameters: >-
             --asan -x
+          testShard: ${{ matrix.test_shard }}
+          testShards: ${{ matrix.test_shards }}
       - name: Extra tests
+        if: ${{ matrix.test_shard == 1 }}
         uses: ./.github/actions/extra-tests
+  LINUX_X64_ASAN_BUILD:
+    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
+    name: LINUX_X64_ASAN_DBG_ZTS_BUILD
+    runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
+    timeout-minutes: 60
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apt
+        uses: ./.github/actions/apt-x64
+        with:
+          asan: true
+          skipSlow: true
+      - name: ccache
+        uses: ./.github/actions/ccache
+        with:
+          name: LINUX_X64_ASAN_DEBUG_ZTS
+          source_sha: ${{ fromJson(inputs.branch).sha }}
+          save: true
+      - name: ./configure
+        uses: ./.github/actions/configure-x64
+        with:
+          configurationParameters: >-
+            CFLAGS="-fsanitize=undefined,address -DZEND_TRACK_ARENA_ALLOC"
+            LDFLAGS="-fsanitize=undefined,address"
+            --enable-debug
+            --enable-zts
+          asan: true
+          skipSlow: true
+      - name: make
+        run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Stage PHP installation
+        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
+      - name: Upload PHP build
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
+  LINUX_X64_ASAN:
+    needs: LINUX_X64_ASAN_BUILD
+    if: >-
+      ${{ always()
+          && fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix
+          && needs.LINUX_X64_ASAN_BUILD.result == 'success' }}
+    services:
+      mysql:
+        image: mysql:8.4
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: root
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
+    name: "LINUX_X64_ASAN_DBG_ZTS_${{ matrix.test_shard }}-${{ matrix.test_shards }}"
+    runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
+    timeout-minutes: 180
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apt
+        uses: ./.github/actions/apt-x64
+        with:
+          asan: true
+          skipSlow: true
+      - name: System info
+        run: |
+          echo "::group::Show host CPU info"
+          lscpu
+          echo "::endgroup::"
+          echo "::group::Show installed package versions"
+          dpkg -l
+          echo "::endgroup::"
+      - name: Setup Caddy server
+        uses: ./.github/actions/setup-caddy
+      - name: Download PHP build
+        uses: ./.github/actions/download-build-artifact
+        with:
+          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
+      - name: Configure installed PHP
+        run: |
+          sudo mkdir -p /etc/php.d
+          sudo chmod 777 /etc/php.d
+          echo mysqli.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/mysqli.ini
+          echo pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/pdo_mysql.ini
+      - name: Test Tracing JIT
+        uses: ./.github/actions/test-linux
+        with:
+          enableOpcache: true
+          jitType: tracing
+          runTestsParameters: --asan -x
+          idleCpu: true
+          testShard: ${{ matrix.test_shard }}
+          testShards: ${{ matrix.test_shards }}
+      - name: Extra tests
+        if: ${{ matrix.test_shard == 1 }}
+        uses: ./.github/actions/extra-tests
+      - name: Verify generated files are up to date
+        if: ${{ matrix.test_shard == 1 }}
+        uses: ./.github/actions/verify-generated-files
   LINUX_X64:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X64 }}
     services:
@@ -131,7 +303,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.matrix }}
-    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.test_mode == 'function-jit' && '_FUNCTION_JIT' || '' }}"
+    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.test_mode == 'function-jit' && '_FUNCTION_JIT' || '' }}${{ matrix.test_shards > 1 && format('_SHARD_{0}_OF_{1}', matrix.test_shard, matrix.test_shards) || '' }}"
     runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
     timeout-minutes: 180
     steps:
@@ -165,9 +337,9 @@ jobs:
           # job id, not the job name)
           name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
           source_sha: ${{ fromJson(inputs.branch).sha }}
-          # Both test modes build the same configuration and share a cache.
-          # Only the normal job saves it to avoid concurrent writes.
-          save: ${{ matrix.test_mode != 'function-jit' && 'true' || 'false' }}
+          # Test modes and shards of the same configuration share a cache.
+          # Only the normal job's first shard saves it to avoid concurrent writes.
+          save: ${{ (matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1)) && 'true' || 'false' }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -207,6 +379,8 @@ jobs:
             ${{ (matrix.asan && !inputs.all_variations) && '-x' || '' }}
             ${{ matrix.repeat && '--repeat 2' || '' }}
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
+          testShard: ${{ matrix.test_shard || 1 }}
+          testShards: ${{ matrix.test_shards || 1 }}
       - name: Test OpCache
         if: ${{ inputs.all_variations && matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/test-linux
@@ -228,10 +402,10 @@ jobs:
             ${{ matrix.repeat && '--repeat 2' || '' }}
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
       - name: Extra tests
-        if: ${{ matrix.test_mode != 'function-jit' }}
+        if: ${{ matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1) }}
         uses: ./.github/actions/extra-tests
       - name: Verify generated files are up to date
-        if: ${{ matrix.test_mode != 'function-jit' }}
+        if: ${{ matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1) }}
         uses: ./.github/actions/verify-generated-files
   LINUX_X32:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X32 }}
@@ -859,7 +1033,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.WINDOWS.matrix }}
-    name: "WINDOWS_${{ matrix.x64 && 'X64' || 'X86' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.asan && '_ASAN' || ''}}${{ matrix.clang && '_CLANG' || ''}}"
+    name: "WINDOWS_${{ matrix.x64 && 'X64' || 'X86' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.asan && '_ASAN' || ''}}${{ matrix.clang && '_CLANG' || ''}}${{ matrix.test_shards > 1 && format('_SHARD_{0}_OF_{1}', matrix.test_shard, matrix.test_shards) || '' }}"
     runs-on: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.runs_on }}
     timeout-minutes: 180
     env:
@@ -875,6 +1049,8 @@ jobs:
       OPCACHE: "${{ matrix.opcache && '1' || '0' }}"
       ASAN: "${{ matrix.asan && '1' || '0' }}"
       CLANG_TOOLSET: "${{ matrix.clang && '1' || '0' }}"
+      TEST_SHARD: "${{ matrix.test_shard }}"
+      TEST_SHARDS: "${{ matrix.test_shards }}"
       SCCACHE_CACHE_SIZE: 1G
       SCCACHE_IGNORE_SERVER_IO_ERROR: "1"
       SCCACHE_CACHE_RESTORE_PREFIX: php-compiler-v3-sccache-windows-php${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-${{ matrix.x64 && 'x64' || 'x86' }}-zts${{ matrix.zts && '1' || '0' }}-asan${{ matrix.asan && '1' || '0' }}-
@@ -920,6 +1096,7 @@ jobs:
         if: >-
           ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
               && !matrix.clang
+              && matrix.test_shard == 1
               && (github.event_name == 'push'
                   || github.event_name == 'schedule'
                   || github.event_name == 'workflow_dispatch') }}
