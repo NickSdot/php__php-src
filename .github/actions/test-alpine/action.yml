@@ -9,14 +9,33 @@ inputs:
   jitType:
     default: 'disable'
     required: false
+  testShard:
+    default: 1
+    required: false
+  testShards:
+    default: 1
+    required: false
 runs:
   using: composite
   steps:
     - shell: bash
+      env:
+        TEST_SHARD: ${{ inputs.testShard }}
+        TEST_SHARDS: ${{ inputs.testShards }}
       run: |
         set -x
+        if [[ ! $TEST_SHARD =~ ^[1-9][0-9]*$ || ! $TEST_SHARDS =~ ^[1-9][0-9]*$ || $TEST_SHARD -gt $TEST_SHARDS ]]; then
+          echo "Invalid test shard $TEST_SHARD of $TEST_SHARDS" >&2
+          exit 1
+        fi
         export SKIP_IO_CAPTURE_TESTS=1
         export STACK_LIMIT_DEFAULTS_CHECK=1
+        test_shard_options=()
+        if [[ $TEST_SHARDS -gt 1 ]]; then
+          sapi/cli/php .github/scripts/generate_test_shard.php \
+            "$TEST_SHARD" "$TEST_SHARDS" "$RUNNER_TEMP/php-test-shard.txt"
+          test_shard_options=(-r "$RUNNER_TEMP/php-test-shard.txt")
+        fi
         sapi/cli/php run-tests.php -P -q ${{ inputs.runTestsParameters }} \
           ${{ inputs.enableOpcache == 'true' && '-d opcache.enable_cli=1' || '' }} \
           -d opcache.jit=${{ inputs.jitType }} \
@@ -26,4 +45,5 @@ runs:
           --no-progress \
           --show-diff \
           --show-slow 1000 \
-          --set-timeout 120
+          --set-timeout 120 \
+          "${test_shard_options[@]}"

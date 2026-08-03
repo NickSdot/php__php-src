@@ -1,0 +1,22 @@
+name: Download PHP build
+description: Download and restore a PHP build produced in this workflow run
+inputs:
+  name:
+    description: Artifact name, unique within the workflow run
+    required: true
+  source_sha:
+    description: Commit expected in the downloaded build
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download PHP build
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/php-build-artifact
+    - name: Restore PHP build
+      shell: bash
+      env:
+        PHP_BUILD_SOURCE_SHA: ${{ inputs.source_sha }}
+      run: .github/scripts/restore_build_artifact.sh
