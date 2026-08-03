@@ -131,7 +131,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.matrix }}
-    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.test_mode == 'function-jit' && '_FUNCTION_JIT' || '' }}"
     runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
     timeout-minutes: 180
     steps:
@@ -165,6 +165,9 @@ jobs:
           # job id, not the job name)
           name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
           source_sha: ${{ fromJson(inputs.branch).sha }}
+          # Both test modes build the same configuration and share a cache.
+          # Only the normal job saves it to avoid concurrent writes.
+          save: ${{ matrix.test_mode != 'function-jit' && 'true' || 'false' }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -185,7 +188,7 @@ jobs:
         if: ${{ !matrix.asan || inputs.all_variations }}
         uses: ./.github/actions/setup-x64
       - name: Test
-        if: ${{ inputs.all_variations || !matrix.asan }}
+        if: ${{ (inputs.all_variations || !matrix.asan) && matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/test-linux
         with:
           runTestsParameters: >-
@@ -194,7 +197,7 @@ jobs:
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
           idleCpu: ${{ matrix.asan && 'true' || 'false' }}
       - name: Test Tracing JIT
-        if: ${{ inputs.all_variations || matrix.asan }}
+        if: ${{ (inputs.all_variations || matrix.asan) && matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/test-linux
         with:
           enableOpcache: true
@@ -205,7 +208,7 @@ jobs:
             ${{ matrix.repeat && '--repeat 2' || '' }}
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
       - name: Test OpCache
-        if: ${{ inputs.all_variations }}
+        if: ${{ inputs.all_variations && matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/test-linux
         with:
           enableOpcache: true
@@ -216,7 +219,7 @@ jobs:
       - name: Test Function JIT
         # ASAN frequently timeouts. Each test run takes ~90 minutes, we can
         # avoid running into the 6 hour timeout by skipping the function JIT.
-        if: ${{ !matrix.asan }}
+        if: ${{ !matrix.asan && matrix.test_mode != 'normal' }}
         uses: ./.github/actions/test-linux
         with:
           enableOpcache: true
@@ -225,8 +228,10 @@ jobs:
             ${{ matrix.repeat && '--repeat 2' || '' }}
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
       - name: Extra tests
+        if: ${{ matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/extra-tests
       - name: Verify generated files are up to date
+        if: ${{ matrix.test_mode != 'function-jit' }}
         uses: ./.github/actions/verify-generated-files
   LINUX_X32:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X32 }}
