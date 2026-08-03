@@ -1,0 +1,22 @@
+name: Download PHP build
+description: Download and restore a PHP build produced in this workflow run
+inputs:
+  name:
+    description: Artifact name, unique within the workflow run
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download PHP build
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/php-build-artifact
+    - name: Restore PHP build
+      if: runner.os != 'Windows'
+      shell: bash
+      run: .github/scripts/restore_build_artifact.sh
+    - name: Restore PHP build
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: .github/scripts/windows/restore_build_artifact.ps1
