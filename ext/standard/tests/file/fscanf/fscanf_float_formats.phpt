@@ -47,6 +47,11 @@ $cases = [
     ['+', '%f'],
     ['1e309', '%f'],
     ['1e-4000', '%f'],
+    ['1-2', '%f'],
+    ['1.2.3', '%f'],
+    ['e1', '%f'],
+    ['1e2e3', '%f'],
+    ['1.25', '%100f'],
     ['1.5 2.5', '%*f %f'],
     ['value=1.25', 'value=%f'],
 ];
@@ -160,6 +165,31 @@ Format "%f", input "1e-4000":
 array(1) {
   [0]=>
   float(0)
+}
+Format "%f", input "1-2":
+array(1) {
+  [0]=>
+  float(1)
+}
+Format "%f", input "1.2.3":
+array(1) {
+  [0]=>
+  float(1.2)
+}
+Format "%f", input "e1":
+array(1) {
+  [0]=>
+  NULL
+}
+Format "%f", input "1e2e3":
+array(1) {
+  [0]=>
+  float(100)
+}
+Format "%100f", input "1.25":
+array(1) {
+  [0]=>
+  float(1.25)
 }
 Format "%*f %f", input "1.5 2.5":
 array(1) {
