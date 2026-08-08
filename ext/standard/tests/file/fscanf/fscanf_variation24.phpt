@@ -36,11 +36,8 @@ $char_formats = array( "%c",
 
 $counter = 1;
 
-// writing to the file
-foreach($strings as $string) {
-  @fprintf($file_handle, $string);
-  @fprintf($file_handle, "\n");
-}
+$string = implode("\n", $strings) . "\n";
+fwrite($file_handle, $string);
 // closing the file
 fclose($file_handle);
 
