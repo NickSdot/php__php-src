@@ -15,8 +15,8 @@ $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
 
-// array of chars
-$char_types = array( 'a', "a", 67, -67, 99 );
+// Input strings
+$chars = ['a', 'a', '67', '-67', '99'];
 
 $char_formats = array( "%c",
                "%hc", "%lc", "%Lc",
@@ -26,11 +26,8 @@ $char_formats = array( "%c",
 
 $counter = 1;
 
-// writing to the file
-foreach($char_types as $char) {
-  @fprintf($file_handle, $char);
-  @fprintf($file_handle, "\n");
-}
+$string = implode("\n", $chars) . "\n";
+fwrite($file_handle, $string);
 // closing the file
 fclose($file_handle);
 
