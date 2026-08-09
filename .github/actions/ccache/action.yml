@@ -11,6 +11,10 @@ inputs:
   cxx:
     required: false
     default: 'g++'
+  source_sha:
+    description: Commit checked out in php_directory; defaults to the workflow commit
+    required: false
+    default: ''
   save:
     required: false
     default: true
@@ -23,18 +27,22 @@ runs:
       env:
         CACHE_NAME: ${{ inputs.name }}
         PHP_DIRECTORY: ${{ inputs.php_directory }}
+        SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
       run: |
         if [[ ! $CACHE_NAME =~ ^[A-Za-z0-9_.-]+$ ]]; then
           echo "Invalid compiler cache name: $CACHE_NAME" >&2
           exit 1
         fi
+        if [[ ! $SOURCE_SHA =~ ^[0-9a-f]{40}$ ]]; then
+          echo "Invalid source commit: $SOURCE_SHA" >&2
+          exit 1
+        fi
         major=$(sed -En 's/^#define PHP_MAJOR_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
         minor=$(sed -En 's/^#define PHP_MINOR_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
         release=$(sed -En 's/^#define PHP_RELEASE_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
-        source_sha=$(git -C "$PHP_DIRECTORY" rev-parse HEAD)
         prefix="php-compiler-v3-ccache-$CACHE_NAME-$major.$minor.$release"
         # GitHub cache entries are immutable, so each commit needs a new key.
-        echo "key=$prefix-$source_sha" >> "$GITHUB_OUTPUT"
+        echo "key=$prefix-$SOURCE_SHA" >> "$GITHUB_OUTPUT"
         echo "prefix=$prefix-" >> "$GITHUB_OUTPUT"
         echo "legacy_prefix=$CACHE_NAME-$major.$minor.$release-" >> "$GITHUB_OUTPUT"
     - name: ccache

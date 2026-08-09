@@ -73,6 +73,7 @@ jobs:
           cc: clang-20
           cxx: clang++-20
           save: true
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-alpine
         with:
@@ -127,6 +128,7 @@ jobs:
           cc: clang-20
           cxx: clang++-20
           save: ${{ matrix.test_shard == 1 && 'true' || 'false' }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         if: ${{ inputs.all_variations }}
         uses: ./.github/actions/configure-alpine
@@ -185,6 +187,7 @@ jobs:
         with:
           name: LINUX_X64_ASAN_DEBUG_ZTS
           save: true
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -332,6 +335,7 @@ jobs:
           # Test modes and shards of the same configuration share a cache.
           # Only the normal job's first shard saves it to avoid concurrent writes.
           save: ${{ (matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1)) && 'true' || 'false' }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -442,6 +446,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "LINUX_X32_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: System info
         run: |
           echo "::group::Show host CPU info"
@@ -504,6 +509,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "MACOS_${{ matrix.arch }}_${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-macos
         with:
@@ -628,6 +634,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "COMMUNITY_${{ matrix.type }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -841,6 +848,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         uses: ./.github/actions/configure-x64
         with:
@@ -905,6 +913,7 @@ jobs:
           name: "${{ github.job }}"
           cc: clang
           cxx: clang++
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         run: |
           export CFLAGS="-DZEND_TRACK_ARENA_ALLOC"
@@ -1240,6 +1249,7 @@ jobs:
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: ./configure
         run: |
           set -x
