@@ -6,9 +6,9 @@ if (Test-Path $artifactDirectory) {
 }
 New-Item -ItemType Directory -Path $artifactDirectory | Out-Null
 
-$sourceSha = (& git -C $env:GITHUB_WORKSPACE rev-parse HEAD).Trim()
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to determine the checked-out source commit"
+$sourceSha = $env:PHP_BUILD_SOURCE_SHA
+if ($sourceSha -notmatch '^[0-9a-f]{40}$') {
+    throw "Invalid source commit: $sourceSha"
 }
 Set-Content -Path (Join-Path $artifactDirectory "source-sha") -Value $sourceSha -Encoding ascii
 

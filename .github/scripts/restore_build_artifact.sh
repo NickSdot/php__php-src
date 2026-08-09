@@ -3,10 +3,12 @@
 set -euo pipefail
 
 artifact_directory="$RUNNER_TEMP/php-build-artifact"
-expected_sha=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)
+expected_sha=$PHP_BUILD_SOURCE_SHA
 artifact_sha=$(<"$artifact_directory/source-sha")
 
-if [[ ! $artifact_sha =~ ^[0-9a-f]{40}$ || $artifact_sha != "$expected_sha" ]]; then
+if [[ ! $expected_sha =~ ^[0-9a-f]{40}$
+    || ! $artifact_sha =~ ^[0-9a-f]{40}$
+    || $artifact_sha != "$expected_sha" ]]; then
     echo "Build artifact source mismatch: expected $expected_sha, got $artifact_sha" >&2
     exit 1
 fi

@@ -91,6 +91,7 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
   ALPINE:
     needs: ALPINE_BUILD
     if: >-
@@ -147,6 +148,7 @@ jobs:
         uses: ./.github/actions/download-build-artifact
         with:
           name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: make install
         if: ${{ inputs.all_variations }}
         uses: ./.github/actions/install-alpine
@@ -206,6 +208,7 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
   LINUX_X64_ASAN:
     needs: LINUX_X64_ASAN_BUILD
     if: >-
@@ -250,6 +253,7 @@ jobs:
         uses: ./.github/actions/download-build-artifact
         with:
           name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: Configure installed PHP
         run: |
           sudo mkdir -p /etc/php.d
@@ -1088,6 +1092,7 @@ jobs:
         uses: ./.github/actions/upload-build-artifact
         with:
           name: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
+          source_sha: ${{ fromJson(inputs.branch).sha }}
   WINDOWS:
     needs: WINDOWS_BUILD
     if: >-
@@ -1177,6 +1182,7 @@ jobs:
         uses: ./.github/actions/download-build-artifact
         with:
           name: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
+          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: Setup test databases
         if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && !inputs.all_variations }}
         shell: pwsh

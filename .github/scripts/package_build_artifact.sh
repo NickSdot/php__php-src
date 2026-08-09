@@ -14,7 +14,11 @@ if [[ ! -d $install_root ]]; then
     exit 1
 fi
 
-git -C "$GITHUB_WORKSPACE" rev-parse HEAD > "$artifact_directory/source-sha"
+if [[ ! $PHP_BUILD_SOURCE_SHA =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Invalid source commit: $PHP_BUILD_SOURCE_SHA" >&2
+    exit 1
+fi
+printf '%s\n' "$PHP_BUILD_SOURCE_SHA" > "$artifact_directory/source-sha"
 tar --exclude='./.git' -cf "$artifact_directory/workspace.tar" \
     -C "$GITHUB_WORKSPACE" .
 tar -cf "$artifact_directory/install-root.tar" -C "$install_root" .

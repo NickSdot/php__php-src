@@ -1,9 +1,9 @@
 $ErrorActionPreference = "Stop"
 
 $artifactDirectory = Join-Path $env:RUNNER_TEMP "php-build-artifact"
-$expectedSha = (& git -C $env:GITHUB_WORKSPACE rev-parse HEAD).Trim()
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to determine the checked-out source commit"
+$expectedSha = $env:PHP_BUILD_SOURCE_SHA
+if ($expectedSha -notmatch '^[0-9a-f]{40}$') {
+    throw "Invalid source commit: $expectedSha"
 }
 $artifactSha = (Get-Content (Join-Path $artifactDirectory "source-sha") -Raw).Trim()
 if ($artifactSha -notmatch '^[0-9a-f]{40}$' -or $artifactSha -ne $expectedSha) {
