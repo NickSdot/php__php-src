@@ -266,7 +266,6 @@ jobs:
           enableOpcache: true
           jitType: tracing
           runTestsParameters: --asan -x
-          idleCpu: true
           testShard: ${{ matrix.test_shard }}
           testShards: ${{ matrix.test_shards }}
       - name: Extra tests
@@ -1030,6 +1029,9 @@ jobs:
         uses: ./.github/actions/verify-generated-files
   WINDOWS:
     if: ${{ fromJson(inputs.branch).jobs.WINDOWS }}
+    permissions:
+      actions: read
+      contents: read
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.WINDOWS.matrix }}
@@ -1063,7 +1065,9 @@ jobs:
         with:
           ref: ${{ fromJson(inputs.branch).ref }}
       - name: Get checked-out commit
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && (inputs.all_variations || matrix.test_shard == 1) }}
         shell: pwsh
         run: |
           $sourceSha = git rev-parse HEAD
@@ -1073,10 +1077,15 @@ jobs:
         if: ${{ !fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
         uses: ./.github/actions/setup-windows
       - name: Setup Windows build tools
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && (inputs.all_variations || matrix.test_shard == 1) }}
         uses: ./.github/actions/setup-windows
       - name: Restore MSVC compiler cache
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && !matrix.clang }}
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && (inputs.all_variations || matrix.test_shard == 1)
+              && !matrix.clang }}
         continue-on-error: true
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
@@ -1086,7 +1095,9 @@ jobs:
             ${{ env.SCCACHE_CACHE_RESTORE_PREFIX }}
             ${{ env.SCCACHE_CACHE_LEGACY_RESTORE_PREFIX }}
       - name: Build PHP while preparing test databases
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && (inputs.all_variations || matrix.test_shard == 1) }}
         shell: pwsh
         run: .github/scripts/windows/build_with_test_database_setup.ps1
       - name: Build PHP
@@ -1095,6 +1106,7 @@ jobs:
       - name: Save MSVC compiler cache
         if: >-
           ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && inputs.all_variations
               && !matrix.clang
               && matrix.test_shard == 1
               && (github.event_name == 'push'
@@ -1105,6 +1117,33 @@ jobs:
         with:
           path: ${{ runner.temp }}\sccache
           key: ${{ env.SCCACHE_CACHE_KEY }}
+      - name: Upload PHP build
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && !inputs.all_variations
+              && matrix.test_shard == 1 }}
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
+          source_sha: ${{ fromJson(inputs.branch).sha }}
+      - name: Download PHP build while preparing test databases
+        if: >-
+          ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && !inputs.all_variations
+              && matrix.test_shard != 1 }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PHP_BUILD_ARTIFACT_NAME: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
+          PHP_BUILD_SOURCE_SHA: ${{ fromJson(inputs.branch).sha }}
+          PHP_BUILD_PRODUCER_JOB: WINDOWS_X64_ZTS_1-2
+        run: |
+          $parameters = @{
+            ArtifactName = $env:PHP_BUILD_ARTIFACT_NAME
+            SourceSha = $env:PHP_BUILD_SOURCE_SHA
+            ProducerJobName = $env:PHP_BUILD_PRODUCER_JOB
+          }
+          .github/scripts/windows/download_build_with_test_database_setup.ps1 @parameters
       - name: Test
         run: .github/scripts/windows/test.bat
   FREEBSD:

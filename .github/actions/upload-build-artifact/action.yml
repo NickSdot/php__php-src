@@ -11,10 +11,17 @@ runs:
   using: composite
   steps:
     - name: Package PHP build
+      if: runner.os != 'Windows'
       shell: bash
       env:
         PHP_BUILD_SOURCE_SHA: ${{ inputs.source_sha }}
       run: .github/scripts/package_build_artifact.sh
+    - name: Package PHP build
+      if: runner.os == 'Windows'
+      shell: pwsh
+      env:
+        PHP_BUILD_SOURCE_SHA: ${{ inputs.source_sha }}
+      run: .github/scripts/windows/package_build_artifact.ps1
     - name: Upload PHP build
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
       with:
