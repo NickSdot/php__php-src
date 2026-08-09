@@ -201,7 +201,7 @@ $branch = $argv[3] ?? 'master';
 $repository = $argv[5] ?? null;
 $shared_build_experiment = $trigger === 'workflow_dispatch'
     && $repository === 'NickSdot/php__php-src'
-    && $branch === 'experiment/ci-build-artifacts';
+    && in_array($branch, ['experiment/ci-build-artifacts', 'experiment/ci-build-control'], true);
 $nightly = ($trigger === 'schedule' || $trigger === 'workflow_dispatch')
     && !$shared_build_experiment;
 $branches = $nightly && $branch === 'master'

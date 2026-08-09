@@ -37,7 +37,7 @@ jobs:
     if: github.repository == 'php/php-src' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
-      SHARED_BUILD_EXPERIMENT: ${{ github.repository == 'NickSdot/php__php-src' && github.event_name == 'workflow_dispatch' && github.ref_name == 'experiment/ci-build-artifacts' }}
+      SHARED_BUILD_EXPERIMENT: ${{ github.repository == 'NickSdot/php__php-src' && github.event_name == 'workflow_dispatch' && (github.ref_name == 'experiment/ci-build-artifacts' || github.ref_name == 'experiment/ci-build-control') }}
     outputs:
       all_variations: ${{ steps.set-matrix.outputs.all_variations }}
       branches: ${{ steps.set-matrix.outputs.branches }}

@@ -52,52 +52,8 @@ jobs:
             --asan -x
       - name: Extra tests
         uses: ./.github/actions/extra-tests
-  ALPINE_BUILD:
-    if: ${{ fromJson(inputs.branch).jobs.ALPINE && !inputs.all_variations }}
-    name: ALPINE_X64_ASAN_DBG_ZTS_BUILD
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
-    container:
-      image: 'alpine:3.22'
-    steps:
-      - name: git checkout
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ fromJson(inputs.branch).ref }}
-      - name: apk
-        uses: ./.github/actions/apk
-      - name: ccache
-        uses: ./.github/actions/ccache
-        with:
-          name: ALPINE
-          cc: clang-20
-          cxx: clang++-20
-          source_sha: ${{ fromJson(inputs.branch).sha }}
-          save: true
-      - name: ./configure
-        uses: ./.github/actions/configure-alpine
-        with:
-          configurationParameters: >-
-            CFLAGS="-fsanitize=undefined,address -fno-sanitize=function -DZEND_TRACK_ARENA_ALLOC"
-            LDFLAGS="-fsanitize=undefined,address -fno-sanitize=function"
-            --enable-debug
-            --enable-zts
-          skipSlow: true
-      - name: make
-        run: make -j$(/usr/bin/nproc) >/dev/null
-      - name: Stage PHP installation
-        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
-      - name: Upload PHP build
-        uses: ./.github/actions/upload-build-artifact
-        with:
-          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
-          source_sha: ${{ fromJson(inputs.branch).sha }}
   ALPINE:
-    needs: ALPINE_BUILD
-    if: >-
-      ${{ always()
-          && fromJson(inputs.branch).jobs.ALPINE
-          && (inputs.all_variations || needs.ALPINE_BUILD.result == 'success') }}
+    if: ${{ fromJson(inputs.branch).jobs.ALPINE }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.ALPINE.matrix }}
@@ -122,7 +78,6 @@ jobs:
           apk list
           echo "::endgroup::"
       - name: ccache
-        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
@@ -131,7 +86,6 @@ jobs:
           source_sha: ${{ fromJson(inputs.branch).sha }}
           save: ${{ matrix.test_shard == 1 && 'true' || 'false' }}
       - name: ./configure
-        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/configure-alpine
         with:
           configurationParameters: >-
@@ -141,22 +95,9 @@ jobs:
             --enable-zts
           skipSlow: true # FIXME: This should likely include slow extensions
       - name: make
-        if: ${{ inputs.all_variations }}
         run: make -j$(/usr/bin/nproc) >/dev/null
-      - name: Download PHP build
-        if: ${{ !inputs.all_variations }}
-        uses: ./.github/actions/download-build-artifact
-        with:
-          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
-          source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: make install
-        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/install-alpine
-      - name: Configure installed PHP
-        if: ${{ !inputs.all_variations }}
-        run: |
-          sudo mkdir -p /etc/php.d
-          sudo chmod 777 /etc/php.d
       - name: Test Tracing JIT
         uses: ./.github/actions/test-alpine
         with:
@@ -169,52 +110,8 @@ jobs:
       - name: Extra tests
         if: ${{ matrix.test_shard == 1 }}
         uses: ./.github/actions/extra-tests
-  LINUX_X64_ASAN_BUILD:
-    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
-    name: LINUX_X64_ASAN_DBG_ZTS_BUILD
-    runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
-    timeout-minutes: 60
-    steps:
-      - name: git checkout
-        uses: actions/checkout@v6
-        with:
-          ref: ${{ fromJson(inputs.branch).ref }}
-      - name: apt
-        uses: ./.github/actions/apt-x64
-        with:
-          asan: true
-          skipSlow: true
-      - name: ccache
-        uses: ./.github/actions/ccache
-        with:
-          name: LINUX_X64_ASAN_DEBUG_ZTS
-          source_sha: ${{ fromJson(inputs.branch).sha }}
-          save: true
-      - name: ./configure
-        uses: ./.github/actions/configure-x64
-        with:
-          configurationParameters: >-
-            CFLAGS="-fsanitize=undefined,address -DZEND_TRACK_ARENA_ALLOC"
-            LDFLAGS="-fsanitize=undefined,address"
-            --enable-debug
-            --enable-zts
-          asan: true
-          skipSlow: true
-      - name: make
-        run: make -j$(/usr/bin/nproc) >/dev/null
-      - name: Stage PHP installation
-        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
-      - name: Upload PHP build
-        uses: ./.github/actions/upload-build-artifact
-        with:
-          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
-          source_sha: ${{ fromJson(inputs.branch).sha }}
   LINUX_X64_ASAN:
-    needs: LINUX_X64_ASAN_BUILD
-    if: >-
-      ${{ always()
-          && fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix
-          && needs.LINUX_X64_ASAN_BUILD.result == 'success' }}
+    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
     services:
       mysql:
         image: mysql:8.4
@@ -249,17 +146,26 @@ jobs:
           echo "::endgroup::"
       - name: Setup Caddy server
         uses: ./.github/actions/setup-caddy
-      - name: Download PHP build
-        uses: ./.github/actions/download-build-artifact
+      - name: ccache
+        uses: ./.github/actions/ccache
         with:
-          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          name: LINUX_X64_ASAN_DEBUG_ZTS
           source_sha: ${{ fromJson(inputs.branch).sha }}
-      - name: Configure installed PHP
-        run: |
-          sudo mkdir -p /etc/php.d
-          sudo chmod 777 /etc/php.d
-          echo mysqli.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/mysqli.ini
-          echo pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/pdo_mysql.ini
+          save: ${{ matrix.test_shard == 1 && 'true' || 'false' }}
+      - name: ./configure
+        uses: ./.github/actions/configure-x64
+        with:
+          configurationParameters: >-
+            CFLAGS="-fsanitize=undefined,address -DZEND_TRACK_ARENA_ALLOC"
+            LDFLAGS="-fsanitize=undefined,address"
+            --enable-debug
+            --enable-zts
+          asan: true
+          skipSlow: true
+      - name: make
+        run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: make install
+        uses: ./.github/actions/install-linux
       - name: Test Tracing JIT
         uses: ./.github/actions/test-linux
         with:
