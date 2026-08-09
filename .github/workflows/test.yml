@@ -36,6 +36,8 @@ jobs:
     name: Generate Matrix
     if: github.repository == 'php/php-src' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    env:
+      SHARED_BUILD_EXPERIMENT: ${{ github.repository == 'NickSdot/php__php-src' && github.event_name == 'workflow_dispatch' && github.ref_name == 'experiment/ci-build-artifacts' }}
     outputs:
       all_variations: ${{ steps.set-matrix.outputs.all_variations }}
       branches: ${{ steps.set-matrix.outputs.branches }}
@@ -45,9 +47,9 @@ jobs:
           # When running nightly, set fetch-depth to 0 to clone the full
           # repository including all branches. This is required to find the
           # correct commit hashes.
-          fetch-depth: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '0' || '1' }}
+          fetch-depth: ${{ ((github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.SHARED_BUILD_EXPERIMENT != 'true') && '0' || '1' }}
       - name: Grab the commit mapping
-        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.SHARED_BUILD_EXPERIMENT != 'true' }}
         uses: actions/cache@v5
         with:
           path: branch-commit-cache.json

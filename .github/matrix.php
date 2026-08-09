@@ -198,7 +198,12 @@ if ($discard_cache) {
     @unlink(get_branch_commit_cache_file_path());
 }
 $branch = $argv[3] ?? 'master';
-$nightly = $trigger === 'schedule' || $trigger === 'workflow_dispatch';
+$repository = $argv[5] ?? null;
+$shared_build_experiment = $trigger === 'workflow_dispatch'
+    && $repository === 'NickSdot/php__php-src'
+    && $branch === 'experiment/ci-build-artifacts';
+$nightly = ($trigger === 'schedule' || $trigger === 'workflow_dispatch')
+    && !$shared_build_experiment;
 $branches = $nightly && $branch === 'master'
     ? get_branches()
     : [[
@@ -210,9 +215,10 @@ $branches = $nightly && $branch === 'master'
 
 $labels = json_decode($argv[4] ?? '[]', true) ?? [];
 $labels = array_column($labels, 'name');
+if ($shared_build_experiment) {
+    $labels = ['CI: No jobs', 'CI: Alpine', 'CI: Linux X64', 'CI: Windows'];
+}
 $all_variations = $nightly || in_array('CI: All variations', $labels, true);
-
-$repository = $argv[5] ?? null;
 
 foreach ($branches as &$branch) {
     $php_version = $branch['version'][0] . '.' . $branch['version'][1];
