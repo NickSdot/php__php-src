@@ -201,7 +201,7 @@ $branch = $argv[3] ?? 'master';
 $repository = $argv[5] ?? null;
 $normal_ci_experiment = $trigger === 'workflow_dispatch'
     && $repository === 'NickSdot/php__php-src'
-    && $branch === 'experiment/ci-build-artifacts';
+    && in_array($branch, ['experiment/ci-build-artifacts', 'experiment/ci-local-builds-v2'], true);
 $matrix_trigger = $normal_ci_experiment ? 'pull_request' : $trigger;
 $nightly = ($trigger === 'schedule' || $trigger === 'workflow_dispatch')
     && !$normal_ci_experiment;

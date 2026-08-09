@@ -37,7 +37,7 @@ jobs:
     if: github.repository == 'php/php-src' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
-      NORMAL_CI_EXPERIMENT: ${{ github.repository == 'NickSdot/php__php-src' && github.event_name == 'workflow_dispatch' && github.ref_name == 'experiment/ci-build-artifacts' }}
+      NORMAL_CI_EXPERIMENT: ${{ github.repository == 'NickSdot/php__php-src' && github.event_name == 'workflow_dispatch' && (github.ref_name == 'experiment/ci-build-artifacts' || github.ref_name == 'experiment/ci-local-builds-v2') }}
     outputs:
       all_variations: ${{ steps.set-matrix.outputs.all_variations }}
       branches: ${{ steps.set-matrix.outputs.branches }}
