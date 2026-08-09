@@ -1119,7 +1119,7 @@ function generate_version_info_manifest(makefiletarget)
 {
 	var manifest_name = makefiletarget + ".manifest";
 	var build_deps = !MODE_PHPIZE && is_parallel_build_enabled()
-		? "generated_files " : "";
+		? "$(GENERATED_FILES_STAMP) " : "";
 
 	if (MODE_PHPIZE) {
 		MFO.WriteLine("$(BUILD_DIR)\\" + manifest_name + ": " + PHP_DIR + "\\build\\default.manifest");
@@ -1148,7 +1148,7 @@ function generate_version_info_resource(makefiletarget, basename, creditspath, s
 	var project_header = creditspath + "/php_" + basename + ".h";
 	var versioning = "";
 	var build_deps = !MODE_PHPIZE && is_parallel_build_enabled()
-		? "generated_files " : "";
+		? "$(GENERATED_FILES_STAMP) " : "";
 
 	if (sapi) {
 		var internal_name = basename.toUpperCase() + " SAPI";
@@ -1311,7 +1311,9 @@ function SAPI(sapiname, file_list, makefiletarget, cflags, obj_dir, duplicate_so
 		if (CLANG_TOOLSET) {
 			add_asan_opts("CFLAGS_" + SAPI, "LIBS_" + SAPI, (is_lib ? "ARFLAGS_" : "LDFLAGS_") + SAPI);
 		} else if (VS_TOOLSET) {
-			ADD_FLAG("CFLAGS", "/fsanitize=address");
+			/* sccache's MSVC parser treats unknown slash-prefixed lowercase
+			 * arguments as input paths. cl.exe accepts '-' as an option prefix. */
+			ADD_FLAG("CFLAGS", "-fsanitize=address");
 		}
 	}
 
@@ -1817,7 +1819,7 @@ function ADD_SOURCES(dir, file_list, target, obj_dir, duplicate_sources)
 
 					/* A parallel make needs one recipe owner per output. Generated files are
 					 * an explicit prerequisite instead of relying on nmake's serial order. */
-					MFO.WriteLine(obj + ": generated_files " + dir + "\\" + src);
+					MFO.WriteLine(obj + ": $(GENERATED_FILES_STAMP) " + dir + "\\" + src);
 
 					var pdb_flag = "";
 					if (VS_TOOLSET) {

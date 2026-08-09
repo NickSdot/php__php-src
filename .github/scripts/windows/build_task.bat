@@ -57,6 +57,8 @@ jom /NOLOGO CC="sccache cl.exe"
 if %errorlevel% neq 0 exit /b 3
 jom /NOLOGO CC="sccache cl.exe" comtest.dll
 if %errorlevel% neq 0 exit /b 3
+powershell -NoProfile -File .github\scripts\windows\verify_incremental_build.ps1 -Compiler "sccache cl.exe"
+if %errorlevel% neq 0 exit /b 3
 sccache --show-stats
 sccache --stop-server
 goto build_complete
@@ -65,6 +67,8 @@ goto build_complete
 jom /NOLOGO
 if %errorlevel% neq 0 exit /b 3
 jom /NOLOGO comtest.dll
+if %errorlevel% neq 0 exit /b 3
+powershell -NoProfile -File .github\scripts\windows\verify_incremental_build.ps1
 if %errorlevel% neq 0 exit /b 3
 
 :build_complete
