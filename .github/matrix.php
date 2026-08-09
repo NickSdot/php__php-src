@@ -126,8 +126,13 @@ function select_jobs($repository, $trigger, $nightly, $labels, $php_version, $re
             : ['include' => [
                 ...with_test_shards(['name' => '', 'asan' => false, 'debug' => false, 'repeat' => false, 'test_mode' => 'normal', 'variation' => false, 'zts' => false], 1),
                 ...with_test_shards(['name' => '', 'asan' => false, 'debug' => false, 'repeat' => false, 'test_mode' => 'function-jit', 'variation' => false, 'zts' => false], 1),
-                ...with_test_shards(['name' => '_ASAN', 'asan' => true, 'debug' => true, 'repeat' => false, 'test_mode' => 'normal', 'variation' => false, 'zts' => true], 3),
             ]];
+        if (!$all_variations) {
+            $jobs['LINUX_X64']['asan_matrix']['include'] = with_test_shards(
+                ['name' => '_ASAN', 'asan' => true, 'debug' => true, 'repeat' => false, 'test_mode' => 'normal', 'variation' => false, 'zts' => true],
+                3,
+            );
+        }
         $jobs['LINUX_X64']['config']['variation_enable_zend_max_execution_timers'] = version_compare($php_version, '8.3', '>=');
     }
     if ($all_jobs || !$no_jobs || $test_linux_x32) {

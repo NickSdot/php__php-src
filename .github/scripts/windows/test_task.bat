@@ -152,7 +152,7 @@ mkdir c:\tests_tmp
 
 set TEST_SHARD_OPTS=
 if %TEST_SHARDS% GTR 1 (
-	%PHP_BUILD_DIR%\php.exe .github\scripts\generate_test_shard.php %TEST_SHARD% %TEST_SHARDS% %RUNNER_TEMP%\php-test-shard.txt
+	%PHP_BUILD_DIR%\php.exe .github\scripts\generate_test_shard.php "%TEST_SHARD%" "%TEST_SHARDS%" "%RUNNER_TEMP%\php-test-shard.txt"
 	if errorlevel 1 exit /b 3
 	set TEST_SHARD_OPTS=-r %RUNNER_TEMP%\php-test-shard.txt
 )

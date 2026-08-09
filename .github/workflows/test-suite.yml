@@ -52,8 +52,50 @@ jobs:
             --asan -x
       - name: Extra tests
         uses: ./.github/actions/extra-tests
+  ALPINE_BUILD:
+    if: ${{ fromJson(inputs.branch).jobs.ALPINE && !inputs.all_variations }}
+    name: ALPINE_X64_ASAN_DBG_ZTS_BUILD
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container:
+      image: 'alpine:3.22'
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apk
+        uses: ./.github/actions/apk
+      - name: ccache
+        uses: ./.github/actions/ccache
+        with:
+          name: ALPINE
+          cc: clang-20
+          cxx: clang++-20
+          save: true
+      - name: ./configure
+        uses: ./.github/actions/configure-alpine
+        with:
+          configurationParameters: >-
+            CFLAGS="-fsanitize=undefined,address -fno-sanitize=function -DZEND_TRACK_ARENA_ALLOC"
+            LDFLAGS="-fsanitize=undefined,address -fno-sanitize=function"
+            --enable-debug
+            --enable-zts
+          skipSlow: true
+      - name: make
+        run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Stage PHP installation
+        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
+      - name: Upload PHP build
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
   ALPINE:
-    if: ${{ fromJson(inputs.branch).jobs.ALPINE }}
+    needs: ALPINE_BUILD
+    if: >-
+      ${{ always()
+          && fromJson(inputs.branch).jobs.ALPINE
+          && (inputs.all_variations || needs.ALPINE_BUILD.result == 'success') }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.ALPINE.matrix }}
@@ -78,6 +120,7 @@ jobs:
           apk list
           echo "::endgroup::"
       - name: ccache
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/ccache
         with:
           name: "${{ github.job }}"
@@ -85,6 +128,7 @@ jobs:
           cxx: clang++-20
           save: ${{ matrix.test_shard == 1 && 'true' || 'false' }}
       - name: ./configure
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/configure-alpine
         with:
           configurationParameters: >-
@@ -94,9 +138,21 @@ jobs:
             --enable-zts
           skipSlow: true # FIXME: This should likely include slow extensions
       - name: make
+        if: ${{ inputs.all_variations }}
         run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Download PHP build
+        if: ${{ !inputs.all_variations }}
+        uses: ./.github/actions/download-build-artifact
+        with:
+          name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
       - name: make install
+        if: ${{ inputs.all_variations }}
         uses: ./.github/actions/install-alpine
+      - name: Configure installed PHP
+        if: ${{ !inputs.all_variations }}
+        run: |
+          sudo mkdir -p /etc/php.d
+          sudo chmod 777 /etc/php.d
       - name: Test Tracing JIT
         uses: ./.github/actions/test-alpine
         with:
@@ -109,6 +165,109 @@ jobs:
       - name: Extra tests
         if: ${{ matrix.test_shard == 1 }}
         uses: ./.github/actions/extra-tests
+  LINUX_X64_ASAN_BUILD:
+    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
+    name: LINUX_X64_ASAN_DBG_ZTS_BUILD
+    runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
+    timeout-minutes: 60
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apt
+        uses: ./.github/actions/apt-x64
+        with:
+          asan: true
+          skipSlow: true
+      - name: ccache
+        uses: ./.github/actions/ccache
+        with:
+          name: LINUX_X64_ASAN_DEBUG_ZTS
+          save: true
+      - name: ./configure
+        uses: ./.github/actions/configure-x64
+        with:
+          configurationParameters: >-
+            CFLAGS="-fsanitize=undefined,address -DZEND_TRACK_ARENA_ALLOC"
+            LDFLAGS="-fsanitize=undefined,address"
+            --enable-debug
+            --enable-zts
+          asan: true
+          skipSlow: true
+      - name: make
+        run: make -j$(/usr/bin/nproc) >/dev/null
+      - name: Stage PHP installation
+        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
+      - name: Upload PHP build
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+  LINUX_X64_ASAN:
+    needs: LINUX_X64_ASAN_BUILD
+    if: >-
+      ${{ always()
+          && fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix
+          && needs.LINUX_X64_ASAN_BUILD.result == 'success' }}
+    services:
+      mysql:
+        image: mysql:8.4
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: root
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
+    name: "LINUX_X64_ASAN_DBG_ZTS_${{ matrix.test_shard }}-${{ matrix.test_shards }}"
+    runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
+    timeout-minutes: 180
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: apt
+        uses: ./.github/actions/apt-x64
+        with:
+          asan: true
+          skipSlow: true
+      - name: System info
+        run: |
+          echo "::group::Show host CPU info"
+          lscpu
+          echo "::endgroup::"
+          echo "::group::Show installed package versions"
+          dpkg -l
+          echo "::endgroup::"
+      - name: Setup Caddy server
+        uses: ./.github/actions/setup-caddy
+      - name: Download PHP build
+        uses: ./.github/actions/download-build-artifact
+        with:
+          name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+      - name: Configure installed PHP
+        run: |
+          sudo mkdir -p /etc/php.d
+          sudo chmod 777 /etc/php.d
+          echo mysqli.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/mysqli.ini
+          echo pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/pdo_mysql.ini
+      - name: Test Tracing JIT
+        uses: ./.github/actions/test-linux
+        with:
+          enableOpcache: true
+          jitType: tracing
+          runTestsParameters: --asan -x
+          idleCpu: true
+          testShard: ${{ matrix.test_shard }}
+          testShards: ${{ matrix.test_shards }}
+      - name: Extra tests
+        if: ${{ matrix.test_shard == 1 }}
+        uses: ./.github/actions/extra-tests
+      - name: Verify generated files are up to date
+        if: ${{ matrix.test_shard == 1 }}
+        uses: ./.github/actions/verify-generated-files
   LINUX_X64:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X64 }}
     services:
@@ -856,8 +1015,78 @@ jobs:
         uses: ./.github/actions/test-libmysqlclient
       - name: Verify generated files are up to date
         uses: ./.github/actions/verify-generated-files
+  WINDOWS_BUILD:
+    if: >-
+      ${{ fromJson(inputs.branch).jobs.WINDOWS
+          && fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+          && !inputs.all_variations }}
+    name: WINDOWS_X64_ZTS_BUILD
+    runs-on: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.runs_on }}
+    timeout-minutes: 60
+    env:
+      PHP_BUILD_CACHE_BASE_DIR: C:\build-cache
+      PHP_BUILD_OBJ_DIR: C:\obj
+      PHP_BUILD_CACHE_SDK_DIR: C:\build-cache\sdk
+      PHP_BUILD_SDK_BRANCH: php-sdk-2.7.1
+      PHP_BUILD_CRT: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}
+      PLATFORM: x64
+      THREAD_SAFE: "1"
+      INTRINSICS: AVX2
+      OPCACHE: "1"
+      ASAN: "0"
+      CLANG_TOOLSET: "0"
+      SCCACHE_CACHE_SIZE: 1G
+      SCCACHE_IGNORE_SERVER_IO_ERROR: "1"
+      SCCACHE_CACHE_RESTORE_PREFIX: php-compiler-v3-sccache-windows-php${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts1-asan0-
+      SCCACHE_CACHE_LEGACY_RESTORE_PREFIX: windows-sccache-v2-php${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts1-asan0-
+    steps:
+      - name: git config
+        run: git config --global core.autocrlf false && git config --global core.eol lf
+      - name: git checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ fromJson(inputs.branch).ref }}
+      - name: Get checked-out commit
+        shell: pwsh
+        run: |
+          $sourceSha = git rev-parse HEAD
+          "SCCACHE_CACHE_KEY=$env:SCCACHE_CACHE_RESTORE_PREFIX$sourceSha" |
+            Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Setup Windows build tools
+        uses: ./.github/actions/setup-windows
+      - name: Restore MSVC compiler cache
+        continue-on-error: true
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: ${{ runner.temp }}\sccache
+          key: ${{ env.SCCACHE_CACHE_KEY }}
+          restore-keys: |
+            ${{ env.SCCACHE_CACHE_RESTORE_PREFIX }}
+            ${{ env.SCCACHE_CACHE_LEGACY_RESTORE_PREFIX }}
+      - name: Build PHP
+        run: .github/scripts/windows/build.bat
+      - name: Save MSVC compiler cache
+        if: >-
+          ${{ github.event_name == 'push'
+              || github.event_name == 'schedule'
+              || github.event_name == 'workflow_dispatch' }}
+        continue-on-error: true
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: ${{ runner.temp }}\sccache
+          key: ${{ env.SCCACHE_CACHE_KEY }}
+      - name: Upload PHP build
+        uses: ./.github/actions/upload-build-artifact
+        with:
+          name: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
   WINDOWS:
-    if: ${{ fromJson(inputs.branch).jobs.WINDOWS }}
+    needs: WINDOWS_BUILD
+    if: >-
+      ${{ always()
+          && fromJson(inputs.branch).jobs.WINDOWS
+          && (!fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              || inputs.all_variations
+              || needs.WINDOWS_BUILD.result == 'success') }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.WINDOWS.matrix }}
@@ -891,7 +1120,7 @@ jobs:
         with:
           ref: ${{ fromJson(inputs.branch).ref }}
       - name: Get checked-out commit
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && inputs.all_variations }}
         shell: pwsh
         run: |
           $sourceSha = git rev-parse HEAD
@@ -901,10 +1130,10 @@ jobs:
         if: ${{ !fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
         uses: ./.github/actions/setup-windows
       - name: Setup Windows build tools
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && inputs.all_variations }}
         uses: ./.github/actions/setup-windows
       - name: Restore MSVC compiler cache
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && !matrix.clang }}
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && inputs.all_variations && !matrix.clang }}
         continue-on-error: true
         uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
@@ -914,17 +1143,16 @@ jobs:
             ${{ env.SCCACHE_CACHE_RESTORE_PREFIX }}
             ${{ env.SCCACHE_CACHE_LEGACY_RESTORE_PREFIX }}
       - name: Build PHP while preparing test databases
-        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && inputs.all_variations }}
         shell: pwsh
         run: .github/scripts/windows/build_with_test_database_setup.ps1
       - name: Build PHP
         if: ${{ !fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build }}
         run: .github/scripts/windows/build.bat
-      # Pull request caches are isolated to the PR merge ref and cannot update
-      # caches used by the base branch or other pull requests.
       - name: Save MSVC compiler cache
         if: >-
           ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build
+              && inputs.all_variations
               && !matrix.clang
               && matrix.test_shard == 1
               && (github.event_name == 'push'
@@ -935,6 +1163,15 @@ jobs:
         with:
           path: ${{ runner.temp }}\sccache
           key: ${{ env.SCCACHE_CACHE_KEY }}
+      - name: Download PHP build
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && !inputs.all_variations }}
+        uses: ./.github/actions/download-build-artifact
+        with:
+          name: php-build-windows-${{ join(fromJson(inputs.branch).version, '.') }}-${{ fromJson(inputs.branch).jobs.WINDOWS.config.vs_crt_version }}-x64-zts
+      - name: Setup test databases
+        if: ${{ fromJson(inputs.branch).jobs.WINDOWS.config.parallel_build && !inputs.all_variations }}
+        shell: pwsh
+        run: .github/scripts/windows/setup_test_databases.ps1
       - name: Test
         run: .github/scripts/windows/test.bat
   FREEBSD:
