@@ -20,24 +20,46 @@ runs:
     - name: Get cache key
       shell: bash
       id: cache_key
+      env:
+        CACHE_NAME: ${{ inputs.name }}
+        PHP_DIRECTORY: ${{ inputs.php_directory }}
       run: |
-        major=$(cat ${{ inputs.php_directory }}/main/php_version.h | sed -En 's/^#define PHP_MAJOR_VERSION ([0-9]+)/\1/p')
-        minor=$(cat ${{ inputs.php_directory }}/main/php_version.h | sed -En 's/^#define PHP_MINOR_VERSION ([0-9]+)/\1/p')
-        release=$(cat ${{ inputs.php_directory }}/main/php_version.h | sed -En 's/^#define PHP_RELEASE_VERSION ([0-9]+)/\1/p')
-        prefix="${{ inputs.name }}-$major.$minor.$release"
+        if [[ ! $CACHE_NAME =~ ^[A-Za-z0-9_.-]+$ ]]; then
+          echo "Invalid compiler cache name: $CACHE_NAME" >&2
+          exit 1
+        fi
+        major=$(sed -En 's/^#define PHP_MAJOR_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
+        minor=$(sed -En 's/^#define PHP_MINOR_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
+        release=$(sed -En 's/^#define PHP_RELEASE_VERSION ([0-9]+)/\1/p' "$PHP_DIRECTORY/main/php_version.h")
+        source_sha=$(git -C "$PHP_DIRECTORY" rev-parse HEAD)
+        prefix="php-compiler-v3-ccache-$CACHE_NAME-$major.$minor.$release"
         # GitHub cache entries are immutable, so each commit needs a new key.
-        echo "key=$prefix-$GITHUB_SHA" >> $GITHUB_OUTPUT
-        echo "prefix=$prefix" >> $GITHUB_OUTPUT
+        echo "key=$prefix-$source_sha" >> "$GITHUB_OUTPUT"
+        echo "prefix=$prefix-" >> "$GITHUB_OUTPUT"
+        echo "legacy_prefix=$CACHE_NAME-$major.$minor.$release-" >> "$GITHUB_OUTPUT"
     - name: ccache
       uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
       with:
         key: "${{ steps.cache_key.outputs.key }}"
         append-timestamp: false
-        restore-keys: "${{ steps.cache_key.outputs.prefix }}"
-        # GitHub isolates caches saved by PR merge refs from base branches and other PRs.
-        save: ${{ inputs.save == 'true' }}
+        restore-keys: |
+          ${{ steps.cache_key.outputs.prefix }}
+          ${{ steps.cache_key.outputs.legacy_prefix }}
+        # Low-trust events restore trusted branch caches but never save entries.
+        save: >-
+          ${{ inputs.save == 'true'
+              && (github.event_name == 'push'
+                  || github.event_name == 'schedule'
+                  || github.event_name == 'workflow_dispatch') }}
     - name: Export CC/CXX
       shell: bash
+      env:
+        CC_COMMAND: ${{ inputs.cc }}
+        CXX_COMMAND: ${{ inputs.cxx }}
       run: |
-        echo "CC=ccache ${{ inputs.cc }}" >> $GITHUB_ENV
-        echo "CXX=ccache ${{ inputs.cxx }}" >> $GITHUB_ENV
+        if [[ ! $CC_COMMAND =~ ^[A-Za-z0-9_+./-]+$ || ! $CXX_COMMAND =~ ^[A-Za-z0-9_+./-]+$ ]]; then
+          echo "Invalid compiler command" >&2
+          exit 1
+        fi
+        echo "CC=ccache $CC_COMMAND" >> "$GITHUB_ENV"
+        echo "CXX=ccache $CXX_COMMAND" >> "$GITHUB_ENV"
