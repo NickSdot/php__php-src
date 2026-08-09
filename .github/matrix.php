@@ -198,6 +198,7 @@ if ($discard_cache) {
     @unlink(get_branch_commit_cache_file_path());
 }
 $branch = $argv[3] ?? 'master';
+$repository = $argv[5] ?? null;
 $nightly = $trigger === 'schedule' || $trigger === 'workflow_dispatch';
 $branches = $nightly && $branch === 'master'
     ? get_branches()
@@ -211,8 +212,6 @@ $branches = $nightly && $branch === 'master'
 $labels = json_decode($argv[4] ?? '[]', true) ?? [];
 $labels = array_column($labels, 'name');
 $all_variations = $nightly || in_array('CI: All variations', $labels, true);
-
-$repository = $argv[5] ?? null;
 
 foreach ($branches as &$branch) {
     $php_version = $branch['version'][0] . '.' . $branch['version'][1];

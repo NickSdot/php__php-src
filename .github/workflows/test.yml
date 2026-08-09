@@ -63,6 +63,9 @@ jobs:
     needs: GENERATE_MATRIX
     if: ${{ needs.GENERATE_MATRIX.outputs.branches != '[]' }}
     name: ${{ matrix.branch.name }}
+    permissions:
+      actions: read
+      contents: read
     uses: ./.github/workflows/test-suite.yml
     strategy:
       fail-fast: false
