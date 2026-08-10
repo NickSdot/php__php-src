@@ -220,7 +220,38 @@ $all_variations = $nightly || in_array('CI: All variations', $labels, true);
 
 foreach ($branches as &$branch) {
     $php_version = $branch['version'][0] . '.' . $branch['version'][1];
-    $branch['jobs'] = select_jobs($repository, $matrix_trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
+    $jobs = select_jobs($repository, $matrix_trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
+    if ($normal_ci_experiment) {
+        $alpine = $jobs['ALPINE'];
+        foreach ($alpine['matrix']['include'] as &$configuration) {
+            $configuration['control'] = false;
+        }
+        unset($configuration);
+
+        $control = $alpine['matrix']['include'][0];
+        $control['test_shard'] = 1;
+        $control['test_shards'] = 1;
+        $control['control'] = true;
+        $alpine['matrix']['include'][] = $control;
+
+        $linux_x64 = $jobs['LINUX_X64'];
+        foreach ($linux_x64['matrix']['include'] as &$configuration) {
+            $configuration['control'] = false;
+        }
+        unset($configuration);
+
+        $control = $linux_x64['matrix']['include'][0];
+        $control['test_mode'] = 'combined-control';
+        $control['control'] = true;
+        $linux_x64['matrix']['include'][] = $control;
+        unset($linux_x64['asan_matrix']);
+
+        $jobs = [
+            'ALPINE' => $alpine,
+            'LINUX_X64' => $linux_x64,
+        ];
+    }
+    $branch['jobs'] = $jobs;
     $branch['config']['default_run_test_jobs'] = version_compare($php_version, '8.6', '>=') ? '' : '-j2';
     $branch['config']['ubuntu_version'] = version_compare($php_version, '8.5', '>=') ? '24.04' : '22.04';
 }

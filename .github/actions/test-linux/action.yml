@@ -64,7 +64,8 @@ runs:
             "$TEST_SHARD" "$TEST_SHARDS" "$RUNNER_TEMP/php-test-shard.txt"
           test_shard_options=(-r "$RUNNER_TEMP/php-test-shard.txt")
         fi
-        sapi/cli/php run-tests.php -P -q ${{ inputs.runTestsParameters }} \
+        TIMEFORMAT='Resource timing: real=%3R user=%3U sys=%3S cpu=%P'
+        time sapi/cli/php run-tests.php -P -q ${{ inputs.runTestsParameters }} \
           ${{ inputs.enableOpcache == 'true' && '-d opcache.enable_cli=1' || '' }} \
           -d opcache.jit=${{ inputs.jitType }} \
           -d opcache.protect_memory=1 \
