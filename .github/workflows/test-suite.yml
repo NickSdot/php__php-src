@@ -101,7 +101,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.ALPINE.matrix }}
-    name: "ALPINE_X64_ASAN_DBG_ZTS${{ matrix.test_shards > 1 && format('_{0}-{1}', matrix.test_shard, matrix.test_shards) || '' }}"
+    name: "ALPINE_X64_ASAN_DBG_ZTS${{ matrix.control && '_CONTROL' || (matrix.test_shards > 1 && format('_{0}-{1}', matrix.test_shard, matrix.test_shards) || '') }}"
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     container:
@@ -167,7 +167,7 @@ jobs:
           testShard: ${{ matrix.test_shard }}
           testShards: ${{ matrix.test_shards }}
       - name: Extra tests
-        if: ${{ matrix.test_shard == 1 }}
+        if: ${{ matrix.test_shard == 1 && !matrix.control }}
         uses: ./.github/actions/extra-tests
   LINUX_X64_ASAN_BUILD:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
@@ -226,7 +226,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
-    name: "LINUX_X64_ASAN_DBG_ZTS_${{ matrix.test_shard }}-${{ matrix.test_shards }}"
+    name: "LINUX_X64_ASAN_DBG_ZTS${{ matrix.control && '_CONTROL' || format('_{0}-{1}', matrix.test_shard, matrix.test_shards) }}"
     runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
     timeout-minutes: 180
     steps:
@@ -269,13 +269,13 @@ jobs:
           testShard: ${{ matrix.test_shard }}
           testShards: ${{ matrix.test_shards }}
       - name: Extra tests
-        if: ${{ matrix.test_shard == 1 }}
+        if: ${{ matrix.test_shard == 1 && !matrix.control }}
         uses: ./.github/actions/extra-tests
       - name: Verify generated files are up to date
-        if: ${{ matrix.test_shard == 1 }}
+        if: ${{ matrix.test_shard == 1 && !matrix.control }}
         uses: ./.github/actions/verify-generated-files
   LINUX_X64:
-    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64 }}
+    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.matrix }}
     services:
       mysql:
         image: mysql:8.4
@@ -302,7 +302,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.LINUX_X64.matrix }}
-    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DBG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.test_mode == 'function-jit' && '_FUNCTION_JIT' || '' }}${{ matrix.test_shards > 1 && format('_{0}-{1}', matrix.test_shard, matrix.test_shards) || '' }}"
+    name: "LINUX_X64${{ matrix.name }}_${{ matrix.debug && 'DBG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}${{ matrix.control && '_SEQUENTIAL_CONTROL' || (matrix.test_mode == 'function-jit' && '_FUNCTION_JIT' || '') }}${{ matrix.test_shards > 1 && format('_{0}-{1}', matrix.test_shard, matrix.test_shards) || '' }}"
     runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
     timeout-minutes: 180
     steps:
@@ -401,10 +401,10 @@ jobs:
             ${{ matrix.repeat && '--repeat 2' || '' }}
             ${{ matrix.variation && '-d zend_test.observer.enabled=1 -d zend_test.observer.show_output=0' || '' }}
       - name: Extra tests
-        if: ${{ matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1) }}
+        if: ${{ matrix.test_mode != 'function-jit' && !matrix.control && (!matrix.test_shard || matrix.test_shard == 1) }}
         uses: ./.github/actions/extra-tests
       - name: Verify generated files are up to date
-        if: ${{ matrix.test_mode != 'function-jit' && (!matrix.test_shard || matrix.test_shard == 1) }}
+        if: ${{ matrix.test_mode != 'function-jit' && !matrix.control && (!matrix.test_shard || matrix.test_shard == 1) }}
         uses: ./.github/actions/verify-generated-files
   LINUX_X32:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X32 }}
