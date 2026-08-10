@@ -235,16 +235,17 @@ foreach ($branches as &$branch) {
         $alpine['matrix']['include'][] = $control;
 
         $linux_x64 = $jobs['LINUX_X64'];
-        foreach ($linux_x64['matrix']['include'] as &$configuration) {
+        foreach ($linux_x64['asan_matrix']['include'] as &$configuration) {
             $configuration['control'] = false;
         }
         unset($configuration);
 
-        $control = $linux_x64['matrix']['include'][0];
-        $control['test_mode'] = 'combined-control';
+        $control = $linux_x64['asan_matrix']['include'][0];
+        $control['test_shard'] = 1;
+        $control['test_shards'] = 1;
         $control['control'] = true;
-        $linux_x64['matrix']['include'][] = $control;
-        unset($linux_x64['asan_matrix']);
+        $linux_x64['asan_matrix']['include'][] = $control;
+        unset($linux_x64['matrix']);
 
         $jobs = [
             'ALPINE' => $alpine,

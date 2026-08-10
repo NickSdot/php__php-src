@@ -36,6 +36,16 @@ runs:
             "$TEST_SHARD" "$TEST_SHARDS" "$RUNNER_TEMP/php-test-shard.txt"
           test_shard_options=(-r "$RUNNER_TEMP/php-test-shard.txt")
         fi
+        cpu_usage_usec() {
+          if [[ -r /sys/fs/cgroup/cpu.stat ]]; then
+            awk '$1 == "usage_usec" { print $2 }' /sys/fs/cgroup/cpu.stat
+          elif [[ -r /sys/fs/cgroup/cpuacct/cpuacct.usage ]]; then
+            awk '{ print int($1 / 1000) }' /sys/fs/cgroup/cpuacct/cpuacct.usage
+          else
+            printf ''
+          fi
+        }
+        cpu_usage_before=$(cpu_usage_usec)
         TIMEFORMAT='Resource timing: real=%3R user=%3U sys=%3S cpu=%P'
         time sapi/cli/php run-tests.php -P -q ${{ inputs.runTestsParameters }} \
           ${{ inputs.enableOpcache == 'true' && '-d opcache.enable_cli=1' || '' }} \
@@ -48,3 +58,8 @@ runs:
           --show-slow 1000 \
           --set-timeout 120 \
           "${test_shard_options[@]}"
+        cpu_usage_after=$(cpu_usage_usec)
+        if [[ -n $cpu_usage_before && -n $cpu_usage_after ]]; then
+          printf 'Cgroup CPU timing: usage=%.3f\n' \
+            "$((cpu_usage_after - cpu_usage_before))e-6"
+        fi
