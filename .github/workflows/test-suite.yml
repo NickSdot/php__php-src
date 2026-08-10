@@ -85,8 +85,6 @@ jobs:
           skipSlow: true
       - name: make
         run: make -j$(/usr/bin/nproc) >/dev/null
-      - name: Stage PHP installation
-        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
       - name: Upload PHP build
         uses: ./.github/actions/upload-build-artifact
         with:
@@ -152,11 +150,11 @@ jobs:
       - name: make install
         if: ${{ inputs.all_variations }}
         uses: ./.github/actions/install-alpine
-      - name: Configure installed PHP
+      - name: Prepare PHP test runtime
         if: ${{ !inputs.all_variations }}
-        run: |
-          sudo mkdir -p /etc/php.d
-          sudo chmod 777 /etc/php.d
+        uses: ./.github/actions/install-alpine
+        with:
+          fromArtifact: true
       - name: Test Tracing JIT
         uses: ./.github/actions/test-alpine
         with:
@@ -202,8 +200,6 @@ jobs:
           skipSlow: true
       - name: make
         run: make -j$(/usr/bin/nproc) >/dev/null
-      - name: Stage PHP installation
-        run: make install INSTALL_ROOT="$RUNNER_TEMP/php-install-root" >/dev/null
       - name: Upload PHP build
         uses: ./.github/actions/upload-build-artifact
         with:
@@ -254,12 +250,10 @@ jobs:
         with:
           name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
           source_sha: ${{ fromJson(inputs.branch).sha }}
-      - name: Configure installed PHP
-        run: |
-          sudo mkdir -p /etc/php.d
-          sudo chmod 777 /etc/php.d
-          echo mysqli.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/mysqli.ini
-          echo pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock | sudo tee /etc/php.d/pdo_mysql.ini
+      - name: Prepare PHP test runtime
+        uses: ./.github/actions/install-linux
+        with:
+          fromArtifact: true
       - name: Test Tracing JIT
         uses: ./.github/actions/test-linux
         with:

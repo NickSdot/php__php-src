@@ -1,10 +1,16 @@
 name: Install
+inputs:
+  fromArtifact:
+    default: 'false'
+    required: false
 runs:
   using: composite
   steps:
     - shell: bash
       run: |
         set -x
-        sudo make install
+        if [[ "${{ inputs.fromArtifact }}" == "false" ]]; then
+          sudo make install
+        fi
         sudo mkdir -p /etc/php.d
         sudo chmod 777 /etc/php.d

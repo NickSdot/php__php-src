@@ -19,10 +19,9 @@ fi
 )
 tar --no-same-owner -xf "$artifact_directory/workspace.tar" \
     -C "$GITHUB_WORKSPACE"
-sudo tar --no-same-owner -xf "$artifact_directory/install-root.tar" -C /
 
-if [[ ! -x $GITHUB_WORKSPACE/sapi/cli/php || ! -x /usr/bin/php ]]; then
-    echo "Build artifact does not contain the expected PHP executables" >&2
+if [[ ! -x $GITHUB_WORKSPACE/sapi/cli/php ]]; then
+    echo "Build artifact does not contain the expected PHP executable" >&2
     exit 1
 fi
 "$GITHUB_WORKSPACE/sapi/cli/php" -n -v
