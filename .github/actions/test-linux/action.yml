@@ -75,6 +75,7 @@ runs:
         }
         cpu_usage_before=$(cpu_usage_usec)
         TIMEFORMAT='Resource timing: real=%3R user=%3U sys=%3S cpu=%P'
+        set +e
         time sapi/cli/php run-tests.php -P -q ${{ inputs.runTestsParameters }} \
           ${{ inputs.enableOpcache == 'true' && '-d opcache.enable_cli=1' || '' }} \
           -d opcache.jit=${{ inputs.jitType }} \
@@ -88,8 +89,11 @@ runs:
           --show-slow 1000 \
           --set-timeout 120 \
           "${test_shard_options[@]}"
+        test_status=$?
+        set -e
         cpu_usage_after=$(cpu_usage_usec)
         if [[ -n $cpu_usage_before && -n $cpu_usage_after ]]; then
           printf 'Cgroup CPU timing: usage=%.3f\n' \
             "$((cpu_usage_after - cpu_usage_before))e-6"
         fi
+        exit "$test_status"
