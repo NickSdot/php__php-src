@@ -389,12 +389,22 @@ jobs:
             --${{ matrix.zts && 'enable' || 'disable' }}-zts
           asan: ${{ matrix.asan && 'true' || 'false' }}
           skipSlow: ${{ (matrix.asan && !inputs.all_variations) && 'true' || 'false' }}
+      - name: Build PHP while preparing test services
+        if: >-
+          ${{ fromJson(inputs.branch).config.overlap_build_and_test_setup
+              && (!matrix.asan || inputs.all_variations) }}
+        run: .github/scripts/build_with_test_environment_setup.sh
       - name: make
+        if: >-
+          ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup
+              || (matrix.asan && !inputs.all_variations) }}
         run: make -j$(/usr/bin/nproc) >/dev/null
       - name: make install
         uses: ./.github/actions/install-linux
       - name: Setup
-        if: ${{ !matrix.asan || inputs.all_variations }}
+        if: >-
+          ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup
+              && (!matrix.asan || inputs.all_variations) }}
         uses: ./.github/actions/setup-x64
       - name: Test
         if: ${{ (inputs.all_variations || !matrix.asan) && matrix.test_mode != 'function-jit' }}
@@ -629,11 +639,16 @@ jobs:
         uses: ./.github/actions/configure-x64
         with:
           configurationParameters: --enable-debug --disable-zts --enable-gcov
+      - name: Build PHP while preparing test services
+        if: ${{ fromJson(inputs.branch).config.overlap_build_and_test_setup }}
+        run: .github/scripts/build_with_test_environment_setup.sh
       - name: make
+        if: ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup }}
         run: make -j$(/usr/bin/nproc) >/dev/null
       - name: make install
         uses: ./.github/actions/install-linux
       - name: Setup
+        if: ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup }}
         uses: ./.github/actions/setup-x64
       # We only test with OpCache, the difference in coverage is negligible
       - name: Test OpCache
@@ -895,11 +910,16 @@ jobs:
         with:
           configurationParameters: >-
             --enable-debug --disable-zts
+      - name: Build PHP while preparing test services
+        if: ${{ fromJson(inputs.branch).config.overlap_build_and_test_setup }}
+        run: .github/scripts/build_with_test_environment_setup.sh
       - name: make
+        if: ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup }}
         run: make -j$(/usr/bin/nproc) >/dev/null
       - name: make install
         uses: ./.github/actions/install-linux
       - name: Setup
+        if: ${{ !fromJson(inputs.branch).config.overlap_build_and_test_setup }}
         uses: ./.github/actions/setup-x64
       - name: Test File Cache (prime shm)
         uses: ./.github/actions/test-linux
