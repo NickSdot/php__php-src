@@ -52,9 +52,9 @@ jobs:
             --asan -x
       - name: Extra tests
         uses: ./.github/actions/extra-tests
-  ALPINE_BUILD:
+  ALPINE_ASAN_SHARD_1:
     if: ${{ fromJson(inputs.branch).jobs.ALPINE && !inputs.all_variations }}
-    name: ALPINE_X64_ASAN_DBG_ZTS_BUILD
+    name: ALPINE_X64_ASAN_DBG_ZTS_1-3
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     container:
@@ -90,12 +90,23 @@ jobs:
         with:
           name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
           source_sha: ${{ fromJson(inputs.branch).sha }}
+      - name: Install PHP
+        uses: ./.github/actions/install-alpine
+      - name: Test Tracing JIT
+        uses: ./.github/actions/test-alpine
+        with:
+          enableOpcache: true
+          jitType: tracing
+          runTestsParameters: --asan -x
+          testShard: 1
+          testShards: 3
+      - name: Extra tests
+        uses: ./.github/actions/extra-tests
   ALPINE:
-    needs: ALPINE_BUILD
-    if: >-
-      ${{ always()
-          && fromJson(inputs.branch).jobs.ALPINE
-          && (inputs.all_variations || needs.ALPINE_BUILD.result == 'success') }}
+    if: ${{ fromJson(inputs.branch).jobs.ALPINE }}
+    permissions:
+      actions: read
+      contents: read
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(inputs.branch).jobs.ALPINE.matrix }}
@@ -146,6 +157,7 @@ jobs:
         uses: ./.github/actions/download-build-artifact
         with:
           name: php-build-alpine-${{ join(fromJson(inputs.branch).version, '.') }}
+          producer_job: ALPINE_X64_ASAN_DBG_ZTS_1-3
           source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: make install
         if: ${{ inputs.all_variations }}
@@ -167,11 +179,19 @@ jobs:
       - name: Extra tests
         if: ${{ matrix.test_shard == 1 }}
         uses: ./.github/actions/extra-tests
-  LINUX_X64_ASAN_BUILD:
+  LINUX_X64_ASAN_SHARD_1:
     if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
-    name: LINUX_X64_ASAN_DBG_ZTS_BUILD
+    name: LINUX_X64_ASAN_DBG_ZTS_1-3
     runs-on: ubuntu-${{ fromJson(inputs.branch).config.ubuntu_version }}
     timeout-minutes: 60
+    services:
+      mysql:
+        image: mysql:8.4
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: root
     steps:
       - name: git checkout
         uses: actions/checkout@v6
@@ -205,12 +225,35 @@ jobs:
         with:
           name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
           source_sha: ${{ fromJson(inputs.branch).sha }}
+      - name: System info
+        run: |
+          echo "::group::Show host CPU info"
+          lscpu
+          echo "::endgroup::"
+          echo "::group::Show installed package versions"
+          dpkg -l
+          echo "::endgroup::"
+      - name: Setup Caddy server
+        uses: ./.github/actions/setup-caddy
+      - name: Install PHP
+        uses: ./.github/actions/install-linux
+      - name: Test Tracing JIT
+        uses: ./.github/actions/test-linux
+        with:
+          enableOpcache: true
+          jitType: tracing
+          runTestsParameters: --asan -x
+          testShard: 1
+          testShards: 3
+      - name: Extra tests
+        uses: ./.github/actions/extra-tests
+      - name: Verify generated files are up to date
+        uses: ./.github/actions/verify-generated-files
   LINUX_X64_ASAN:
-    needs: LINUX_X64_ASAN_BUILD
-    if: >-
-      ${{ always()
-          && fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix
-          && needs.LINUX_X64_ASAN_BUILD.result == 'success' }}
+    if: ${{ fromJson(inputs.branch).jobs.LINUX_X64.asan_matrix }}
+    permissions:
+      actions: read
+      contents: read
     services:
       mysql:
         image: mysql:8.4
@@ -249,6 +292,7 @@ jobs:
         uses: ./.github/actions/download-build-artifact
         with:
           name: php-build-linux-x64-asan-${{ join(fromJson(inputs.branch).version, '.') }}
+          producer_job: LINUX_X64_ASAN_DBG_ZTS_1-3
           source_sha: ${{ fromJson(inputs.branch).sha }}
       - name: Prepare PHP test runtime
         uses: ./.github/actions/install-linux

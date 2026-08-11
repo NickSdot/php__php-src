@@ -18,6 +18,8 @@ runs:
             sudo \
             build-base \
             autoconf \
+            curl \
+            jq \
             unzip \
             tar \
             bison \

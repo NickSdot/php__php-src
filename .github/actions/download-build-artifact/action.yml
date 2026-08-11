@@ -7,16 +7,17 @@ inputs:
   source_sha:
     description: Commit expected in the downloaded build
     required: true
+  producer_job:
+    description: Job that creates the artifact in this workflow run
+    required: true
 runs:
   using: composite
   steps:
-    - name: Download PHP build
-      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
-      with:
-        name: ${{ inputs.name }}
-        path: ${{ runner.temp }}/php-build-artifact
-    - name: Restore PHP build
+    - name: Wait for and restore PHP build
       shell: bash
       env:
+        GH_TOKEN: ${{ github.token }}
+        PHP_BUILD_ARTIFACT_NAME: ${{ inputs.name }}
+        PHP_BUILD_PRODUCER_JOB: ${{ inputs.producer_job }}
         PHP_BUILD_SOURCE_SHA: ${{ inputs.source_sha }}
-      run: .github/scripts/restore_build_artifact.sh
+      run: .github/scripts/download_build_artifact.sh

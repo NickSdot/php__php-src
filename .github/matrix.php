@@ -78,7 +78,9 @@ function select_jobs($repository, $trigger, $nightly, $labels, $php_version, $re
 
     $jobs = [];
     if (version_compare($php_version, '8.4', '>=') && ($all_jobs || !$no_jobs || $test_alpine)) {
-        $jobs['ALPINE']['matrix']['include'] = with_test_shards([], $all_variations ? 1 : 3);
+        $jobs['ALPINE']['matrix']['include'] = $all_variations
+            ? with_test_shards([], 1)
+            : array_slice(with_test_shards([], 3), 1);
     }
     if (version_compare($php_version, '8.4', '>=')
         && !$nightly
@@ -129,9 +131,12 @@ function select_jobs($repository, $trigger, $nightly, $labels, $php_version, $re
                 ...with_test_shards(['name' => '', 'asan' => false, 'debug' => false, 'repeat' => false, 'test_mode' => 'function-jit', 'variation' => false, 'zts' => false], 1),
             ]];
         if (!$all_variations) {
-            $jobs['LINUX_X64']['asan_matrix']['include'] = with_test_shards(
-                ['name' => '_ASAN', 'asan' => true, 'debug' => true, 'repeat' => false, 'test_mode' => 'normal', 'variation' => false, 'zts' => true],
-                3,
+            $jobs['LINUX_X64']['asan_matrix']['include'] = array_slice(
+                with_test_shards(
+                    ['name' => '_ASAN', 'asan' => true, 'debug' => true, 'repeat' => false, 'test_mode' => 'normal', 'variation' => false, 'zts' => true],
+                    3,
+                ),
+                1,
             );
         }
         $jobs['LINUX_X64']['config']['variation_enable_zend_max_execution_timers'] = version_compare($php_version, '8.3', '>=');
