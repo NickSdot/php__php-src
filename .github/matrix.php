@@ -173,7 +173,12 @@ if ($discard_cache) {
     @unlink(get_branch_commit_cache_file_path());
 }
 $branch = $argv[3] ?? 'master';
-$nightly = $trigger === 'schedule' || $trigger === 'workflow_dispatch';
+$normal_ci_experiment = $trigger === 'workflow_dispatch'
+    && ($argv[5] ?? null) === 'NickSdot/php__php-src'
+    && $branch === 'experiment/ci-control';
+$matrix_trigger = $normal_ci_experiment ? 'pull_request' : $trigger;
+$nightly = ($trigger === 'schedule' || $trigger === 'workflow_dispatch')
+    && !$normal_ci_experiment;
 $branches = $nightly && $branch === 'master'
     ? get_branches()
     : [['name' => 'Suite', 'ref' => $branch, 'version' => get_current_version()]];
@@ -186,7 +191,7 @@ $repository = $argv[5] ?? null;
 
 foreach ($branches as &$branch) {
     $php_version = $branch['version'][0] . '.' . $branch['version'][1];
-    $branch['jobs'] = select_jobs($repository, $trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
+    $branch['jobs'] = select_jobs($repository, $matrix_trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
     $branch['config']['default_run_test_jobs'] = version_compare($php_version, '8.6', '>=') ? '' : '-j2';
     $branch['config']['ubuntu_version'] = version_compare($php_version, '8.5', '>=') ? '24.04' : '22.04';
 }
