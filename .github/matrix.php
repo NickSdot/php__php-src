@@ -204,7 +204,12 @@ if ($discard_cache) {
 }
 $branch = $argv[3] ?? 'master';
 $repository = $argv[5] ?? null;
-$nightly = $trigger === 'schedule' || $trigger === 'workflow_dispatch';
+$normal_ci_experiment = $trigger === 'workflow_dispatch'
+    && $repository === 'NickSdot/php__php-src'
+    && $branch === 'experiment/ci-build-artifacts';
+$matrix_trigger = $normal_ci_experiment ? 'pull_request' : $trigger;
+$nightly = ($trigger === 'schedule' || $trigger === 'workflow_dispatch')
+    && !$normal_ci_experiment;
 $branches = $nightly && $branch === 'master'
     ? get_branches()
     : [[
@@ -220,7 +225,7 @@ $all_variations = $nightly || in_array('CI: All variations', $labels, true);
 
 foreach ($branches as &$branch) {
     $php_version = $branch['version'][0] . '.' . $branch['version'][1];
-    $branch['jobs'] = select_jobs($repository, $trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
+    $branch['jobs'] = select_jobs($repository, $matrix_trigger, $nightly, $labels, $php_version, $branch['ref'], $all_variations);
     $branch['config']['default_run_test_jobs'] = version_compare($php_version, '8.6', '>=') ? '' : '-j2';
     $branch['config']['overlap_build_and_test_setup'] = version_compare($php_version, '8.6', '>=');
     $branch['config']['ubuntu_version'] = version_compare($php_version, '8.5', '>=') ? '24.04' : '22.04';
