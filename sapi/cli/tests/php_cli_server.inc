@@ -11,112 +11,147 @@ class CliServerInfo {
 function php_cli_server_start(
     ?string $code = 'echo "Hello world";',
     ?string $router = 'index.php',
-    array $cmd_args = []
+    array $cmd_args = [],
 ): CliServerInfo {
     $php_executable = getenv('TEST_PHP_EXECUTABLE') ?: PHP_BINARY;
-    $error = null;
 
-    // Create dedicated doc root to avoid index.php clashes between tests.
-    $doc_root = __DIR__ . DIRECTORY_SEPARATOR . basename($_SERVER['PHP_SELF'], '.php');
-    @mkdir($doc_root);
+    $suffix = '-' . getmypid() . '-' . bin2hex(random_bytes(8));
+    $doc_root = sys_get_temp_dir() . DIRECTORY_SEPARATOR . basename($_SERVER['PHP_SELF'], '.php') . $suffix;
+
+    if (!@mkdir($doc_root, 0700)) {
+        throw new RuntimeException(
+            "Failed to create CLI server document root: $doc_root",
+        );
+    }
 
     if ($code) {
         file_put_contents($doc_root . '/' . ($router ?: 'index.php'), '<?php ' . $code . ' ?>');
     }
 
-    // XXX: This should ideally use the same INI overrides as run-tests
+    // XXX: This should ideally use the same INI overrides as run-tests.
     $cmd = [$php_executable, '-d', 'error_include_args=0', '-t', $doc_root, '-n', ...$cmd_args, '-S', 'localhost:0'];
-    if (!is_null($router)) {
+
+    if ($router !== null) {
         $cmd[] = $router;
     }
 
-    $output_file = tempnam(sys_get_temp_dir(), 'cli_server_output');
-    $output_file_fd = fopen($output_file, 'ab');
-    if ($output_file_fd === false) {
-        die(sprintf("Failed opening output file %s\n", $output_file));
-    }
-    register_shutdown_function(function () use ($output_file) {
-        unlink($output_file);
-    });
-
-    $descriptorspec = array(
+    $descriptorspec = [
         0 => STDIN,
-        1 => $output_file_fd,
-        2 => $output_file_fd,
-    );
-    $handle = proc_open($cmd, $descriptorspec, $pipes, $doc_root, null, array("suppress_errors" => true));
+        1 => STDOUT,
+        2 => ['pipe', 'w'],
+    ];
 
-    // First, wait for the dev server to declare itself ready.
-    $bound = null;
-    for ($i = 0; $i < 60; $i++) {
-        usleep(50000); // 50ms per try
-        $status = proc_get_status($handle);
-        if (empty($status['running'])) {
-            echo "Server failed to start\n";
-            printf("Server output:\n%s\n", file_get_contents($output_file));
-            proc_terminate($handle);
-            exit(1);
-        }
+    $handle = proc_open($cmd, $descriptorSpec, $pipes, $doc_root, options: ['suppress_errors' => true]);
 
-        $output = file_get_contents($output_file);
-        if (preg_match('@PHP \S* Development Server \(https?://(.*?:\d+)\) started@', $output, $matches)) {
-            $bound = $matches[1];
-            break;
-        }
-    }
-    if ($bound === null) {
-        echo "Server did not output startup message";
-        printf("Server output:\n%s\n", file_get_contents($output_file));
-        proc_terminate($handle);
-        exit(1);
-    }
-
-    // Now wait for a connection to succeed.
-    // note: even when server prints 'Listening on localhost:8964...Press Ctrl-C to quit.'
-    //       it might not be listening yet...need to wait until fsockopen() call returns
-    $error = "Unable to connect to server\n";
-    for ($i=0; $i < 60; $i++) {
-        usleep(50000); // 50ms per try
-        $status = proc_get_status($handle);
-        $fp = @fsockopen("tcp://$bound");
-        // Failure, the server is no longer running
-        if (!($status && $status['running'])) {
-            $error = sprintf("Server stopped\nServer output:\n%s\n", file_get_contents($output_file));
-            break;
-        }
-        // Success, Connected to servers
-        if ($fp) {
-            $error = '';
-            break;
-        }
-    }
-
-    if ($error) {
-        echo $error;
-        proc_terminate($handle);
-        exit(1);
+    if (!is_resource($handle)) {
+        remove_directory($doc_root);
+        throw new RuntimeException('Failed to create CLI server process');
     }
 
     register_shutdown_function(
-        function($handle) use($router, $doc_root, $output_file) {
-            proc_terminate($handle);
-            $status = proc_get_status($handle);
-            if ($status['exitcode'] !== -1 && $status['exitcode'] !== 0
-                    && !($status['exitcode'] === 255 && PHP_OS_FAMILY == 'Windows')) {
-                printf("Server exited with non-zero status: %d\n", $status['exitcode']);
-                printf("Server output:\n%s\n", file_get_contents($output_file));
+        static function ($handle, string $doc_root): void {
+            if (!is_resource($handle)) {
+                remove_directory($doc_root);
+                return;
             }
-            @unlink(__DIR__ . "/{$router}");
-            remove_directory($doc_root);
+
+            proc_terminate($handle);
+
+            for ($i = 0; $i < 60; $i++) {
+                $status = proc_get_status($handle);
+                if ($status['running']) {
+                    usleep(20000);
+                    continue;
+                }
+
+                proc_close($handle);
+                remove_directory($doc_root);
+                return;
+            }
+
+            // Do not call proc_close() while the process is still running.
         },
-        $handle
+        $handle,
+        $doc_root,
     );
 
-    // Define the same "constants" we previously did.
+    // Wait for the server to report the address assigned to port 0.
+    $error_stream = $pipes[2];
+    $server_output = '';
+    $bound = null;
+    $startup_pattern = '@PHP \S* Development Server \(https?://(.*?:\d+)\) started@';
+
+    stream_set_blocking($error_stream, false);
+
+    for ($i = 0; $i < 60; $i++) {
+        $status = proc_get_status($handle);
+        if (!$status['running']) {
+            $error = sprintf("Server failed to start (exit code %d)\n",$status['exitcode']);
+            break;
+        }
+
+        $read = [$error_stream];
+        $write = $except = null;
+        $selected = stream_select($read, $write, $except, 0, 50000);
+
+        if ($selected === false) {
+            $error = "Failed waiting for server startup\n";
+            break;
+        }
+        if ($selected === 0) {
+            continue;
+        }
+
+        while (($line = fgets($error_stream)) !== false) {
+            $server_output .= $line;
+
+            if (preg_match($startup_pattern, $line, $matches)) {
+                $bound = $matches[1];
+                fclose($error_stream);
+                break 2;
+            }
+        }
+    }
+
+    if ($bound === null) {
+        $error ??= "Server did not output startup message\n";
+        $server_output .= stream_get_contents($error_stream);
+
+        echo $error;
+        printf("Server output:\n%s\n", $server_output);
+        exit(1);
+    }
+
+    // The startup message may be emitted just before the socket begins accepting connections.
+    $error = "Unable to connect to server\n";
+
+    for ($i = 0; $i < 60; $i++) {
+        $status = proc_get_status($handle);
+        if (!$status['running']) {
+            $error = "Server stopped\n";
+            break;
+        }
+
+        $fp = @fsockopen("tcp://$bound");
+        if ($fp !== false) {
+            fclose($fp);
+            $error = '';
+            break;
+        }
+
+        usleep(20000);
+    }
+
+    if ($error !== '') {
+        echo $error;
+        exit(1);
+    }
+
     $port = (int) substr($bound, strrpos($bound, ':') + 1);
-    define("PHP_CLI_SERVER_HOSTNAME", "localhost");
-    define("PHP_CLI_SERVER_PORT", $port);
-    define("PHP_CLI_SERVER_ADDRESS", PHP_CLI_SERVER_HOSTNAME.":".PHP_CLI_SERVER_PORT);
+
+    define('PHP_CLI_SERVER_HOSTNAME', 'localhost');
+    define('PHP_CLI_SERVER_PORT', $port);
+    define('PHP_CLI_SERVER_ADDRESS', PHP_CLI_SERVER_HOSTNAME . ':' . PHP_CLI_SERVER_PORT);
 
     return new CliServerInfo($doc_root, $handle);
 }
