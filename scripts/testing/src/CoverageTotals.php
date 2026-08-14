@@ -6,6 +6,8 @@ namespace PHP\Testing;
 
 final class CoverageTotals
 {
+    private int $baseSources = 0;
+    private int $treeSources = 0;
     private int $baseLines = 0;
     private int $treeLines = 0;
     private int $baseExecutableLines = 0;
@@ -14,6 +16,16 @@ final class CoverageTotals
     private int $treeBranches = 0;
     private int $baseExecutableBranches = 0;
     private int $treeExecutableBranches = 0;
+
+    public function baseSources(): int
+    {
+        return $this->baseSources;
+    }
+
+    public function treeSources(): int
+    {
+        return $this->treeSources;
+    }
 
     public function baseLines(): int
     {
@@ -53,6 +65,12 @@ final class CoverageTotals
     public function treeExecutableBranches(): int
     {
         return $this->treeExecutableBranches;
+    }
+
+    public function addSources(bool $base, bool $tree): void
+    {
+        $this->baseSources += (int) $base;
+        $this->treeSources += (int) $tree;
     }
 
     public function addLines(int $base, int $baseExecutable, int $tree, int $treeExecutable): void

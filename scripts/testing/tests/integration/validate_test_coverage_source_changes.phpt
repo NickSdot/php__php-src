@@ -105,7 +105,7 @@ $process = new ProcessRunner();
     ['ext/standard/tests/strings']
 );
 
-assertCoverage('C-only', $status, 0, $output, ['Tests: 735 -> 735', 'Coverage: ext/standard/string.c', '+10 / -0', '+6 / -0', 'PASS']);
+assertCoverage('C-only', $status, 0, $output, ['| Base   |   735 |', 'Coverage: ext/standard/string.c', '+10 / -0', '+6 / -0', 'PASS']);
 
 [$status, $output] = runCoverage(
     $process,
@@ -114,7 +114,7 @@ assertCoverage('C-only', $status, 0, $output, ['Tests: 735 -> 735', 'Coverage: e
     'negative',
     ['ext/standard/tests/strings/strlen.phpt']
 );
-assertCoverage('Negative', $status, 1, $output, ['Tests: 1 -> 1', 'FAIL']);
+assertCoverage('Negative', $status, 1, $output, ['| Base   |     1 |', 'FAIL']);
 
 $report = file_get_contents(coverageReport($output));
 
@@ -141,7 +141,7 @@ file_put_contents($mixedTest, <<<'PHPT'
     'mixed',
     ['ext/standard/tests/strings']
 );
-assertCoverage('Mixed', $status, 0, $output, ['Tests: 735 -> 736', '+10 / -0', '+6 / -0', 'PASS']);
+assertCoverage('Mixed', $status, 0, $output, ['| Base   |   735 |', '| Tree   |   736 |', '+10 / -0', '+6 / -0', 'PASS']);
 ?>
 --CLEAN--
 <?php

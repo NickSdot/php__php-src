@@ -6,12 +6,9 @@ namespace PHP\Testing;
 
 use RuntimeException;
 
-use function count;
-
 final class TestTreeBuilder
 {
     public function __construct(
-        private Output $output,
         private PhptScope $scope = new PhptScope()
     ) {}
 
@@ -25,7 +22,6 @@ final class TestTreeBuilder
     private function tests(string $baseTree, string $tree, array $paths): PhptSuites
     {
         if ($paths === []) {
-            $this->output->printLine('Tests: complete suite');
             return new PhptSuites(null, null);
         }
 
@@ -37,8 +33,6 @@ final class TestTreeBuilder
         if ($baseTests === [] && $treeTests === []) {
             throw new RuntimeException('Selected scope does not match any files');
         }
-
-        $this->output->printLine('Tests: %d -> %d', count($baseTests), count($treeTests));
 
         return new PhptSuites($baseTests, $treeTests);
     }

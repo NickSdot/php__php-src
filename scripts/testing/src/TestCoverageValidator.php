@@ -32,8 +32,8 @@ final class TestCoverageValidator
             $this->output->warning($warning);
         }
 
-        $this->output->printLine('Base: %s (%s)', $options->base, $baseRevision);
-        $this->output->printLine('Tree: HEAD (%s)', $treeRevision);
+        $this->output->printLine('Base: %s %s', $baseRevision, $options->base);
+        $this->output->printLine('Tree: %s HEAD', $treeRevision);
 
         $temporary = TemporaryDirectory::create();
 
@@ -50,7 +50,7 @@ final class TestCoverageValidator
                 $this->output
             );
 
-            $trees = (new TestTreeBuilder($this->output))->build(
+            $trees = (new TestTreeBuilder())->build(
                 $runtimes->baseSource,
                 $runtimes->treeSource,
                 $options->testPaths

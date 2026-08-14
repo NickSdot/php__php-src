@@ -103,20 +103,18 @@ PHP\Testing\IntegrationTestWorkspace::remove(
 );
 ?>
 --EXPECTF--
-Base: c27368c9392c46047c20d86f536753c29e73b8a0 (c27368c9392c46047c20d86f536753c29e73b8a0)
-Tree: HEAD (072039845191d06ee7b72284bdeb763f563d7018)
+Base: c27368c9392c46047c20d86f536753c29e73b8a0 c27368c9392c46047c20d86f536753c29e73b8a0
+Tree: 072039845191d06ee7b72284bdeb763f563d7018 HEAD
 Building tree
-Tests: 1624 -> 1583
 Coverage: ext/standard/scanf.c
-Running base suite (1624 tests)
-Running tree suite (1583 tests)
-Sources: 1
-%r[+](?:-+[+]){5}%r
-|%w|%wLines%w|%wBranches%w|%wTime%w|%wMemory%w|
-%r[+](?:-+[+]){5}%r
-| Base%w| 439/537 (81.75%) | 296/376 (78.72%) |%w%fs |%w%f MB |
-| Tree%w| 524/537 (97.58%) | 362/376 (96.28%) |%w%fs |%w%f MB |
-| Change%w|%w+85 / -0 |%w+66 / -0 |%w%fs |%w%f MB |
-%r[+](?:-+[+]){5}%r
+Running base 1624 tests
+Running tree 1583 tests
+%r[+](?:-+[+]){7}%r
+|%w|%wTests%w|%wSources%w|%wLines%w|%wBranches%w|%wTime%w|%wMemory%w|
+%r[+](?:-+[+]){7}%r
+| Base%w|%w1624 |%w1 | 439/537 (81.75%) | 296/376 (78.72%) |%w%fs |%w%f MB |
+| Tree%w|%w1583 |%w1 | 524/537 (97.58%) | 362/376 (96.28%) |%w%fs |%w%f MB |
+| Change%w|%w-41 |%w0 |%w+85 / -0%w|%w+66 / -0%w|%w%fs |%w%f MB |
+%r[+](?:-+[+]){7}%r
 Report: %scoverage.txt
 PASS

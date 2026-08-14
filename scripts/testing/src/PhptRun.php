@@ -9,7 +9,8 @@ final readonly class PhptRun
     public function __construct(
         public int $status,
         public float $time,
-        public ?int $memory
+        public ?int $memory,
+        public ?int $testCount = null
     ) {}
 
     public function failed(): bool
