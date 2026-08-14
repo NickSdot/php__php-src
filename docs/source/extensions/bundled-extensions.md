@@ -1,5 +1,11 @@
 # Bundled Extensions
 
+```{toctree}
+:hidden: true
+
+bundled-extensions/filter
+```
+
 Bundled extensions are maintained in `ext/` as part of php-src.
 
 ## Extension Developers
