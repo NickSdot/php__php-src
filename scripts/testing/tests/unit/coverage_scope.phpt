@@ -15,7 +15,7 @@ use PHP\Testing\TestTrees;
 
 function options(array $sources = [], array $tests = ['ext/uri/tests'], bool $global = false): TestCoverageOptions
 {
-    return new TestCoverageOptions('master', $sources, $tests, $global, false);
+    return new TestCoverageOptions('master', null, $sources, $tests, $global, false);
 }
 
 function trees(array $base, array $tree): TestTrees

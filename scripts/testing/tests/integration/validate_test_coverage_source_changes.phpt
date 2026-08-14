@@ -23,11 +23,11 @@ const TREE = '84d6093982431f7cfa8588c13c0c8a37f545d3cb';
  * @param list<string> $tests
  * @return array{int, string}
  */
-function runCoverage(ProcessRunner $process, string $fixture, string $temporary, string $name, array $tests): array
+function runCoverage(ProcessRunner $process, string $commandPath, string $fixture, string $temporary, string $name, array $tests): array
 {
     $command = [
         PHP_BINARY,
-        "$fixture/scripts/testing/validate_test_coverage.php",
+        $commandPath,
         '--base', BASE,
         '--source', 'ext/standard/string.c',
         ...$tests,
@@ -84,21 +84,16 @@ $workspace = IntegrationTestWorkspace::create(
     TestTemporaryDirectory::stateFile('validate_test_coverage_source_changes')
 );
 
-$workspace->copy([
-    'scripts/testing/autoload.php',
-    'scripts/testing/measure_process.php',
-    'scripts/testing/src',
-    'scripts/testing/validate_test_coverage.php',
-]);
-
 $workspace->configure(['--disable-all']);
 
 $fixture = $workspace->path();
 $temporary = $workspace->temporaryPath();
 $process = new ProcessRunner();
+$commandPath = "$repo/scripts/testing/validate_test_coverage.php";
 
 [$status, $output] = runCoverage(
     $process,
+    $commandPath,
     $fixture,
     $temporary,
     'c-only',
@@ -109,6 +104,7 @@ assertCoverage('C-only', $status, 0, $output, ['| Base   |   735 |', 'Coverage: 
 
 [$status, $output] = runCoverage(
     $process,
+    $commandPath,
     $fixture,
     $temporary,
     'negative',
@@ -136,6 +132,7 @@ file_put_contents($mixedTest, <<<'PHPT'
 
 [$status, $output] = runCoverage(
     $process,
+    $commandPath,
     $fixture,
     $temporary,
     'mixed',

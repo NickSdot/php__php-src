@@ -6,7 +6,6 @@ namespace PHP\Testing;
 
 use RuntimeException;
 
-use function dirname;
 use function getenv;
 
 final class TestCoverageValidator
@@ -20,11 +19,10 @@ final class TestCoverageValidator
 
     public function validate(TestCoverageOptions $options): int
     {
-        $repository = GitRepository::discover(dirname(__DIR__, 3), $this->process);
+        $repository = GitRepository::discover('.', $this->process);
 
-        $repo = $repository->path();
         $baseRevision = $repository->resolve($options->base);
-        $treeRevision = $repository->resolve('HEAD');
+        $treeRevision = $repository->resolve($options->tree ?? 'HEAD');
 
         $warning = $repository->behindWarning($options->base);
 
@@ -33,7 +31,7 @@ final class TestCoverageValidator
         }
 
         $this->output->printLine('Base: %s %s', $baseRevision, $options->base);
-        $this->output->printLine('Tree: %s HEAD', $treeRevision);
+        $this->output->printLine('Tree: %s %s', $treeRevision, $options->tree ?? 'working tree');
 
         $temporary = TemporaryDirectory::create();
 
@@ -42,6 +40,7 @@ final class TestCoverageValidator
             $runtimes = (new CoverageBuilder($repository, $this->process, $this->output, $this->gcov()))->build(
                 $options,
                 $baseRevision,
+                $treeRevision,
                 $temporary->path()
             );
 

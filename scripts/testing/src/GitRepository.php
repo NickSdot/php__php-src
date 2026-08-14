@@ -126,24 +126,27 @@ final class GitRepository
     }
 
     /** @return list<string> */
-    public function changedPathsSince(string $base): array
+    public function changedPaths(string $base, ?string $tree = null): array
     {
         $paths = [];
+        $revisions = $tree === null ? [$base] : [$base, $tree];
 
         $changed = $this->process->command([
-            'git', '-C', $this->path, 'diff', '--name-only', '-z', $base, '--',
+            'git', '-C', $this->path, 'diff', '--name-only', '-z', ...$revisions, '--',
         ]);
 
         foreach ($this->nullSeparated($changed) as $path) {
             $paths[$path] = true;
         }
 
-        $untracked = $this->process->command([
-            'git', '-C', $this->path, 'ls-files', '--others', '--exclude-standard', '-z',
-        ]);
+        if ($tree === null) {
+            $untracked = $this->process->command([
+                'git', '-C', $this->path, 'ls-files', '--others', '--exclude-standard', '-z',
+            ]);
 
-        foreach ($this->nullSeparated($untracked) as $path) {
-            $paths[$path] = true;
+            foreach ($this->nullSeparated($untracked) as $path) {
+                $paths[$path] = true;
+            }
         }
 
         $paths = array_keys($paths);

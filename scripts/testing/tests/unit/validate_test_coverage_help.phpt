@@ -15,12 +15,14 @@ fclose($pipes[2]);
 
 var_dump(proc_close($process));
 var_dump(str_starts_with($stdout, 'Usage:'));
+var_dump(str_contains($stdout, '--tree'));
 var_dump(str_contains($stdout, '--global'));
 var_dump(str_contains($stdout, 'Limit source scope'));
 var_dump($stderr);
 ?>
 --EXPECT--
 int(0)
+bool(true)
 bool(true)
 bool(true)
 bool(true)

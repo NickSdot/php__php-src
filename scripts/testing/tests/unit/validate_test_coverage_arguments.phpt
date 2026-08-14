@@ -15,6 +15,7 @@ function run(array $arguments): void
 }
 
 run(['--base']);
+run(['--tree']);
 run(['--wat', 'value']);
 run(['--wat']);
 run(['--global', '--source', 'ext/uri']);
@@ -23,6 +24,8 @@ run(['--global=yes']);
 --EXPECT--
 int(1)
 Error: --base requires value
+int(1)
+Error: --tree requires value
 int(1)
 Error: Unknown option: --wat
 int(1)
