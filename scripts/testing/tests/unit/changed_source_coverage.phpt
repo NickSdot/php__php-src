@@ -61,10 +61,10 @@ $comparison = (new CoverageComparator())->compare(
 
 $changes = new SourceFileChanges($baseSource, $treeSource, $repository, $baseBuild, $treeBuild);
 
-var_dump($comparison->missedLines());
-var_dump($comparison->gainedLines());
-var_dump($comparison->missedBranches());
-var_dump($comparison->gainedBranches());
+var_dump($comparison->missedLines()->bySource());
+var_dump($comparison->gainedLines()->bySource());
+var_dump($comparison->missedBranches()->bySource());
+var_dump($comparison->gainedBranches()->bySource());
 var_dump($changes->source('generated/source.c')->changed());
 var_dump($changes->source('generated/source.c')->baseLine(3));
 
@@ -80,25 +80,37 @@ PHP\Testing\TestTemporaryDirectory::removeFromStateFile(
 );
 ?>
 --EXPECT--
-array(2) {
-  [0]=>
-  string(18) "example/source.c:2"
-  [1]=>
-  string(18) "example/source.c:5"
+array(1) {
+  ["example/source.c"]=>
+  array(2) {
+    [0]=>
+    int(2)
+    [1]=>
+    int(5)
+  }
 }
 array(1) {
-  [0]=>
-  string(18) "example/source.c:3"
-}
-array(2) {
-  [0]=>
-  string(20) "example/source.c:2:0"
-  [1]=>
-  string(20) "example/source.c:5:0"
+  ["example/source.c"]=>
+  array(1) {
+    [0]=>
+    int(3)
+  }
 }
 array(1) {
-  [0]=>
-  string(20) "example/source.c:3:0"
+  ["example/source.c"]=>
+  array(2) {
+    [0]=>
+    string(3) "2:0"
+    [1]=>
+    string(3) "5:0"
+  }
+}
+array(1) {
+  ["example/source.c"]=>
+  array(1) {
+    [0]=>
+    string(3) "3:0"
+  }
 }
 bool(true)
 int(2)

@@ -10,13 +10,17 @@ use function count;
 use function file_put_contents;
 use function implode;
 use function round;
-use function sort;
 use function sprintf;
 use function str_repeat;
 use function strlen;
+use function wordwrap;
 
 final class CoverageReporter
 {
+    private const REPORT_WIDTH = 80;
+    private const SECTION_PREFIX = '=====';
+    private const FINDING_PREFIX = '      ';
+
     public function __construct(
         private string $file,
         private Output $output = new Output()
@@ -164,28 +168,43 @@ final class CoverageReporter
 
         foreach ($groups as $group => $sections) {
 
-            $lines[] = $group;
-            $lines[] = str_repeat('=', strlen($group));
+            $lines[] = $this->groupHeading($group);
 
             foreach ($sections as $section => $locations) {
 
-                sort($locations, SORT_NATURAL);
                 $heading = sprintf('%s (%d)', $section, count($locations));
-                $lines[] = '';
-                $lines[] = $heading;
-                $lines[] = str_repeat('-', strlen($heading));
 
-                if ($locations === []) {
-                    $locations = ['None'];
+                $lines[] = '';
+                $lines[] = self::FINDING_PREFIX . $heading;
+                $lines[] = self::FINDING_PREFIX . str_repeat('-', self::REPORT_WIDTH - strlen(self::FINDING_PREFIX));
+
+                if ($locations->isEmpty() === true) {
+                    $lines[] = self::FINDING_PREFIX . 'None';
+                    continue;
                 }
 
-                $lines = [...$lines, ...$locations];
+                foreach ($locations->bySource() as $source => $entries) {
+
+                    $lines[] = self::FINDING_PREFIX . "$source:";
+                    $lines[] = self::FINDING_PREFIX . '  ' . wordwrap(
+                        implode(' ', $entries),
+                        self::REPORT_WIDTH - strlen(self::FINDING_PREFIX) - 2,
+                        "\n" . self::FINDING_PREFIX . '  '
+                    );
+                }
             }
 
             $lines[] = '';
         }
 
         $this->write($this->output->lines($lines));
+    }
+
+    private function groupHeading(string $group): string
+    {
+        $prefix = self::SECTION_PREFIX . " $group ";
+
+        return $prefix . str_repeat('=', self::REPORT_WIDTH - strlen($prefix));
     }
 
     private function write(string $content): void
