@@ -8,11 +8,11 @@ use PHP\Testing\CoverageBuildCache;
 
 $firstKey = CoverageBuildCache::key('/repo', 'master', 'configuration');
 $sameKey = CoverageBuildCache::key('/repo', 'master', 'configuration');
-$otherBase = CoverageBuildCache::key('/repo', 'PHP-8.4', 'configuration');
+$otherReference = CoverageBuildCache::key('/repo', 'PHP-8.4', 'configuration');
 $otherConfiguration = CoverageBuildCache::key('/repo', 'master', 'other configuration');
 
 var_dump($firstKey === $sameKey);
-var_dump($firstKey !== $otherBase);
+var_dump($firstKey !== $otherReference);
 var_dump($firstKey !== $otherConfiguration);
 
 $first = new CoverageBuildCache($firstKey);

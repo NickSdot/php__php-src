@@ -33,10 +33,21 @@ final class TestCoverageCommand
       -h, --help             Show help
 
     Examples:
+      php scripts/testing/validate_test_coverage.php
+
+      php scripts/testing/validate_test_coverage.php ext/uri/tests
+
       php scripts/testing/validate_test_coverage.php \
         --base upstream/master \
+        --tree HEAD \
         --source ext/standard/scanf.c \
         ext/standard/tests/file ext/standard/tests/strings
+
+      cd /path/to/php-src
+      php /path/to/coverage-check/scripts/testing/validate_test_coverage.php \
+        --base PHP-8.5 \
+        --tree feature/ref \
+        ext/standard/tests
     USAGE;
 
     public function __construct(
@@ -99,7 +110,7 @@ final class TestCoverageCommand
 
             $name = $this->optionName($argument);
 
-            if (in_array($name, ['base', 'global', 'source', 'tree'], true) === false) {
+            if (in_array($name, ['base', 'tree', 'source', 'global'], true) === false) {
                 throw new InvalidArgumentException("Unknown option: --$name");
             }
 

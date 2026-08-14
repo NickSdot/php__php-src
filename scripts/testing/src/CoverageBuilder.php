@@ -67,13 +67,13 @@ final class CoverageBuilder
             $options->tree === null ? null : $treeRevision
         );
 
-        $cache = new CoverageBuildCache(CoverageBuildCache::key(
+        $baseCache = new CoverageBuildCache(CoverageBuildCache::key(
             $this->repository->commonDirectory(),
             $options->base,
             $this->normaliseConfiguration($configuration, $repo)
         ));
 
-        $baseRoot = $cache->directory(function (string $directory): void {
+        $baseRoot = $baseCache->directory(function (string $directory): void {
             $this->createBuildDirectory($directory);
         });
 

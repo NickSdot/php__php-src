@@ -18,20 +18,20 @@ $temporary = TestTemporaryDirectory::create(
 );
 
 $directory = $temporary->path();
-$baseTree = "$directory/base";
-$tree = "$directory/tree";
+$baseSource = "$directory/base";
+$treeSource = "$directory/tree";
 
 $baseBuild = "$directory/base-build";
 $treeBuild = "$directory/tree-build";
 $repository = new GitRepository(dirname(__DIR__, 4), new ProcessRunner());
 
-mkdir("$baseTree/example", recursive: true);
-mkdir("$tree/example", recursive: true);
+mkdir("$baseSource/example", recursive: true);
+mkdir("$treeSource/example", recursive: true);
 mkdir("$baseBuild/generated", recursive: true);
 mkdir("$treeBuild/generated", recursive: true);
 
-file_put_contents("$baseTree/example/source.c", "same\nold\nsame\nlast\n");
-file_put_contents("$tree/example/source.c", "same\nnew uncovered\nnew covered\nsame\nlast\n");
+file_put_contents("$baseSource/example/source.c", "same\nold\nsame\nlast\n");
+file_put_contents("$treeSource/example/source.c", "same\nnew uncovered\nnew covered\nsame\nlast\n");
 file_put_contents("$baseBuild/generated/source.c", "same\nold\n");
 file_put_contents("$treeBuild/generated/source.c", "same\nnew\nold\n");
 
@@ -56,10 +56,10 @@ $treeCoverage = new CoverageSnapshot([
 $comparison = (new CoverageComparator())->compare(
     $base,
     $treeCoverage,
-    changes: new SourceFileChanges($baseTree, $tree, $repository)
+    changes: new SourceFileChanges($baseSource, $treeSource, $repository)
 );
 
-$changes = new SourceFileChanges($baseTree, $tree, $repository, $baseBuild, $treeBuild);
+$changes = new SourceFileChanges($baseSource, $treeSource, $repository, $baseBuild, $treeBuild);
 
 var_dump($comparison->missedLines());
 var_dump($comparison->gainedLines());
