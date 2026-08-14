@@ -32,15 +32,15 @@ final class CoverageBuilder
         private string $gcov
     ) {}
 
-    public function build(TestCoverageOptions $options, string $baseRevision, string $temporary): CoverageRuntimes
+    public function build(TestCoverageOptions $options, string $baseRevision, string $treeRevision, string $temporary): CoverageRuntimes
     {
         $configuration = $this->configuration(
             $repo = $this->repository->path()
-         );
+        );
 
         $treeCache = new CoverageBuildCache(CoverageBuildCache::key(
-            $repo,
-            'tree',
+            $options->tree === null ? $repo : $this->repository->commonDirectory(),
+            $options->tree ?? 'tree',
             $this->normaliseConfiguration($configuration, $repo)
         ));
 
@@ -48,17 +48,24 @@ final class CoverageBuilder
             $this->createBuildDirectory($directory);
         });
 
+        $treeSource = $options->tree === null ? $repo : "$treeRoot/source";
         $treeBuild = "$treeRoot/build";
 
+        if ($options->tree !== null) {
+            $this->repository->updateWorktree($treeRevision, $treeSource);
+        }
+
         $configurationState = new BuildConfiguration($this->repository);
-        $treeConfiguration = $configurationState->fingerprint($repo, $configuration);
+        $treeConfiguration = $configurationState->fingerprint($treeSource, $configuration);
 
-        $this->prepare($configuration, $repo, $treeBuild, $treeConfiguration);
+        $this->prepareTree($options->tree, $treeRevision, $configuration, $treeSource, $treeBuild, $treeConfiguration);
 
-        $this->make('tree', $treeBuild);
+        $tree = $this->runtime($treeBuild, $treeSource, $temporary);
 
-        $tree = $this->runtime($treeBuild, $repo, $temporary);
-        $changedPaths = $this->repository->changedPathsSince($baseRevision);
+        $changedPaths = $this->repository->changedPaths(
+            $baseRevision,
+            $options->tree === null ? null : $treeRevision
+        );
 
         $cache = new CoverageBuildCache(CoverageBuildCache::key(
             $this->repository->commonDirectory(),
@@ -78,10 +85,10 @@ final class CoverageBuilder
         $baseConfiguration = $configurationState->fingerprint($baseSource, $configuration);
 
         if ($baseConfiguration === $treeConfiguration && $tree->dependencies->affectedSources($changedPaths) === []) {
-            return new CoverageRuntimes($tree, $tree, $baseSource, $repo, $changedPaths);
+            return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
         }
 
-        if ($this->prepareBase($baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration) === true) {
+        if ($this->prepareRevision($baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration) === true) {
             $this->make('base', $baseBuild);
             $this->recordBuiltRevision($baseBuild, $baseRevision);
         }
@@ -90,7 +97,7 @@ final class CoverageBuilder
             $this->runtime($baseBuild, $baseSource, $temporary),
             $tree,
             $baseSource,
-            $repo,
+            $treeSource,
             $changedPaths
         );
     }
@@ -111,7 +118,23 @@ final class CoverageBuilder
         return str_replace($repo, '{source}', $configuration);
     }
 
-    private function prepareBase(string $revision, string $configuration, string $source, string $build, string $fingerprint): bool
+    private function prepareTree(?string $reference, string $revision, string $configuration, string $source, string $build, string $fingerprint): void
+    {
+        if ($reference === null) {
+            $this->prepare($configuration, $source, $build, $fingerprint);
+            $this->make('tree', $build);
+            return;
+        }
+
+        if ($this->prepareRevision($revision, $configuration, $source, $build, $fingerprint) === false) {
+            return;
+        }
+
+        $this->make('tree', $build);
+        $this->recordBuiltRevision($build, $revision);
+    }
+
+    private function prepareRevision(string $revision, string $configuration, string $source, string $build, string $fingerprint): bool
     {
         $built = null;
         $file = $this->builtRevisionFile($build);
@@ -120,7 +143,7 @@ final class CoverageBuilder
             $built = file_get_contents($file);
 
             if ($built === false) {
-                throw new RuntimeException('Could not read base build revision');
+                throw new RuntimeException('Could not read build revision');
             }
         }
 
@@ -132,7 +155,7 @@ final class CoverageBuilder
     private function recordBuiltRevision(string $build, string $revision): void
     {
         if (file_put_contents($this->builtRevisionFile($build), $revision) === false) {
-            throw new RuntimeException('Could not save base build revision');
+            throw new RuntimeException('Could not save build revision');
         }
     }
 

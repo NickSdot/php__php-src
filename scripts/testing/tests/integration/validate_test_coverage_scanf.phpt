@@ -26,13 +26,6 @@ $workspace = IntegrationTestWorkspace::create(
     TestTemporaryDirectory::stateFile('validate_test_coverage_scanf')
 );
 
-$workspace->copy([
-    'scripts/testing/autoload.php',
-    'scripts/testing/measure_process.php',
-    'scripts/testing/src',
-    'scripts/testing/validate_test_coverage.php',
-]);
-
 $workspace->configure(['--disable-all']);
 
 $fixture = $workspace->path();
@@ -40,8 +33,9 @@ $process = new ProcessRunner();
 
 $command = [
     PHP_BINARY,
-    "$fixture/scripts/testing/validate_test_coverage.php",
+    "$repo/scripts/testing/validate_test_coverage.php",
     '--base', BASE,
+    '--tree', 'HEAD',
     '--source', 'ext/standard/scanf.c',
     'ext/standard/tests/file',
     'ext/standard/tests/strings',

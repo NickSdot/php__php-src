@@ -8,7 +8,6 @@ use RuntimeException;
 
 use function is_dir;
 use function mkdir;
-use function unlink;
 
 final class IntegrationTestWorkspace
 {
@@ -70,14 +69,5 @@ final class IntegrationTestWorkspace
     {
         $this->process->command(['./buildconf', '--force'], $this->path());
         $this->process->command(['./configure', ...$options], $this->path());
-    }
-
-    /** @param list<string> $paths */
-    public function copy(array $paths): void
-    {
-        $archive = $this->temporary->path() . '/copy.tar';
-        $this->process->command(['tar', '-cf', $archive, ...$paths], $this->repo);
-        $this->process->command(['tar', '-xf', $archive, '-C', $this->path()]);
-        unlink($archive);
     }
 }

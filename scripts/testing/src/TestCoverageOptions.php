@@ -12,6 +12,7 @@ final readonly class TestCoverageOptions
      */
     public function __construct(
         public string $base,
+        public ?string $tree,
         public array $sources,
         public array $testPaths,
         public bool $global,

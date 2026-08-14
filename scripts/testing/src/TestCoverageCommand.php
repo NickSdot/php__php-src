@@ -25,24 +25,14 @@ final class TestCoverageCommand
     Usage:
       php scripts/testing/validate_test_coverage.php [options] [test paths...]
 
-    Validates working tree test coverage against a base revision.
-    Tree uses current files, including uncommitted changes.
-
     Options:
       --base REF             Base branch or commit (default: master)
-      --source FILE          Only compare this source (repeatable)
+      --tree REF             Tree branch or commit (default: working tree)
+      --source PATH          Limit source scope (repeatable)
+      --global               Compare every discovered source
       -h, --help             Show help
 
-    No passed paths run the complete suite. Passed paths limit runs to matching
-    PHPT files. Requires PHP 8.3+ and an existing config.nice. Coverage builds
-    enable gcov automatically. Builds and tests use -j10.
-
-    Base and tree use separate cached builds with the same configuration.
-    Changed executable source locations count as gained when covered and missed
-    when not. All sources under the repository or coverage build reported by
-    gcov are compared unless --source is passed. GCOV overrides gcov.
-
-    Example:
+    Examples:
       php scripts/testing/validate_test_coverage.php \
         --base upstream/master \
         --source ext/standard/scanf.c \
@@ -79,6 +69,7 @@ final class TestCoverageCommand
     {
         $options = [
             'base' => 'master',
+            'tree' => null,
             'sources' => [],
             'testPaths' => [],
             'global' => false,
@@ -108,7 +99,7 @@ final class TestCoverageCommand
 
             $name = $this->optionName($argument);
 
-            if (in_array($name, ['base', 'global', 'source'], true) === false) {
+            if (in_array($name, ['base', 'global', 'source', 'tree'], true) === false) {
                 throw new InvalidArgumentException("Unknown option: --$name");
             }
 
@@ -131,6 +122,11 @@ final class TestCoverageCommand
 
             if ($name === 'base') {
                 $options['base'] = $value;
+                continue;
+            }
+
+            if ($name === 'tree') {
+                $options['tree'] = $value;
                 continue;
             }
 
