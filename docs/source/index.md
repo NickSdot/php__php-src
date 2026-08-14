@@ -21,6 +21,7 @@ core/output-buffering
 :hidden: true
 
 extensions/parameter-parsing
+extensions/bundled-extensions
 extensions/unbundled-extensions
 ```
 
