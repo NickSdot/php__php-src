@@ -1,5 +1,5 @@
 --TEST--
-PHPT runner records the complete suite test count
+PHPT runner records the executed test count
 --FILE--
 <?php
 require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
@@ -27,7 +27,7 @@ ob_start();
 $run = (new PhptRunner(new ProcessRunner(), new Output(), PHP_BINARY, $directory))->run(
     'tree',
     $runner,
-    null
+    ['first.phpt', 'redirect.phpt']
 );
 ob_end_clean();
 

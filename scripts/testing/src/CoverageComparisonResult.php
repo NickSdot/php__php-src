@@ -14,10 +14,8 @@ final class CoverageComparisonResult
     private CoverageLocations $uncoveredLines;
     private CoverageLocations $uncoveredBranches;
 
-    /** @param list<string> $sources */
-    public function __construct(
-        private readonly array $sources
-    ) {
+    public function __construct()
+    {
         $this->totals = new CoverageTotals();
         $this->missedLines = new CoverageLocations();
         $this->missedBranches = new CoverageLocations();
@@ -25,12 +23,6 @@ final class CoverageComparisonResult
         $this->gainedBranches = new CoverageLocations();
         $this->uncoveredLines = new CoverageLocations();
         $this->uncoveredBranches = new CoverageLocations();
-    }
-
-    /** @return list<string> */
-    public function sources(): array
-    {
-        return $this->sources;
     }
 
     public function totals(): CoverageTotals

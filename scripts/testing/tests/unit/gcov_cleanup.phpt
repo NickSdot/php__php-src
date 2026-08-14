@@ -1,5 +1,5 @@
 --TEST--
-Gcov coverage resets only individual data files
+Gcov coverage resets all data files individually
 --FILE--
 <?php
 require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';

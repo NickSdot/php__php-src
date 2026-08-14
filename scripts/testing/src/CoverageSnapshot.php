@@ -30,11 +30,6 @@ final class CoverageSnapshot
         return $this->sources[$path] ?? null;
     }
 
-    public function has(string $path): bool
-    {
-        return isset($this->sources[$path]);
-    }
-
     public function merge(self $coverage): void
     {
         foreach ($coverage->sources as $path => $source) {

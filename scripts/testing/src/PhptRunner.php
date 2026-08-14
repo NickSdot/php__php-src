@@ -44,7 +44,7 @@ final class PhptRunner
             $this->testPhp,
             '-W',
             $results,
-         ];
+        ];
 
         if ($tests === null) {
             $this->output->printLine('Running %s tests', $name);
@@ -70,7 +70,7 @@ final class PhptRunner
 
         $run = $this->process->measured($command, dirname($runner), $environment, ...$files);
 
-        $testCount = $tests === null ? $this->testCount($results) : count($tests);
+        $testCount = $this->testCount($results);
 
         return new PhptRun($run->status, $run->time, $run->memory, $testCount);
     }

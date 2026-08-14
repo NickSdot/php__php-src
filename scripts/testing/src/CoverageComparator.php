@@ -15,7 +15,7 @@ final class CoverageComparator
     public function compare(CoverageSnapshot $base, CoverageSnapshot $tree, ?CoverageScope $scope = null, ?SourceFileChanges $changes = null): CoverageComparisonResult
     {
         $sources = ($scope ?? CoverageScope::global())->sources($base, $tree);
-        $result = new CoverageComparisonResult($sources);
+        $result = new CoverageComparisonResult();
 
         foreach ($sources as $source) {
             $this->compareSource($result, $source, $base->find($source), $tree->find($source), $changes?->source($source));

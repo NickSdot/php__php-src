@@ -43,11 +43,7 @@ final class CoverageScopeResolver
 
             $component = $this->testComponent($test);
 
-            if ($component === '') {
-                return CoverageScope::global();
-            }
-
-            if ($component === null) {
+            if ($component === null || $component === '') {
                 return CoverageScope::global();
             }
 

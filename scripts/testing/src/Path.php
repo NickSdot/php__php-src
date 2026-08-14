@@ -7,7 +7,6 @@ namespace PHP\Testing;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function is_dir;
 use function is_executable;
 use function is_file;
 use function preg_match;
@@ -29,19 +28,6 @@ final class Path
         }
 
         return $path;
-    }
-
-    public static function absoluteDirectory(string $path, string $relativeTo): string
-    {
-        $real = realpath(
-            $absolute = self::absolute($path, $relativeTo)
-        );
-
-        if ($real === false || is_dir($real) === false) {
-            throw new RuntimeException("Directory not found: $absolute");
-        }
-
-        return str_replace('\\', '/', $real);
     }
 
     public static function absoluteFile(string $path, string $relativeTo): string
