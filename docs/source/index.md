@@ -20,7 +20,8 @@ core/output-buffering
 :caption: Extensions
 :hidden: true
 
-extensions/index
+extensions/parameter-parsing
+extensions/unbundled-extensions
 ```
 
 ```{toctree}

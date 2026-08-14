@@ -1,4 +1,4 @@
-# Parameter Parsing API
+# Parameter Parsing
 
 In PHP 7, a "Fast Parameter Parsing API" was introduced. See
 [RFC](https://wiki.php.net/rfc/fast_zpp).
