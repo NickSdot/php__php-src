@@ -58,32 +58,32 @@ final class GitRepository
         return $realPath;
     }
 
-    public function updateWorktree(string $revision, string $tree): void
+    public function updateWorktree(string $revision, string $directory): void
     {
-        if (is_dir($tree) === false) {
+        if (is_dir($directory) === false) {
 
             $this->process->command(['git', '-C', $this->path, 'worktree', 'prune']);
 
             $this->process->command([
-                'git', '-C', $this->path, 'worktree', 'add', '--detach', '--quiet', $tree, $revision,
+                'git', '-C', $this->path, 'worktree', 'add', '--detach', '--quiet', $directory, $revision,
             ]);
 
             return;
         }
 
-        $current = trim($this->process->command(['git', '-C', $tree, 'rev-parse', 'HEAD']));
+        $current = trim($this->process->command(['git', '-C', $directory, 'rev-parse', 'HEAD']));
 
         if ($current === $revision) {
             return;
         }
 
-        $this->process->command(['git', '-C', $tree, 'checkout', '--detach', '--force', '--quiet', $revision]);
+        $this->process->command(['git', '-C', $directory, 'checkout', '--detach', '--force', '--quiet', $revision]);
     }
 
-    public function behindWarning(string $base): ?string
+    public function behindWarning(string $baseReference): ?string
     {
         $branch = trim($this->process->command([
-            'git', '-C', $this->path, 'rev-parse', '--symbolic-full-name', $base,
+            'git', '-C', $this->path, 'rev-parse', '--symbolic-full-name', $baseReference,
         ]));
 
         if (str_starts_with($branch, 'refs/heads/') === false) {
@@ -126,10 +126,10 @@ final class GitRepository
     }
 
     /** @return list<string> */
-    public function changedPaths(string $base, ?string $tree = null): array
+    public function changedPaths(string $baseRevision, ?string $treeRevision = null): array
     {
         $paths = [];
-        $revisions = $tree === null ? [$base] : [$base, $tree];
+        $revisions = $treeRevision === null ? [$baseRevision] : [$baseRevision, $treeRevision];
 
         $changed = $this->process->command([
             'git', '-C', $this->path, 'diff', '--name-only', '-z', ...$revisions, '--',
@@ -139,7 +139,7 @@ final class GitRepository
             $paths[$path] = true;
         }
 
-        if ($tree === null) {
+        if ($treeRevision === null) {
             $untracked = $this->process->command([
                 'git', '-C', $this->path, 'ls-files', '--others', '--exclude-standard', '-z',
             ]);
@@ -156,10 +156,10 @@ final class GitRepository
     }
 
     /** @return list<string> */
-    public function files(string $tree): array
+    public function files(string $directory): array
     {
         $files = $this->nullSeparated($this->process->command([
-            'git', '-C', $tree, 'ls-files', '--cached', '--others', '--exclude-standard', '-z',
+            'git', '-C', $directory, 'ls-files', '--cached', '--others', '--exclude-standard', '-z',
         ]));
 
         sort($files);
@@ -167,10 +167,10 @@ final class GitRepository
         return $files;
     }
 
-    public function diff(string $base, string $tree): string
+    public function diff(string $baseFile, string $treeFile): string
     {
         return $this->process->command([
-            'git', 'diff', '--no-index', '--no-ext-diff', '--no-color', '--unified=0', '--', $base, $tree,
+            'git', 'diff', '--no-index', '--no-ext-diff', '--no-color', '--unified=0', '--', $baseFile, $treeFile,
         ], successfulStatuses: [0, 1]);
     }
 

@@ -35,11 +35,11 @@ final class CoverageSuiteRunner
      * @param ?list<string> $tests
      * @param ?list<string> $coverageFiles
      */
-    private function runSuite(string $name, string $tree, ?array $tests, CoverageRuntime $runtime, ?array $coverageFiles): CoverageRun
+    private function runSuite(string $name, string $directory, ?array $tests, CoverageRuntime $runtime, ?array $coverageFiles): CoverageRun
     {
         $runtime->coverage->reset($coverageFiles);
 
-        $run = $runtime->tests->run($name, "$tree/run-tests.php", $tests);
+        $run = $runtime->tests->run($name, "$directory/run-tests.php", $tests);
 
         if ($tests === []) {
             return new CoverageRun($run);

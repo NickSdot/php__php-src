@@ -12,8 +12,8 @@ use function is_file;
 final readonly class SourceFileChanges
 {
     public function __construct(
-        private string $baseTree,
-        private string $tree,
+        private string $baseSource,
+        private string $treeSource,
         private GitRepository $repository,
         private ?string $baseBuild = null,
         private ?string $treeBuild = null
@@ -21,8 +21,8 @@ final readonly class SourceFileChanges
 
     public function source(string $path): SourceDiff
     {
-        $base = $this->file($this->baseTree, $this->baseBuild, $path);
-        $tree = $this->file($this->tree, $this->treeBuild, $path);
+        $base = $this->file($this->baseSource, $this->baseBuild, $path);
+        $tree = $this->file($this->treeSource, $this->treeBuild, $path);
 
         $baseExists = is_file($base);
         $treeExists = is_file($tree);

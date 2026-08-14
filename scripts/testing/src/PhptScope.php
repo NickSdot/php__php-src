@@ -23,14 +23,14 @@ final class PhptScope
      * @param list<string> $paths
      * @return list<string>
      */
-    public function files(string $tree, array $paths): array
+    public function files(string $directory, array $paths): array
     {
         $files = [];
 
         foreach ($paths as $path) {
 
             $path = Path::repository($path);
-            $selected = "$tree/$path";
+            $selected = "$directory/$path";
 
             if (is_link($selected) === true) {
                 throw new InvalidArgumentException("Path must not be a symlink: $path");
@@ -68,13 +68,13 @@ final class PhptScope
     }
 
     /** @param list<string> $paths */
-    public function validate(string $baseTree, string $tree, array $paths): void
+    public function validate(string $baseDirectory, string $treeDirectory, array $paths): void
     {
         foreach ($paths as $path) {
 
             $path = Path::repository($path);
 
-            if (file_exists("$baseTree/$path") === false && file_exists("$tree/$path") === false) {
+            if (file_exists("$baseDirectory/$path") === false && file_exists("$treeDirectory/$path") === false) {
                 throw new InvalidArgumentException("Path does not match any files: $path");
             }
         }
