@@ -13,17 +13,17 @@ use PHP\Testing\SourceCoverage;
 $base = new CoverageSnapshot([
     'example.c' => new SourceCoverage(
         coveredLines: [1, 2],
-        executableLines: [1, 2, 3, 4],
+        executableLines: [1, 2, 3, 4, 6],
         coveredBranches: ['1:0'],
-        executableBranches: ['1:0', '2:0', '3:0']
+        executableBranches: ['1:0', '2:0', '3:0', '4:0']
     ),
 ]);
 
 $treeSource = new SourceCoverage(
     coveredLines: [2, 3],
-    executableLines: [1, 2, 3, 4],
+    executableLines: [1, 2, 3, 4, 6],
     coveredBranches: ['2:0'],
-    executableBranches: ['1:0', '2:0', '3:0']
+    executableBranches: ['1:0', '2:0', '3:0', '4:0']
 );
 
 $tree = new CoverageSnapshot([
@@ -33,10 +33,10 @@ $tree = new CoverageSnapshot([
 
 $comparison = (new CoverageComparator())->compare($base, $tree);
 
-var_dump($comparison->missedLines());
-var_dump($comparison->gainedLines());
-var_dump($comparison->missedBranches());
-var_dump($comparison->gainedBranches());
+var_dump($comparison->missedLines()->bySource());
+var_dump($comparison->gainedLines()->bySource());
+var_dump($comparison->missedBranches()->bySource());
+var_dump($comparison->gainedBranches()->bySource());
 
 $report = __DIR__ . '/coverage_comparison.report';
 
@@ -71,62 +71,77 @@ if (is_file($report) === true) {
 ?>
 --EXPECT--
 array(1) {
-  [0]=>
-  string(11) "example.c:1"
+  ["example.c"]=>
+  array(1) {
+    [0]=>
+    int(1)
+  }
 }
 array(1) {
-  [0]=>
-  string(11) "example.c:3"
+  ["example.c"]=>
+  array(1) {
+    [0]=>
+    int(3)
+  }
 }
 array(1) {
-  [0]=>
-  string(13) "example.c:1:0"
+  ["example.c"]=>
+  array(1) {
+    [0]=>
+    string(3) "1:0"
+  }
 }
 array(1) {
-  [0]=>
-  string(13) "example.c:2:0"
+  ["example.c"]=>
+  array(1) {
+    [0]=>
+    string(3) "2:0"
+  }
 }
 +--------+-------+---------+------------------+------------------+--------+---------+
 |        | Tests | Sources |            Lines |         Branches |   Time |  Memory |
 +--------+-------+---------+------------------+------------------+--------+---------+
-| Base   |     3 |       1 |     2/4 (50.00%) |     1/3 (33.33%) |  1.00s |  1.0 MB |
-| Tree   |     4 |       2 |     2/4 (50.00%) |     1/3 (33.33%) |  2.00s |  2.0 MB |
+| Base   |     3 |       1 |     2/5 (40.00%) |     1/4 (25.00%) |  1.00s |  1.0 MB |
+| Tree   |     4 |       2 |     2/5 (40.00%) |     1/4 (25.00%) |  2.00s |  2.0 MB |
 | Change |    +1 |      +1 | +1 / -1 (+0.00%) | +1 / -1 (+0.00%) | +1.00s | +1.0 MB |
 +--------+-------+---------+------------------+------------------+--------+---------+
 Report: <report>
 --- Report ---
-Missed
-======
+===== Missed ===================================================================
 
-Lines (1)
----------
-example.c:1
+      Lines (1)
+      --------------------------------------------------------------------------
+      example.c:
+        1
 
-Branches (1)
-------------
-example.c:1:0
+      Branches (1)
+      --------------------------------------------------------------------------
+      example.c:
+        1:0
 
-Gained
-======
+===== Gained ===================================================================
 
-Lines (1)
----------
-example.c:3
+      Lines (1)
+      --------------------------------------------------------------------------
+      example.c:
+        3
 
-Branches (1)
-------------
-example.c:2:0
+      Branches (1)
+      --------------------------------------------------------------------------
+      example.c:
+        2:0
 
-Uncovered
-=========
+===== Uncovered ================================================================
 
-Lines (1)
----------
-example.c:4
+      Lines (2)
+      --------------------------------------------------------------------------
+      example.c:
+        4 6
 
-Branches (1)
-------------
-example.c:3:0
+      Branches (2)
+      --------------------------------------------------------------------------
+      example.c:
+        3:0 4:0
 
 bool(true)
 RuntimeException: Line coverage map changed: example.c

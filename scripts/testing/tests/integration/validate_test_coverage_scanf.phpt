@@ -76,13 +76,17 @@ if (preg_match('/^Report: (.+)$/m', $output, $matches) !== 1) {
 $report = file_get_contents($matches[1]);
 
 foreach ([
-    "Missed\n======\n\nLines (0)\n---------\nNone",
-    "Branches (0)\n------------\nNone",
-    'ext/standard/scanf.c:156',
+    '===== Missed ' . str_repeat('=', 67) . "\n\n      Lines (0)\n      " . str_repeat('-', 74) . "\n      None",
+    "      Branches (0)\n      " . str_repeat('-', 74) . "\n      None",
+    "      ext/standard/scanf.c:\n",
 ] as $expected) {
     if (str_contains($report, $expected) === false) {
         throw new RuntimeException("Coverage report does not contain: $expected");
     }
+}
+
+if (preg_match('/(?:^        | )156(?: |$)/m', $report) !== 1) {
+    throw new RuntimeException('Coverage report does not contain line 156');
 }
 ?>
 --CLEAN--

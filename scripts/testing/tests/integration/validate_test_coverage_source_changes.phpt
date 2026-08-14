@@ -114,8 +114,12 @@ assertCoverage('Negative', $status, 1, $output, ['| Base   |     1 |', 'FAIL']);
 
 $report = file_get_contents(coverageReport($output));
 
-foreach (['ext/standard/string.c:857', 'ext/standard/string.c:866:0'] as $location) {
-    if (str_contains($report, $location) === false) {
+if (str_contains($report, "      ext/standard/string.c:\n") === false) {
+    throw new RuntimeException('Negative report does not contain ext/standard/string.c');
+}
+
+foreach (['857', '866:0'] as $location) {
+    if (preg_match('/(?:^        | )' . preg_quote($location, '/') . '(?: |$)/m', $report) !== 1) {
         throw new RuntimeException("Negative report does not contain: $location");
     }
 }
