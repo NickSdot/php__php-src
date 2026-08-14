@@ -21,7 +21,7 @@ struct _zend_string {
 };
 ```
 
-The `gc` field is used for {doc}`./reference-counting`. The `h` field contains a hash value,
+The `gc` field is used for {doc}`../memory-management/reference-counting`. The `h` field contains a hash value,
 which is used for <a href="todo">hash table</a> lookups. The `len` field stores the length of the string
 in bytes, and the `val` field contains the actual string data.
 
@@ -93,7 +93,7 @@ strings.
 | `zend_string_copy(s)`          | Increases the reference count and returns the same string. The reference count is not increased if the string is interned.                                                                                                                                              |
 | `zend_string_release(s)`       | Decreases the reference count and frees the string if it goes to 0.                                                                                                                                                                                                     |
 | `zend_string_dup(s, p)`        | Creates a true copy of the string in a new allocation, except if the string is interned.                                                                                                                                                                                |
-| `zend_string_separate(s)`      | Duplicates the string if the reference count is greater than 1. See {doc}`./reference-counting` for details.                                                                                                                                                            |
+| `zend_string_separate(s)`      | Duplicates the string if the reference count is greater than 1. See {doc}`../memory-management/reference-counting` for details.                                                                                                                                         |
 | `zend_string_realloc(s, l, p)` | Changes the size of the string. If the string has a reference count greater than 1 or if the string is interned, a new string is created. You must always use the return value of this function, as the original array may have been moved to a new location in memory. |
 
 There are various functions to compare strings. The `zend_string_equals` function compares two
