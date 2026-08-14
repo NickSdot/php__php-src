@@ -21,6 +21,12 @@ final class TestCoverageCommand
     // todo(NickSdot): use auto-detection when run-tests.php is extracted
     public const WORKERS = 10;
 
+    /** @var list<string> */
+    public const VENDORED_PATHS = [
+        'ext/lexbor/lexbor',
+        'ext/uri/uriparser',
+    ];
+
     private const USAGE = <<<'USAGE'
     Usage:
       php scripts/testing/validate_test_coverage.php [options] [test paths...]

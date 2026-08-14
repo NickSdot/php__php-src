@@ -23,6 +23,12 @@ final class CoverageComparisonResult
     /** @var list<string> */
     private array $gainedBranches = [];
 
+    /** @var list<string> */
+    private array $uncoveredLines = [];
+
+    /** @var list<string> */
+    private array $uncoveredBranches = [];
+
     /** @param list<string> $sources */
     public function __construct(
         private readonly array $sources
@@ -65,6 +71,18 @@ final class CoverageComparisonResult
         return $this->gainedBranches;
     }
 
+    /** @return list<string> */
+    public function uncoveredLines(): array
+    {
+        return $this->uncoveredLines;
+    }
+
+    /** @return list<string> */
+    public function uncoveredBranches(): array
+    {
+        return $this->uncoveredBranches;
+    }
+
     public function hasMissedCoverage(): bool
     {
         return $this->missedLines !== [] || $this->missedBranches !== [];
@@ -88,6 +106,16 @@ final class CoverageComparisonResult
     public function addGainedBranches(string $source, array $branches): void
     {
         $this->addLocations($this->gainedBranches, $source, $branches);
+    }
+
+    public function addUncoveredLines(string $source, array $lines): void
+    {
+        $this->addLocations($this->uncoveredLines, $source, $lines);
+    }
+
+    public function addUncoveredBranches(string $source, array $branches): void
+    {
+        $this->addLocations($this->uncoveredBranches, $source, $branches);
     }
 
     /**

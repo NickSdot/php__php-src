@@ -1,5 +1,5 @@
 --TEST--
-Coverage reports exact gained and missed coverage
+Coverage reports exact gained, missed and uncovered coverage
 --FILE--
 <?php
 require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
@@ -13,17 +13,17 @@ use PHP\Testing\SourceCoverage;
 $base = new CoverageSnapshot([
     'example.c' => new SourceCoverage(
         coveredLines: [1, 2],
-        executableLines: [1, 2, 3],
+        executableLines: [1, 2, 3, 4],
         coveredBranches: ['1:0'],
-        executableBranches: ['1:0', '2:0']
+        executableBranches: ['1:0', '2:0', '3:0']
     ),
 ]);
 
 $treeSource = new SourceCoverage(
     coveredLines: [2, 3],
-    executableLines: [1, 2, 3],
+    executableLines: [1, 2, 3, 4],
     coveredBranches: ['2:0'],
-    executableBranches: ['1:0', '2:0']
+    executableBranches: ['1:0', '2:0', '3:0']
 );
 
 $tree = new CoverageSnapshot([
@@ -52,7 +52,7 @@ echo $output;
 echo "--- Report ---\n", file_get_contents($report);
 var_dump($comparison->hasMissedCoverage());
 
-$treeSource->recordLine(4, false);
+$treeSource->recordLine(5, false);
 
 try {
     (new CoverageComparator())->compare($base, $tree);
@@ -89,8 +89,8 @@ array(1) {
 +--------+-------+---------+------------------+------------------+--------+---------+
 |        | Tests | Sources |            Lines |         Branches |   Time |  Memory |
 +--------+-------+---------+------------------+------------------+--------+---------+
-| Base   |     3 |       1 |     2/3 (66.67%) |     1/2 (50.00%) |  1.00s |  1.0 MB |
-| Tree   |     4 |       2 |     2/3 (66.67%) |     1/2 (50.00%) |  2.00s |  2.0 MB |
+| Base   |     3 |       1 |     2/4 (50.00%) |     1/3 (33.33%) |  1.00s |  1.0 MB |
+| Tree   |     4 |       2 |     2/4 (50.00%) |     1/3 (33.33%) |  2.00s |  2.0 MB |
 | Change |    +1 |      +1 | +1 / -1 (+0.00%) | +1 / -1 (+0.00%) | +1.00s | +1.0 MB |
 +--------+-------+---------+------------------+------------------+--------+---------+
 Report: <report>
@@ -116,6 +116,17 @@ example.c:3
 Branches (1)
 ------------
 example.c:2:0
+
+Uncovered
+=========
+
+Lines (1)
+---------
+example.c:4
+
+Branches (1)
+------------
+example.c:3:0
 
 bool(true)
 RuntimeException: Line coverage map changed: example.c

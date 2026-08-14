@@ -34,6 +34,7 @@ $coverage = new CoverageSnapshot([
     'ext/standard/string.c' => new SourceCoverage(),
     'ext/uri/php_uri.c' => new SourceCoverage(),
     'ext/uri/uri_parser_whatwg.c' => new SourceCoverage(),
+    'ext/uri/uriparser/src/UriParse.c' => new SourceCoverage(),
     'vendor/acme/extension.c' => new SourceCoverage(),
 ]);
 
@@ -56,6 +57,18 @@ $scope = $resolver->resolve(
 
 var_dump($scope->description());
 var_dump($scope->sources($coverage, new CoverageSnapshot()));
+
+$vendoredChange = $resolver->resolve(
+    options(),
+    $selected,
+    ['ext/uri/uriparser/src/UriParse.c'],
+    new BuildDependencies(
+        ['ext/uri/uriparser/src/UriParse.c' => ['ext/uri/uriparser/src/UriParse.c' => true]],
+        []
+    )
+);
+
+var_dump($vendoredChange->sources($coverage, new CoverageSnapshot()));
 
 $multiple = $resolver->resolve(
     options(tests: ['ext/uri/tests', 'ext/json/tests']),
@@ -111,6 +124,14 @@ array(3) {
   [2]=>
   string(27) "ext/uri/uri_parser_whatwg.c"
 }
+array(3) {
+  [0]=>
+  string(17) "ext/uri/php_uri.c"
+  [1]=>
+  string(27) "ext/uri/uri_parser_whatwg.c"
+  [2]=>
+  string(32) "ext/uri/uriparser/src/UriParse.c"
+}
 string(17) "ext/json, ext/uri"
 array(3) {
   [0]=>
@@ -126,14 +147,16 @@ array(1) {
   string(23) "vendor/acme/extension.c"
 }
 string(7) "ext/uri"
-array(2) {
+array(3) {
   [0]=>
   string(17) "ext/uri/php_uri.c"
   [1]=>
   string(27) "ext/uri/uri_parser_whatwg.c"
+  [2]=>
+  string(32) "ext/uri/uriparser/src/UriParse.c"
 }
 string(6) "global"
 string(6) "global"
-int(6)
+int(7)
 string(6) "global"
 RuntimeException: Coverage scope was not exercised: ext/missing
