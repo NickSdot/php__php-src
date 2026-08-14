@@ -23,10 +23,10 @@ final class CoverageSuiteRunner
             );
         } finally {
 
-            $this->base->coverage->reset($baseFiles);
+            $this->base->coverage->reset();
 
             if ($this->tree->coverage !== $this->base->coverage) {
-                $this->tree->coverage->reset($treeFiles);
+                $this->tree->coverage->reset();
             }
         }
     }
@@ -37,7 +37,7 @@ final class CoverageSuiteRunner
      */
     private function runSuite(string $name, string $directory, ?array $tests, CoverageRuntime $runtime, ?array $coverageFiles): CoverageRun
     {
-        $runtime->coverage->reset($coverageFiles);
+        $runtime->coverage->reset();
 
         $run = $runtime->tests->run($name, "$directory/run-tests.php", $tests);
 

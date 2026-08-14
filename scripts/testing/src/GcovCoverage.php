@@ -48,10 +48,9 @@ final class GcovCoverage
         return $this->buildDirectory;
     }
 
-    /** @param ?list<string> $selected */
-    public function reset(?array $selected = null): void
+    public function reset(): void
     {
-        foreach ($this->coverageFiles(self::DATA_SUFFIX, $selected) as $file) {
+        foreach ($this->coverageFiles(self::DATA_SUFFIX) as $file) {
             if (Path::isDescendantOf($file, $this->buildDirectory) === false || unlink($file) === false) {
                 throw new RuntimeException("Could not delete coverage file: $file");
             }

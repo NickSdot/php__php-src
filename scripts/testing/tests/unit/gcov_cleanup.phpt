@@ -22,15 +22,12 @@ file_put_contents($directory . '/keep.txt', 'keep');
 
 $coverage = new GcovCoverage($directory, $directory, 'gcov', new ProcessRunner());
 $coverage->validateBuild();
-$coverage->reset(['example.gcda']);
+$coverage->reset();
 
 var_dump(file_exists($directory . '/example.gcda'));
 var_dump(file_exists($directory . '/other.gcda'));
 var_dump(file_exists($directory . '/example.gcno'));
 var_dump(file_exists($directory . '/keep.txt'));
-
-$coverage->reset();
-var_dump(file_exists($directory . '/other.gcda'));
 
 $temporary->remove();
 
@@ -47,7 +44,6 @@ PHP\Testing\TestTemporaryDirectory::removeFromStateFile(
 ?>
 --EXPECT--
 bool(false)
-bool(true)
-bool(true)
-bool(true)
 bool(false)
+bool(true)
+bool(true)
