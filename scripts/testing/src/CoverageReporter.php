@@ -34,7 +34,7 @@ final class CoverageReporter
         $gainedLines = $comparison->gainedLines();
         $gainedBranches = $comparison->gainedBranches();
 
-        $this->writeCoverageReport($missedLines, $missedBranches, $gainedLines, $gainedBranches);
+        $this->writeCoverageReport($comparison);
 
         $rows = [
             ['', 'Tests', 'Sources', 'Lines', 'Branches', 'Time', 'Memory'],
@@ -143,17 +143,21 @@ final class CoverageReporter
         return $this->formatMemory($tree - $base, true);
     }
 
-    /**
-     * @param list<string> $missedLines
-     * @param list<string> $missedBranches
-     * @param list<string> $gainedLines
-     * @param list<string> $gainedBranches
-     */
-    private function writeCoverageReport(array $missedLines, array $missedBranches, array $gainedLines, array $gainedBranches): void
+    private function writeCoverageReport(CoverageComparisonResult $comparison): void
     {
         $groups = [
-            'Missed' => ['Lines' => $missedLines, 'Branches' => $missedBranches],
-            'Gained' => ['Lines' => $gainedLines, 'Branches' => $gainedBranches],
+            'Missed' => [
+                'Lines' => $comparison->missedLines(),
+                'Branches' => $comparison->missedBranches(),
+            ],
+            'Gained' => [
+                'Lines' => $comparison->gainedLines(),
+                'Branches' => $comparison->gainedBranches(),
+            ],
+            'Uncovered' => [
+                'Lines' => $comparison->uncoveredLines(),
+                'Branches' => $comparison->uncoveredBranches(),
+            ],
         ];
 
         $lines = [];

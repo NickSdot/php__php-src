@@ -17,6 +17,11 @@ use function substr;
 
 final class CoverageScopeResolver
 {
+    /** @param list<string> $vendoredPaths */
+    public function __construct(
+        private array $vendoredPaths = TestCoverageCommand::VENDORED_PATHS
+    ) {}
+
     /** @param list<string> $changedPaths */
     public function resolve(TestCoverageOptions $options, TestTrees $trees, array $changedPaths, ?BuildDependencies $dependencies = null): CoverageScope
     {
@@ -49,7 +54,9 @@ final class CoverageScopeResolver
             $components[$component] = true;
         }
 
-        foreach ($dependencies?->affectedSources($changedPaths) ?? [] as $source) {
+        $changedSources = $dependencies?->affectedSources($changedPaths) ?? [];
+
+        foreach ($changedSources as $source) {
 
             $component = $this->sourceComponent($source, $trees);
 
@@ -67,7 +74,7 @@ final class CoverageScopeResolver
             return CoverageScope::global();
         }
 
-        return CoverageScope::paths($components);
+        return CoverageScope::paths($components, $this->excludedPaths($changedSources));
     }
 
     /** @return list<string> */
@@ -134,5 +141,34 @@ final class CoverageScopeResolver
         $tests = $directory === '' ? 'tests' : "$directory/tests";
 
         return is_dir("{$trees->base}/$tests") === true || is_dir("{$trees->tree}/$tests") === true;
+    }
+
+    /**
+     * @param list<string> $changedSources
+     * @return list<string>
+     */
+    private function excludedPaths(array $changedSources): array
+    {
+        $excludedPaths = [];
+
+        foreach ($this->vendoredPaths as $path) {
+            if ($this->containsChangedSource($path, $changedSources) === false) {
+                $excludedPaths[] = $path;
+            }
+        }
+
+        return $excludedPaths;
+    }
+
+    /** @param list<string> $changedSources */
+    private function containsChangedSource(string $path, array $changedSources): bool
+    {
+        foreach ($changedSources as $source) {
+            if ($source === $path || Path::isDescendantOf($source, $path) === true) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

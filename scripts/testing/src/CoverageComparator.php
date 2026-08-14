@@ -73,9 +73,25 @@ final class CoverageComparator
             $source,
             array_diff_key($base->coveredBranches(), $tree->coveredBranches())
         );
+
+        $result->addUncoveredLines(
+            $source,
+            array_diff_key($tree->executableLines(), $tree->coveredLines(), $base->coveredLines())
+        );
+
+        $result->addUncoveredBranches(
+            $source,
+            array_diff_key($tree->executableBranches(), $tree->coveredBranches(), $base->coveredBranches())
+        );
     }
 
     private function compareChangedSource(CoverageComparisonResult $result, string $source, SourceCoverage $base, SourceCoverage $tree, SourceDiff $changes): void
+    {
+        $this->compareChangedLines($result, $source, $base, $tree, $changes);
+        $this->compareChangedBranches($result, $source, $base, $tree, $changes);
+    }
+
+    private function compareChangedLines(CoverageComparisonResult $result, string $source, SourceCoverage $base, SourceCoverage $tree, SourceDiff $changes): void
     {
         foreach ($tree->executableLines() as $line => $_) {
 
@@ -84,14 +100,21 @@ final class CoverageComparator
             $baseCovered = $comparable === true && isset($base->coveredLines()[$baseLine]);
             $treeCovered = isset($tree->coveredLines()[$line]);
 
-            if ($treeCovered === true && ($comparable === false || $baseCovered === false)) {
-                $result->addGainedLines($source, [$line => true]);
+            if ($treeCovered === true) {
+
+                if ($comparable === false || $baseCovered === false) {
+                    $result->addGainedLines($source, [$line => true]);
+                }
+
                 continue;
             }
 
-            if ($treeCovered === false && ($comparable === false || $baseCovered === true)) {
+            if ($comparable === false || $baseCovered === true) {
                 $result->addMissedLines($source, [$line => true]);
+                continue;
             }
+
+            $result->addUncoveredLines($source, [$line => true]);
         }
 
         foreach ($base->coveredLines() as $baseLine => $_) {
@@ -102,7 +125,10 @@ final class CoverageComparator
                 $result->addMissedLines($source, [$treeLine => true]);
             }
         }
+    }
 
+    private function compareChangedBranches(CoverageComparisonResult $result, string $source, SourceCoverage $base, SourceCoverage $tree, SourceDiff $changes): void
+    {
         foreach ($tree->executableBranches() as $branch => $_) {
 
             [$line, $outcome] = explode(':', $branch, 2);
@@ -112,14 +138,21 @@ final class CoverageComparator
             $baseCovered = $comparable === true && isset($base->coveredBranches()[$baseBranch]);
             $treeCovered = isset($tree->coveredBranches()[$branch]);
 
-            if ($treeCovered === true && ($comparable === false || $baseCovered === false)) {
-                $result->addGainedBranches($source, [$branch => true]);
+            if ($treeCovered === true) {
+
+                if ($comparable === false || $baseCovered === false) {
+                    $result->addGainedBranches($source, [$branch => true]);
+                }
+
                 continue;
             }
 
-            if ($treeCovered === false && ($comparable === false || $baseCovered === true)) {
+            if ($comparable === false || $baseCovered === true) {
                 $result->addMissedBranches($source, [$branch => true]);
+                continue;
             }
+
+            $result->addUncoveredBranches($source, [$branch => true]);
         }
 
         foreach ($base->coveredBranches() as $baseBranch => $_) {
@@ -158,5 +191,4 @@ final class CoverageComparator
     {
         return array_diff_key($first, $second) === [] && array_diff_key($second, $first) === [];
     }
-
 }
