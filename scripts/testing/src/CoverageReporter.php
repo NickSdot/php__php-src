@@ -9,6 +9,7 @@ use RuntimeException;
 use function count;
 use function file_put_contents;
 use function implode;
+use function round;
 use function sort;
 use function sprintf;
 use function str_repeat;
@@ -36,9 +37,11 @@ final class CoverageReporter
         $this->writeCoverageReport($missedLines, $missedBranches, $gainedLines, $gainedBranches);
 
         $rows = [
-            ['', 'Lines', 'Branches', 'Time', 'Memory'],
+            ['', 'Tests', 'Sources', 'Lines', 'Branches', 'Time', 'Memory'],
             [
                 'Base',
+                $this->countValue($baseRun->testCount),
+                (string) $totals->baseSources(),
                 $this->coverageValue($totals->baseLines(), $totals->baseExecutableLines()),
                 $this->coverageValue($totals->baseBranches(), $totals->baseExecutableBranches()),
                 sprintf('%.2fs', $baseRun->time),
@@ -46,6 +49,8 @@ final class CoverageReporter
             ],
             [
                 'Tree',
+                $this->countValue($treeRun->testCount),
+                (string) $totals->treeSources(),
                 $this->coverageValue($totals->treeLines(), $totals->treeExecutableLines()),
                 $this->coverageValue($totals->treeBranches(), $totals->treeExecutableBranches()),
                 sprintf('%.2fs', $treeRun->time),
@@ -53,16 +58,54 @@ final class CoverageReporter
             ],
             [
                 'Change',
-                sprintf('+%d / -%d', count($gainedLines), count($missedLines)),
-                sprintf('+%d / -%d', count($gainedBranches), count($missedBranches)),
+                $this->countChange($baseRun->testCount, $treeRun->testCount),
+                $this->countChange($totals->baseSources(), $totals->treeSources()),
+                $this->coverageChange(
+                    count($gainedLines),
+                    count($missedLines),
+                    $totals->baseLines(),
+                    $totals->baseExecutableLines(),
+                    $totals->treeLines(),
+                    $totals->treeExecutableLines()
+                ),
+                $this->coverageChange(
+                    count($gainedBranches),
+                    count($missedBranches),
+                    $totals->baseBranches(),
+                    $totals->baseExecutableBranches(),
+                    $totals->treeBranches(),
+                    $totals->treeExecutableBranches()
+                ),
                 sprintf('%+.2fs', $treeRun->time - $baseRun->time),
                 $this->memoryChange($baseRun->memory, $treeRun->memory),
             ],
         ];
 
-        $this->output->printLine('Sources: %d', count($comparison->sources()));
         $this->output->table($rows);
         $this->output->printLine('Report: %s', $this->file);
+    }
+
+    private function countValue(?int $count): string
+    {
+        return $count === null ? '-' : (string) $count;
+    }
+
+    private function countChange(?int $base, ?int $tree): string
+    {
+        if ($base === null || $tree === null) {
+            return '-';
+        }
+
+        $change = $tree - $base;
+
+        return $change === 0 ? '0' : sprintf('%+d', $change);
+    }
+
+    private function coverageChange(int $gained, int $missed, int $baseCovered, int $baseTotal, int $treeCovered, int $treeTotal): string
+    {
+        $change = $this->percentage($treeCovered, $treeTotal) - $this->percentage($baseCovered, $baseTotal);
+
+        return sprintf('+%d / -%d (%+.2f%%)', $gained, $missed, $change);
     }
 
     private function coverageValue(int $covered, int $total): string
@@ -82,7 +125,13 @@ final class CoverageReporter
             $format = '%+.1f MB';
         }
 
-        return sprintf($format, $bytes / 1048576);
+        $megabytes = $bytes / 1048576;
+
+        if (round($megabytes, 1) === 0.0) {
+            $megabytes = 0.0;
+        }
+
+        return sprintf($format, $megabytes);
     }
 
     private function memoryChange(?int $base, ?int $tree): string

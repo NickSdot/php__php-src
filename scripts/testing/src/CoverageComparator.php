@@ -28,6 +28,9 @@ final class CoverageComparator
     {
         $both = $base !== null && $tree !== null;
 
+        $totals = $result->totals();
+        $totals->addSources($base !== null, $tree !== null);
+
         $base ??= new SourceCoverage();
         $tree ??= new SourceCoverage();
 
@@ -36,8 +39,6 @@ final class CoverageComparator
         } else {
             $this->compareMatchedSource($result, $source, $base, $tree, $both);
         }
-
-        $totals = $result->totals();
 
         $totals->addLines(
             count($base->coveredLines()),

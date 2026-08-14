@@ -9,6 +9,7 @@ use RuntimeException;
 use function array_map;
 use function count;
 use function dirname;
+use function file;
 use function file_get_contents;
 use function file_put_contents;
 use function getenv;
@@ -28,14 +29,25 @@ final class PhptRunner
     public function run(string $name, string $runner, ?array $tests): PhptRun
     {
         if ($tests === []) {
-            $this->output->printLine('Running %s suite (0 tests)', $name);
-            return new PhptRun(0, 0.0, 0);
+            $this->output->printLine('Running %s 0 tests', $name);
+            return new PhptRun(0, 0.0, 0, 0);
         }
 
-        $command = [PHP_BINARY, $runner, '-q', '-j' . TestCoverageCommand::WORKERS, '-p', $this->testPhp];
+        $results = "$this->temporaryDirectory/$name-results.list";
+
+        $command = [
+            PHP_BINARY,
+            $runner,
+            '-q',
+            '-j' . TestCoverageCommand::WORKERS,
+            '-p',
+            $this->testPhp,
+            '-W',
+            $results,
+         ];
 
         if ($tests === null) {
-            $this->output->printLine('Running %s complete suite', $name);
+            $this->output->printLine('Running %s tests', $name);
         }
 
         if ($tests !== null) {
@@ -56,7 +68,11 @@ final class PhptRunner
             ['tests.log', 'tests.err', 'metrics.json'],
         );
 
-        return $this->process->measured($command, dirname($runner), $environment, ...$files);
+        $run = $this->process->measured($command, dirname($runner), $environment, ...$files);
+
+        $testCount = $tests === null ? $this->testCount($results) : count($tests);
+
+        return new PhptRun($run->status, $run->time, $run->memory, $testCount);
     }
 
     public function failureOutput(string $name): string
@@ -90,8 +106,19 @@ final class PhptRunner
             throw new RuntimeException("Could not write test list: $list");
         }
 
-        $this->output->printLine('Running %s suite (%d tests)', $name, count($tests));
+        $this->output->printLine('Running %s %d tests', $name, count($tests));
 
         return [...$command, '-r', $list];
+    }
+
+    private function testCount(string $resultsFile): ?int
+    {
+        $results = file($resultsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+        if ($results === false) {
+            return null;
+        }
+
+        return count($results);
     }
 }

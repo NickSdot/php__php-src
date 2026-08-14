@@ -26,7 +26,10 @@ $treeSource = new SourceCoverage(
     executableBranches: ['1:0', '2:0']
 );
 
-$tree = new CoverageSnapshot(['example.c' => $treeSource]);
+$tree = new CoverageSnapshot([
+    'example.c' => $treeSource,
+    'new.c' => new SourceCoverage(),
+]);
 
 $comparison = (new CoverageComparator())->compare($base, $tree);
 
@@ -40,8 +43,8 @@ $report = __DIR__ . '/coverage_comparison.report';
 ob_start();
 (new CoverageReporter($report))->report(
     $comparison,
-    new PhptRun(0, 1.0, 1048576),
-    new PhptRun(0, 2.0, 2097152)
+    new PhptRun(0, 1.0, 1048576, 3),
+    new PhptRun(0, 2.0, 2097152, 4)
 );
 $output = str_replace($report, '<report>', ob_get_clean());
 
@@ -83,14 +86,13 @@ array(1) {
   [0]=>
   string(13) "example.c:2:0"
 }
-Sources: 1
-+--------+--------------+--------------+--------+---------+
-|        |        Lines |     Branches |   Time |  Memory |
-+--------+--------------+--------------+--------+---------+
-| Base   | 2/3 (66.67%) | 1/2 (50.00%) |  1.00s |  1.0 MB |
-| Tree   | 2/3 (66.67%) | 1/2 (50.00%) |  2.00s |  2.0 MB |
-| Change |      +1 / -1 |      +1 / -1 | +1.00s | +1.0 MB |
-+--------+--------------+--------------+--------+---------+
++--------+-------+---------+------------------+------------------+--------+---------+
+|        | Tests | Sources |            Lines |         Branches |   Time |  Memory |
++--------+-------+---------+------------------+------------------+--------+---------+
+| Base   |     3 |       1 |     2/3 (66.67%) |     1/2 (50.00%) |  1.00s |  1.0 MB |
+| Tree   |     4 |       2 |     2/3 (66.67%) |     1/2 (50.00%) |  2.00s |  2.0 MB |
+| Change |    +1 |      +1 | +1 / -1 (+0.00%) | +1 / -1 (+0.00%) | +1.00s | +1.0 MB |
++--------+-------+---------+------------------+------------------+--------+---------+
 Report: <report>
 --- Report ---
 Missed
