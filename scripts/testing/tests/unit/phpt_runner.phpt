@@ -20,7 +20,11 @@ $runner = "$directory/run-tests.php";
 file_put_contents($runner, <<<'PHP'
     <?php
     $resultFile = $argv[array_search('-W', $argv, true) + 1];
-    file_put_contents($resultFile, str_repeat("PASS\ttest.phpt\n", 42));
+    file_put_contents(
+        $resultFile,
+        str_repeat("PASSED\t" . __DIR__ . "/test.phpt\n", 41)
+            . "SKIPPED\t" . __DIR__ . "/skipped.phpt\n"
+    );
     PHP);
 
 ob_start();
@@ -31,7 +35,9 @@ $run = (new PhptRunner(new ProcessRunner(), new Output(), PHP_BINARY, $directory
 );
 ob_end_clean();
 
-var_dump($run->testCount);
+var_dump($run->testCount());
+var_dump($run->results->paths());
+var_dump($run->results->status('skipped.phpt'));
 
 $temporary->remove();
 ?>
@@ -46,3 +52,10 @@ PHP\Testing\TestTemporaryDirectory::removeFromStateFile(
 ?>
 --EXPECT--
 int(42)
+array(2) {
+  [0]=>
+  string(12) "skipped.phpt"
+  [1]=>
+  string(9) "test.phpt"
+}
+string(4) "SKIP"

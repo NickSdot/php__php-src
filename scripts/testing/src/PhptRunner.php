@@ -9,7 +9,6 @@ use RuntimeException;
 use function array_map;
 use function count;
 use function dirname;
-use function file;
 use function file_get_contents;
 use function file_put_contents;
 use function getenv;
@@ -30,10 +29,10 @@ final class PhptRunner
     {
         if ($tests === []) {
             $this->output->printLine('Running %s 0 tests', $name);
-            return new PhptRun(0, 0.0, 0, 0);
+            return new PhptRun();
         }
 
-        $results = "$this->temporaryDirectory/$name-results.list";
+        $resultsFile = "$this->temporaryDirectory/$name-results.list";
 
         $command = [
             PHP_BINARY,
@@ -43,7 +42,7 @@ final class PhptRunner
             '-p',
             $this->testPhp,
             '-W',
-            $results,
+            $resultsFile,
         ];
 
         if ($tests === null) {
@@ -68,11 +67,9 @@ final class PhptRunner
             ['tests.log', 'tests.err', 'metrics.json'],
         );
 
-        $run = $this->process->measured($command, dirname($runner), $environment, ...$files);
+        $measurement = $this->process->measured($command, dirname($runner), $environment, ...$files);
 
-        $testCount = $this->testCount($results);
-
-        return new PhptRun($run->status, $run->time, $run->memory, $testCount);
+        return new PhptRun($measurement, PhptResults::fromFile($resultsFile, dirname($runner)));
     }
 
     public function failureOutput(string $name): string
@@ -111,14 +108,4 @@ final class PhptRunner
         return [...$command, '-r', $list];
     }
 
-    private function testCount(string $resultsFile): ?int
-    {
-        $results = file($resultsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-        if ($results === false) {
-            return null;
-        }
-
-        return count($results);
-    }
 }

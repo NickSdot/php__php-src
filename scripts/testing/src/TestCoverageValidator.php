@@ -90,7 +90,20 @@ final class TestCoverageValidator
                 )
             );
 
-            return $this->report($reporter, $runtimes->tree->tests, $runs, $comparison);
+            $renamedPaths = $repository->renamedPaths(
+                $baseRevision,
+                $options->tree === null ? null : $treeRevision
+            );
+
+            $testChanges = PhptChanges::between(
+                $runs->base->tests->results,
+                $runs->tree->tests->results,
+                $renamedPaths,
+                $trees->base,
+                $trees->tree
+            );
+
+            return $this->report($reporter, $runtimes->tree->tests, $runs, $comparison, $testChanges);
 
         } finally {
             $warning = $temporary->remove();
@@ -101,13 +114,13 @@ final class TestCoverageValidator
         }
     }
 
-    private function report(CoverageReporter $reporter, PhptRunner $runner, CoverageRuns $runs, CoverageComparisonResult $comparison): int
+    private function report(CoverageReporter $reporter, PhptRunner $runner, CoverageRuns $runs, CoverageComparisonResult $comparison, PhptChanges $testChanges): int
     {
         if ($runs->base->tests->failed() === true) {
             $this->output->warning('Base tests failed with selected PHP binary');
         }
 
-        $reporter->report($comparison, $runs->base->tests, $runs->tree->tests);
+        $reporter->report($comparison, $runs->base->tests, $runs->tree->tests, $testChanges);
 
         if ($runs->tree->tests->failed() === true) {
             throw new RuntimeException('Tree tests failed with selected PHP binary' . $runner->failureOutput('tree'));

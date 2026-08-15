@@ -7,6 +7,7 @@ namespace PHP\Testing;
 use RuntimeException;
 
 use function count;
+use function explode;
 use function file_put_contents;
 use function implode;
 use function round;
@@ -28,7 +29,7 @@ final class CoverageReporter
         $this->write($this->output->line('Coverage comparison did not complete.'));
     }
 
-    public function report(CoverageComparisonResult $comparison, PhptRun $baseRun, PhptRun $treeRun): void
+    public function report(CoverageComparisonResult $comparison, PhptRun $baseRun, PhptRun $treeRun, PhptChanges $testChanges): void
     {
         $totals = $comparison->totals();
 
@@ -38,31 +39,31 @@ final class CoverageReporter
         $gainedLines = $comparison->gainedLines();
         $gainedBranches = $comparison->gainedBranches();
 
-        $this->writeCoverageReport($comparison);
+        $this->writeCoverageReport($comparison, $testChanges);
 
         $rows = [
             ['', 'Tests', 'Sources', 'Lines', 'Branches', 'Time', 'Memory'],
             [
                 'Base',
-                $this->countValue($baseRun->testCount),
+                (string) $baseRun->testCount(),
                 (string) $totals->baseSources(),
                 $this->coverageValue($totals->baseLines(), $totals->baseExecutableLines()),
                 $this->coverageValue($totals->baseBranches(), $totals->baseExecutableBranches()),
-                sprintf('%.2fs', $baseRun->time),
-                $this->formatMemory($baseRun->memory),
+                sprintf('%.2fs', $baseRun->measurement->time),
+                $this->formatMemory($baseRun->measurement->memory),
             ],
             [
                 'Tree',
-                $this->countValue($treeRun->testCount),
+                (string) $treeRun->testCount(),
                 (string) $totals->treeSources(),
                 $this->coverageValue($totals->treeLines(), $totals->treeExecutableLines()),
                 $this->coverageValue($totals->treeBranches(), $totals->treeExecutableBranches()),
-                sprintf('%.2fs', $treeRun->time),
-                $this->formatMemory($treeRun->memory),
+                sprintf('%.2fs', $treeRun->measurement->time),
+                $this->formatMemory($treeRun->measurement->memory),
             ],
             [
                 'Change',
-                $this->countChange($baseRun->testCount, $treeRun->testCount),
+                $this->countChange($baseRun->testCount(), $treeRun->testCount()),
                 $this->countChange($totals->baseSources(), $totals->treeSources()),
                 $this->coverageChange(
                     count($gainedLines),
@@ -80,8 +81,8 @@ final class CoverageReporter
                     $totals->treeBranches(),
                     $totals->treeExecutableBranches()
                 ),
-                sprintf('%+.2fs', $treeRun->time - $baseRun->time),
-                $this->memoryChange($baseRun->memory, $treeRun->memory),
+                sprintf('%+.2fs', $treeRun->measurement->time - $baseRun->measurement->time),
+                $this->memoryChange($baseRun->measurement->memory, $treeRun->measurement->memory),
             ],
         ];
 
@@ -89,17 +90,8 @@ final class CoverageReporter
         $this->output->printLine('Report: %s', $this->file);
     }
 
-    private function countValue(?int $count): string
+    private function countChange(int $base, int $tree): string
     {
-        return $count === null ? '-' : (string) $count;
-    }
-
-    private function countChange(?int $base, ?int $tree): string
-    {
-        if ($base === null || $tree === null) {
-            return '-';
-        }
-
         $change = $tree - $base;
 
         return $change === 0 ? '0' : sprintf('%+d', $change);
@@ -147,7 +139,7 @@ final class CoverageReporter
         return $this->formatMemory($tree - $base, true);
     }
 
-    private function writeCoverageReport(CoverageComparisonResult $comparison): void
+    private function writeCoverageReport(CoverageComparisonResult $comparison, PhptChanges $testChanges): void
     {
         $groups = [
             'Missed' => [
@@ -171,33 +163,112 @@ final class CoverageReporter
             $lines[] = $this->groupHeading($group);
 
             foreach ($sections as $section => $locations) {
-
-                $heading = sprintf('%s (%d)', $section, count($locations));
-
-                $lines[] = '';
-                $lines[] = self::FINDING_PREFIX . $heading;
-                $lines[] = self::FINDING_PREFIX . str_repeat('-', self::REPORT_WIDTH - strlen(self::FINDING_PREFIX));
-
-                if ($locations->isEmpty() === true) {
-                    $lines[] = self::FINDING_PREFIX . 'None';
-                    continue;
-                }
-
-                foreach ($locations->bySource() as $source => $entries) {
-
-                    $lines[] = self::FINDING_PREFIX . "$source:";
-                    $lines[] = self::FINDING_PREFIX . '  ' . wordwrap(
-                        implode(' ', $entries),
-                        self::REPORT_WIDTH - strlen(self::FINDING_PREFIX) - 2,
-                        "\n" . self::FINDING_PREFIX . '  '
-                    );
-                }
+                $this->addSection($lines, $section, count($locations), $this->coverageFindings($locations));
             }
 
             $lines[] = '';
         }
 
+        $lines[] = $this->groupHeading('Tests');
+
+        foreach ($this->testSections($testChanges) as $section => $findings) {
+            $this->addSection($lines, $section, count($findings), $findings);
+        }
+
+        $lines[] = '';
+
         $this->write($this->output->lines($lines));
+    }
+
+    /**
+     * @param list<string> $lines
+     * @param list<string> $findings
+     */
+    private function addSection(array &$lines, string $section, int $count, array $findings): void
+    {
+        $lines[] = '';
+        $lines[] = self::FINDING_PREFIX . sprintf('%s (%d)', $section, $count);
+        $lines[] = self::FINDING_PREFIX . str_repeat('-', self::REPORT_WIDTH - strlen(self::FINDING_PREFIX));
+
+        if ($findings === []) {
+            $lines[] = self::FINDING_PREFIX . 'None';
+            return;
+        }
+
+        foreach ($findings as $finding) {
+            foreach (explode("\n", $finding) as $line) {
+                $lines[] = self::FINDING_PREFIX . $line;
+            }
+        }
+    }
+
+    /** @return list<string> */
+    private function coverageFindings(CoverageLocations $locations): array
+    {
+        $findings = [];
+
+        foreach ($locations->bySource() as $source => $entries) {
+            $findings[] = "$source:";
+            $findings[] = '  ' . wordwrap(
+                implode(' ', $entries),
+                self::REPORT_WIDTH - strlen(self::FINDING_PREFIX) - 2,
+                "\n  "
+            );
+        }
+
+        return $findings;
+    }
+
+    /** @return array<string, list<string>> */
+    private function testSections(PhptChanges $changes): array
+    {
+        $sections = [
+            'Created' => [],
+            'Deleted' => [],
+            'Renamed' => [],
+            'Skipped' => [],
+        ];
+
+        foreach ($changes->created() as $change) {
+            $sections['Created'][] = $this->wrapTestFinding($change->path());
+        }
+
+        foreach ($changes->deleted() as $change) {
+            $sections['Deleted'][] = $this->wrapTestFinding($change->path());
+        }
+
+        foreach ($changes->renamed() as $change) {
+            $sections['Renamed'][] = $this->wrapTestFinding($this->testPath($change));
+        }
+
+        foreach ($changes->skipped() as $change) {
+            $sections['Skipped'][] = $this->wrapTestFinding(sprintf(
+                '%s: %s -> %s',
+                $this->testPath($change),
+                $change->baseStatus ?? '-',
+                $change->treeStatus ?? '-'
+            ));
+        }
+
+        return $sections;
+    }
+
+    private function testPath(PhptChange $change): string
+    {
+        if ($change->basePath !== null && $change->treePath !== null && $change->basePath !== $change->treePath) {
+            return "{$change->basePath} -> {$change->treePath}";
+        }
+
+        return $change->path();
+    }
+
+    private function wrapTestFinding(string $finding): string
+    {
+        return wordwrap(
+            $finding,
+            self::REPORT_WIDTH - strlen(self::FINDING_PREFIX) - 2,
+            "\n  "
+        );
     }
 
     private function groupHeading(string $group): string

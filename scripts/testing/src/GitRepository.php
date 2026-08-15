@@ -7,6 +7,7 @@ namespace PHP\Testing;
 use RuntimeException;
 
 use function array_keys;
+use function count;
 use function explode;
 use function is_dir;
 use function realpath;
@@ -154,6 +155,46 @@ final class GitRepository
     public function deletedPaths(string $baseRevision, ?string $treeRevision = null): array
     {
         return $this->diffPaths($baseRevision, $treeRevision, 'D');
+    }
+
+    /** @return array<string, string> */
+    public function renamedPaths(string $baseRevision, ?string $treeRevision = null): array
+    {
+        $command = ['git', '-C', $this->path, 'diff', '--name-status', '-z', '--find-renames', $baseRevision];
+
+        if ($treeRevision !== null) {
+            $command[] = $treeRevision;
+        }
+
+        $command[] = '--';
+
+        $index = 0;
+        $renamedPaths = [];
+        $entries = $this->nullSeparated($this->process->command($command));
+
+        while ($index < count($entries)) {
+
+            $path = $entries[$index++] ?? null;
+            $status = $entries[$index++] ?? null;
+
+            if ($status === null || $path === null) {
+                throw new RuntimeException('Could not parse changed paths');
+            }
+
+            if (str_starts_with($status, 'R') === false) {
+                continue;
+            }
+
+            $renamed = $entries[$index++] ?? null;
+
+            if ($renamed === null) {
+                throw new RuntimeException('Could not parse renamed paths');
+            }
+
+            $renamedPaths[$path] = $renamed;
+        }
+
+        return $renamedPaths;
     }
 
     /** @return list<string> */

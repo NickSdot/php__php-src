@@ -7,7 +7,11 @@ require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
 use PHP\Testing\CoverageComparator;
 use PHP\Testing\CoverageReporter;
 use PHP\Testing\CoverageSnapshot;
+use PHP\Testing\PhptChange;
+use PHP\Testing\PhptChanges;
 use PHP\Testing\PhptRun;
+use PHP\Testing\PhptResults;
+use PHP\Testing\ProcessMeasurement;
 use PHP\Testing\SourceCoverage;
 
 $base = new CoverageSnapshot([
@@ -40,11 +44,31 @@ var_dump($comparison->gainedBranches()->bySource());
 
 $report = __DIR__ . '/coverage_comparison.report';
 
+$baseResults = new PhptResults([
+    'deleted.phpt' => 'PASS',
+    'old.phpt' => 'PASS',
+    'skipped.phpt' => 'PASS',
+]);
+
+$treeResults = new PhptResults([
+    'created.phpt' => 'SKIP',
+    'new.phpt' => 'SKIP',
+    'skipped.phpt' => 'SKIP',
+], 4);
+
+$testChanges = new PhptChanges([
+    new PhptChange(null, 'created.phpt', null, 'SKIP'),
+    new PhptChange('deleted.phpt', null, 'PASS', null),
+    new PhptChange('old.phpt', 'new.phpt', 'PASS', 'SKIP'),
+    new PhptChange('skipped.phpt', 'skipped.phpt', 'PASS', 'SKIP'),
+]);
+
 ob_start();
 (new CoverageReporter($report))->report(
     $comparison,
-    new PhptRun(0, 1.0, 1048576, 3),
-    new PhptRun(0, 2.0, 2097152, 4)
+    new PhptRun(new ProcessMeasurement(0, 1.0, 1048576), $baseResults),
+    new PhptRun(new ProcessMeasurement(0, 2.0, 2097152), $treeResults),
+    $testChanges
 );
 $output = str_replace($report, '<report>', ob_get_clean());
 
@@ -142,6 +166,26 @@ Report: <report>
       --------------------------------------------------------------------------
       example.c:
         3:0 4:0
+
+===== Tests ====================================================================
+
+      Created (1)
+      --------------------------------------------------------------------------
+      created.phpt
+
+      Deleted (1)
+      --------------------------------------------------------------------------
+      deleted.phpt
+
+      Renamed (1)
+      --------------------------------------------------------------------------
+      old.phpt -> new.phpt
+
+      Skipped (3)
+      --------------------------------------------------------------------------
+      created.phpt: - -> SKIP
+      old.phpt -> new.phpt: PASS -> SKIP
+      skipped.phpt: PASS -> SKIP
 
 bool(true)
 RuntimeException: Line coverage map changed: example.c

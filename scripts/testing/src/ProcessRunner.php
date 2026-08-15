@@ -97,7 +97,7 @@ final class ProcessRunner
      * @param list<string> $command
      * @param array<string, string> $environment
      */
-    public function measured(array $command, string $directory, array $environment, string $stdout, string $stderr, string $metrics): PhptRun
+    public function measured(array $command, string $directory, array $environment, string $stdout, string $stderr, string $metrics): ProcessMeasurement
     {
         $wrapper = dirname(__DIR__) . '/measure_process.php';
 
@@ -118,10 +118,10 @@ final class ProcessRunner
         }
 
         if (is_array($measurement) === false || isset($measurement['time']) === false) {
-            throw new RuntimeException("Could not read test metrics: $metrics");
+            throw new RuntimeException("Could not read process metrics: $metrics");
         }
 
-        return new PhptRun($status, $measurement['time'], $measurement['memory']);
+        return new ProcessMeasurement($status, $measurement['time'], $measurement['memory']);
     }
 
     private function nullDevice(): string

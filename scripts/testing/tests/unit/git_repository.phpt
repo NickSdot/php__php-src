@@ -61,6 +61,28 @@ $process->command([
 $deletedTree = $repository->resolve('HEAD');
 var_dump($repository->deletedPaths($tree, $deletedTree));
 
+file_put_contents("$repo/old.phpt", 'test');
+
+$process->command(['git', 'add', 'old.phpt'], $repo);
+
+$process->command([
+    'git', '-c', 'user.name=PHP', '-c', 'user.email=php@example.com',
+    'commit', '--quiet', '-m', 'rename base',
+], $repo);
+
+$renameBase = $repository->resolve('HEAD');
+
+$process->command(['git', 'mv', 'old.phpt', 'new.phpt'], $repo);
+
+$process->command([
+    'git', '-c', 'user.name=PHP', '-c', 'user.email=php@example.com',
+    'commit', '--quiet', '-m', 'rename tree',
+], $repo);
+
+$renameTree = $repository->resolve('HEAD');
+
+var_dump($repository->renamedPaths($renameBase, $renameTree));
+
 $checkout = "$path/checkout";
 $repository->updateWorktree($base, $checkout);
 var_dump(file_get_contents("$checkout/tracked"));
@@ -102,6 +124,10 @@ array(1) {
 array(1) {
   [0]=>
   string(7) "tracked"
+}
+array(1) {
+  ["old.phpt"]=>
+  string(8) "new.phpt"
 }
 string(4) "base"
 string(4) "tree"
