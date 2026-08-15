@@ -11,6 +11,7 @@ use function explode;
 use function file_get_contents;
 use function file_put_contents;
 use function getenv;
+use function implode;
 use function is_file;
 use function ltrim;
 use function mkdir;
@@ -43,10 +44,12 @@ final class CoverageBuilder
             $repo = $this->repository->path()
         );
 
+        $configurationIdentity = $this->configurationIdentity($configuration);
+
         $treeCache = new CoverageBuildCache(CoverageBuildCache::key(
             $options->tree === null ? $repo : $this->repository->commonDirectory(),
             $options->tree ?? 'tree',
-            $this->normaliseConfiguration($configuration, $repo)
+            $this->normaliseConfiguration($configurationIdentity, $repo)
         ));
 
         $treeRoot = $treeCache->directory(function (string $directory): void {
@@ -61,7 +64,7 @@ final class CoverageBuilder
         }
 
         $configurationState = new BuildConfiguration($this->repository);
-        $treeConfiguration = $configurationState->fingerprint($treeSource, $configuration);
+        $treeConfiguration = $configurationState->fingerprint($treeSource, $configurationIdentity);
 
         $this->prepareTree($options->tree, $treeRevision, $configuration, $treeSource, $treeBuild, $treeConfiguration);
 
@@ -75,7 +78,7 @@ final class CoverageBuilder
         $baseCache = new CoverageBuildCache(CoverageBuildCache::key(
             $this->repository->commonDirectory(),
             $options->base,
-            $this->normaliseConfiguration($configuration, $repo)
+            $this->normaliseConfiguration($configurationIdentity, $repo)
         ));
 
         $baseRoot = $baseCache->directory(function (string $directory): void {
@@ -87,10 +90,23 @@ final class CoverageBuilder
 
         $this->repository->updateWorktree($baseRevision, $baseSource);
 
-        $baseConfiguration = $configurationState->fingerprint($baseSource, $configuration);
+        $baseConfiguration = $configurationState->fingerprint($baseSource, $configurationIdentity);
 
-        if ($baseConfiguration === $treeConfiguration && $tree->dependencies->affectedSources($changedPaths) === []) {
-            return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
+        $canReuseTree = $baseConfiguration === $treeConfiguration
+            && $tree->dependencies->affectedSources($changedPaths) === [];
+
+        $deletedPaths = [];
+
+        if ($canReuseTree === true) {
+
+            $deletedPaths = $this->repository->deletedPaths(
+                $baseRevision,
+                $options->tree === null ? null : $treeRevision
+            );
+
+            if ($deletedPaths === []) {
+                return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
+            }
         }
 
         if ($this->prepareRevision($baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration) === true) {
@@ -98,8 +114,14 @@ final class CoverageBuilder
             $this->recordBuiltRevision($baseBuild, $baseRevision);
         }
 
+        $base = $this->runtime($baseBuild, $baseSource, $temporary);
+
+        if ($canReuseTree === true && $base->dependencies->affectedSources($deletedPaths) === []) {
+            return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
+        }
+
         return new CoverageRuntimes(
-            $this->runtime($baseBuild, $baseSource, $temporary),
+            $base,
             $tree,
             $baseSource,
             $treeSource,
@@ -121,6 +143,11 @@ final class CoverageBuilder
     private function normaliseConfiguration(string $configuration, string $repo): string
     {
         return str_replace($repo, '{source}', $configuration);
+    }
+
+    private function configurationIdentity(string $configuration): string
+    {
+        return $configuration . "\0" . implode("\0", self::CONFIGURE_OPTIONS);
     }
 
     private function prepareTree(?string $reference, string $revision, string $configuration, string $source, string $build, string $fingerprint): void

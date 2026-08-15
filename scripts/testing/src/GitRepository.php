@@ -129,13 +129,8 @@ final class GitRepository
     public function changedPaths(string $baseRevision, ?string $treeRevision = null): array
     {
         $paths = [];
-        $revisions = $treeRevision === null ? [$baseRevision] : [$baseRevision, $treeRevision];
 
-        $changed = $this->process->command([
-            'git', '-C', $this->path, 'diff', '--name-only', '-z', ...$revisions, '--',
-        ]);
-
-        foreach ($this->nullSeparated($changed) as $path) {
+        foreach ($this->diffPaths($baseRevision, $treeRevision) as $path) {
             $paths[$path] = true;
         }
 
@@ -156,6 +151,12 @@ final class GitRepository
     }
 
     /** @return list<string> */
+    public function deletedPaths(string $baseRevision, ?string $treeRevision = null): array
+    {
+        return $this->diffPaths($baseRevision, $treeRevision, 'D');
+    }
+
+    /** @return list<string> */
     public function files(string $directory): array
     {
         $files = $this->nullSeparated($this->process->command([
@@ -172,6 +173,29 @@ final class GitRepository
         return $this->process->command([
             'git', 'diff', '--no-index', '--no-ext-diff', '--no-color', '--unified=0', '--', $baseFile, $treeFile,
         ], successfulStatuses: [0, 1]);
+    }
+
+    /** @return list<string> */
+    private function diffPaths(string $baseRevision, ?string $treeRevision, ?string $filter = null): array
+    {
+        $command = ['git', '-C', $this->path, 'diff', '--name-only', '-z'];
+
+        if ($filter !== null) {
+            $command[] = "--diff-filter=$filter";
+        }
+
+        $command[] = $baseRevision;
+
+        if ($treeRevision !== null) {
+            $command[] = $treeRevision;
+        }
+
+        $command[] = '--';
+
+        $paths = $this->nullSeparated($this->process->command($command));
+        sort($paths);
+
+        return $paths;
     }
 
     /** @return list<string> */

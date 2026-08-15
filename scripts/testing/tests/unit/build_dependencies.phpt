@@ -6,6 +6,7 @@ require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
 require dirname(__DIR__) . '/TestTemporaryDirectory.inc.php';
 
 use PHP\Testing\BuildDependencyReader;
+use PHP\Testing\BuildDependencies;
 use PHP\Testing\CoverageScope;
 use PHP\Testing\CoverageScopeResolver;
 use PHP\Testing\PhptSuites;
@@ -59,6 +60,16 @@ $dependencies = (new BuildDependencyReader())->read($build, $source);
 var_dump($dependencies->affectedSources(['vendor/acme/shared header.h']));
 var_dump($dependencies->affectedSources(['main/core.h']));
 var_dump($dependencies->affectedSources(['docs/readme.md']));
+
+unlink("$source/main/core.c");
+unlink("$source/main/core.h");
+
+$treeDependencies = new BuildDependencies([], []);
+var_dump($treeDependencies->affectedSources(['main/core.c']));
+var_dump($dependencies->affectedSources(['main/core.c']));
+var_dump($treeDependencies->affectedSources(['main/core.h']));
+var_dump($dependencies->affectedSources(['main/core.h']));
+
 var_dump($dependencies->coverageFiles(CoverageScope::paths(['vendor/acme'])));
 var_dump($dependencies->coverageFiles(CoverageScope::global()));
 var_dump(file_exists("$build/.deps"));
@@ -94,6 +105,20 @@ array(2) {
   string(19) "vendor/acme/first.c"
 }
 array(0) {
+}
+array(0) {
+}
+array(1) {
+  [0]=>
+  string(11) "main/core.c"
+}
+array(0) {
+}
+array(2) {
+  [0]=>
+  string(11) "main/core.c"
+  [1]=>
+  string(19) "vendor/acme/first.c"
 }
 array(1) {
   [0]=>

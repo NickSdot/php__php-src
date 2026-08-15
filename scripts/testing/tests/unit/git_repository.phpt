@@ -47,6 +47,19 @@ $tree = $repository->resolve('HEAD');
 file_put_contents("$repo/dirty", 'working tree');
 
 var_dump($repository->changedPaths($base, $tree));
+var_dump($repository->deletedPaths($base, $tree));
+
+unlink("$repo/tracked");
+var_dump($repository->deletedPaths($tree));
+
+$process->command(['git', 'add', '--update'], $repo);
+$process->command([
+    'git', '-c', 'user.name=PHP', '-c', 'user.email=php@example.com',
+    'commit', '--quiet', '-m', 'delete',
+], $repo);
+
+$deletedTree = $repository->resolve('HEAD');
+var_dump($repository->deletedPaths($tree, $deletedTree));
 
 $checkout = "$path/checkout";
 $repository->updateWorktree($base, $checkout);
@@ -79,6 +92,16 @@ array(2) {
   string(7) "tracked"
   [1]=>
   string(9) "untracked"
+}
+array(0) {
+}
+array(1) {
+  [0]=>
+  string(7) "tracked"
+}
+array(1) {
+  [0]=>
+  string(7) "tracked"
 }
 string(4) "base"
 string(4) "tree"
