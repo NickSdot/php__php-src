@@ -25,6 +25,11 @@ final class CoverageBuilder
     private const BUILT_REVISION_FILE = '.built';
     private const CONFIGURED_FILE = '.configured';
 
+    private const CONFIGURE_OPTIONS = [
+        '--enable-gcov',
+        '--enable-zend-test',
+    ];
+
     public function __construct(
         private GitRepository $repository,
         private ProcessRunner $process,
@@ -199,7 +204,7 @@ final class CoverageBuilder
             throw new RuntimeException('Could not prepare coverage build');
         }
 
-        $this->process->command(['sh', './config.nice', '--enable-gcov'], $build);
+        $this->process->command(['sh', './config.nice', ...self::CONFIGURE_OPTIONS], $build);
     }
 
     private function coverageConfiguration(string $configuration, string $source): string
