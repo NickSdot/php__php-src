@@ -6,8 +6,10 @@ namespace PHP\Testing;
 
 use RuntimeException;
 
+use function file_put_contents;
 use function is_dir;
 use function mkdir;
+use function trim;
 
 final class IntegrationTestWorkspace
 {
@@ -62,6 +64,27 @@ final class IntegrationTestWorkspace
     public function temporaryPath(): string
     {
         return $this->temporary->path() . '/tmp';
+    }
+
+    public function write(string $path, string $contents): void
+    {
+        $file = $this->path() . "/$path";
+
+        if (file_put_contents($file, $contents) === false) {
+            throw new RuntimeException("Could not write fixture: $path");
+        }
+    }
+
+    public function commit(string $message): string
+    {
+        $this->process->command(['git', 'add', '--all'], $this->path());
+
+        $this->process->command([
+            'git', '-c', 'user.name=PHP', '-c', 'user.email=php@example.com',
+            'commit', '--quiet', '-m', $message,
+        ], $this->path());
+
+        return trim($this->process->command(['git', 'rev-parse', 'HEAD'], $this->path()));
     }
 
     /** @param list<string> $options */

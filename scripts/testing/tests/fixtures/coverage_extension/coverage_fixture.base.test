@@ -1,0 +1,10 @@
+--TEST--
+Coverage fixture
+--EXTENSIONS--
+coverage_fixture
+--FILE--
+<?php
+var_dump(coverage_fixture(true));
+?>
+--EXPECT--
+int(1)

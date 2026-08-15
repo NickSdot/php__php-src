@@ -1,0 +1,7 @@
+#ifndef PHP_COVERAGE_FIXTURE_H
+#define PHP_COVERAGE_FIXTURE_H
+
+extern zend_module_entry coverage_fixture_module_entry;
+#define phpext_coverage_fixture_ptr &coverage_fixture_module_entry
+
+#endif
