@@ -51,18 +51,19 @@ final class CoverageBuilder
 
         $commonDirectory = $this->repository->commonDirectory();
 
-        $treeCache = new CoverageBuildCache(CoverageBuildCache::key(
+        $changedPaths = $this->repository->changedPaths(
+            $baseRevision,
+            $options->tree === null ? null : $treeRevision
+        );
+
+
+        $treeRoot = $this->buildRoot(
             $options->tree === null ? $repo : $commonDirectory,
             'tree',
             $configurationIdentity
-        ));
-
-        $treeRoot = $treeCache->directory(function (string $directory): void {
-            $this->createBuildDirectory($directory);
-        });
+        );
 
         $treeSource = $options->tree === null ? $repo : "$treeRoot/source";
-        $treeBuild = "$treeRoot/build";
 
         if ($options->tree !== null) {
             $this->repository->updateWorktree($treeRevision, $treeSource);
@@ -71,31 +72,26 @@ final class CoverageBuilder
         $configurationState = new BuildConfiguration($this->repository);
         $treeConfiguration = $configurationState->fingerprint($treeSource, $configurationIdentity);
 
-        $this->prepareTree($options->tree, $treeRevision, $configuration, $treeSource, $treeBuild, $treeConfiguration);
-
-        $tree = $this->runtime($treeBuild, $treeSource, $temporary);
-
-        $changedPaths = $this->repository->changedPaths(
-            $baseRevision,
-            $options->tree === null ? null : $treeRevision
-        );
-
-        $baseCache = new CoverageBuildCache(CoverageBuildCache::key(
-            $commonDirectory,
-            'base',
-            $configurationIdentity
-        ));
-
-        $baseRoot = $baseCache->directory(function (string $directory): void {
-            $this->createBuildDirectory($directory);
-        });
-
-        $baseSource = "$baseRoot/source";
+        $baseRoot = $this->buildRoot($commonDirectory, 'base', $configurationIdentity);
         $baseBuild = "$baseRoot/build";
+        $baseSource = "$baseRoot/source";
 
         $this->repository->updateWorktree($baseRevision, $baseSource);
 
         $baseConfiguration = $configurationState->fingerprint($baseSource, $configurationIdentity);
+
+        if ($baseConfiguration === $treeConfiguration && new BuildChanges($changedPaths)->onlyTests() === true) {
+
+            $base = $this->revisionRuntime('base', $baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration, $temporary);
+
+            return new CoverageRuntimes($base, $base, $baseSource, $treeSource, $changedPaths);
+        }
+
+        $treeBuild = "$treeRoot/build";
+
+        $this->prepareTree($options->tree, $treeRevision, $configuration, $treeSource, $treeBuild, $treeConfiguration);
+
+        $tree = $this->runtime($treeBuild, $treeSource, $temporary);
 
         $canReuseTree = $baseConfiguration === $treeConfiguration
             && $tree->dependencies->affectedSources($changedPaths) === [];
@@ -109,17 +105,14 @@ final class CoverageBuilder
                 $options->tree === null ? null : $treeRevision
             );
 
+            $deletedPaths = (new BuildChanges($deletedPaths))->nonTestPaths();
+
             if ($deletedPaths === []) {
                 return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
             }
         }
 
-        if ($this->prepareRevision($baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration) === true) {
-            $this->make('base', $baseBuild);
-            $this->recordBuiltRevision($baseBuild, $baseRevision);
-        }
-
-        $base = $this->runtime($baseBuild, $baseSource, $temporary);
+        $base = $this->revisionRuntime('base', $baseRevision, $configuration, $baseSource, $baseBuild, $baseConfiguration, $temporary);
 
         if ($canReuseTree === true && $base->dependencies->affectedSources($deletedPaths) === []) {
             return new CoverageRuntimes($tree, $tree, $baseSource, $treeSource, $changedPaths);
@@ -132,6 +125,27 @@ final class CoverageBuilder
             $treeSource,
             $changedPaths
         );
+    }
+
+    private function revisionRuntime(string $name, string $revision, string $configuration, string $source, string $build, string $fingerprint, string $temporary): CoverageRuntime
+    {
+        if ($this->prepareRevision($revision, $configuration, $source, $build, $fingerprint) === true) {
+            $this->make($name, $build);
+            $this->recordBuiltRevision($build, $revision);
+        }
+
+        return $this->runtime($build, $source, $temporary);
+    }
+
+    private function buildRoot(string $repository, string $role, string $configuration): string
+    {
+        return (new CoverageBuildCache(CoverageBuildCache::key(
+            $repository,
+            $role,
+            $configuration
+        )))->directory(function (string $directory): void {
+            $this->createBuildDirectory($directory);
+        });
     }
 
     private function configuration(string $repo): string
