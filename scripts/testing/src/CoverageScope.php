@@ -59,15 +59,8 @@ final readonly class CoverageScope
             return true;
         }
 
-        return $this->matchesAnyPath($source, $this->excludedPaths) === false
-            && $this->matchesAnyPath($source, $this->includedPaths) === true;
-    }
-
-    /** @param list<string> $paths */
-    private function matchesAnyPath(string $source, array $paths): bool
-    {
-        foreach ($paths as $path) {
-            if ($this->matchesPath($source, $path) === true) {
+        foreach ($this->includedPaths as $includedPath) {
+            if ($this->includesPath($source, $includedPath) === true) {
                 return true;
             }
         }
@@ -78,6 +71,28 @@ final readonly class CoverageScope
     private function matchesPath(string $source, string $path): bool
     {
         return $source === $path || Path::isDescendantOf($source, $path) === true;
+    }
+
+    private function includesPath(string $source, string $includedPath): bool
+    {
+        if ($this->matchesPath($source, $includedPath) === false) {
+            return false;
+        }
+
+        foreach ($this->excludedPaths as $excludedPath) {
+
+            if ($this->matchesPath($source, $excludedPath) === false) {
+                continue;
+            }
+
+            if ($includedPath === $excludedPath || Path::isDescendantOf($includedPath, $excludedPath) === true) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     /** @return list<string> */
@@ -98,11 +113,7 @@ final readonly class CoverageScope
 
             foreach ($availableSources as $source) {
 
-                if ($this->matchesPath($source, $includedPath) === false) {
-                    continue;
-                }
-
-                if ($this->matchesAnyPath($source, $this->excludedPaths) === true) {
+                if ($this->includesPath($source, $includedPath) === false) {
                     continue;
                 }
 

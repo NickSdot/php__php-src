@@ -17,9 +17,15 @@ use function substr;
 
 final class CoverageScopeResolver
 {
+    /** @var list<string> */
+    private const array VENDORED_PATHS = [
+        'ext/lexbor/lexbor',
+        'ext/uri/uriparser',
+    ];
+
     /** @param list<string> $vendoredPaths */
     public function __construct(
-        private array $vendoredPaths = TestCoverageCommand::VENDORED_PATHS
+        private array $vendoredPaths = self::VENDORED_PATHS
     ) {}
 
     /** @param list<string> $changedPaths */
@@ -29,8 +35,10 @@ final class CoverageScopeResolver
             return CoverageScope::global();
         }
 
+        $changedSources = $dependencies?->affectedSources($changedPaths) ?? [];
+
         if ($options->sources !== []) {
-            return CoverageScope::paths($options->sources);
+            return CoverageScope::paths($options->sources, $this->excludedPaths($changedSources));
         }
 
         if ($options->testPaths === []) {
@@ -49,8 +57,6 @@ final class CoverageScopeResolver
 
             $components[$component] = true;
         }
-
-        $changedSources = $dependencies?->affectedSources($changedPaths) ?? [];
 
         foreach ($changedSources as $source) {
 

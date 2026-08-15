@@ -94,6 +94,24 @@ $explicit = $resolver->resolve(options(['ext/uri/'], []), $selected, ['Zend/zend
 var_dump($explicit->description());
 var_dump($explicit->sources($coverage, new CoverageSnapshot()));
 
+var_dump($explicit->includes('ext/uri/uriparser/src/UriParse.c'));
+
+$explicitVendored = $resolver->resolve(options(['ext/uri/uriparser'], []), $selected, []);
+var_dump($explicitVendored->sources($coverage, new CoverageSnapshot()));
+var_dump($explicitVendored->includes('ext/uri/uriparser/src/UriParse.c'));
+
+$explicitVendoredChange = $resolver->resolve(
+    options(['ext/uri'], []),
+    $selected,
+    ['ext/uri/uriparser/src/UriParse.c'],
+    new BuildDependencies(
+        ['ext/uri/uriparser/src/UriParse.c' => ['ext/uri/uriparser/src/UriParse.c' => true]],
+        []
+    )
+);
+var_dump($explicitVendoredChange->sources($coverage, new CoverageSnapshot()));
+var_dump($explicitVendoredChange->includes('ext/uri/uriparser/src/UriParse.c'));
+
 $complete = $resolver->resolve(options(tests: []), $selected, ['Zend/zend_compile.c']);
 var_dump($complete->description());
 
@@ -147,6 +165,18 @@ array(1) {
   string(23) "vendor/acme/extension.c"
 }
 string(7) "ext/uri"
+array(2) {
+  [0]=>
+  string(17) "ext/uri/php_uri.c"
+  [1]=>
+  string(27) "ext/uri/uri_parser_whatwg.c"
+}
+bool(false)
+array(1) {
+  [0]=>
+  string(32) "ext/uri/uriparser/src/UriParse.c"
+}
+bool(true)
 array(3) {
   [0]=>
   string(17) "ext/uri/php_uri.c"
@@ -155,6 +185,7 @@ array(3) {
   [2]=>
   string(32) "ext/uri/uriparser/src/UriParse.c"
 }
+bool(true)
 string(6) "global"
 string(6) "global"
 int(7)
