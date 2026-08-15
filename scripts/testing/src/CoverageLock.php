@@ -11,7 +11,6 @@ use function flock;
 use function fopen;
 use function hash;
 use function is_resource;
-use function sys_get_temp_dir;
 
 final class CoverageLock
 {
@@ -22,7 +21,7 @@ final class CoverageLock
 
     public static function acquire(string $repository): self
     {
-        $file = sys_get_temp_dir() . '/gcov-' . hash('sha256', $repository) . '.run.lock';
+        $file = Storage::locks(hash('sha256', $repository));
         $handle = fopen($file, 'c+');
 
         if ($handle === false || flock($handle, LOCK_EX) === false) {

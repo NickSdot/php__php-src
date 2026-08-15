@@ -6,6 +6,7 @@ require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
 require dirname(__DIR__) . '/TestTemporaryDirectory.inc.php';
 
 use PHP\Testing\ProcessRunner;
+use PHP\Testing\Storage;
 use PHP\Testing\TestTemporaryDirectory;
 
 $temporary = TestTemporaryDirectory::create(
@@ -13,6 +14,9 @@ $temporary = TestTemporaryDirectory::create(
 );
 
 $directory = $temporary->path();
+
+var_dump(dirname($directory) === Storage::runs());
+var_dump(dirname(TestTemporaryDirectory::stateFile('process_and_temporary_directory')) === Storage::tests());
 
 $result = (new ProcessRunner())->measured(
     [PHP_BINARY, '-r', 'fwrite(STDOUT, "output"); exit(3);'],
@@ -51,6 +55,8 @@ PHP\Testing\TestTemporaryDirectory::removeFromStateFile(
 
 ?>
 --EXPECT--
+bool(true)
+bool(true)
 int(3)
 bool(true)
 bool(true)

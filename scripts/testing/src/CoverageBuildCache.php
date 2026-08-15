@@ -15,14 +15,13 @@ use function fopen;
 use function hash;
 use function is_file;
 use function is_link;
-use function sys_get_temp_dir;
 use function trim;
 use function unlink;
 
 final class CoverageBuildCache
 {
-    private const CACHE_VERSION = 2;
-    private const READY_FILE = '.ready';
+    private const int CACHE_VERSION = 2;
+    private const string READY_FILE = '.ready';
 
     public function __construct(
         private string $key
@@ -49,7 +48,7 @@ final class CoverageBuildCache
                 return $directory;
             }
 
-            $temporary = TemporaryDirectory::create();
+            $temporary = TemporaryDirectory::createBuild();
 
             try {
                 $initialise($temporary->path());
@@ -132,7 +131,7 @@ final class CoverageBuildCache
 
     private function stateFile(): string
     {
-        return sys_get_temp_dir() . "/gcov-$this->key.state";
+        return Storage::builds("/{$this->key}.state");
     }
 
     private function readyFile(string $directory): string
@@ -142,6 +141,6 @@ final class CoverageBuildCache
 
     private function lockFile(): string
     {
-        return $this->stateFile() . '.lock';
+        return Storage::locks("build-$this->key");
     }
 }

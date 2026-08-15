@@ -5,6 +5,7 @@ Coverage build cache reuses and separates build configurations
 require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
 
 use PHP\Testing\CoverageBuildCache;
+use PHP\Testing\Storage;
 
 $firstKey = CoverageBuildCache::key('/repo', 'master', 'configuration');
 $sameKey = CoverageBuildCache::key('/repo', 'master', 'configuration');
@@ -23,6 +24,8 @@ $directory = $first->directory(function (string $directory) use (&$initialisatio
     $initialisations++;
     file_put_contents("$directory/build", 'first');
 });
+
+var_dump(dirname($directory) === Storage::builds());
 
 var_dump($first->directory(function () use (&$initialisations): void {
     $initialisations++;
@@ -48,6 +51,7 @@ use PHP\Testing\CoverageBuildCache;
 (new CoverageBuildCache(CoverageBuildCache::key('/repo', 'master', 'other configuration')))->remove();
 ?>
 --EXPECT--
+bool(true)
 bool(true)
 bool(true)
 bool(true)

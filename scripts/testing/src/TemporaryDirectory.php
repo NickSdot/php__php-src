@@ -20,13 +20,13 @@ use function random_bytes;
 use function realpath;
 use function rmdir;
 use function str_starts_with;
-use function sys_get_temp_dir;
 use function unlink;
 
 final class TemporaryDirectory
 {
-    private const PREFIX = 'php-coverage-';
-    private const MARKER = '.php-coverage-owner';
+    private const string BUILD_PREFIX = 'build-';
+    private const string MARKER = '.owner';
+    private const string RUN_PREFIX = 'run-';
 
     private function __construct(
         private string $path
@@ -34,15 +34,20 @@ final class TemporaryDirectory
 
     public static function create(): self
     {
-        $base = realpath(sys_get_temp_dir());
+        return self::createIn(Storage::runs(), self::RUN_PREFIX);
+    }
 
-        if ($base === false) {
-            throw new RuntimeException('Temporary directory does not exist');
-        }
+    public static function createBuild(): self
+    {
+        return self::createIn(Storage::builds(), self::BUILD_PREFIX);
+    }
+
+    private static function createIn(string $base, string $prefix): self
+    {
 
         for ($attempt = 0; $attempt < 10; $attempt++) {
 
-            $directory = $base . '/' . self::PREFIX . bin2hex(random_bytes(8));
+            $directory = "$base/$prefix" . bin2hex(random_bytes(8));
 
             if (@mkdir($directory, 0700) === false) {
                 continue;
@@ -71,14 +76,11 @@ final class TemporaryDirectory
 
     public function owned(): bool
     {
-        $base = realpath(sys_get_temp_dir());
         $real = realpath($this->path);
 
-        if ($base === false
-            || $real === false
+        if ($real === false
             || is_link($this->path) === true
-            || dirname($real) !== $base
-            || str_starts_with(basename($real), self::PREFIX) === false
+            || $this->isManagedPath($real) === false
         ) {
             return false;
         }
@@ -90,6 +92,15 @@ final class TemporaryDirectory
         }
 
         return true;
+    }
+
+    private function isManagedPath(string $path): bool
+    {
+        $name = basename($path);
+        $parent = dirname($path);
+
+        return ($parent === Storage::runs() && str_starts_with($name, self::RUN_PREFIX) === true)
+            || ($parent === Storage::builds() && str_starts_with($name, self::BUILD_PREFIX) === true);
     }
 
     public function remove(): ?string

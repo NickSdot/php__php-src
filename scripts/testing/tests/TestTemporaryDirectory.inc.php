@@ -10,7 +10,6 @@ use function file_get_contents;
 use function file_put_contents;
 use function hash;
 use function is_file;
-use function sys_get_temp_dir;
 use function unlink;
 
 final class TestTemporaryDirectory
@@ -22,7 +21,7 @@ final class TestTemporaryDirectory
 
     public static function stateFile(string $name): string
     {
-        return sys_get_temp_dir() . '/phpt-' . hash('sha256', __DIR__) . "-$name.state";
+        return Storage::tests('/' . hash('sha256', __DIR__) . "-$name.state");
     }
 
     public static function create(string $stateFile): self
