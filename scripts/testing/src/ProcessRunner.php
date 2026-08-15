@@ -14,7 +14,6 @@ use function in_array;
 use function is_array;
 use function is_resource;
 use function json_decode;
-use function proc_close;
 use function proc_open;
 use function rewind;
 use function stream_get_contents;
@@ -49,7 +48,7 @@ final class ProcessRunner
             throw new RuntimeException('Could not start command: ' . implode(' ', $command));
         }
 
-        $status = proc_close($process);
+        $status = $this->wait($process, $command);
 
         rewind($stdout);
         rewind($stderr);
@@ -91,7 +90,7 @@ final class ProcessRunner
             throw new RuntimeException('Could not start command: ' . implode(' ', $command));
         }
 
-        return proc_close($process);
+        return $this->wait($process, $command);
     }
 
     /**
@@ -132,6 +131,21 @@ final class ProcessRunner
         }
 
         return '/dev/null';
+    }
+
+    /**
+     * @param resource $process
+     * @param list<string> $command
+     */
+    private function wait(mixed $process, array $command): int
+    {
+        $exit = ProcessWaiter::wait($process);
+
+        if ($exit->signal !== null) {
+            throw new RuntimeException('Command interrupted: ' . implode(' ', $command));
+        }
+
+        return $exit->status;
     }
 
     private function outputDescriptor(mixed $output): mixed

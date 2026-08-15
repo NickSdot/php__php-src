@@ -33,6 +33,17 @@ final class TestCoverageValidator
         $this->output->printLine('Base: %s %s', $baseRevision, $options->base);
         $this->output->printLine('Tree: %s %s', $treeRevision, $options->tree ?? 'working tree');
 
+        $lock = CoverageLock::acquire($repository->commonDirectory());
+
+        try {
+            return $this->compare($options, $repository, $baseRevision, $treeRevision);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function compare(TestCoverageOptions $options, GitRepository $repository, string $baseRevision, string $treeRevision): int
+    {
         $temporary = TemporaryDirectory::create();
 
         try {

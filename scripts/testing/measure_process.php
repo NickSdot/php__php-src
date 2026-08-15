@@ -2,20 +2,37 @@
 
 declare(strict_types=1);
 
-$metrics = $argv[1];
-$command = array_slice($argv, 2);
-$start = hrtime(true);
+use PHP\Testing\ProcessWaiter;
+
+require __DIR__ . '/autoload.php';
+
 $null = '/dev/null';
+$metrics = $argv[1];
+$start = hrtime(true);
+$command = array_slice($argv, 2);
+$isolated = function_exists('posix_setsid') && posix_setsid() !== -1;
 
 if (PHP_OS_FAMILY === 'Windows') {
     $null = 'NUL';
 }
 
-$process = proc_open($command, [0 => ['file', $null, 'r'], 1 => STDOUT, 2 => STDERR], $pipes);
 $status = 1;
+$unusedPipes = [];
+$process = proc_open($command, [0 => ['file', $null, 'r'], 1 => STDOUT, 2 => STDERR], $unusedPipes);
 
 if (is_resource($process) === true) {
-    $status = proc_close($process);
+
+    $exit = ProcessWaiter::wait($process, static function (int $signal) use ($process, $isolated): void {
+        if ($isolated === true && function_exists('posix_kill') === true) {
+            pcntl_signal($signal, SIG_IGN);
+            posix_kill(0, $signal);
+            return;
+        }
+
+        proc_terminate($process, $signal);
+    });
+
+    $status = $exit->signal === null ? $exit->status : 128 + $exit->signal;
 }
 
 $usage = [];
