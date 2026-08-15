@@ -34,6 +34,8 @@ file_put_contents("$baseSource/example/source.c", "same\nold\nsame\nlast\n");
 file_put_contents("$treeSource/example/source.c", "same\nnew uncovered\nnew covered\nsame\nlast\n");
 file_put_contents("$baseBuild/generated/source.c", "same\nold\n");
 file_put_contents("$treeBuild/generated/source.c", "same\nnew\nold\n");
+file_put_contents("$baseBuild/generated/source_arginfo.h", "same\nold\n");
+file_put_contents("$treeBuild/generated/source_arginfo.h", "same\nnew\nold\n");
 
 $base = new CoverageSnapshot([
     'example/source.c' => new SourceCoverage(
@@ -67,6 +69,8 @@ var_dump($comparison->missedBranches()->bySource());
 var_dump($comparison->gainedBranches()->bySource());
 var_dump($changes->source('generated/source.c')->changed());
 var_dump($changes->source('generated/source.c')->baseLine(3));
+var_dump($changes->source('generated/source_arginfo.h')->changed());
+var_dump($changes->source('generated/source_arginfo.h')->baseLine(3));
 
 $temporary->remove();
 ?>
@@ -112,5 +116,7 @@ array(1) {
     string(3) "3:0"
   }
 }
+bool(true)
+int(2)
 bool(true)
 int(2)

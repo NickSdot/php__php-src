@@ -6,6 +6,7 @@ namespace PHP\Testing;
 
 use RuntimeException;
 
+use function array_chunk;
 use function array_keys;
 use function count;
 use function explode;
@@ -160,7 +161,10 @@ final class GitRepository
     /** @return array<string, string> */
     public function renamedPaths(string $baseRevision, ?string $treeRevision = null): array
     {
-        $command = ['git', '-C', $this->path, 'diff', '--name-status', '-z', '--find-renames', $baseRevision];
+        $command = [
+            'git', '-C', $this->path, 'diff', '--name-status', '-z',
+            '--find-renames', '--diff-filter=R', $baseRevision,
+        ];
 
         if ($treeRevision !== null) {
             $command[] = $treeRevision;
@@ -168,30 +172,21 @@ final class GitRepository
 
         $command[] = '--';
 
-        $index = 0;
-        $renamedPaths = [];
         $entries = $this->nullSeparated($this->process->command($command));
 
-        while ($index < count($entries)) {
+        if (count($entries) % 3 !== 0) {
+            throw new RuntimeException('Could not parse renamed paths');
+        }
 
-            $path = $entries[$index++] ?? null;
-            $status = $entries[$index++] ?? null;
+        $renamedPaths = [];
 
-            if ($status === null || $path === null) {
-                throw new RuntimeException('Could not parse changed paths');
-            }
+        foreach (array_chunk($entries, 3) as [$status, $basePath, $treePath]) {
 
             if (str_starts_with($status, 'R') === false) {
-                continue;
-            }
-
-            $renamed = $entries[$index++] ?? null;
-
-            if ($renamed === null) {
                 throw new RuntimeException('Could not parse renamed paths');
             }
 
-            $renamedPaths[$path] = $renamed;
+            $renamedPaths[$basePath] = $treePath;
         }
 
         return $renamedPaths;
@@ -212,7 +207,9 @@ final class GitRepository
     public function diff(string $baseFile, string $treeFile): string
     {
         return $this->process->command([
-            'git', 'diff', '--no-index', '--no-ext-diff', '--no-color', '--unified=0', '--', $baseFile, $treeFile,
+            'git', 'diff',
+            '--no-index', '--no-ext-diff', '--no-color', '--text', '--unified=0',
+            '--', $baseFile, $treeFile,
         ], successfulStatuses: [0, 1]);
     }
 

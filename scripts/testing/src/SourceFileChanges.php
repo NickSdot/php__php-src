@@ -50,7 +50,13 @@ final readonly class SourceFileChanges
             return SourceDiff::unchanged();
         }
 
-        return SourceDiff::fromPatch($this->repository->diff($base, $tree));
+        $changes = SourceDiff::fromPatch($this->repository->diff($base, $tree));
+
+        if ($changes->changed() === false) {
+            throw new RuntimeException("Could not map source changes: $path");
+        }
+
+        return $changes;
     }
 
     private function file(string $source, ?string $build, string $path): string
