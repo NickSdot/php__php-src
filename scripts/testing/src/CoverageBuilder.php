@@ -22,11 +22,11 @@ use function trim;
 
 final class CoverageBuilder
 {
-    private const PHP = '/sapi/cli/php';
-    private const BUILT_REVISION_FILE = '.built';
-    private const CONFIGURED_FILE = '.configured';
+    private const string PHP = '/sapi/cli/php';
+    private const string BUILT_REVISION_FILE = '.built';
+    private const string CONFIGURED_FILE = '.configured';
 
-    private const CONFIGURE_OPTIONS = [
+    private const array CONFIGURE_OPTIONS = [
         '--enable-gcov',
         '--enable-zend-test',
     ];
@@ -44,12 +44,17 @@ final class CoverageBuilder
             $repo = $this->repository->path()
         );
 
-        $configurationIdentity = $this->configurationIdentity($configuration);
+        $configurationIdentity = $this->normaliseConfiguration(
+            $this->configurationIdentity($configuration),
+            $repo
+        );
+
+        $commonDirectory = $this->repository->commonDirectory();
 
         $treeCache = new CoverageBuildCache(CoverageBuildCache::key(
-            $options->tree === null ? $repo : $this->repository->commonDirectory(),
-            $options->tree ?? 'tree',
-            $this->normaliseConfiguration($configurationIdentity, $repo)
+            $options->tree === null ? $repo : $commonDirectory,
+            'tree',
+            $configurationIdentity
         ));
 
         $treeRoot = $treeCache->directory(function (string $directory): void {
@@ -76,9 +81,9 @@ final class CoverageBuilder
         );
 
         $baseCache = new CoverageBuildCache(CoverageBuildCache::key(
-            $this->repository->commonDirectory(),
-            $options->base,
-            $this->normaliseConfiguration($configurationIdentity, $repo)
+            $commonDirectory,
+            'base',
+            $configurationIdentity
         ));
 
         $baseRoot = $baseCache->directory(function (string $directory): void {

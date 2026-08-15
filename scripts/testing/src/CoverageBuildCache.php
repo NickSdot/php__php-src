@@ -27,9 +27,9 @@ final class CoverageBuildCache
         private string $key
     ) {}
 
-    public static function key(string $repository, string $reference, string $configuration): string
+    public static function key(string $repository, string $role, string $configuration): string
     {
-        return hash('sha256', self::CACHE_VERSION . "\0$repository\0$reference\0$configuration");
+        return hash('sha256', self::CACHE_VERSION . "\0$repository\0$role\0$configuration");
     }
 
     /** @param callable(string): void $initialise */
