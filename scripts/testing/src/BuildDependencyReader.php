@@ -29,10 +29,13 @@ use function substr;
 
 final class BuildDependencyReader
 {
-    private const CACHE_FILE = '.deps';
+    private const string CACHE_FILE = '.deps';
 
-    public function read(string $buildDirectory, string $sourceDirectory): BuildDependencies
+    public function read(CoverageBuild $build): BuildDependencies
     {
+        $buildDirectory = $build->buildDirectory;
+        $sourceDirectory = $build->sourceDirectory;
+
         $files = $this->files($buildDirectory);
         $fingerprint = $this->fingerprint($files, $buildDirectory, $sourceDirectory);
         $cached = $this->cached($buildDirectory, $fingerprint);

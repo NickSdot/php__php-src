@@ -1,5 +1,5 @@
 --TEST--
-Handles test-only, C-only, mixed and negative changes
+Handles test-only, unrelated, C-only, mixed and negative changes
 --CONFLICTS--
 all
 --ENV--
@@ -21,10 +21,11 @@ $test = CoverageIntegrationTest::create(
     TestTemporaryDirectory::stateFile('validate_test_coverage')
 );
 
-$test->compare('Test-only', $test->base, $test->testOnly);
-$test->compare('C-only', $test->testOnly, $test->cOnly);
-$test->compare('Mixed', $test->base, $test->cOnly);
-$test->compare('Negative', $test->cOnly, $test->negative, missed: true);
+$test->compareUnrelated('Test-only', $test->base, $test->covered, 'Gained');
+$test->compareUnrelated('Documentation-only', $test->covered, $test->unrelated);
+$test->compare('C-only', $test->unrelated, $test->changed);
+$test->compare('Mixed', $test->base, $test->changed);
+$test->compare('Negative', $test->changed, $test->negative, missed: true);
 ?>
 --CLEAN--
 <?php
@@ -39,6 +40,7 @@ PHP\Testing\IntegrationTestWorkspace::remove(
 ?>
 --EXPECT--
 Test-only: OK
+Documentation-only: OK
 C-only: OK
 Mixed: OK
 Negative: OK

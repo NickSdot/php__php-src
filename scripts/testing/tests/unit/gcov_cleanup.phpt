@@ -5,6 +5,7 @@ Gcov coverage resets all data files individually
 require dirname(__DIR__, 4) . '/scripts/testing/autoload.php';
 require dirname(__DIR__) . '/TestTemporaryDirectory.inc.php';
 
+use PHP\Testing\CoverageBuild;
 use PHP\Testing\GcovCoverage;
 use PHP\Testing\ProcessRunner;
 use PHP\Testing\TestTemporaryDirectory;
@@ -20,7 +21,12 @@ file_put_contents($directory . '/example.gcda', 'data');
 file_put_contents($directory . '/other.gcda', 'data');
 file_put_contents($directory . '/keep.txt', 'keep');
 
-$coverage = new GcovCoverage($directory, $directory, 'gcov', new ProcessRunner());
+$coverage = new GcovCoverage(
+    new CoverageBuild(null, $directory, $directory, ''),
+    'gcov',
+    new ProcessRunner()
+);
+
 $coverage->validateBuild();
 $coverage->reset();
 

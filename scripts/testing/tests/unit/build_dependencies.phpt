@@ -7,6 +7,7 @@ require dirname(__DIR__) . '/TestTemporaryDirectory.inc.php';
 
 use PHP\Testing\BuildDependencyReader;
 use PHP\Testing\BuildDependencies;
+use PHP\Testing\CoverageBuild;
 use PHP\Testing\CoverageScope;
 use PHP\Testing\CoverageScopeResolver;
 use PHP\Testing\PhptSuites;
@@ -20,13 +21,13 @@ $temporary = TestTemporaryDirectory::create(
 
 $root = $temporary->path();
 $source = "$root/source";
-$build = "$root/build";
+$buildDirectory = "$root/build";
 
 foreach ([
     "$source/vendor/acme/tests",
     "$source/main",
-    "$build/vendor/acme",
-    "$build/main",
+    "$buildDirectory/vendor/acme",
+    "$buildDirectory/main",
 ] as $directory) {
     mkdir($directory, recursive: true);
 }
@@ -42,20 +43,22 @@ foreach ([
 
 $escaped = fn(string $path): string => str_replace(' ', '\\ ', $path);
 
-file_put_contents("$build/vendor/acme/first.dep", sprintf(
+file_put_contents("$buildDirectory/vendor/acme/first.dep", sprintf(
     "vendor/acme/first.lo: %s %s %s\n",
     $escaped("$source/vendor/acme/first.c"),
     $escaped("$source/vendor/acme/shared header.h"),
     $escaped("$source/main/core.h")
 ));
 
-file_put_contents("$build/main/core.dep", sprintf(
+file_put_contents("$buildDirectory/main/core.dep", sprintf(
     "main/core.lo: %s %s\n",
     $escaped("$source/main/core.c"),
     $escaped("$source/main/core.h")
 ));
 
-$dependencies = (new BuildDependencyReader())->read($build, $source);
+$dependencies = (new BuildDependencyReader())->read(
+    new CoverageBuild(null, $source, $buildDirectory, '')
+);
 
 var_dump($dependencies->affectedSources(['vendor/acme/shared header.h']));
 var_dump($dependencies->affectedSources(['main/core.h']));
@@ -72,7 +75,7 @@ var_dump($dependencies->affectedSources(['main/core.h']));
 
 var_dump($dependencies->coverageFiles(CoverageScope::paths(['vendor/acme'])));
 var_dump($dependencies->coverageFiles(CoverageScope::global()));
-var_dump(file_exists("$build/.deps"));
+var_dump(file_exists("$buildDirectory/.deps"));
 
 $trees = new TestTrees($source, $source, new PhptSuites(
     ["$source/vendor/acme/tests/example.phpt"],

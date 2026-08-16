@@ -21,37 +21,36 @@ use function unlink;
 
 final class GcovCoverage
 {
-    private const BATCH_SIZE = 50;
-    private const DATA_SUFFIX = '.gcda';
-    private const NOTES_SUFFIX = '.gcno';
+    private const int BATCH_SIZE = 50;
+    private const string DATA_SUFFIX = '.gcda';
+    private const string NOTES_SUFFIX = '.gcno';
 
     public function __construct(
-        private string $buildDirectory,
-        private string $repo,
+        private CoverageBuild $build,
         private string $gcov,
         private ProcessRunner $process
     ) {}
 
     public function validateBuild(): void
     {
-        if (dirname($this->buildDirectory) === $this->buildDirectory) {
+        if (dirname($this->build->buildDirectory) === $this->build->buildDirectory) {
             throw new RuntimeException('Build directory cannot be filesystem root');
         }
 
         if ($this->coverageFiles(self::NOTES_SUFFIX) === []) {
-            throw new RuntimeException("Coverage build does not contain gcov data: $this->buildDirectory");
+            throw new RuntimeException('Coverage build does not contain gcov data: ' . $this->build->buildDirectory);
         }
     }
 
     public function buildDirectory(): string
     {
-        return $this->buildDirectory;
+        return $this->build->buildDirectory;
     }
 
     public function reset(): void
     {
         foreach ($this->coverageFiles(self::DATA_SUFFIX) as $file) {
-            if (Path::isDescendantOf($file, $this->buildDirectory) === false || unlink($file) === false) {
+            if (Path::isDescendantOf($file, $this->build->buildDirectory) === false || unlink($file) === false) {
                 throw new RuntimeException("Could not delete coverage file: $file");
             }
         }
@@ -68,11 +67,11 @@ final class GcovCoverage
 
         $coverage = new CoverageSnapshot();
 
-        $parser = new GcovParser($this->buildDirectory, $this->repo);
+        $parser = new GcovParser($this->build->buildDirectory, $this->build->sourceDirectory);
 
         foreach (array_chunk($dataFiles, self::BATCH_SIZE) as $batch) {
 
-            $report = $this->process->command([$this->gcov, '-b', '-c', '-t', ...$batch], $this->buildDirectory);
+            $report = $this->process->command([$this->gcov, '-b', '-c', '-t', ...$batch], $this->build->buildDirectory);
 
             $coverage->merge($parser->parse($report));
         }
@@ -94,7 +93,7 @@ final class GcovCoverage
 
         if ($selected !== null) {
             foreach ($selected as $relative) {
-                $this->addCoverageFile($files, "$this->buildDirectory/$relative");
+                $this->addCoverageFile($files, $this->build->buildDirectory . "/$relative");
             }
 
             sort($files);
@@ -102,7 +101,7 @@ final class GcovCoverage
             return $files;
         }
 
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->buildDirectory, FilesystemIterator::SKIP_DOTS));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->build->buildDirectory, FilesystemIterator::SKIP_DOTS));
 
         foreach ($iterator as $entry) {
 
@@ -129,7 +128,7 @@ final class GcovCoverage
 
         if (is_link($path) === true
             || $real === false
-            || Path::isDescendantOf($real, $this->buildDirectory) === false
+            || Path::isDescendantOf($real, $this->build->buildDirectory) === false
         ) {
             throw new RuntimeException("Coverage file is outside build directory: $path");
         }

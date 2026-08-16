@@ -30,8 +30,9 @@ final readonly class CoverageIntegrationTest
         private IntegrationTestWorkspace $workspace,
         private ProcessRunner $process,
         public string $base,
-        public string $testOnly,
-        public string $cOnly,
+        public string $covered,
+        public string $unrelated,
+        public string $changed,
         public string $negative
     ) {}
 
@@ -51,23 +52,42 @@ final readonly class CoverageIntegrationTest
         $base = $workspace->commit('Add coverage fixture');
 
         $workspace->write(self::TESTS . '/coverage_fixture.phpt', self::fixture('coverage_fixture.tree.test'));
-        $testOnly = $workspace->commit('Cover both fixture paths');
+        $covered = $workspace->commit('Cover both fixture paths');
+
+        $workspace->write(self::EXTENSION . '/README.md', "Coverage fixture\n");
+        $unrelated = $workspace->commit('Document coverage fixture');
 
         $workspace->write(self::SOURCE, self::fixture('coverage_fixture.tree.c'));
-        $cOnly = $workspace->commit('Refactor coverage fixture');
+        $changed = $workspace->commit('Refactor coverage fixture');
 
         $workspace->write(self::TESTS . '/coverage_fixture.phpt', self::fixture('coverage_fixture.base.test'));
         $negative = $workspace->commit('Remove fixture coverage');
 
         $workspace->configure(['--disable-all', '--enable-coverage-fixture']);
 
-        return new self($workspace, new ProcessRunner(), $base, $testOnly, $cOnly, $negative);
+        return new self($workspace, new ProcessRunner(), $base, $covered, $unrelated, $changed, $negative);
     }
 
     public function compare(string $name, string $base, string $tree, bool $missed = false): void
     {
-        [$status, $output] = $this->run($base, $tree);
-        $this->assertOutput($name, $status, $output, $missed);
+        $group = 'Gained';
+
+        if ($missed === true) {
+            $group = 'Missed';
+        }
+
+        $this->compareCase($name, $base, $tree, $missed, $group);
+
+        echo "$name: OK\n";
+    }
+
+    public function compareUnrelated(string $name, string $base, string $tree, ?string $coverageGroup = null): void
+    {
+        $output = $this->compareCase($name, $base, $tree, false, $coverageGroup);
+
+        if (str_contains($output, 'Building tree') === true) {
+            throw new RuntimeException("$name unexpectedly built tree\n$output");
+        }
 
         echo "$name: OK\n";
     }
@@ -129,7 +149,15 @@ final readonly class CoverageIntegrationTest
         return [$status, $output];
     }
 
-    private function assertOutput(string $name, int $status, string $output, bool $missed): void
+    private function compareCase(string $name, string $base, string $tree, bool $missed, ?string $coverageGroup): string
+    {
+        [$status, $output] = $this->run($base, $tree);
+        $this->assertOutput($name, $status, $output, $missed, $coverageGroup);
+
+        return $output;
+    }
+
+    private function assertOutput(string $name, int $status, string $output, bool $missed, ?string $coverageGroup): void
     {
         $result = 'PASS';
         $expectedStatus = 0;
@@ -159,13 +187,11 @@ final readonly class CoverageIntegrationTest
             throw new RuntimeException("$name report could not be read\n$output");
         }
 
-        $group = 'Gained';
-
-        if ($missed === true) {
-            $group = 'Missed';
+        if ($coverageGroup === null) {
+            return;
         }
 
-        if (str_contains($this->reportGroup($report, $group), '      ' . self::SOURCE . ":\n") === false) {
+        if (str_contains($this->reportGroup($report, $coverageGroup), '      ' . self::SOURCE . ":\n") === false) {
             throw new RuntimeException("$name report does not contain fixture source\n$output");
         }
     }

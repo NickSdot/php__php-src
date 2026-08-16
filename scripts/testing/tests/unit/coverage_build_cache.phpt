@@ -20,26 +20,14 @@ var_dump($firstKey !== $otherConfiguration);
 
 $first = new CoverageBuildCache($firstKey);
 $other = new CoverageBuildCache($otherConfiguration);
-$initialisations = 0;
-
-$directory = $first->directory(function (string $directory) use (&$initialisations): void {
-    $initialisations++;
-    file_put_contents("$directory/build", 'first');
-});
+$directory = $first->directory();
 
 var_dump(dirname($directory) === Storage::builds());
+var_dump(is_dir("$directory/build"));
+var_dump($first->directory() === $directory);
 
-var_dump($first->directory(function () use (&$initialisations): void {
-    $initialisations++;
-}) === $directory);
-var_dump($initialisations);
-
-$other->directory(function (string $directory) use (&$initialisations): void {
-    $initialisations++;
-    file_put_contents("$directory/build", 'other');
-});
-
-var_dump($initialisations);
+$otherDirectory = $other->directory();
+var_dump($otherDirectory !== $directory);
 var_dump($first->remove());
 var_dump($other->remove());
 ?>
@@ -59,7 +47,7 @@ bool(true)
 bool(true)
 bool(true)
 bool(true)
-int(1)
-int(2)
+bool(true)
+bool(true)
 NULL
 NULL

@@ -15,6 +15,7 @@ use function fopen;
 use function hash;
 use function is_file;
 use function is_link;
+use function mkdir;
 use function trim;
 use function unlink;
 
@@ -32,8 +33,7 @@ final class CoverageBuildCache
         return hash('sha256', self::CACHE_VERSION . "\0$repository\0$role\0$configuration");
     }
 
-    /** @param callable(string): void $initialise */
-    public function directory(callable $initialise): string
+    public function directory(): string
     {
         $lock = fopen($this->lockFile(), 'c+');
 
@@ -51,7 +51,9 @@ final class CoverageBuildCache
             $temporary = TemporaryDirectory::createBuild();
 
             try {
-                $initialise($temporary->path());
+                if (mkdir($temporary->path() . '/build') === false) {
+                    throw new RuntimeException('Could not create coverage build directory');
+                }
 
                 if (file_put_contents($this->readyFile($temporary->path()), '') === false
                     || file_put_contents($this->stateFile(), $temporary->path()) === false
