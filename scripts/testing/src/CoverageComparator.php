@@ -28,8 +28,7 @@ final class CoverageComparator
     {
         $both = $base !== null && $tree !== null;
 
-        $totals = $result->totals();
-        $totals->addSources($base !== null, $tree !== null);
+        $result->addSources($base !== null, $tree !== null);
 
         $base ??= new SourceCoverage();
         $tree ??= new SourceCoverage();
@@ -40,14 +39,14 @@ final class CoverageComparator
             $this->compareMatchedSource($result, $source, $base, $tree, $both);
         }
 
-        $totals->addLines(
+        $result->addLines(
             count($base->coveredLines()),
             count($base->executableLines()),
             count($tree->coveredLines()),
             count($tree->executableLines())
         );
 
-        $totals->addBranches(
+        $result->addBranches(
             count($base->coveredBranches()),
             count($base->executableBranches()),
             count($tree->coveredBranches()),

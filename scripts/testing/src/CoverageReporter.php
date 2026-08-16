@@ -31,8 +31,6 @@ final class CoverageReporter
 
     public function report(CoverageComparisonResult $comparison, PhptRun $baseRun, PhptRun $treeRun, PhptChanges $testChanges): void
     {
-        $totals = $comparison->totals();
-
         $missedLines = $comparison->missedLines();
         $missedBranches = $comparison->missedBranches();
 
@@ -46,40 +44,40 @@ final class CoverageReporter
             [
                 'Base',
                 (string) $baseRun->testCount(),
-                (string) $totals->baseSources(),
-                $this->coverageValue($totals->baseLines(), $totals->baseExecutableLines()),
-                $this->coverageValue($totals->baseBranches(), $totals->baseExecutableBranches()),
+                (string) $comparison->baseSources(),
+                $this->coverageValue($comparison->baseLines(), $comparison->baseExecutableLines()),
+                $this->coverageValue($comparison->baseBranches(), $comparison->baseExecutableBranches()),
                 sprintf('%.2fs', $baseRun->measurement->time),
                 $this->formatMemory($baseRun->measurement->memory),
             ],
             [
                 'Tree',
                 (string) $treeRun->testCount(),
-                (string) $totals->treeSources(),
-                $this->coverageValue($totals->treeLines(), $totals->treeExecutableLines()),
-                $this->coverageValue($totals->treeBranches(), $totals->treeExecutableBranches()),
+                (string) $comparison->treeSources(),
+                $this->coverageValue($comparison->treeLines(), $comparison->treeExecutableLines()),
+                $this->coverageValue($comparison->treeBranches(), $comparison->treeExecutableBranches()),
                 sprintf('%.2fs', $treeRun->measurement->time),
                 $this->formatMemory($treeRun->measurement->memory),
             ],
             [
                 'Change',
                 $this->countChange($baseRun->testCount(), $treeRun->testCount()),
-                $this->countChange($totals->baseSources(), $totals->treeSources()),
+                $this->countChange($comparison->baseSources(), $comparison->treeSources()),
                 $this->coverageChange(
                     count($gainedLines),
                     count($missedLines),
-                    $totals->baseLines(),
-                    $totals->baseExecutableLines(),
-                    $totals->treeLines(),
-                    $totals->treeExecutableLines()
+                    $comparison->baseLines(),
+                    $comparison->baseExecutableLines(),
+                    $comparison->treeLines(),
+                    $comparison->treeExecutableLines()
                 ),
                 $this->coverageChange(
                     count($gainedBranches),
                     count($missedBranches),
-                    $totals->baseBranches(),
-                    $totals->baseExecutableBranches(),
-                    $totals->treeBranches(),
-                    $totals->treeExecutableBranches()
+                    $comparison->baseBranches(),
+                    $comparison->baseExecutableBranches(),
+                    $comparison->treeBranches(),
+                    $comparison->treeExecutableBranches()
                 ),
                 sprintf('%+.2fs', $treeRun->measurement->time - $baseRun->measurement->time),
                 $this->memoryChange($baseRun->measurement->memory, $treeRun->measurement->memory),
