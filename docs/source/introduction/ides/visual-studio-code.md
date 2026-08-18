@@ -1,20 +1,18 @@
 # Visual Studio Code
 
-```{note}
-These instructions have been tested on Linux. macOS should mostly work the same. For Windows,
-ymmv.
-```
+> [!NOTE]
+> These instructions have been tested on Linux. macOS should mostly work the same. For Windows,
+> ymmv.
 
 An IDE can make navigating large code bases tremendously easier. Visual Studio Code is a popular and
 free IDE that is well-suited for C development. It contains syntax highlighting, navigation,
 auto-completion and a debugger. Check the [official website](https://code.visualstudio.com/) for
 installation instructions.
 
-```{note}
-The `settings.json` file referenced below can be opened in the Settings page by pressing the
-"Open Settings (JSON)" button in the top right corner. Most of these settings can also be
-adjusted through the GUI.
-```
+> [!NOTE]
+> The `settings.json` file referenced below can be opened in the Settings page by pressing the
+> "Open Settings (JSON)" button in the top right corner. Most of these settings can also be
+> adjusted through the GUI.
 
 ## C/C++ extension
 

@@ -44,13 +44,12 @@ miscellaneous/stubs
 
 Welcome to the php-src documentation!
 
-```{warning}
-This documentation is work in progress.
-
-At this point in time, there are other guides that provide a more complete picture of the PHP
-project. Check the [CONTRIBUTING.md](https://github.com/php/php-src/blob/master/CONTRIBUTING.md#technical-resources) file for a
-list of technical resources.
-```
+> [!WARNING]
+> This documentation is work in progress.
+>
+> At this point in time, there are other guides that provide a more complete picture of the PHP
+> project. Check the [CONTRIBUTING.md](https://github.com/php/php-src/blob/master/CONTRIBUTING.md#technical-resources)
+> file for a list of technical resources.
 
 php-src is the canonical implementation of the interpreter for the PHP programming language, as well
 as various extensions that provide common functionality. This documentation is intended to help you

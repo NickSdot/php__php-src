@@ -150,10 +150,11 @@ Test script and `SKIPIF` code should be directly written into `\*.phpt`. However
 recommended to use include files when more test scripts depend on the same `SKIPIF` code or when
 certain test files need the same values for some input.
 
-Note: no file used by any test should have one of the following extensions: ".php", ".log", ".mem",
-".exp", ".out" or ".diff". When you use an include file for the `SKIPIF` section it should be
-named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
-"test.inc".
+> [!NOTE]
+> No file used by any test should have one of the following extensions: ".php", ".log", ".mem",
+> ".exp", ".out" or ".diff". When you use an include file for the `SKIPIF` section it should be
+> named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
+> "test.inc".
 
 ## `--CONFLICTS--`
 
@@ -707,8 +708,11 @@ return array(
   );
 ```
 
-Example 1 (full): {ref}`sample013.phpt` Note: The destination tests for this example are not
-included. See the PDO extension tests for reference to live tests using this section.
+Example 1 (full): {ref}`sample013.phpt`
+
+> [!NOTE]
+> The destination tests for this example are not included. See the PDO extension tests for
+> reference to live tests using this section.
 
 Example 2 (snippet):
 
@@ -739,8 +743,9 @@ return $config;
 
 Example 2 (full): {ref}`sample014.phpt`
 
-Note: The destination tests for this example are not included. See the PDO extension tests for
-reference to live tests using this section.
+> [!NOTE]
+> The destination tests for this example are not included. See the PDO extension tests for
+> reference to live tests using this section.
 
 ## `--CGI--`
 
@@ -835,8 +840,9 @@ Status: 403 Access Denied
 
 Example 1 (full): {ref}`sample018.phpt`
 
-Note: The destination tests for this example are not included. See the phar extension tests for
-reference to live tests using this section.
+> [!NOTE]
+> The destination tests for this example are not included. See the phar extension tests for
+> reference to live tests using this section.
 
 ## `--EXPECT--`
 
