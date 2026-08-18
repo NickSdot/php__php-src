@@ -85,8 +85,8 @@ The following characters also have a meaning in the specifier string:
   bool* must be passed after the corresponding bool*, zend_long* or
   double* arguments, respectively. A non-zero value will be written to the
   bool if a PHP NULL is passed.
-  For `f` use the ``ZEND_FCI_INITIALIZED(fci)`` macro to check if a callable
-  has been provided and ``!ZEND_FCI_INITIALIZED(fci)`` to check if a PHP NULL
+  For `f` use the `ZEND_FCI_INITIALIZED(fci)` macro to check if a callable
+  has been provided and `!ZEND_FCI_INITIALIZED(fci)` to check if a PHP NULL
   is passed.
 
 ## Note on 64-Bit Compatibility

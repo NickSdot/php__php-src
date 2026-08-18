@@ -1097,9 +1097,9 @@ string\(4\) \"-012\"
 string\(8\) \"2d303132\"
 (string\(13\) \"   4294967284\"|string\(20\) \"18446744073709551604\")
 (string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
-
-Example 3 (full): :ref:`sample023.phpt`
 ```
+
+Example 3 (full): {ref}`sample023.phpt`
 
 `/ext/standard/tests/strings/strings001.phpt` is a good example for using `EXPECTREGEX` instead
 of `EXPECT`. This test also shows that in `EXPECTREGEX` some characters need to be escaped since
