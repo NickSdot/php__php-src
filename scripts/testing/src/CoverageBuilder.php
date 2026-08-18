@@ -50,6 +50,11 @@ final class CoverageBuilder
             $options->tree === null ? null : $treeRevision
         );
 
+        $treeChangedPaths = $this->repository->changedPathsSince(
+            $baseRevision,
+            $options->tree === null ? null : $treeRevision
+        );
+
         $baseBuild = $this->revisionBuild('base', $baseRevision, $configurationIdentity);
         $baseRuntime = $this->buildRuntime('base', $configurationScript, $baseBuild, $temporaryDirectory);
 
@@ -68,7 +73,7 @@ final class CoverageBuilder
             $treeRuntime,
             $baseBuild->sourceDirectory,
             $treeBuild->sourceDirectory,
-            $changedPaths
+            $treeChangedPaths
         );
     }
 

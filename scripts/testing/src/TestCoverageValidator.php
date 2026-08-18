@@ -69,7 +69,7 @@ final class TestCoverageValidator
             $scope = (new CoverageScopeResolver())->resolve(
                 $options,
                 $trees,
-                $runtimes->changedPaths,
+                $runtimes->treeChangedPaths,
                 $runtimes->dependencies()
             );
 

@@ -49,6 +49,21 @@ file_put_contents("$repo/dirty", 'working tree');
 var_dump($repository->changedPaths($base, $tree));
 var_dump($repository->deletedPaths($base, $tree));
 
+$process->command(['git', 'checkout', '--quiet', '-b', 'base-advanced', $base], $repo);
+file_put_contents("$repo/base-only", 'base');
+$process->command(['git', 'add', 'base-only'], $repo);
+$process->command([
+    'git', '-c', 'user.name=PHP', '-c', 'user.email=php@example.com',
+    'commit', '--quiet', '-m', 'advance base',
+], $repo);
+
+$advancedBase = $repository->resolve('HEAD');
+var_dump($repository->changedPaths($advancedBase, $tree));
+var_dump($repository->changedPathsSince($advancedBase, $tree));
+
+$process->command(['git', 'checkout', '--detach', '--quiet', $tree], $repo);
+file_put_contents("$repo/dirty", 'working tree');
+
 unlink("$repo/tracked");
 var_dump($repository->deletedPaths($tree));
 
@@ -116,6 +131,20 @@ array(2) {
   string(9) "untracked"
 }
 array(0) {
+}
+array(3) {
+  [0]=>
+  string(9) "base-only"
+  [1]=>
+  string(7) "tracked"
+  [2]=>
+  string(9) "untracked"
+}
+array(2) {
+  [0]=>
+  string(7) "tracked"
+  [1]=>
+  string(9) "untracked"
 }
 array(1) {
   [0]=>

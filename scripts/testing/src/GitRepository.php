@@ -130,6 +130,21 @@ final class GitRepository
     /** @return list<string> */
     public function changedPaths(string $baseRevision, ?string $treeRevision = null): array
     {
+        return $this->changedPathsFrom($baseRevision, $treeRevision);
+    }
+
+    /** @return list<string> */
+    public function changedPathsSince(string $baseRevision, ?string $treeRevision = null): array
+    {
+        return $this->changedPathsFrom(
+            $this->mergeBase($baseRevision, $treeRevision ?? 'HEAD'),
+            $treeRevision
+        );
+    }
+
+    /** @return list<string> */
+    private function changedPathsFrom(string $baseRevision, ?string $treeRevision): array
+    {
         $paths = [];
 
         foreach ($this->diffPaths($baseRevision, $treeRevision) as $path) {
@@ -150,6 +165,13 @@ final class GitRepository
         sort($paths);
 
         return $paths;
+    }
+
+    private function mergeBase(string $baseRevision, string $treeRevision): string
+    {
+        return trim($this->process->command([
+            'git', '-C', $this->path, 'merge-base', $baseRevision, $treeRevision,
+        ]));
     }
 
     /** @return list<string> */
