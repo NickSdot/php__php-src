@@ -22,8 +22,8 @@ struct _zend_string {
 ```
 
 The `gc` field is used for {doc}`../memory-management/reference-counting`. The `h` field contains a hash value,
-which is used for <a href="todo">hash table</a> lookups. The `len` field stores the length of the string
-in bytes, and the `val` field contains the actual string data.
+which is used for hash table lookups. The `len` field stores the length of the string in bytes, and
+the `val` field contains the actual string data.
 
 You may wonder why the `val` field is declared as `char val[1]`. This is called the [struct
 hack](https://www.geeksforgeeks.org/struct-hack/) in C. It is used to create structs with a flexible size, namely by allowing the last element
@@ -45,8 +45,8 @@ zend_string_release(string);
 `ZSTR_INIT_LITERAL` creates a `zend_string` from a string literal. It is just a wrapper around
 `zend_string_init(char *string, size_t length, bool persistent)` that provides the length of the
 string at compile time. The `persistent` parameter indicates whether the string is allocated using
-`malloc` (`persistent == true`) or `emalloc`, <a href="todo">PHPs custom allocator</a> (`persistent
-== false`) that is emptied after each request.
+`malloc` (`persistent == true`) or `emalloc`, PHP's custom allocator (`persistent == false`) that is
+emptied after each request.
 
 When you're done using the string, you must call `zend_string_release`, or the memory will leak.
 `zend_string_release` will automatically call `malloc` or `emalloc`, depending on how the
@@ -107,10 +107,10 @@ use.
 Programs use some strings many times. For example, if your program declares a class called
 `MyClass`, it would be wasteful to allocate a new string `"MyClass"` every time it is referenced
 within your program. Instead, when repeated strings are expected, php-src uses a technique called
-string interning. Essentially, this is just a simple <a href="todo">HashTable</a> where existing interned
-strings are stored. When creating a new interned string, php-src first checks the interned string
-buffer. If it finds it there, it can return a pointer to the existing string. If it doesn't, it
-allocates a new string and adds it to the buffer.
+string interning. Essentially, this is just a simple `HashTable` where existing interned strings are
+stored. When creating a new interned string, php-src first checks the interned string buffer. If it
+finds it there, it can return a pointer to the existing string. If it doesn't, it allocates a new
+string and adds it to the buffer.
 
 ```c
 zend_string *str1 = zend_new_interned_string(
