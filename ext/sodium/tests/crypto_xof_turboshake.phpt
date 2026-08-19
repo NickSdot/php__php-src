@@ -68,28 +68,28 @@ var_dump(bin2hex($out16) === substr(bin2hex($out64), 0, 32));
 /* TurboSHAKE128 error: zero length */
 try {
     sodium_crypto_xof_turboshake128(0, "test");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* TurboSHAKE256 error: bad state */
 try {
     $bad = "not_a_state";
     sodium_crypto_xof_turboshake256_update($bad, "test");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* TurboSHAKE128 error: domain out of range */
 try {
     sodium_crypto_xof_turboshake128_init(0);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 try {
     sodium_crypto_xof_turboshake256_init(0x80);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
@@ -106,7 +106,7 @@ string(64) "0137a7e8cca0b99e9bdd557a7caac1f21d65bc2a2ccbde1e1f8c702352a2bf30"
 int(16)
 int(64)
 bool(true)
-sodium_crypto_xof_turboshake128(): Argument #1 ($length) must be a positive integer
-sodium_crypto_xof_turboshake256_update(): Argument #1 ($state) must have a correct state length
-sodium_crypto_xof_turboshake128_init(): Argument #1 ($domain) must be between 0x01 and 0x7f
-sodium_crypto_xof_turboshake256_init(): Argument #1 ($domain) must be between 0x01 and 0x7f
+SodiumException: sodium_crypto_xof_turboshake128(): Argument #1 ($length) must be a positive integer
+SodiumException: sodium_crypto_xof_turboshake256_update(): Argument #1 ($state) must have a correct state length
+SodiumException: sodium_crypto_xof_turboshake128_init(): Argument #1 ($domain) must be between 0x01 and 0x7f
+SodiumException: sodium_crypto_xof_turboshake256_init(): Argument #1 ($domain) must be between 0x01 and 0x7f

@@ -35,22 +35,22 @@ var_dump(strlen($gen_key) === SODIUM_CRYPTO_IPCRYPT_PFX_KEYBYTES);
 /* PFX error: wrong key length */
 try {
     sodium_crypto_ipcrypt_pfx_encrypt("10.0.0.1", "short");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* PFX error: invalid IP */
 try {
     sodium_crypto_ipcrypt_pfx_encrypt("not_an_ip", $key);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* PFX error: wrong key length for decrypt */
 try {
     sodium_crypto_ipcrypt_pfx_decrypt("10.0.0.1", "short");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
@@ -60,6 +60,6 @@ bool(true)
 string(3) "::1"
 bool(true)
 bool(true)
-sodium_crypto_ipcrypt_pfx_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_PFX_KEYBYTES bytes long
-sodium_crypto_ipcrypt_pfx_encrypt(): Argument #1 ($ip) must be a valid IP address
-sodium_crypto_ipcrypt_pfx_decrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_PFX_KEYBYTES bytes long
+SodiumException: sodium_crypto_ipcrypt_pfx_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_PFX_KEYBYTES bytes long
+SodiumException: sodium_crypto_ipcrypt_pfx_encrypt(): Argument #1 ($ip) must be a valid IP address
+SodiumException: sodium_crypto_ipcrypt_pfx_decrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_PFX_KEYBYTES bytes long

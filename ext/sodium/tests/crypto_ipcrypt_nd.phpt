@@ -30,22 +30,22 @@ var_dump(sodium_crypto_ipcrypt_nd_decrypt($ct6, $nd_key));
 /* ND error: wrong key length */
 try {
     sodium_crypto_ipcrypt_nd_encrypt("192.168.1.1", "short");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* ND error: invalid IP */
 try {
     sodium_crypto_ipcrypt_nd_encrypt("bad", $nd_key);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* ND error: bad ciphertext hex length */
 try {
     sodium_crypto_ipcrypt_nd_decrypt("tooshort", $nd_key);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* NDX: keygen, encrypt, decrypt roundtrip */
@@ -68,15 +68,15 @@ var_dump(sodium_crypto_ipcrypt_ndx_decrypt($ct_ndx6, $ndx_key));
 /* NDX error: wrong key length */
 try {
     sodium_crypto_ipcrypt_ndx_encrypt("10.0.0.1", "short");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* NDX error: bad ciphertext hex */
 try {
     sodium_crypto_ipcrypt_ndx_decrypt("tooshort", $ndx_key);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
@@ -86,13 +86,13 @@ string(11) "192.168.1.1"
 bool(true)
 string(11) "192.168.1.1"
 string(3) "::1"
-sodium_crypto_ipcrypt_nd_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_ND_KEYBYTES bytes long
-sodium_crypto_ipcrypt_nd_encrypt(): Argument #1 ($ip) must be a valid IP address
-sodium_crypto_ipcrypt_nd_decrypt(): Argument #1 ($ciphertext_hex) must be a valid hex-encoded ciphertext
+SodiumException: sodium_crypto_ipcrypt_nd_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_ND_KEYBYTES bytes long
+SodiumException: sodium_crypto_ipcrypt_nd_encrypt(): Argument #1 ($ip) must be a valid IP address
+SodiumException: sodium_crypto_ipcrypt_nd_decrypt(): Argument #1 ($ciphertext_hex) must be a valid hex-encoded ciphertext
 bool(true)
 bool(true)
 string(8) "10.0.0.1"
 bool(true)
 string(7) "fe80::1"
-sodium_crypto_ipcrypt_ndx_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_NDX_KEYBYTES bytes long
-sodium_crypto_ipcrypt_ndx_decrypt(): Argument #1 ($ciphertext_hex) must be a valid hex-encoded ciphertext
+SodiumException: sodium_crypto_ipcrypt_ndx_encrypt(): Argument #2 ($key) must be SODIUM_CRYPTO_IPCRYPT_NDX_KEYBYTES bytes long
+SodiumException: sodium_crypto_ipcrypt_ndx_decrypt(): Argument #1 ($ciphertext_hex) must be a valid hex-encoded ciphertext

@@ -45,16 +45,16 @@ var_dump(bin2hex($sq_d));
 /* Error: zero length */
 try {
     sodium_crypto_xof_shake256(0, "test");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* Error: bad state */
 try {
     $bad = "not_a_state";
     sodium_crypto_xof_shake256_update($bad, "test");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* Error: squeeze bad length */
@@ -62,8 +62,8 @@ try {
     $state = sodium_crypto_xof_shake256_init();
     sodium_crypto_xof_shake256_update($state, "abc");
     sodium_crypto_xof_shake256_squeeze($state, 0);
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
@@ -75,6 +75,6 @@ bool(true)
 string(64) "483366601360a8771c6863080cc4114d8db44530f8f1e1ee4f94ea37e78b5739"
 string(64) "483366601360a8771c6863080cc4114d8db44530f8f1e1ee4f94ea37e78b5739"
 string(64) "1259d63c872d50fee4500685419f489966971c0a77e2058fab0e48dfb12d24bc"
-sodium_crypto_xof_shake256(): Argument #1 ($length) must be a positive integer
-sodium_crypto_xof_shake256_update(): Argument #1 ($state) must have a correct state length
-sodium_crypto_xof_shake256_squeeze(): Argument #2 ($length) must be a positive integer
+SodiumException: sodium_crypto_xof_shake256(): Argument #1 ($length) must be a positive integer
+SodiumException: sodium_crypto_xof_shake256_update(): Argument #1 ($state) must have a correct state length
+SodiumException: sodium_crypto_xof_shake256_squeeze(): Argument #2 ($length) must be a positive integer

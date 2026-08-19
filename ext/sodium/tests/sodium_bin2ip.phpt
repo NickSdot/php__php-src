@@ -39,15 +39,15 @@ foreach ($addrs as $addr) {
 /* Error: bin2ip wrong length */
 try {
     sodium_bin2ip("short");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 /* Error: ip2bin invalid address */
 try {
     sodium_ip2bin("not_an_ip");
-} catch (SodiumException $e) {
-    echo $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
@@ -65,5 +65,5 @@ string(7) "fe80::1"
 127.0.0.1 => 127.0.0.1
 ::ffff:192.168.0.1 => 192.168.0.1
 2001:db8::1 => 2001:db8::1
-sodium_bin2ip(): Argument #1 ($bin) must be 16 bytes long
-sodium_ip2bin(): Argument #1 ($ip) must be a valid IP address
+SodiumException: sodium_bin2ip(): Argument #1 ($bin) must be 16 bytes long
+SodiumException: sodium_ip2bin(): Argument #1 ($ip) must be a valid IP address
