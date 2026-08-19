@@ -50,4 +50,3 @@ hello=salut
 
 LC_ALL=en_US
 hello=hello
-
