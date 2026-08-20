@@ -1,8 +1,9 @@
 # Data Structures
 
 ```{toctree}
-   :hidden:
-
+---
+hidden:
+---
 zval
 zend_string
 zend_constant

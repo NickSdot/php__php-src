@@ -82,11 +82,11 @@ Test results are printed to standard output. If there is a failed test, the `run
 saves the result, the expected result and the code executed to the test script directory. For
 example, if `ext/myext/tests/myext.phpt` fails to pass, the following files are created:
 
--  `ext/myext/tests/myext.php` - actual test file executed
--  `ext/myext/tests/myext.log` - log of test execution (L)
--  `ext/myext/tests/myext.exp` - expected output (E)
--  `ext/myext/tests/myext.out` - output from test script (O)
--  `ext/myext/tests/myext.diff` - diff of .out and .exp (D)
+- `ext/myext/tests/myext.php` - actual test file executed
+- `ext/myext/tests/myext.log` - log of test execution (L)
+- `ext/myext/tests/myext.exp` - expected output (E)
+- `ext/myext/tests/myext.out` - output from test script (O)
+- `ext/myext/tests/myext.diff` - diff of .out and .exp (D)
 
 Failed tests are always bugs. Either the test is bugged or not considering factors applying to the
 tester's environment, or there is a bug in PHP. If this is a known bug, we strive to provide bug

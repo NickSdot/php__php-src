@@ -225,27 +225,27 @@ The generated `class_Atmosphere_methods` must be used when registering the `Atmo
 
 Additional meta information can be attached to functions, with the following PHPDoc tags:
 
--  `@deprecated`: Triggers the usual deprecation notice when the function/method is called. As of
-   PHP 8.4 the `#[Deprecated]` attribute should be used instead.
+- `@deprecated`: Triggers the usual deprecation notice when the function/method is called. As of
+  PHP 8.4 the `#[Deprecated]` attribute should be used instead.
 
--  `@alias`: If a function/method is an alias of another function/method, then the aliased
-   function/method name has to be provided as value. E.g. the function `sizeof()` has the `@alias count` annotation.
+- `@alias`: If a function/method is an alias of another function/method, then the aliased
+  function/method name has to be provided as value. E.g. the function `sizeof()` has the `@alias count` annotation.
 
--  `@implementation-alias`: This is very similar to `@alias` with some semantic differences.
-   These aliases exists purely to avoid duplicating some code, but there is no other connection
-   between the alias and the aliased function or method.
+- `@implementation-alias`: This is very similar to `@alias` with some semantic differences.
+  These aliases exists purely to avoid duplicating some code, but there is no other connection
+  between the alias and the aliased function or method.
 
-   A notable example is `Error::getCode()`, which has the `@implementation-alias Exception::getCode` annotation.
+  A notable example is `Error::getCode()`, which has the `@implementation-alias Exception::getCode` annotation.
 
-   The difference between `@alias` and `@implementation-alias` is very nuanced and is only
-   observable in the manual.
+  The difference between `@alias` and `@implementation-alias` is very nuanced and is only
+  observable in the manual.
 
--  `@tentative-return-type`: By using this annotation, the return type declaration is reclassified
-   as a [tentative return type](https://wiki.php.net/rfc/internal_method_return_types).
+- `@tentative-return-type`: By using this annotation, the return type declaration is reclassified
+  as a [tentative return type](https://wiki.php.net/rfc/internal_method_return_types).
 
--  `@genstubs-expose-comment-block`: By adding this annotation at the beginning of a PHPDoc block,
-   the content of the PHPDoc block will be exposed for
-   `ReflectionFunctionAbstract::getDocComment()`. This feature was added in PHP 8.4.
+- `@genstubs-expose-comment-block`: By adding this annotation at the beginning of a PHPDoc block,
+  the content of the PHPDoc block will be exposed for
+  `ReflectionFunctionAbstract::getDocComment()`. This feature was added in PHP 8.4.
 
 ## Generating Class Entries
 
@@ -327,17 +327,17 @@ register function. In the example above, we passed the class entry for `stdClass
 
 Like functions and methods, classes also support meta information passed via PHPDoc tags:
 
--  `@deprecated`: triggers a deprecation notice when the class is used
+- `@deprecated`: triggers a deprecation notice when the class is used
 
--  `@strict-properties`: adds the `ZEND_ACC_NO_DYNAMIC_PROPERTIES` flag for the class (as of PHP
-   8.0), which disallow dynamic properties.
+- `@strict-properties`: adds the `ZEND_ACC_NO_DYNAMIC_PROPERTIES` flag for the class (as of PHP
+  8.0), which disallow dynamic properties.
 
--  `@not-serializable`: adds the `ZEND_ACC_NOT_SERIALIZABLE` flag for the class (as of PHP 8.1),
-   which prevents the serialization of the class.
+- `@not-serializable`: adds the `ZEND_ACC_NOT_SERIALIZABLE` flag for the class (as of PHP 8.1),
+  which prevents the serialization of the class.
 
--  `@genstubs-expose-comment-block`: By adding this tag at the beginning of a PHPDoc block, the
-   content of the PHPDoc block will be exposed for `ReflectionClass::getDocComment()`. This feature
-   is only available as of PHP 8.4.
+- `@genstubs-expose-comment-block`: By adding this tag at the beginning of a PHPDoc block, the
+  content of the PHPDoc block will be exposed for `ReflectionClass::getDocComment()`. This feature
+  is only available as of PHP 8.4.
 
 This is an example with all the flags:
 
@@ -454,12 +454,12 @@ with `@cvalue M_PI` to the C-level constant `M_PI` (define by PHP's internals).
 
 Constants can take the following extra meta information passed via PHPDoc tags:
 
--  `@deprecated`: Triggers a deprecation notice when the constant is used. As of PHP 8.5 the
-   `#[Deprecated]` attribute should be used instead.
+- `@deprecated`: Triggers a deprecation notice when the constant is used. As of PHP 8.5 the
+  `#[Deprecated]` attribute should be used instead.
 
--  `@genstubs-expose-comment-block`: By adding this tag at the beginning of a PHPDoc block, the
-   content of the PHPDoc block will be exposed for `ReflectionClass::getDocComment()`. This feature
-   is only available as of PHP 8.4.
+- `@genstubs-expose-comment-block`: By adding this tag at the beginning of a PHPDoc block, the
+  content of the PHPDoc block will be exposed for `ReflectionClass::getDocComment()`. This feature
+  is only available as of PHP 8.4.
 
 ## Maintaining Backward Compatibility
 
@@ -749,10 +749,10 @@ the specified path.
 
 This feature performs the following validations:
 
--  Detecting missing global constants
--  Detecting missing classes
--  Detecting missing methods
--  Detecting incorrectly documented alias functions or methods
+- Detecting missing global constants
+- Detecting missing classes
+- Detecting missing methods
+- Detecting incorrectly documented alias functions or methods
 
 Running it with the stub examples that are used in this guide, the following warnings are shown:
 

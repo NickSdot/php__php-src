@@ -12,10 +12,10 @@ many concepts from other compilers and interpreters.
 The goal of the interpreter is to read the users source files, and to simulate the users intent.
 This process can be split into distinct phases that are easier to understand and implement.
 
--  Tokenization - splitting whole source files into words, called tokens.
--  Parsing - building a tree structure from tokens, called AST (abstract syntax tree).
--  Compilation - traversing the AST and building a list of operations, called opcodes.
--  Interpretation - reading and executing opcodes.
+- Tokenization - splitting whole source files into words, called tokens.
+- Parsing - building a tree structure from tokens, called AST (abstract syntax tree).
+- Compilation - traversing the AST and building a list of operations, called opcodes.
+- Interpretation - reading and executing opcodes.
 
 php-src as a whole can be seen as a pipeline consisting of these stages, using the input of the
 previous phase and producing some output for the next.
@@ -142,11 +142,11 @@ the generated `Zend/zend_vm_opcodes.h` file. The behavior of each instruction is
 
 Let's step through the opcodes form the example above:
 
--  We start at the top, i.e. `JMPZ`. If its first operand contains a "falsy" value, it will jump
-   to the instruction encoded in its second operand. If it is truthy, it will simply fall-through to
-   the next instruction.
--  The `ECHO` instruction prints its first operand.
--  The `RETURN` operand terminates the current function.
+- We start at the top, i.e. `JMPZ`. If its first operand contains a "falsy" value, it will jump
+  to the instruction encoded in its second operand. If it is truthy, it will simply fall-through to
+  the next instruction.
+- The `ECHO` instruction prints its first operand.
+- The `RETURN` operand terminates the current function.
 
 With these simple rules, we can see that the interpreter will `echo` only when `$cond` is
 truthy, and skip over the `echo` otherwise.

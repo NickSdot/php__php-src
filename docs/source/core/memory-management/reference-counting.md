@@ -25,11 +25,11 @@ anywhere, and that it may be freed.
 
 Reference counting is needed for types that store auxiliary data, which are the following:
 
--  Strings
--  Arrays
--  Objects
--  References
--  Resources
+- Strings
+- Arrays
+- Objects
+- References
+- Resources
 
 These are either reference types (objects, references and resources) or they are large types that
 don't fit in a single `zend_value` directly (strings, arrays). Simpler types either don't store a
@@ -71,8 +71,9 @@ with `GC_`, or macros that work on `zval` values, usually prefixed with `Z_`. Un
 naming is not always consistent.
 
 ~~~{list-table} `zval` macros
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  Macro
       -  Non-RC [^non-rc]
       -  Description
@@ -95,14 +96,10 @@ naming is not always consistent.
 
 ~~~
 
-[^non-rc]:
-
-    Whether the macro works with non-reference counted types. If it does, the operation is usually a
-    no-op. If it does not, using the macro on these values is undefined behavior.
-
 ~~~{list-table} `zend_refcounted_h` macros
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  Macro
       -  Immutable [^immutable]
       -  Description
@@ -124,10 +121,6 @@ naming is not always consistent.
       -  Decreases the reference count and frees the value if the reference count reaches zero.
 
 ~~~
-
-[^immutable]:
-
-    Whether the macro works with immutable types, described under [Immutable reference counted types](#immutable-reference-counted-types).
 
 ## Separation
 
@@ -221,3 +214,8 @@ being freed at the end of the request.
 The `GC_PERSISTENT_LOCAL` flag indicates that a `GC_PERSISTENT` value is only accessible in one
 thread, and is thus still safe to modify. This flag is only used in debug builds to satisfy an
 `assert`.
+
+[^non-rc]: Whether the macro works with non-reference counted types. If it does, the operation is usually a
+    no-op. If it does not, using the macro on these values is undefined behavior.
+
+[^immutable]: Whether the macro works with immutable types, described under [Immutable reference counted types](#immutable-reference-counted-types).

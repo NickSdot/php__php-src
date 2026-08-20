@@ -1,8 +1,9 @@
 # Writing Tests
 
 ```{toctree}
-   :hidden:
-
+---
+hidden:
+---
 Basics <self>
 sections/index
 samples/index
@@ -16,58 +17,58 @@ scared about writing to ([php-qa@lists.php.net](mailto:php-qa@lists.php.net)) �
 
 So what are phpt tests?
 
-   A phpt test is a little script used by the php internal and quality assurance teams to test PHP's
-   functionality. It can be used with new releases to make sure they can do all the things that
-   previous releases can, or to help find bugs in current releases. By writing phpt tests you are
-   helping to make PHP more stable.
+A phpt test is a little script used by the php internal and quality assurance teams to test PHP's
+functionality. It can be used with new releases to make sure they can do all the things that
+previous releases can, or to help find bugs in current releases. By writing phpt tests you are
+helping to make PHP more stable.
 
 What skills are needed to write a phpt test?
 
-   All that is really needed to write a phpt test is a basic understanding of the PHP language, a
-   text editor, and a way to get the results of your code. That is it. So if you have been writing
-   and running PHP scripts already — you have everything you need.
+All that is really needed to write a phpt test is a basic understanding of the PHP language, a
+text editor, and a way to get the results of your code. That is it. So if you have been writing
+and running PHP scripts already — you have everything you need.
 
 What do you write phpt tests on?
 
-   Basically you can write a phpt test on one of the various php functions available. You can write
-   a test on a basic language function (a string function or an array function) , or a function
-   provided by one of PHP's numerous extensions (a mysql function or a image function or a mcrypt
-   function).
+Basically you can write a phpt test on one of the various php functions available. You can write
+a test on a basic language function (a string function or an array function) , or a function
+provided by one of PHP's numerous extensions (a mysql function or a image function or a mcrypt
+function).
 
-   You can find out what functions already have phpt tests by looking in the [html version](https://github.com/php/php-src) of the git repository (`ext/standard/tests/` is a good place
-   to start looking — though not all the tests currently written are in there).
+You can find out what functions already have phpt tests by looking in the [html version](https://github.com/php/php-src) of the git repository (`ext/standard/tests/` is a good place
+to start looking — though not all the tests currently written are in there).
 
-   If you want more guidance than that you can always ask the PHP Quality Assurance Team on their
-   mailing list ([php-qa@lists.php.net](mailto:php-qa@lists.php.net)) where they would like you to direct your attentions.
+If you want more guidance than that you can always ask the PHP Quality Assurance Team on their
+mailing list ([php-qa@lists.php.net](mailto:php-qa@lists.php.net)) where they would like you to direct your attentions.
 
 How is a phpt test used?
 
-   When a test is called by the `run-tests.php` script it takes various parts of the phpt file to
-   name and create a .php file. That .php file is then executed. The output of the .php file is then
-   compared to a different section of the phpt file. If the output of the script "matches" the
-   output provided in the phpt script — it passes.
+When a test is called by the `run-tests.php` script it takes various parts of the phpt file to
+name and create a .php file. That .php file is then executed. The output of the .php file is then
+compared to a different section of the phpt file. If the output of the script "matches" the
+output provided in the phpt script — it passes.
 
 What should a phpt test do?
 
-   Basically — it should try and break the PHP function. It should check not only the functions
-   normal parameters, but it should also check edge cases. Intentionally generating an error is
-   allowed and encouraged.
+Basically — it should try and break the PHP function. It should check not only the functions
+normal parameters, but it should also check edge cases. Intentionally generating an error is
+allowed and encouraged.
 
 ## Naming Conventions
 
 Phpt tests follow a very strict naming convention. This is done to easily identify what each phpt
 test is for. Tests should be named according to the following list:
 
--  Tests for bugs
-   -  `bug<bugid>.phpt` (`bug17123.phpt`)
--  Tests for a function's basic behaviour
-   -  `<functionname>_basic.phpt` (`dba_open_basic.phpt`)
--  Tests for a function's error behaviour
-   -  `<functionname>_error.phpt` (`dba_open_error.phpt`)
--  Tests for variations in a function's behaviour
-   -  `<functionname>_variation.phpt` (`dba_open_variation.phpt`)
--  General tests for extensions
-   -  `<extname><no>.phpt` (`dba_003.phpt`)
+- Tests for bugs
+  - `bug<bugid>.phpt` (`bug17123.phpt`)
+- Tests for a function's basic behaviour
+  - `<functionname>_basic.phpt` (`dba_open_basic.phpt`)
+- Tests for a function's error behaviour
+  - `<functionname>_error.phpt` (`dba_open_error.phpt`)
+- Tests for variations in a function's behaviour
+  - `<functionname>_variation.phpt` (`dba_open_variation.phpt`)
+- General tests for extensions
+  - `<extname><no>.phpt` (`dba_003.phpt`)
 
 The convention of using \_basic, \_error and \_variation was introduced when we found that writing a
 single test case for each function resulted in unacceptably large test cases. It's quite hard to
@@ -137,29 +138,29 @@ provide you with information that can help you find out what went wrong:
 
 foo.diff
 
-   A diff file between the expected output (be it in EXPECT, EXPECTF or another option) and the
-   actual output.
+A diff file between the expected output (be it in EXPECT, EXPECTF or another option) and the
+actual output.
 
 foo.exp
 
-   The expected output.
+The expected output.
 
 foo.log
 
-   A log containing expected output, actual output and results. Most likely very similar to info in
-   the other files.
+A log containing expected output, actual output and results. Most likely very similar to info in
+the other files.
 
 foo.out
 
-   The actual output of your .phpt test part.
+The actual output of your .phpt test part.
 
 foo.php
 
-   The php code that was executed for this test.
+The php code that was executed for this test.
 
 foo.sh
 
-   An executable file that executes the test for you as it was executed during failure.
+An executable file that executes the test for you as it was executed during failure.
 
 ## Testing your test cases
 

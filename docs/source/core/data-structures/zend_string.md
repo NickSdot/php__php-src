@@ -4,10 +4,10 @@ In C, strings are represented as sequential lists of characters, `char*` or `cha
 the string is usually indicated by the special NUL character, `'\0'`. This comes with a few
 significant downsides:
 
--  Calculating the length of the string is expensive, as it requires walking the entire string to
-   look for the terminating NUL character.
--  The string may not contain the NUL character itself.
--  It is easy to run into buffer overflows if the NUL byte is accidentally missing.
+- Calculating the length of the string is expensive, as it requires walking the entire string to
+  look for the terminating NUL character.
+- The string may not contain the NUL character itself.
+- It is easy to run into buffer overflows if the NUL byte is accidentally missing.
 
 php-src uses the `zend_string` struct as an abstraction over `char*`, which explicitly stores
 the strings length, along with some other fields. It looks as follows:
@@ -60,8 +60,9 @@ The string API is defined in `Zend/zend_string.h`. It provides a number of funct
 new strings.
 
 ~~~{list-table} `zend_string` creation
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  Function/Macro [^persistent]
       -  Description
 
@@ -94,17 +95,14 @@ new strings.
 
 ~~~
 
-[^persistent]:
-
-    `s` = `zend_string`, `l` = `length`, `p` = `persistent`.
-
 As per php-src fashion, you are not supposed to access the `zend_string` fields directly. Instead,
 use the following macros. There are macros for both `zend_string` and `zvals` known to contain
 strings.
 
 ```{list-table} Accessor macros
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  `zend_string`
       -  `zval`
       -  Description
@@ -128,8 +126,9 @@ strings.
 ```
 
 ```{list-table} Reference counting macros
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  Macro
       -  Description
 
@@ -194,3 +193,5 @@ gets a bit more complicated. During requests, no interned strings are actually c
 this is delayed until the script is persisted to shared memory. This means that
 `zend_new_interned_string` may not actually return an interned string if opcache is enabled.
 Usually you don't have to worry about this.
+
+[^persistent]: `s` = `zend_string`, `l` = `length`, `p` = `persistent`.

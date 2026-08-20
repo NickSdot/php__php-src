@@ -127,8 +127,9 @@ there's a `_P`-suffixed variant that performs the same operation on a pointer to
 `zval`.
 
 ~~~{list-table} `zval` macros
-   :header-rows: 1
-
+---
+header-rows: 1
+---
    -  -  Macro
       -  Description
    -  -  `Z_TYPE[_P]`

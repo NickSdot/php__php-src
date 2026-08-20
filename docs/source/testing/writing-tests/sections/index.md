@@ -531,8 +531,8 @@ that is not a valid ini setting may cause failures.
 
 The following is a list of all tags and what they are used to represent:
 
--  `{PWD}`: Represents the directory of the file containing the `--INI--` section.
--  `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
+- `{PWD}`: Represents the directory of the file containing the `--INI--` section.
+- `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
 
 Example 1 (snippet):
 

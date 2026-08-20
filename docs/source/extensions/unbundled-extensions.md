@@ -4,8 +4,8 @@ An unbundled extension is maintained and distributed independently of php-src.
 The PHP build system refers to these as self-contained extensions. To create
 one, two things are required:
 
-* Configuration file (`config.m4`)
-* Source code for your module
+- Configuration file (`config.m4`)
+- Source code for your module
 
 We will describe now how to create these and how to put things together.
 
@@ -13,8 +13,8 @@ We will describe now how to create these and how to put things together.
 
 A developer's setup needs these tools in addition to a C compiler and `make`:
 
-* [GNU Autoconf](https://www.gnu.org/software/autoconf/)
-* [GNU M4](https://www.gnu.org/software/m4/)
+- [GNU Autoconf](https://www.gnu.org/software/autoconf/)
+- [GNU M4](https://www.gnu.org/software/m4/)
 
 ## Converting an Existing Extension
 
@@ -143,10 +143,10 @@ an existing module called `foo`.
    automatically be able to use `--with-foo=shared[,DIR]` or
    `--enable-foo=shared`.
 
-2. In `config.m4`, use `PHP_NEW_EXTENSION([foo], [foo.c], [$ext_shared])` to enable
+1. In `config.m4`, use `PHP_NEW_EXTENSION([foo], [foo.c], [$ext_shared])` to enable
    building the extension.
 
-3. Add the following lines to your C source file:
+1. Add the following lines to your C source file:
 
 ```c
 #ifdef COMPILE_DL_FOO
