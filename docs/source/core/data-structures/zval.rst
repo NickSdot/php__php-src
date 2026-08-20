@@ -122,18 +122,40 @@ access them, concealing some of the implementation details of the `zval` struct.
 there's a `_P`-suffixed variant that performs the same operation on a pointer to the given
 `zval`.
 
-**`zval` macros**
+~~~{list-table} `zval` macros
+---
+header-rows: 1
+---
+- - Macro
+  - Description
 
-| Macro                   | Description                                                                             |
-| ----------------------- | --------------------------------------------------------------------------------------- |
-| `Z_TYPE[_P]`            | Access the `zval.u1.v.type` part of the type flags, containing the `IS_*` type.         |
-| `Z_LVAL[_P]`            | Access the underlying `int` value.                                                      |
-| `Z_DVAL[_P]`            | Access the underlying `float` value.                                                    |
-| `Z_STR[_P]`             | Access the underlying `zend_string` pointer.                                            |
-| `Z_STRVAL[_P]`          | Access the strings raw `char *` pointer.                                                |
-| `Z_STRLEN[_P]`          | Access the strings length.                                                              |
-| `ZVAL_COPY_VALUE(t, s)` | Copy one `zval` to another, including type and value.                                   |
-| `ZVAL_COPY(t, s)`       | Same as `ZVAL_COPY_VALUE`, but if the value is reference counted, increase the counter. |
+- - `Z_TYPE[_P]`
+  - Access the `zval.u1.v.type` part of the type flags, containing the `IS_*`
+    type.
+
+- - `Z_LVAL[_P]`
+  - Access the underlying `int` value.
+
+- - `Z_DVAL[_P]`
+  - Access the underlying `float` value.
+
+- - `Z_STR[_P]`
+  - Access the underlying `zend_string` pointer.
+
+- - `Z_STRVAL[_P]`
+  - Access the strings raw `char *` pointer.
+
+- - `Z_STRLEN[_P]`
+  - Access the strings length.
+
+- - `ZVAL_COPY_VALUE(t, s)`
+  - Copy one `zval` to another, including type and value.
+
+- - `ZVAL_COPY(t, s)`
+  - Same as `ZVAL_COPY_VALUE`, but if the value is reference counted, increase
+    the counter.
+
+~~~
 
 <!-- _todo: There are many more. -->
 

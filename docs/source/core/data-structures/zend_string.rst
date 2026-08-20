@@ -57,41 +57,99 @@ it may have been freed if you were its last user.
 The string API is defined in `Zend/zend_string.h`. It provides a number of functions for creating
 new strings.
 
-**`zend_string` creation**
+~~~{list-table} `zend_string` creation
+---
+header-rows: 1
+---
+- - Function/Macro [^persistent]
+  - Description
 
-| Function/Macro [^persistent]          | Description                                                                                                                                                                      |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ZSTR_INIT_LITERAL(s, p)`             | Creates a new string from a string literal.                                                                                                                                      |
-| `zend_string_init(s, l, p)`           | Creates a new string from a character buffer.                                                                                                                                    |
-| `zend_string_alloc(l, p)`             | Creates a new string of a given length without initializing its content.                                                                                                         |
-| `zend_string_concat2(s1, l1, s2, l2)` | Creates a non-persistent string by concatenating two character buffers.                                                                                                          |
-| `zend_string_concat3(...)`            | Same as `zend_string_concat2`, but for three character buffers.                                                                                                                  |
-| `ZSTR_EMPTY_ALLOC()`                  | Gets an immutable, empty string. This does not allocate memory.                                                                                                                  |
-| `ZSTR_CHAR(char)`                     | Gets an immutable, single-character string. This does not allocate memory.                                                                                                       |
-| `ZSTR_KNOWN(ZEND_STR_const)`          | Gets an immutable, predefined string. Used for string common within PHP itself, e.g. `"class"`. See `ZEND_KNOWN_STRINGS` in `Zend/zend_string.h`. This does not allocate memory. |
+- - `ZSTR_INIT_LITERAL(s, p)`
+  - Creates a new string from a string literal.
+
+- - `zend_string_init(s, l, p)`
+  - Creates a new string from a character buffer.
+
+- - `zend_string_alloc(l, p)`
+  - Creates a new string of a given length without initializing its content.
+
+- - `zend_string_concat2(s1, l1, s2, l2)`
+  - Creates a non-persistent string by concatenating two character buffers.
+
+- - `zend_string_concat3(...)`
+  - Same as `zend_string_concat2`, but for three character buffers.
+
+- - `ZSTR_EMPTY_ALLOC()`
+  - Gets an immutable, empty string. This does not allocate memory.
+
+- - `ZSTR_CHAR(char)`
+  - Gets an immutable, single-character string. This does not allocate memory.
+
+- - `ZSTR_KNOWN(ZEND_STR_const)`
+  - Gets an immutable, predefined string. Used for string common within PHP
+    itself, e.g. `"class"`. See `ZEND_KNOWN_STRINGS` in
+    `Zend/zend_string.h`. This does not allocate memory.
+
+~~~
 
 As per php-src fashion, you are not supposed to access the `zend_string` fields directly. Instead,
 use the following macros. There are macros for both `zend_string` and `zvals` known to contain
 strings.
 
-**Accessor macros**
+```{list-table} Accessor macros
+---
+header-rows: 1
+---
+* - `zend_string`
+  - `zval`
+  - Description
 
-| `zend_string` | `zval`          | Description                                                                          |
-| ------------- | --------------- | ------------------------------------------------------------------------------------ |
-| `ZSTR_LEN`    | `Z_STRLEN[_P]`  | Returns the length of the string in bytes.                                           |
-| `ZSTR_VAL`    | `Z_STRVAL[_P]`  | Returns the string data as a `char*`.                                                |
-| `ZSTR_HASH`   | `Z_STRHASH[_P]` | Computes the string hash if it hasn't already been, and returns it.                  |
-| `ZSTR_H`      | -               | Returns the string hash. This macro assumes that the hash has already been computed. |
+* - `ZSTR_LEN`
+  - `Z_STRLEN[_P]`
+  - Returns the length of the string in bytes.
 
-**Reference counting macros**
+* - `ZSTR_VAL`
+  - `Z_STRVAL[_P]`
+  - Returns the string data as a `char*`.
 
-| Macro                          | Description                                                                                                                                                                                                                                                             |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `zend_string_copy(s)`          | Increases the reference count and returns the same string. The reference count is not increased if the string is interned.                                                                                                                                              |
-| `zend_string_release(s)`       | Decreases the reference count and frees the string if it goes to 0.                                                                                                                                                                                                     |
-| `zend_string_dup(s, p)`        | Creates a true copy of the string in a new allocation, except if the string is interned.                                                                                                                                                                                |
-| `zend_string_separate(s)`      | Duplicates the string if the reference count is greater than 1. See {doc}`./reference-counting` for details.                                                                                                                                                            |
-| `zend_string_realloc(s, l, p)` | Changes the size of the string. If the string has a reference count greater than 1 or if the string is interned, a new string is created. You must always use the return value of this function, as the original array may have been moved to a new location in memory. |
+* - `ZSTR_HASH`
+  - `Z_STRHASH[_P]`
+  - Computes the string hash if it hasn't already been, and returns it.
+
+* - `ZSTR_H`
+  - -
+  - Returns the string hash. This macro assumes that the hash has already been
+    computed.
+```
+
+```{list-table} Reference counting macros
+---
+header-rows: 1
+---
+* - Macro
+  - Description
+
+* - `zend_string_copy(s)`
+  - Increases the reference count and returns the same string. The reference
+    count is not increased if the string is interned.
+
+* - `zend_string_release(s)`
+  - Decreases the reference count and frees the string if it goes to 0.
+
+* - `zend_string_dup(s, p)`
+  - Creates a true copy of the string in a new allocation, except if the string
+    is interned.
+
+* - `zend_string_separate(s)`
+  - Duplicates the string if the reference count is greater than 1. See
+    {doc}`./reference-counting` for details.
+
+* - `zend_string_realloc(s, l, p)`
+  - Changes the size of the string. If the string has a reference count greater
+    than 1 or if the string is interned, a new string is created. You must
+    always use the return value of this function, as the original array may
+    have been moved to a new location in memory.
+```
 
 There are various functions to compare strings. The `zend_string_equals` function compares two
 strings in full, while `zend_string_starts_with` checks whether the first argument starts with the

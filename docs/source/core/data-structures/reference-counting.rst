@@ -68,23 +68,58 @@ use the provided macros. There are macros that work with reference counted types
 with `GC_`, or macros that work on `zval` values, usually prefixed with `Z_`. Unfortunately,
 naming is not always consistent.
 
-**`zval` macros**
+~~~{list-table} `zval` macros
+---
+header-rows: 1
+---
+- - Macro
+  - Non-RC [^non-rc]
+  - Description
 
-| Macro              | Non-RC [^non-rc] | Description                                                                            |
-| ------------------ | ---------------- | -------------------------------------------------------------------------------------- |
-| `Z_REFCOUNT[_P]`   | No               | Returns the reference count.                                                           |
-| `Z_ADDREF[_P]`     | No               | Increases the reference count.                                                         |
-| `Z_TRY_ADDREF[_P]` | Yes              | Increases the reference count. May be called on any `zval`.                            |
-| `zval_ptr_dtor`    | Yes              | Decreases the reference count and frees the value if the reference count reaches zero. |
+- - `Z_REFCOUNT[_P]`
+  - No
+  - Returns the reference count.
 
-**`zend_refcounted_h` macros**
+- - `Z_ADDREF[_P]`
+  - No
+  - Increases the reference count.
 
-| Macro               | Immutable [^immutable] | Description                                                                            |
-| ------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
-| `GC_REFCOUNT[_P]`   | Yes                    | Returns the reference count.                                                           |
-| `GC_ADDREF[_P]`     | No                     | Increases the reference count.                                                         |
-| `GC_TRY_ADDREF[_P]` | Yes                    | Increases the reference count.                                                         |
-| `GC_DTOR[_P]`       | Yes                    | Decreases the reference count and frees the value if the reference count reaches zero. |
+- - `Z_TRY_ADDREF[_P]`
+  - Yes
+  - Increases the reference count. May be called on any `zval`.
+
+- - `zval_ptr_dtor`
+  - Yes
+  - Decreases the reference count and frees the value if the reference count
+    reaches zero.
+
+~~~
+
+~~~{list-table} `zend_refcounted_h` macros
+---
+header-rows: 1
+---
+* - Macro
+  - Immutable [^immutable]
+  - Description
+
+* - `GC_REFCOUNT[_P]`
+  - Yes
+  - Returns the reference count.
+
+* - `GC_ADDREF[_P]`
+  - No
+  - Increases the reference count.
+
+* - `GC_TRY_ADDREF[_P]`
+  - Yes
+  - Increases the reference count.
+
+* - `GC_DTOR[_P]`
+  - Yes
+  - Decreases the reference count and frees the value if the reference count
+    reaches zero.
+~~~
 
 ## Separation
 
