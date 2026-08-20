@@ -70,7 +70,9 @@ use the provided macros. There are macros that work with reference counted types
 with `GC_`, or macros that work on `zval` values, usually prefixed with `Z_`. Unfortunately,
 naming is not always consistent.
 
-~~~{list-table} `zval` macros
+### `zval` Reference Counting Macros
+
+```{list-table}
 ---
 header-rows: 1
 ---
@@ -94,9 +96,11 @@ header-rows: 1
       -  Yes
       -  Decreases the reference count and frees the value if the reference count reaches zero.
 
-~~~
+```
 
-~~~{list-table} `zend_refcounted_h` macros
+### `zend_refcounted_h` Macros
+
+```{list-table}
 ---
 header-rows: 1
 ---
@@ -120,7 +124,7 @@ header-rows: 1
       -  Yes
       -  Decreases the reference count and frees the value if the reference count reaches zero.
 
-~~~
+```
 
 ## Separation
 

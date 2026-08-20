@@ -59,7 +59,9 @@ it may have been freed if you were its last user.
 The string API is defined in `Zend/zend_string.h`. It provides a number of functions for creating
 new strings.
 
-~~~{list-table} `zend_string` creation
+### `zend_string` Creation
+
+```{list-table}
 ---
 header-rows: 1
 ---
@@ -93,13 +95,15 @@ header-rows: 1
          `"class"`. See `ZEND_KNOWN_STRINGS` in `Zend/zend_string.h`. This does not allocate
          memory.
 
-~~~
+```
 
 As per php-src fashion, you are not supposed to access the `zend_string` fields directly. Instead,
 use the following macros. There are macros for both `zend_string` and `zvals` known to contain
 strings.
 
-```{list-table} Accessor macros
+### Accessor Macros
+
+```{list-table}
 ---
 header-rows: 1
 ---
@@ -125,7 +129,9 @@ header-rows: 1
 
 ```
 
-```{list-table} Reference counting macros
+### Reference Counting Macros
+
+```{list-table}
 ---
 header-rows: 1
 ---

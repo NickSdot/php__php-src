@@ -126,7 +126,9 @@ access them, concealing some of the implementation details of the `zval` struct.
 there's a `_P`-suffixed variant that performs the same operation on a pointer to the given
 `zval`.
 
-~~~{list-table} `zval` macros
+### `zval` Accessor Macros
+
+```{list-table}
 ---
 header-rows: 1
 ---
@@ -149,7 +151,7 @@ header-rows: 1
    -  -  `ZVAL_COPY(t, s)`
       -  Same as `ZVAL_COPY_VALUE`, but if the value is reference counted, increase the counter.
 
-~~~
+```
 
 ## Other zval types
 
