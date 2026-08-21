@@ -1,4 +1,7 @@
-# zend_string
+zend_string
+=============
+
+.. default-role:: code
 
 In C, strings are represented as sequential lists of characters, `char*` or `char[]`. The end of
 the string is usually indicated by the special NUL character, `'\0'`. This comes with a few
@@ -12,7 +15,7 @@ significant downsides:
 php-src uses the `zend_string` struct as an abstraction over `char*`, which explicitly stores
 the strings length, along with some other fields. It looks as follows:
 
-```c
+.. code:: c
 
    struct _zend_string {
        zend_refcounted_h gc;
@@ -20,21 +23,22 @@ the strings length, along with some other fields. It looks as follows:
        size_t            len;
        char              val[1];
    };
-```
 
-The `gc` field is used for {doc}`./reference-counting`. The `h` field contains a hash value,
-which is used for <a href="todo">hash table</a> lookups. The `len` field stores the length of the string
+The `gc` field is used for :doc:`./reference-counting`. The `h` field contains a hash value,
+which is used for `hash table <todo>`__ lookups. The `len` field stores the length of the string
 in bytes, and the `val` field contains the actual string data.
 
-You may wonder why the `val` field is declared as `char val[1]`. This is called the [struct
-hack](https://www.geeksforgeeks.org/struct-hack/) in C. It is used to create structs with a flexible size, namely by allowing the last element
+You may wonder why the `val` field is declared as `char val[1]`. This is called the `struct
+hack`_ in C. It is used to create structs with a flexible size, namely by allowing the last element
 to be expanded arbitrarily. In this case, the size of `zend_string` depends on the string's
 length, which is determined at runtime (see `_ZSTR_STRUCT_SIZE`). When allocating the string, we
 append enough bytes to the allocation to hold the strings content.
 
+.. _struct hack: https://www.geeksforgeeks.org/struct-hack/
+
 Here's a basic example of how to use `zend_string`:
 
-```c
+.. code:: c
 
    // Allocate the string.
    zend_string *string = ZSTR_INIT_LITERAL("Hello world!", /* persistent */ false);
@@ -42,27 +46,28 @@ Here's a basic example of how to use `zend_string`:
    zend_write(ZSTR_VAL(string), ZSTR_LEN(string));
    // Decrease the reference count and free it if necessary.
    zend_string_release(string);
-```
 
 `ZSTR_INIT_LITERAL` creates a `zend_string` from a string literal. It is just a wrapper around
 `zend_string_init(char *string, size_t length, bool persistent)` that provides the length of the
 string at compile time. The `persistent` parameter indicates whether the string is allocated using
-`malloc` (`persistent == true`) or `emalloc`, <a href="todo">PHPs custom allocator</a> (`persistent == false`) that is emptied after each request.
+`malloc` (`persistent == true`) or `emalloc`, `PHPs custom allocator <todo>`__ (`persistent
+== false`) that is emptied after each request.
 
 When you're done using the string, you must call `zend_string_release`, or the memory will leak.
 `zend_string_release` will automatically call `malloc` or `emalloc`, depending on how the
 string was allocated. After releasing the string, you must not access any of its fields anymore, as
 it may have been freed if you were its last user.
 
-## API
+API
+-----
 
 The string API is defined in `Zend/zend_string.h`. It provides a number of functions for creating
 new strings.
 
-~~~{list-table} `zend_string` creation
+.. list-table:: `zend_string` creation
    :header-rows: 1
 
-   -  -  Function/Macro [^persistent]
+   -  -  Function/Macro [#persistent]_
       -  Description
 
    -  -  `ZSTR_INIT_LITERAL(s, p)`
@@ -92,17 +97,15 @@ new strings.
          `"class"`. See `ZEND_KNOWN_STRINGS` in `Zend/zend_string.h`. This does not allocate
          memory.
 
-~~~
+.. [#persistent]
 
-[^persistent]:
-
-    `s` = `zend_string`, `l` = `length`, `p` = `persistent`.
+   `s` = `zend_string`, `l` = `length`, `p` = `persistent`.
 
 As per php-src fashion, you are not supposed to access the `zend_string` fields directly. Instead,
 use the following macros. There are macros for both `zend_string` and `zvals` known to contain
 strings.
 
-```{list-table} Accessor macros
+.. list-table:: Accessor macros
    :header-rows: 1
 
    -  -  `zend_string`
@@ -122,12 +125,10 @@ strings.
       -  Computes the string hash if it hasn't already been, and returns it.
 
    -  -  `ZSTR_H`
-      -  -
+      -  \-
       -  Returns the string hash. This macro assumes that the hash has already been computed.
 
-```
-
-```{list-table} Reference counting macros
+.. list-table:: Reference counting macros
    :header-rows: 1
 
    -  -  Macro
@@ -145,7 +146,7 @@ strings.
 
    -  -  `zend_string_separate(s)`
       -  Duplicates the string if the reference count is greater than 1. See
-         {doc}`./reference-counting` for details.
+         :doc:`./reference-counting` for details.
 
    -  -  `zend_string_realloc(s, l, p)`
 
@@ -153,25 +154,24 @@ strings.
          the string is interned, a new string is created. You must always use the return value of
          this function, as the original array may have been moved to a new location in memory.
 
-```
-
 There are various functions to compare strings. The `zend_string_equals` function compares two
 strings in full, while `zend_string_starts_with` checks whether the first argument starts with the
 second. There are variations for `_ci` and `_literal`, i.e. case-insensitive comparison and
 literal strings, respectively. We won't go over all variations here, as they are straightforward to
 use.
 
-## Interned strings
+Interned strings
+------------------
 
 Programs use some strings many times. For example, if your program declares a class called
 `MyClass`, it would be wasteful to allocate a new string `"MyClass"` every time it is referenced
 within your program. Instead, when repeated strings are expected, php-src uses a technique called
-string interning. Essentially, this is just a simple <a href="todo">HashTable</a> where existing interned
+string interning. Essentially, this is just a simple `HashTable <todo>`__ where existing interned
 strings are stored. When creating a new interned string, php-src first checks the interned string
 buffer. If it finds it there, it can return a pointer to the existing string. If it doesn't, it
 allocates a new string and adds it to the buffer.
 
-```c
+.. code:: c
 
    zend_string *str1 = zend_new_interned_string(
        ZSTR_INIT_LITERAL("MyClass", /* persistent */ false));
@@ -183,7 +183,6 @@ allocates a new string and adds it to the buffer.
    assert(ZSTR_IS_INTERNED(str1));
    assert(ZSTR_IS_INTERNED(str2));
    assert(str1 == str2);
-```
 
 Interned strings are *not* reference counted, as they are expected to live for the entire request,
 or longer.

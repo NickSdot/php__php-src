@@ -1,12 +1,16 @@
-# Writing Tests
+Writing Tests
+===============
 
-## phpt Test Basics
+.. default-role:: code
+
+phpt Test Basics
+------------------
 
 The first thing you need to know about tests is that we need more!!! Although PHP works just great
 99.99% of the time, not having a very comprehensive test suite means that we take more risks every
 time we add to or modify the PHP implementation. The second thing you need to know is that if you
 can write PHP you can write tests. Thirdly — we are a friendly and welcoming community, don't be
-scared about writing to ([php-qa@lists.php.net](mailto:php-qa@lists.php.net)) — we won't bite!
+scared about writing to (php-qa@lists.php.net) — we won't bite!
 
 So what are phpt tests?
 
@@ -28,11 +32,12 @@ What do you write phpt tests on?
    provided by one of PHP's numerous extensions (a mysql function or a image function or a mcrypt
    function).
 
-   You can find out what functions already have phpt tests by looking in the [html version](https://github.com/php/php-src) of the git repository (`ext/standard/tests/` is a good place
+   You can find out what functions already have phpt tests by looking in the `html version
+   <https://github.com/php/php-src>`_ of the git repository (`ext/standard/tests/` is a good place
    to start looking — though not all the tests currently written are in there).
 
    If you want more guidance than that you can always ask the PHP Quality Assurance Team on their
-   mailing list ([php-qa@lists.php.net](mailto:php-qa@lists.php.net)) where they would like you to direct your attentions.
+   mailing list (php-qa@lists.php.net) where they would like you to direct your attentions.
 
 How is a phpt test used?
 
@@ -47,25 +52,31 @@ What should a phpt test do?
    normal parameters, but it should also check edge cases. Intentionally generating an error is
    allowed and encouraged.
 
-## Writing phpt Tests
+Writing phpt Tests
+--------------------
 
-### Naming Conventions
+Naming Conventions
+^^^^^^^^^^^^^^^^^^
 
 Phpt tests follow a very strict naming convention. This is done to easily identify what each phpt
 test is for. Tests should be named according to the following list:
 
--  Tests for bugs
-   -  `bug<bugid>.phpt` (`bug17123.phpt`)
--  Tests for a function's basic behaviour
-   -  `<functionname>_basic.phpt` (`dba_open_basic.phpt`)
--  Tests for a function's error behaviour
-   -  `<functionname>_error.phpt` (`dba_open_error.phpt`)
--  Tests for variations in a function's behaviour
-   -  `<functionname>_variation.phpt` (`dba_open_variation.phpt`)
--  General tests for extensions
-   -  `<extname><no>.phpt` (`dba_003.phpt`)
+Tests for bugs
+   bug<bugid>.phpt (bug17123.phpt)
 
-The convention of using \_basic, \_error and \_variation was introduced when we found that writing a
+Tests for a function's basic behaviour
+   <functionname>_basic.phpt (dba_open_basic.phpt)
+
+Tests for a function's error behaviour
+   <functionname>_error.phpt (dba_open_error.phpt)
+
+Tests for variations in a function's behaviour
+   <functionname>_variation.phpt (dba_open_variation.phpt)
+
+General tests for extensions
+   <extname><no>.phpt (dba_003.phpt)
+
+The convention of using _basic, _error and _variation was introduced when we found that writing a
 single test case for each function resulted in unacceptably large test cases. It's quite hard to
 debug problems when the test case generates 100s of lines of output.
 
@@ -80,7 +91,8 @@ mytest_error1.phpt, mytest_error2.phpt and so on.
 The "variation" tests are any tests that don't fit into "basic" or "error" tests. For example one
 might use a variation tests to test boundary conditions.
 
-### How big is a test case?
+How big is a test case?
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Small. Really — the smaller the better, a good guide is no more than 10 lines of output. The reason
 for this is that if we break something in PHP and it breaks your test case we need to be able to
@@ -90,20 +102,22 @@ case you can help a lot by commenting the output. You may find plenty of much lo
 the small tests message is something that we learnt over time, in fact we are slowly going through
 and splitting tests up when we need to.
 
-### Comments
+Comments
+^^^^^^^^
 
 Comments help. Not an essay — just a couple of lines on what the objective of the test is. It may
 seem completely obvious to you as you write it, but it might not be to someone looking at it later
 on.
 
-### Basic Format
+Basic Format
+^^^^^^^^^^^^
 
 A test must contain the sections TEST, FILE and either EXPECT or EXPECTF at a minimum. The example
 below illustrates a minimal test.
 
 *ext/standard/tests/strings/strtr.phpt*
 
-```php
+.. code:: php
 
    --TEST--
    strtr() function — basic test for strtr()
@@ -115,7 +129,6 @@ below illustrates a minimal test.
    ?>
    --EXPECT--
    string(32) "# hello All, I sAid hi planet! #"
-```
 
 As you can see the file is divided into several sections. The TEST section holds a one line title of
 the phpt test, this should be a simple description and shouldn't ever exceed one line, if you need
@@ -124,12 +137,14 @@ when generating a .php file. The FILE section is used as the body of the .php fi
 to open and close your php tags. The EXPECT section is the part used as a comparison to see if the
 test passes. It is a good idea to generate output with var_dump() calls.
 
-### PHPT structure details
+PHPT structure details
+^^^^^^^^^^^^^^^^^^^^^^
 
 A phpt test can have many more parts than just the minimum. In fact some of the mandatory parts have
 alternatives that may be used if the situation warrants it. The phpt sections are documented here.
 
-### Analyzing failing tests
+Analyzing failing tests
+^^^^^^^^^^^^^^^^^^^^^^^
 
 While writing tests you will probably run into tests not passing while you think they should. The
 'make test' command provides you with debug information. Several files will be added per test in the
@@ -162,18 +177,19 @@ foo.sh
 
    An executable file that executes the test for you as it was executed during failure.
 
-### Testing your test cases
+Testing your test cases
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Most people who write tests for PHP don't have access to a huge number of operating systems but the
 tests are run on every system that runs PHP. It's good to test your test on as many platforms as you
 can — Linux and Windows are the most important, it's increasingly important to make sure that tests
 run on 64 bit as well as 32 bit platforms. If you only have access to one operating system — don't
-worry, if you have karma, commit the test but watch [php-qa@lists.php.net](mailto:php-qa@lists.php.net) for reports of failures on
+worry, if you have karma, commit the test but watch php-qa@lists.php.net for reports of failures on
 other platforms. If you don't have karma to commit have a look at the next section.
 
 When you are testing your test case it's really important to make sure that you clean up any
 temporary resources (eg files) that you used in the test. There is a special `--CLEAN--` section
-to help you do this — see [here](#--clean--).
+to help you do this — see `here <#clean>`_.
 
 Tests run in parallel by default. Mutable resources such as files, directories, ports, database
 objects, and IPC identifiers must therefore be unique to each test. Read-only fixtures may be
@@ -181,19 +197,22 @@ shared. If a resource cannot be isolated, declare the narrowest applicable confl
 `--CONFLICTS--` or a `CONFLICTS` file.
 
 Another good check is to look at what lines of code in the PHP source your test case covers. This is
-easy to do, there are some instructions on the [PHP Wiki](https://wiki.php.net/doc/articles/writing-tests).
+easy to do, there are some instructions on the `PHP Wiki
+<https://wiki.php.net/doc/articles/writing-tests>`_.
 
-### What should I do with my test case when I've written and tested it?
+What should I do with my test case when I've written and tested it?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The next step is to get someone to review it. If it's short you can paste it into a note and send it
-to [php-qa@lists.php.net](mailto:php-qa@lists.php.net). If the test is a bit too long for that then put it somewhere were people
-can download it ([pastebin](https://pastebin.com/) is sometimes used). Appending tests to notes as
-files doesn't work well - so please don't do that. Your note to [php-qa@lists.php.net](mailto:php-qa@lists.php.net) should say what
+to php-qa@lists.php.net. If the test is a bit too long for that then put it somewhere were people
+can download it (`pastebin <https://pastebin.com/>`_ is sometimes used). Appending tests to notes as
+files doesn't work well - so please don't do that. Your note to php-qa@lists.php.net should say what
 level of PHP you have tested it on and what platform(s) you've run it on. Someone from the PHP QA
 group will review your test and reply to you. They may ask for some changes or suggest better ways
 to do things, or they may commit it to PHP.
 
-### Writing Portable PHP Tests
+Writing Portable PHP Tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Writing portable tests can be hard if you don't have access to all the many platforms that PHP can
 run on. Do your best. If in doubt, don't disable a test. It is better that the test runs in as many
@@ -210,74 +229,69 @@ affected PHP tests in the past.
 Make sure that any test touching parsing or display of dates uses a hard-defined timezone —
 preferable 'UTC'. It is important that this is defined in the file section using:
 
-```php
+.. code:: php
 
    date_default_timezone_set('UTC');
-```
 
 and not in the INI section. This is because of the order in which settings are checked which is:
 
-```
+.. code::
 
    date_default_timezone_set() -> TZ environmental -> INI setting -> System Setting
-```
 
 If a TZ environmental variable is found the INI setting will be ignored.
 
 Tests that run, or only have matching EXPECT output, on 32bit platforms can use a SKIPIF section
 like:
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (PHP_INT_SIZE != 4) die("skip this test is for 32bit platforms only");
    ?>
-```
 
 Tests for 64bit platforms can use:
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (PHP_INT_SIZE != 8) die("skip this test is for 64bit platforms only");
    ?>
-```
 
 To run a test only on Windows:
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (substr(PHP_OS, 0, 3) != 'WIN') die("skip this test is for Windows platforms only");
    ?>
-```
 
 To run a test only on Linux:
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (!stristr(PHP_OS, "Linux")) die("skip this test is Linux platforms only");
    ?>
-```
 
 To skip a test on Mac OS X Darwin:
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (!stristr(PHP_OS, "Darwin")) die("skip this test is for Mac OS X platforms only");
    ?>
-```
 
-## Examples
+Examples
+----------
 
-### EXPECTF
+EXPECTF
+^^^^^^^
 
 `/ext/standard/tests/strings/str_shuffle.phpt` is a good example for using `EXPECTF` instead of
 `EXPECT`. From time to time the algorithm used for shuffle changed and sometimes the machine used
@@ -288,11 +302,11 @@ only, `%f` for floating point values, `%c` for single characters, `%x` for hexad
 `%w` for any number of whitespace characters and `%e` for `DIRECTORY_SEPARATOR` (`'\'` or
 `'/'`).
 
-See also [EXPECTF](#expectf) details.
+See also `EXPECTF <#expectf>`_ details.
 
 */ext/standard/tests/strings/str_shuffle.phpt*
 
-```php
+.. code:: php
 
    --TEST--
    Testing str_shuffle.
@@ -306,9 +320,9 @@ See also [EXPECTF](#expectf) details.
    --EXPECTF--
    string(3) "%s"
    string(3) "123"
-```
 
-### EXPECTREGEX
+EXPECTREGEX
+^^^^^^^^^^^
 
 `/ext/standard/tests/strings/strings001.phpt` is a good example for using `EXPECTREGEX` instead
 of `EXPECT`. This test also shows that in `EXPECTREGEX` some characters need to be escaped since
@@ -316,7 +330,7 @@ otherwise they would be interpreted as a regular expression.
 
 */ext/standard/tests/strings/strings001.phpt*
 
-```php
+.. code:: php
 
    --TEST--
    Test whether strstr() and strrchr() are binary safe.
@@ -330,9 +344,9 @@ otherwise they would be interpreted as a regular expression.
    --EXPECTREGEX--
    string\(18\) \"nica\x00turska panica\"
    string\(19\) \" nica\x00turska panica\"
-```
 
-### EXTENSIONS
+EXTENSIONS
+^^^^^^^^^^
 
 Some tests depend on PHP extensions that may be unavailable. These extensions should be listed in
 the `EXTENSIONS` section. If an extension is missing, PHP will try to find it in a shared module
@@ -340,7 +354,7 @@ and skip the test if it's not there.
 
 */ext/sodium/tests/crypto_scalarmult.phpt*
 
-```php
+.. code:: php
 
    --TEST--
    Check for libsodium scalarmult
@@ -349,9 +363,9 @@ and skip the test if it's not there.
    --FILE--
    <?php
    $n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
-```
 
-### SKIPIF
+SKIPIF
+^^^^^^
 
 Some tests depend on modules or functions available only in certain versions or they even require
 minimum version of php or zend. These tests should be skipped when the requirement cannot be
@@ -361,7 +375,7 @@ why the test should skip.
 
 *ext/sodium/tests/pwhash_argon2i.phpt*
 
-```php
+.. code:: php
 
    --TEST--
    Check for libsodium argon2i
@@ -373,21 +387,21 @@ why the test should skip.
    ?>
    --FILE--
    [snip]
-```
 
 Test script and `SKIPIF` code should be directly written into `\*.phpt`. However, it is
 recommended to use include files when more test scripts depend on the same `SKIPIF` code or when
 certain test files need the same values for some input.
 
-> [!NOTE]
-> No file used by any test should have one of the following extensions: ".php", ".log", ".mem",
-> ".exp", ".out" or ".diff". When you use an include file for the `SKIPIF` section it should be
-> named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
-> "test.inc".
+Note: no file used by any test should have one of the following extensions: ".php", ".log", ".mem",
+".exp", ".out" or ".diff". When you use an include file for the `SKIPIF` section it should be
+named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
+"test.inc".
 
-## Final Notes
+Final Notes
+-------------
 
-### Cleaning up after running a test
+Cleaning up after running a test
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sometimes test cases create files or directories as part of the test case and it's important to
 remove these after the test ends, the `--CLEAN--` section is provided to help with this.
@@ -395,7 +409,7 @@ remove these after the test ends, the `--CLEAN--` section is provided to help wi
 The PHP code in the `--CLEAN--` section is executed separately from the code in the `--FILE--`
 section. For example, this code:
 
-```php
+.. code:: php
 
    --TEST--
    Will fail to clean up
@@ -411,14 +425,13 @@ section. For example, this code:
              unlink($temp_filename);
    ?>
    --EXPECT--
-```
 
-will not remove the temporary file because the variable \$temp_filename is not defined in the
+will not remove the temporary file because the variable $temp_filename is not defined in the
 `--CLEAN--` section.
 
 Here is a better way to write the code:
 
-```php
+.. code:: php
 
    --TEST--
    This will remove temporary files
@@ -435,7 +448,6 @@ Here is a better way to write the code:
            unlink($temp_filename);
    ?>
    --EXPECT--
-```
 
 Note the use of the `__DIR__` construct which will ensure that the temporary file is created in
 the same directory as the phpt test script.
@@ -460,7 +472,8 @@ Finally — if you are using CVS it's helpful to add the extension that you use 
 temporary files to the .cvsignore file — this will help to prevent you from accidentally checking
 temporary files into CVS.
 
-### Redirecting tests
+Redirecting tests
+^^^^^^^^^^^^^^^^^
 
 Using `--REDIRECTTEST--` it is possible to redirect from one test to a bunch of other tests. That
 way multiple extensions can refer to the same set of test scripts probably using it with a different
@@ -477,21 +490,23 @@ they no not use any `--EXPECT--` section.
 
 The redirected tests themselves are just normal tests.
 
-### Error reporting in tests
+Error reporting in tests
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 All tests should run correctly with error_reporting(E_ALL) and display_errors=1. This is the default
 when called from `run-tests.php`. If you have a good reason for lowering the error reporting, use
 `--INI--` section and comment this in your testcode.
 
-If your test intentionally generates a PHP warning message use \$php_errormsg variable, which you can
+If your test intentionally generates a PHP warning message use $php_errormsg variable, which you can
 then output. This will result in a consistent error message output across all platforms and PHP
 configurations, preventing your test from failing due inconsistencies in the error message content.
 Alternatively you can use `--EXPECTF--` and check for the message by replacing the path of the
 source of the message with `%s` and the line number with `%d`. The end of a message in a test
 file `example.phpt` then looks like `in %sexample.php on line %d`. We explicitly dropped the
-last path divider as that is a system dependent character `/` or `\`.
+last path divider as that is a system dependent character `/` or ``\``.
 
-### Last bit
+Last bit
+^^^^^^^^
 
 Often you want to run test scripts without `run-tests.php` by executing them on command line like
 any other php script. But sometimes it disturbs having a long `--EXPECT--` block, so that you
@@ -503,7 +518,7 @@ line consisting only of `===DONE===`.
 
 Here is an example:
 
-```php
+.. code:: php
 
    --TEST--
    Test hypot() — dealing with mixed number/character input
@@ -522,16 +537,18 @@ Here is an example:
    --EXPECTF--
    23abc :-33 float(40.224370722238)
    ===DONE===
-```
 
 If executed as PHP script the output will stop after the code on the `--FILE--` section has been
 run.
 
-## Reference
+Reference
+-----------
 
-### PHPT Sections
+PHPT Sections
+^^^^^^^^^^^^^
 
-#### `--TEST--`
+`--TEST--`
+""""""""""""
 
 **Description:** Title of test as a single line short description.
 
@@ -541,15 +558,15 @@ run.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --TEST--
    Test filter_input() with GET and POST data.
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
-#### `--DESCRIPTION--`
+`--DESCRIPTION--`
+"""""""""""""""""""
 
 **Description:** If your test requires more than a single line title to adequately describe it, you
 can use this section for further explanation. Multiple lines are allowed and besides being used for
@@ -561,15 +578,15 @@ information, this section is completely ignored by the test binary.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --DESCRIPTION--
    This test covers both valid and invalid usages of filter_input() with INPUT_GET and INPUT_POST data and several different filter sanitizers.
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
-#### `--CREDITS--`
+`--CREDITS--`
+"""""""""""""""
 
 **Description:** Used to credit contributors without CVS commit rights, who put their name and email
 on the first line. If the test was part of a TestFest event, then # followed by the name of the
@@ -584,26 +601,25 @@ of a bug or a contributor who is not credited via `Co-authored-by` tag.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --CREDITS--
    Felipe Pena
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --CREDITS--
    Zoe Slattery zoe@php.net
    # TestFest Munich 2009-05-19
-```
 
-Example 2 (full): {ref}`sample002.phpt`
+Example 2 (full): :ref:`sample002.phpt`
 
-#### `--SKIPIF--`
+`--SKIPIF--`
+""""""""""""""
 
 **Description:** A condition or set of conditions used to determine if a test should be skipped.
 Tests that are only applicable to a certain platform, extension or PHP version are good reasons for
@@ -622,46 +638,43 @@ of PHP 7.2.0. The "flaky" convention is supported as of PHP 8.2.25 and PHP 8.3.1
 
 Example 1 (snippet):
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php if (!extension_loaded("filter")) die("Skipped: filter extension required."); ?>
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php include('skipif.inc'); ?>
-```
 
-Example 2 (full): {ref}`sample003.phpt`
+Example 2 (full): :ref:`sample003.phpt`
 
 Example 3 (snippet):
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php if (getenv('SKIP_ASAN')) die('xfail Startup failure leak'); ?>
-```
 
-Example 3 (full): {ref}`xfailif.phpt`
+Example 3 (full): :ref:`xfailif.phpt`
 
 Example 4 (snippet):
 
-```php
+.. code:: php
 
    --SKIPIF--
    <?php
    if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
            die("flaky Occasionally segfaults on macOS for unknown reasons");
    }
-```
 
-#### `--CONFLICTS--`
+`--CONFLICTS--`
+"""""""""""""""""
 
 **Description:** This section is only relevant for parallel test execution (available as of PHP
 7.4.0), and allows to specify conflict keys. While a test that conflicts with key K is running, no
@@ -678,15 +691,15 @@ the contents of the `--CONFLICTS--` section.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --CONFLICTS--
    server
-```
 
-Example 1 (full): {ref}`conflicts_1.phpt`
+Example 1 (full): :ref:`conflicts_1.phpt`
 
-#### `--WHITESPACE_SENSITIVE--`
+`--WHITESPACE_SENSITIVE--`
+""""""""""""""""""""""""""""
 
 **Description:** This flag is used to indicate that the test should not be changed by automated
 formatting changes. Available as of PHP 7.4.3.
@@ -695,7 +708,8 @@ formatting changes. Available as of PHP 7.4.3.
 
 **Format:** No value, just the `--WHITESPACE_SENSITIVE--` statement.
 
-#### `--CAPTURE_STDIO--`
+`--CAPTURE_STDIO--`
+"""""""""""""""""""""
 
 **Description:** This section enables which I/O streams the `run-tests.php` test script will use
 when comparing executed file to the expected output. The `STDIN` is the standard input stream.
@@ -713,35 +727,33 @@ STDIN, STDOUT, and/or STDERR.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --CAPTURE_STDIO--
    STDIN STDERR
-```
 
-Example 1 (full): {ref}`capture_stdio_1.phpt`
+Example 1 (full): :ref:`capture_stdio_1.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --CAPTURE_STDIO--
    STDIN STDOUT
-```
 
-Example 2 (full): {ref}`capture_stdio_2.phpt`
+Example 2 (full): :ref:`capture_stdio_2.phpt`
 
 Example 3 (snippet):
 
-```text
+.. code:: text
 
    --CAPTURE_STDIO--
    STDIN STDOUT STDERR
-```
 
-Example 3(full): {ref}`capture_stdio_3.phpt`
+Example 3(full): :ref:`capture_stdio_3.phpt`
 
-#### `--EXTENSIONS--`
+`--EXTENSIONS--`
+""""""""""""""""""
 
 **Description:** Additional required shared extensions to be loaded when running the test. When the
 `run-tests.php` script is executed it loads all the extensions that are available and enabled for
@@ -754,17 +766,17 @@ aren't loaded prior to running the test, this section loads them.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXTENSIONS--
    curl
    imagick
    tokenizer
-```
 
-Example 1 (full): {ref}`extensions.phpt`
+Example 1 (full): :ref:`extensions.phpt`
 
-#### `--POST--`
+`--POST--`
+""""""""""""
 
 **Description:** POST variables or data to be passed to the test script. This section forces the use
 of the CGI binary instead of the usual CLI one.
@@ -777,17 +789,16 @@ Requirements: PHP CGI binary.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --POST--
    c=<p>string</p>&d=12345.7
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```xml
+.. code:: xml
 
    --POST--
    <SOAP-ENV:Envelope
@@ -800,11 +811,11 @@ Example 2 (snippet):
            <ns1:test xmlns:ns1="http://testuri.org" />
      </SOAP-ENV:Body>
    </SOAP-ENV:Envelope>
-```
 
-Example 2 (full): {ref}`sample005.phpt`
+Example 2 (full): :ref:`sample005.phpt`
 
-#### `--POST_RAW--`
+`--POST_RAW--`
+""""""""""""""""
 
 **Description:** Raw POST data to be passed to the test script. This differs from the section above
 because it doesn't automatically set the Content-Type, this leaves you free to define your own
@@ -820,7 +831,7 @@ Requirements: PHP CGI binary.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --POST_RAW--
    Content-type: multipart/form-data, boundary=AaB03x
@@ -834,11 +845,11 @@ Example 1 (snippet):
 
    abcdef123456789
    --AaB03x--
-```
 
-Example 1 (full): {ref}`sample006.phpt`
+Example 1 (full): :ref:`sample006.phpt`
 
-#### `--PUT--`
+`--PUT--`
+"""""""""""
 
 **Description:** Similar to the section above, PUT data to be passed to the test script. This
 section forces the use of the CGI binary instead of the usual CLI one.
@@ -853,15 +864,15 @@ Requirements: PHP CGI binary.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --PUT--
    Content-Type: text/json
 
    {"name":"default output handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
-```
 
-#### `--GZIP_POST--`
+`--GZIP_POST--`
+"""""""""""""""""
 
 **Description:** When this section exists, the POST data will be gzencode()'d. This section forces
 the use of the CGI binary instead of the usual CLI one.
@@ -874,7 +885,7 @@ the use of the CGI binary instead of the usual CLI one.
 
 Example 1 (snippet):
 
-```xml
+.. code:: xml
 
    --GZIP_POST--
    <SOAP-ENV:Envelope
@@ -887,11 +898,11 @@ Example 1 (snippet):
            <ns1:test xmlns:ns1="http://testuri.org" />
      </SOAP-ENV:Body>
    </SOAP-ENV:Envelope>
-```
 
-Example 1 (full): {ref}`sample005.phpt`
+Example 1 (full): :ref:`sample005.phpt`
 
-#### `--DEFLATE_POST--`
+`--DEFLATE_POST--`
+""""""""""""""""""""
 
 **Description:** When this section exists, the POST data will be gzcompress()'ed. This section
 forces the use of the CGI binary instead of the usual CLI one.
@@ -906,7 +917,7 @@ Requirements:
 
 Example 1 (snippet):
 
-```xml
+.. code:: xml
 
    --DEFLATE_POST--
    <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -920,11 +931,11 @@ Example 1 (snippet):
            <ns1:test xmlns:ns1="http://testuri.org" />
      </SOAP-ENV:Body>
    </SOAP-ENV:Envelope>
-```
 
-Example 1 (full): {ref}`sample007.phpt`
+Example 1 (full): :ref:`sample007.phpt`
 
-#### `--GET--`
+`--GET--`
+"""""""""""
 
 **Description:** GET variables to be passed to the test script. This section forces the use of the
 CGI binary instead of the usual CLI one.
@@ -937,25 +948,24 @@ Requirements: PHP CGI binary.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --GET--
    a=<b>test</b>&b=http://example.com
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --GET--
    ar[elm1]=1234&ar[elm2]=0660&a=0234
-```
 
-Example 2 (full): {ref}`sample008.phpt`
+Example 2 (full): :ref:`sample008.phpt`
 
-#### `--COOKIE--`
+`--COOKIE--`
+""""""""""""""
 
 **Description:** Cookies to be passed to the test script. This section forces the use of the CGI
 binary instead of the usual CLI one.
@@ -970,15 +980,15 @@ Requirements: PHP CGI binary.
 
 Example 1 (snippet):
 
-```
+.. code::
 
    --COOKIE--
    hello=World;goodbye=MrChips
-```
 
-Example 1 (full): {ref}`sample002.phpt`
+Example 1 (full): :ref:`sample002.phpt`
 
-#### `--STDIN--`
+`--STDIN--`
+"""""""""""""
 
 **Description:** Data to be fed to the test script's standard input.
 
@@ -990,16 +1000,16 @@ Example 1 (full): {ref}`sample002.phpt`
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --STDIN--
    fooBar
    use this to input some thing to the php script
-```
 
-Example 1 (full): {ref}`sample009.phpt`
+Example 1 (full): :ref:`sample009.phpt`
 
-#### `--INI--`
+`--INI--`
+"""""""""""
 
 **Description:** To be used if you need a specific php.ini setting for the test.
 
@@ -1015,17 +1025,16 @@ The following is a list of all tags and what they are used to represent:
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --INI--
    precision=14
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --INI--
    session.use_cookies=0
@@ -1033,11 +1042,11 @@ Example 2 (snippet):
    register_globals=1
    session.serialize_handler=php
    session.save_handler=files
-```
 
-Example 2 (full): {ref}`sample003.phpt`
+Example 2 (full): :ref:`sample003.phpt`
 
-#### `--ARGS--`
+`--ARGS--`
+""""""""""""
 
 **Description:** A single line defining the arguments passed to PHP.
 
@@ -1047,15 +1056,15 @@ Example 2 (full): {ref}`sample003.phpt`
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --ARGS--
    --arg value --arg=value -avalue -a=value -a value
-```
 
-Example 1 (full): {ref}`sample010.phpt`
+Example 1 (full): :ref:`sample010.phpt`
 
-#### `--ENV--`
+`--ENV--`
+"""""""""""
 
 **Description:** Configures environment variables such as those found in the `$_SERVER` global
 array.
@@ -1066,17 +1075,17 @@ array.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --ENV--
    SCRIPT_NAME=/frontcontroller10.php
    REQUEST_URI=/frontcontroller10.php/hi
    PATH_INFO=/hi
-```
 
-Example 1 (full): {ref}`sample018.phpt`
+Example 1 (full): :ref:`sample018.phpt`
 
-#### `--PHPDBG--`
+`--PHPDBG--`
+""""""""""""""
 
 **Description:** This section takes arbitrary phpdbg commands and executes the test file according
 to them as it would be run in the phpdbg prompt.
@@ -1087,7 +1096,7 @@ to them as it would be run in the phpdbg prompt.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --PHPDBG--
    b
@@ -1104,11 +1113,11 @@ Example 1 (snippet):
    r
    y
    q
-```
 
-Example 1 (full): {ref}`phpdbg_1.phpt`
+Example 1 (full): :ref:`phpdbg_1.phpt`
 
-#### `--FILE--`
+`--FILE--`
+""""""""""""
 
 **Description:** The test source code.
 
@@ -1118,7 +1127,7 @@ Example 1 (full): {ref}`phpdbg_1.phpt`
 
 Example 1 (snippet):
 
-```php
+.. code:: php
 
    --FILE--
    <?php
@@ -1137,13 +1146,13 @@ Example 1 (snippet):
    var_dump(filter_var(0, 0, 0, 0, 0));
    echo "Done\n";
    ?>
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
-#### `--FILEEOF--`
+`--FILEEOF--`
+"""""""""""""""
 
-**Description:** An alternative to `--FILE--` where any trailing line breaks (n || r || rn
+**Description:** An alternative to `--FILE--` where any trailing line breaks (\n || \r || \r\n
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
 time you won't need this section.
 
@@ -1155,18 +1164,18 @@ time you won't need this section.
 
 Example 1 (snippet):
 
-```php
+.. code:: php
 
    --FILEEOF--
    <?php
    eval("echo 'Hello'; // comment");
    echo " World";
    //last line comment
-```
 
-Example 1 (full): {ref}`sample011.phpt`
+Example 1 (full): :ref:`sample011.phpt`
 
-#### `--FILE_EXTERNAL--`
+`--FILE_EXTERNAL--`
+"""""""""""""""""""""
 
 **Description:** An alternative to `--FILE--`. This is used to specify that an external file
 should be used as the `--FILE--` contents of the test file, and is designed for running the same
@@ -1182,15 +1191,15 @@ subdirectory.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --FILE_EXTERNAL--
    files/file012.inc
-```
 
-Example 1 (full): {ref}`sample012.phpt`
+Example 1 (full): :ref:`sample012.phpt`
 
-#### `--REDIRECTTEST--`
+`--REDIRECTTEST--`
+""""""""""""""""""""
 
 **Description:** This block allows you to redirect from one test to a bunch of other tests. It also
 allows you to set configurations which are used on all tests in your destination.
@@ -1210,7 +1219,7 @@ Last note, the array in this section must be returned to work.
 
 Example 1 (snippet):
 
-```php
+.. code:: php
 
    --REDIRECTTEST--
    return array(
@@ -1219,17 +1228,13 @@ Example 1 (snippet):
            ),
      'TESTS' => 'ext/pdo/tests'
      );
-```
 
-Example 1 (full): {ref}`sample013.phpt`
-
-> [!NOTE]
-> The destination tests for this example are not included. See the PDO extension tests for
-> reference to live tests using this section.
+Example 1 (full): :ref:`sample013.phpt` Note: The destination tests for this example are not
+included. See the PDO extension tests for reference to live tests using this section.
 
 Example 2 (snippet):
 
-```php
+.. code:: php
 
    --REDIRECTTEST--
    # magic auto-configuration
@@ -1253,15 +1258,14 @@ Example 2 (snippet):
    }
 
    return $config;
-```
 
-Example 2 (full): {ref}`sample014.phpt`
+Example 2 (full): :ref:`sample014.phpt`
 
-> [!NOTE]
-> The destination tests for this example are not included. See the PDO extension tests for
-> reference to live tests using this section.
+Note: The destination tests for this example are not included. See the PDO extension tests for
+reference to live tests using this section.
 
-#### `--CGI--`
+`--CGI--`
+"""""""""""
 
 **Description:** This section takes no value. It merely provides a simple marker for tests that MUST
 be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
@@ -1272,14 +1276,14 @@ be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test 
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --CGI--
-```
 
-Example 1 (full): {ref}`sample016.phpt`
+Example 1 (full): :ref:`sample016.phpt`
 
-#### `--XFAIL--`
+`--XFAIL--`
+"""""""""""""
 
 **Description:** This section identifies this test as one that is currently expected to fail. It
 should include a brief description of why it's expected to fail. Reasons for such expectations
@@ -1298,15 +1302,15 @@ being used.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --XFAIL--
    This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
-```
 
-Example 1 (full): {ref}`sample017.phpt`
+Example 1 (full): :ref:`sample017.phpt`
 
-#### `--FLAKY--`
+`--FLAKY--`
+"""""""""""""
 
 **Description:** This section identifies this test as one that occasionally fails. If the test
 actually fails, it will be retried one more time, and that result will be reported. The section
@@ -1325,15 +1329,15 @@ is being used.
 
 Example 1 (snippet):
 
-```
+.. code::
 
    --FLAKY--
    This test frequently fails in CI
-```
 
 Example 1 (full): flaky.phpt
 
-#### `--EXPECTHEADERS--`
+`--EXPECTHEADERS--`
+"""""""""""""""""""""
 
 **Description:** The expected headers. Any header specified here must exist in the response and have
 the same value or the test fails. Additional headers found in the actual tests while running are
@@ -1349,20 +1353,19 @@ Example 1 (snippet):
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTHEADERS--
    Content-type: text/html; charset=UTF-8
    Status: 403 Access Denied
-```
 
-Example 1 (full): {ref}`sample018.phpt`
+Example 1 (full): :ref:`sample018.phpt`
 
-> [!NOTE]
-> The destination tests for this example are not included. See the phar extension tests for
-> reference to live tests using this section.
+Note: The destination tests for this example are not included. See the phar extension tests for
+reference to live tests using this section.
 
-#### `--EXPECT--`
+`--EXPECT--`
+""""""""""""""
 
 **Description:** The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
@@ -1373,7 +1376,7 @@ the test script exactly for the test to pass.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXPECT--
    array(2) {
@@ -1382,11 +1385,11 @@ Example 1 (snippet):
      ["goodbye"]=>
      string(7) "MrChips"
    }
-```
 
-Example 1 (full): {ref}`sample002.phpt`
+Example 1 (full): :ref:`sample002.phpt`
 
-#### `--EXPECT_EXTERNAL--`
+`--EXPECT_EXTERNAL--`
+"""""""""""""""""""""""
 
 **Description:** Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
@@ -1397,15 +1400,14 @@ expected output from.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXPECT_EXTERNAL--
    test001.expected.txt
-```
 
 *test001.expected.txt*
 
-```php
+.. code:: php
 
    array(2) {
      ["hello"]=>
@@ -1413,9 +1415,9 @@ Example 1 (snippet):
      ["goodbye"]=>
      string(7) "MrChips"
    }
-```
 
-#### `--EXPECTF--`
+`--EXPECTF--`
+"""""""""""""""
 
 **Description:** An alternative of `--EXPECT--`. Where it differs from `--EXPECT--` is that it
 uses a number of substitution tags for strings, spaces, digits, etc. that appear in test case output
@@ -1448,7 +1450,7 @@ The following is a list of all tags and what they are used to represent:
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTF--
    string(4) "test"
@@ -1474,13 +1476,12 @@ Example 1 (snippet):
    Warning: filter_var() expects at most 3 parameters, 5 given in %s011.php on line %d
    NULL
    Done
-```
 
-Example 1 (full): {ref}`sample001.phpt`
+Example 1 (full): :ref:`sample001.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTF--
    Warning: bzopen() expects exactly 2 parameters, 0 given in %s on line %d NULL
@@ -1503,13 +1504,12 @@ Example 2 (snippet):
    Warning: bzopen(no_such_file): failed to open stream: No such file or directory in %s on line %d
    bool(false)
    resource(%d) of type (stream) Done
-```
 
-Example 2 (full): {ref}`sample019.phpt`
+Example 2 (full): :ref:`sample019.phpt`
 
 Example 3 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTF--
    object(DOMNodeList)#%d (0) {
@@ -1522,11 +1522,11 @@ Example 3 (snippet):
    bool(true)
    bool(false)
    bool(false)
-```
 
-Example 2 (full): {ref}`sample020.phpt`
+Example 2 (full): :ref:`sample020.phpt`
 
-#### `--EXPECTF_EXTERNAL--`
+`--EXPECTF_EXTERNAL--`
+""""""""""""""""""""""""
 
 **Description:** Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
@@ -1535,7 +1535,8 @@ just stating a filename where to load the expected output from.
 
 **Test Script Support:** `run-tests.php`
 
-#### `--EXPECTREGEX--`
+`--EXPECTREGEX--`
+"""""""""""""""""""
 
 **Description:** An alternative of `--EXPECT--`. This form allows the tester to specify the result
 in a regular expression.
@@ -1547,7 +1548,7 @@ between subsequent runs of a test or when run on different platforms.
 
 Example 1 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTREGEX--
    M_E       : 2.718281[0-9]*
@@ -1567,13 +1568,12 @@ Example 1 (snippet):
    M_SQRT2   : 1.414213[0-9]*
    M_SQRT1_2 : 0.707106[0-9]*
    M_SQRT3   : 1.732050[0-9]*
-```
 
-Example 1 (full): {ref}`sample021.phpt`
+Example 1 (full): :ref:`sample021.phpt`
 
 Example 2 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTF--
    *** Testing imap_append() : basic functionality ***
@@ -1591,24 +1591,23 @@ Example 2 (snippet):
      [1]=>
      string(%d) "%w%s       2)%s webmaster@something. Another test (%d chars)"
    }
-```
 
-Example 2 (full): {ref}`sample025.phpt`
+Example 2 (full): :ref:`sample025.phpt`
 
 Example 3 (snippet):
 
-```text
+.. code:: text
 
    --EXPECTREGEX--
    string\(4\) \"-012\"
    string\(8\) \"2d303132\"
    (string\(13\) \"   4294967284\"|string\(20\) \"18446744073709551604\")
    (string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
-```
 
-Example 3 (full): {ref}`sample023.phpt`
+   Example 3 (full): :ref:`sample023.phpt`
 
-#### `--EXPECTREGEX_EXTERNAL--`
+`--EXPECTREGEX_EXTERNAL--`
+""""""""""""""""""""""""""""
 
 **Description:** Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
@@ -1617,7 +1616,8 @@ section just stating a filename where to load the expected output from.
 
 **Test Script Support:** `run-tests.php`
 
-#### `--CLEAN--`
+`--CLEAN--`
+"""""""""""""
 
 **Description:** Code that is executed after a test completes. It's main purpose is to allow you to
 clean up after yourself. You might need to remove files created during the test or close sockets or
@@ -1640,31 +1640,29 @@ without them being removed by the `--CLEAN--` section.
 
 Example 1 (snippet):
 
-```php
+.. code:: php
 
    --CLEAN--
    <?php
    unlink(__DIR__.'/DomDocument_save_basic.tmp');
    ?>
-```
 
-Example 1 (full): {ref}`sample024.phpt`
+Example 1 (full): :ref:`sample024.phpt`
 
 Example 2 (snippet):
 
-```php
+.. code:: php
 
    --CLEAN--
    <?php
    require_once('clean.inc');
    ?>
-```
 
-Example 2 (full): {ref}`sample025.phpt`
+Example 2 (full): :ref:`sample025.phpt`
 
 Example 3 (snippet):
 
-```php
+.. code:: php
 
    --CLEAN--
    <?php
@@ -1672,15 +1670,16 @@ Example 3 (snippet):
    $s = shm_attach($key);
    shm_remove($s);
    ?>
-```
 
-Example 3 (full): {ref}`sample022.phpt`
+Example 3 (full): :ref:`sample022.phpt`
 
-### Samples
+Samples
+^^^^^^^
 
-#### capture_stdio_1.phpt
+capture_stdio_1.phpt
+""""""""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test covering the I/O stdin and stdout streams.
@@ -1696,11 +1695,11 @@ Example 3 (full): {ref}`sample022.phpt`
    ?>
    --EXPECT--
    This is error sent to the stderr I/O stream
-```
 
-#### capture_stdio_2.phpt
+capture_stdio_2.phpt
+""""""""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test covering the I/O stdin and stderr streams.
@@ -1716,11 +1715,11 @@ Example 3 (full): {ref}`sample022.phpt`
    ?>
    --EXPECT--
    Hello, world. This is sent to the stdout I/O stream
-```
 
-#### capture_stdio_3.phpt
+capture_stdio_3.phpt
+""""""""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test covering the all standard I/O streams.
@@ -1737,11 +1736,11 @@ Example 3 (full): {ref}`sample022.phpt`
    --EXPECT--
    Hello, world. This is sent to the stdout I/O stream
    This is error sent to the stderr I/O stream
-```
 
-#### clean.php
+clean.php
+"""""""""
 
-```php
+.. code:: php
 
    <?php
    include_once(__DIR__ . '/imap_include.inc');
@@ -1768,11 +1767,11 @@ Example 3 (full): {ref}`sample022.phpt`
 
    imap_close($imap_stream, CL_EXPUNGE);
    ?>
-```
 
-#### conflicts_1.phpt
+conflicts_1.phpt
+""""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test get_headers() function : test with context
@@ -1804,11 +1803,11 @@ Example 3 (full): {ref}`sample022.phpt`
    HEAD
    HEAD
    Done
-```
 
-#### extensions.phpt
+extensions.phpt
+"""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    phpt EXTENSIONS directive with shared extensions
@@ -1829,20 +1828,20 @@ Example 3 (full): {ref}`sample022.phpt`
    bool(true)
    bool(true)
    bool(true)
-```
 
-#### file012.phpt
+file012.phpt
+""""""""""""
 
-```php
+.. code:: php
 
    <?php
      echo "hello world\n";
    ?>
-```
 
-#### phpdbg_1.phpt
+phpdbg_1.phpt
+"""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test deleting breakpoints
@@ -1876,11 +1875,11 @@ Example 3 (full): {ref}`sample022.phpt`
    echo $i++;
    echo $i++;
    echo $i++;
-```
 
-#### sample001.phpt
+sample001.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test filter_input() with GET and POST data.
@@ -1939,11 +1938,11 @@ Example 3 (full): {ref}`sample022.phpt`
    Warning: filter_var() expects at most 3 parameters, 5 given in %ssample001.php on line %d
    NULL
    Done
-```
 
-#### sample002.phpt
+sample002.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test receipt of cookie data.
@@ -1963,11 +1962,11 @@ Example 3 (full): {ref}`sample022.phpt`
      ["goodbye"]=>
      string(7) "MrChips"
    }
-```
 
-#### sample003.phpt
+sample003.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    session object deserialization
@@ -2014,11 +2013,11 @@ Example 3 (full): {ref}`sample022.phpt`
        int(2)
      }
    }
-```
 
-#### sample005.phpt
+sample005.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    SOAP Server 19: compressed request (gzip)
@@ -2056,11 +2055,11 @@ Example 3 (full): {ref}`sample022.phpt`
    <?xml version="1.0" encoding="UTF-8"?>
    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://testuri.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><ns1:testResponse><return xsi:type="xsd:string">Hello World</return></ns1:testResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>
    ok
-```
 
-#### sample006.phpt
+sample006.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    is_uploaded_file() function
@@ -2111,11 +2110,11 @@ Example 3 (full): {ref}`sample022.phpt`
 
    Warning: is_uploaded_file() expects exactly 1 parameter, 2 given in %s on line %d
    NULL
-```
 
-#### sample007.phpt
+sample007.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    SOAP Server 20: compressed request (deflate)
@@ -2154,11 +2153,11 @@ Example 3 (full): {ref}`sample022.phpt`
    <?xml version="1.0" encoding="UTF-8"?>
    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://testuri.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><ns1:testResponse><return xsi:type="xsd:string">Hello World</return></ns1:testResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>
    ok
-```
 
-#### sample008.phpt
+sample008.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    GET/POST/REQUEST Test with input_filter
@@ -2198,11 +2197,11 @@ Example 3 (full): {ref}`sample022.phpt`
      ["elm2"]=>
      int(432)
    }
-```
 
-#### sample009.phpt
+sample009.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    STDIN input
@@ -2217,11 +2216,11 @@ Example 3 (full): {ref}`sample022.phpt`
    string(54) "fooBar
    use this to input some thing to the php script
    "
-```
 
-#### sample010.phpt
+sample010.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    getopt#005 (Required values)
@@ -2253,11 +2252,11 @@ Example 3 (full): {ref}`sample022.phpt`
        string(5) "value"
      }
    }
-```
 
-#### sample011.phpt
+sample011.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Bug #35382 (Comment in end of file produces fatal error)
@@ -2268,11 +2267,11 @@ Example 3 (full): {ref}`sample022.phpt`
    //last line comment
    --EXPECTF--
    Hello World
-```
 
-#### sample012.phpt
+sample012.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    sample test for file_external
@@ -2280,11 +2279,11 @@ Example 3 (full): {ref}`sample022.phpt`
    files/file012.inc
    --EXPECT--
    hello world
-```
 
-#### sample013.phpt
+sample013.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    SQLite2
@@ -2298,11 +2297,11 @@ Example 3 (full): {ref}`sample022.phpt`
        ),
      'TESTS' => 'ext/pdo/tests'
      );
-```
 
-#### sample014.phpt
+sample014.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    MySQL
@@ -2332,11 +2331,11 @@ Example 3 (full): {ref}`sample022.phpt`
    }
 
    return $config;
-```
 
-#### sample016.phpt
+sample016.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test get variables with CGI binary
@@ -2354,11 +2353,11 @@ Example 3 (full): {ref}`sample022.phpt`
      ["goodbye"]=>
      string(7) "MrChips"
    }
-```
 
-#### sample017.phpt
+sample017.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    PDO Common: Bug #34630 (inserting streams as LOBs)
@@ -2419,11 +2418,11 @@ Example 3 (full): {ref}`sample022.phpt`
        string(17) "I am the LOB data"
      }
    }
-```
 
-#### sample018.phpt
+sample018.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Phar front controller rewrite access denied [cache_list]
@@ -2450,11 +2449,11 @@ Example 3 (full): {ref}`sample022.phpt`
      <h1>403 - File /hi Access Denied</h1>
     </body>
    </html>
-```
 
-#### sample019.phpt
+sample019.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    bzopen() and invalid parameters
@@ -2499,11 +2498,11 @@ Example 3 (full): {ref}`sample022.phpt`
    bool(false)
    resource(%d) of type (stream)
    Done
-```
 
-#### sample020.phpt
+sample020.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Bug #42082 (NodeList length zero should be empty)
@@ -2532,11 +2531,11 @@ Example 3 (full): {ref}`sample022.phpt`
    bool(true)
    bool(false)
    bool(false)
-```
 
-#### sample021.phpt
+sample021.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Math constants
@@ -2585,11 +2584,11 @@ Example 3 (full): {ref}`sample022.phpt`
    M_SQRT2   : 1.414213[0-9]*
    M_SQRT1_2 : 0.707106[0-9]*
    M_SQRT3   : 1.732050[0-9]*
-```
 
-#### sample022.phpt
+sample022.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    shm_detach() tests
@@ -2643,11 +2642,11 @@ Example 3 (full): {ref}`sample022.phpt`
    Warning: shm_detach() expects parameter 1 to be resource, integer given in %ssample022.php on line %d
    NULL
    Done
-```
 
-#### sample023.phpt
+sample023.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Bug #23894 (sprintf() decimal specifiers problem)
@@ -2664,11 +2663,11 @@ Example 3 (full): {ref}`sample022.phpt`
    string\(8\) \"2d303132\"
    (string\(13\) \"   4294967284\"|string\(20\) \"18446744073709551604\")
    (string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
-```
 
-#### sample024.phpt
+sample024.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    DOMDocument::save  Test basic function of save method
@@ -2701,11 +2700,11 @@ Example 3 (full): {ref}`sample022.phpt`
    ?>
    --EXPECTF--
    Wrote: 72 bytes
-```
 
-#### sample025.phpt
+sample025.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Test imap_append() function : basic functionality
@@ -2776,11 +2775,11 @@ Example 3 (full): {ref}`sample022.phpt`
      [1]=>
      string(%d) "%w%s       2)%s webmaster@something. Another test (%d chars)"
    }
-```
 
-#### sample026.phpt
+sample026.phpt
+""""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    SPL: ArrayIterator implementing RecursiveIterator
@@ -2805,20 +2804,20 @@ Example 3 (full): {ref}`sample022.phpt`
    222
    231
    3
-```
 
-#### skipif2.phpt
+skipif2.phpt
+""""""""""""
 
-```php
+.. code:: php
 
    <?php
      if (!extension_loaded('soap')) die('skip soap extension not available');
    ?>
-```
 
-#### skipif.phpt
+skipif.phpt
+"""""""""""
 
-```php
+.. code:: php
 
    <?php
    // This script prints "skip" if condition does not meet.
@@ -2845,11 +2844,11 @@ Example 3 (full): {ref}`sample022.phpt`
      }
    }
    ?>
-```
 
-#### xfailif.phpt
+xfailif.phpt
+""""""""""""
 
-```php
+.. code:: php
 
    --TEST--
    Handling of errors during linking
@@ -2869,4 +2868,3 @@ Example 3 (full): {ref}`sample022.phpt`
    ?>
    --EXPECTF--
    Fatal error: Declaration of B::foo($bar) must be compatible with A::foo() in %spreload_inheritance_error.inc on line 8
-```

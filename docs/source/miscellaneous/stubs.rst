@@ -1,9 +1,12 @@
-# Stubs
+Stubs
+========
+
+.. default-role:: code
 
 Stub files are pieces of PHP code which only contain declarations. They do not include runnable
 code, but instead contain empty function and method bodies. A very basic stub looks like this:
 
-```php
+.. code:: php
 
    <?php
    /** @var string */
@@ -16,14 +19,13 @@ code, but instead contain empty function and method bodies. A very basic stub lo
    }
 
    function fahrenheitToCelsius(float $fahrenheitToCelsius): float {}
-```
 
 Any kind of symbol can be declared via stubs. Every type can be used, with the exception of
 disjunctive normal form (DNF) types. Additional meta information can be added via PHPDoc blocks or
 PHP attributes. Namespaces can also be used by adding a top-level `namespace` declaration or by
 using namespace blocks:
 
-```php
+.. code:: php
 
    <?php
    namespace {
@@ -40,22 +42,25 @@ using namespace blocks:
    namespace Algorithms {
        function fahrenheitToCelsius(float $fahrenheit): float {}
    }
-```
 
 The above example declares the global constants `ANIMAL` and `WEIGHT_TON`, and the class
 `Atmosphere` in the top-level namespace. The `fahrenheitToCelsius()` function is declared to be
 in the `Algorithms` namespace.
 
-## Using gen_stub.php
+Using gen_stub.php
+--------------------
 
 Stub files have the `.stub.php` extension by convention.
 
-They are processed by `build/gen_stub.php`, which uses [PHP-Parser](https://github.com/nikic/PHP-Parser) for parsing. Depending on the
+They are processed by `build/gen_stub.php`, which uses PHP-Parser_ for parsing. Depending on the
 configuration and the supplied arguments, it can generate various artefacts.
 
 The following sections will introduce these capabilities.
 
-## Generating arginfo Structures
+.. _php-parser: https://github.com/nikic/PHP-Parser
+
+Generating arginfo Structures
+-------------------------------
 
 The purpose of stubs files is to make it easier to declare arginfo structures, validate parameters
 parsing declarations, and maintain documentation.
@@ -66,7 +71,7 @@ code can be generated is a huge benefit.
 
 The arginfo file matching our first example looks like:
 
-```c
+.. code:: c
 
    /* This is a generated file, edit the .stub.php file instead.
     * Stub hash: e4ed788d54a20272a92a3f6618b73d48ec848f97 */
@@ -77,7 +82,6 @@ The arginfo file matching our first example looks like:
 
    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Atmosphere_calculateBar, 0, 0, IS_DOUBLE, 0)
    ZEND_END_ARG_INFO()
-```
 
 The hash that is included in the file makes sure that stub files are not reprocessed unless the stub
 file was modified, or something requires it to be processed (e.g. regeneration was forced by using
@@ -102,18 +106,17 @@ contain references to constants.
 
 In the example below, we define a function with an optional argument, referencing a constant:
 
-```php
+.. code:: php
 
    <?php
    /** @var string */
    const ANIMAL = "Elephant";
 
    function formatName(string $defaultName = ANIMAL . " Mc" . ANIMAL . "Face"): string {}
-```
 
 This will result in the following arginfo:
 
-```c
+.. code:: c
 
    /* This is a generated file, edit the .stub.php file instead.
     * Stub hash: a9685164284e73f47b15838122b631ebdfef23d6 */
@@ -121,28 +124,25 @@ This will result in the following arginfo:
    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_formatName, 0, 0, IS_STRING, 0)
        ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, defaultName, IS_STRING, 0, "ANIMAL . \" Mc\" . ANIMAL . \"Face\"")
    ZEND_END_ARG_INFO()
-```
 
 You can only use constants as long as they are defined in the same stub file.
 
 If this is not possible, then the stub declaring the constant should be included with `require`:
 
-```php
+.. code:: php
 
    // constants.stub.php
    <?php
    /** @var string */
    const ANIMAL = "Elephant";
-```
 
-```php
+.. code:: php
 
    // example.stub.php
    <?php
    require "constants.stub.php";
 
    function foo(string $param = ANIMAL): string {}
-```
 
 Sometimes arguments have to be passed by reference, or by using the `ZEND_SEND_PREFER_REF` flag.
 
@@ -150,7 +150,7 @@ To signal parsing by reference, use the usual `&` syntax.
 
 To include the `ZEND_SEND_PREFER_REF` flag, use the `@prefer-ref` PHPDoc tag:
 
-```php
+.. code:: php
 
    <?php
    /**
@@ -158,25 +158,24 @@ To include the `ZEND_SEND_PREFER_REF` flag, use the `@prefer-ref` PHPDoc tag:
     * @prefer-ref $elephantName
     */
    function addElephantsToHerd(&$herd, string $elephantName): string {}
-```
 
 This results in the following arginfo file:
 
-```c
+.. code:: c
 
    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_addElephantsToHerd, 0, 2, IS_STRING, 0)
        ZEND_ARG_INFO(1, herd)
        ZEND_ARG_TYPE_INFO(ZEND_SEND_PREFER_REF, elephantName, IS_STRING, 0)
    ZEND_END_ARG_INFO()
-```
 
-## Generating Function Entries
+Generating Function Entries
+-----------------------------
 
 Besides arginfo structures, function entries themselves can also be generated via stubs.
 
 In order to generate these, add the file-level `@generate-function-entries` PHPDoc tag:
 
-```php
+.. code:: php
 
    <?php
    /** @generate-function-entries */
@@ -186,11 +185,10 @@ In order to generate these, add the file-level `@generate-function-entries` PHPD
    }
 
    function fahrenheitToCelsius(float $fahrenheit): float {}
-```
 
 Now, the following C code is generated:
 
-```c
+.. code:: c
 
    ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_fahrenheitToCelsius, 0, 1, IS_DOUBLE, 0)
        ZEND_ARG_TYPE_INFO(0, fahrenheit, IS_DOUBLE, 0)
@@ -211,17 +209,15 @@ Now, the following C code is generated:
        ZEND_ME(Atmosphere, calculateBar, arginfo_class_Atmosphere_calculateBar, ZEND_ACC_PUBLIC)
        ZEND_FE_END
    };
-```
 
 The generated `ext_functions` variable must be passed as the `functions` member of
 `zend_module_entry` struct.
 
 The generated `class_Atmosphere_methods` must be used when registering the `Atmosphere` class:
 
-```c
+.. code:: c
 
    INIT_CLASS_ENTRY(ce, "Atmosphere", class_Atmosphere_methods);
-```
 
 Additional meta information can be attached to functions, with the following PHPDoc tags:
 
@@ -229,25 +225,30 @@ Additional meta information can be attached to functions, with the following PHP
    PHP 8.4 the `#[Deprecated]` attribute should be used instead.
 
 -  `@alias`: If a function/method is an alias of another function/method, then the aliased
-   function/method name has to be provided as value. E.g. the function `sizeof()` has the `@alias count` annotation.
+   function/method name has to be provided as value. E.g. the function `sizeof()` has the `@alias
+   count` annotation.
 
 -  `@implementation-alias`: This is very similar to `@alias` with some semantic differences.
    These aliases exists purely to avoid duplicating some code, but there is no other connection
    between the alias and the aliased function or method.
 
-   A notable example is `Error::getCode()`, which has the `@implementation-alias Exception::getCode` annotation.
+   A notable example is `Error::getCode()`, which has the `@implementation-alias
+   Exception::getCode` annotation.
 
    The difference between `@alias` and `@implementation-alias` is very nuanced and is only
    observable in the manual.
 
 -  `@tentative-return-type`: By using this annotation, the return type declaration is reclassified
-   as a [tentative return type](https://wiki.php.net/rfc/internal_method_return_types).
+   as a `tentative return type`_.
 
 -  `@genstubs-expose-comment-block`: By adding this annotation at the beginning of a PHPDoc block,
    the content of the PHPDoc block will be exposed for
    `ReflectionFunctionAbstract::getDocComment()`. This feature was added in PHP 8.4.
 
-## Generating Class Entries
+.. _tentative return type: https://wiki.php.net/rfc/internal_method_return_types
+
+Generating Class Entries
+--------------------------
 
 In order to generate code which is necessary for registering constants, classes, properties, enums,
 and traits, use the `@generate-class-entries` file-level PHPDoc block.
@@ -257,7 +258,7 @@ superfluous.
 
 Given the following stub:
 
-```php
+.. code:: php
 
     <?php
     /** @generate-class-entries */
@@ -276,11 +277,10 @@ Given the following stub:
 
        public readonly string $name;
    }
-```
 
 The following arginfo file is generated:
 
-```c
+.. code:: c
 
    static const zend_function_entry class_Number_methods[] = {
        ZEND_FE_END
@@ -310,16 +310,14 @@ The following arginfo file is generated:
 
        return class_entry;
    }
-```
 
 The generated `register_class_*()` functions must be used to register these classes in the
 `PHP_MINIT_FUNCTION` directly:
 
-```c
+.. code:: c
 
    zend_class_entry *number_ce = register_class_Number();
    zend_class_entry *elephpant_ce = register_class_Elephant(zend_standard_class_def);
-```
 
 Class dependencies, such as the parent class or implemented interface, have to be passed to the
 register function. In the example above, we passed the class entry for `stdClass`
@@ -341,7 +339,7 @@ Like functions and methods, classes also support meta information passed via PHP
 
 This is an example with all the flags:
 
-```php
+.. code:: php
 
    <?php
    /**
@@ -358,11 +356,10 @@ This is an example with all the flags:
    class Elephant extends stdClass {
       public readonly string $name;
    }
-```
 
 Resulting in these changes:
 
-```c
+.. code:: c
 
    ...
 
@@ -379,18 +376,19 @@ Resulting in these changes:
 
        return class_entry;
    }
-```
 
-## Generating Global Constants and Attributes
+Generating Global Constants and Attributes
+--------------------------------------------
 
-Although global constants and function attributes do not relate to classes, they require the `/** @generate-class-entries */` file-level PHPDoc block.
+Although global constants and function attributes do not relate to classes, they require the `/**
+@generate-class-entries */` file-level PHPDoc block.
 
 If a global constant or function attribute are present in the stub file, the generated C-code will
 include a `register_{$stub_file_name}_symbols()` file.
 
 Given the following file:
 
-```php
+.. code:: php
 
    // example.stub.php
    <?php
@@ -406,12 +404,11 @@ Given the following file:
    const BAR = UNKNOWN;
 
    function connect(#[\SensitiveParameter] string $connectionString): string {}
-```
 
 The following C function will be generated in order to register the two global constants and the
 attribute. The name of this file is `example.stub.php`:
 
-```c
+.. code:: c
 
    ...
 
@@ -423,13 +420,12 @@ attribute. The name of this file is `example.stub.php`:
 
        zend_add_parameter_attribute(zend_hash_str_find_ptr(CG(function_table), "connect", sizeof("connect") - 1), 0, ZSTR_KNOWN(ZEND_STR_SENSITIVEPARAMETER), 0);
    }
-```
 
 Similarly to class registration functions, the generated `register_{$stub_file_name}_symbols()`
 functions must be used in `PHP_MINIT_FUNCTION`, to make the global constants an attributes
 available:
 
-```c
+.. code:: c
 
    PHP_MINIT_FUNCTION(example)
    {
@@ -437,7 +433,6 @@ available:
 
        return SUCCESS;
    }
-```
 
 Global constants always need to have their type specified with a `@var` PHPDoc tag. The type for
 class constants is inferred from their type declaration if available, otherwise a `@var` PHPDoc
@@ -461,7 +456,8 @@ Constants can take the following extra meta information passed via PHPDoc tags:
    content of the PHPDoc block will be exposed for `ReflectionClass::getDocComment()`. This feature
    is only available as of PHP 8.4.
 
-## Maintaining Backward Compatibility
+Maintaining Backward Compatibility
+------------------------------------
 
 The stubs in the PHP source distribution only need to support the branch they are part of.
 
@@ -479,14 +475,13 @@ If your extension still needs to handle PHP 7, then add the `@generate-legacy-ar
 PHPDoc tag, without any value. In this case, an additional `_legacy_arginfo.h` file will be
 generated. You can include this file conditionally, such as:
 
-```
+.. code::
 
    #if (PHP_VERSION_ID >= 80000)
    # include "example_arginfo.h"
    #else
    # include "example_legacy_arginfo.h"
    #endif
-```
 
 When `@generate-legacy-arginfo` is passed the minimum PHP version ID that needs to be supported,
 then only one arginfo file is going to be generated, and `#if` preprocessor directives will ensure
@@ -498,7 +493,7 @@ PHP Version IDs are as follows: `80000` for PHP 8.0, `80100` for PHP PHP 8.1, `8
 In this example we add a PHP 8.0 compatibility requirement to a slightly modified version of a
 previous example:
 
-```php
+.. code:: php
 
    <?php
    /**
@@ -522,11 +517,10 @@ previous example:
 
       public readonly string $name;
    }
-```
 
 Then notice the `#if (PHP_VERSION_ID >= ...)` conditions in the generated arginfo file:
 
-```c
+.. code:: c
 
    ...
 
@@ -575,18 +569,18 @@ Then notice the `#if (PHP_VERSION_ID >= ...)` conditions in the generated arginf
 
        return class_entry;
    }
-```
 
 The preprocessor conditions are necessary because enumerations (`enum`), `readonly` properties,
 and the `not-serializable` flag, are PHP 8.1 features and don't exist in PHP 8.0.
 
 The registration of `Number` is therefore completely omitted, while the `readonly` flag is not
-added for\`\`Elephpant::\$name\`\` for PHP versions before 8.1.
+added for`Elephpant::$name` for PHP versions before 8.1.
 
 Additionally, typed class constants are new in PHP 8.3, and hence a different registration function
 is used for versions before 8.3.
 
-## Generating Information for the Optimizer
+Generating Information for the Optimizer
+------------------------------------------
 
 A list of functions is maintained for the optimizer in `Zend/Optimizer/zend_func_infos.h`. This
 file contains extra information about the return type and the cardinality of the return value. This
@@ -605,14 +599,13 @@ function can only return newly created non-scalar values, its `refcount` can be 
 
 An example from the built-in functions:
 
-```php
+.. code:: php
 
    /**
     * @return array<int, string>
     * @refcount 1
     */
    function get_declared_classes(): array {}
-```
 
 Functions can be evaluated at compile-time if their arguments are known in compile-time, and their
 behavior is free from side-effects and is not affected by the global state.
@@ -630,11 +623,12 @@ passed parameters—if the number of passed arguments is known at compile-time.
 To take advantage of frameless functions, add the `@frameless-function` PHPDoc tag with some
 configuration.
 
-Since only arity-based optimizations are supported, the tag has the form: `@frameless-function {"arity": NUM}`. `NUM` is the number of parameters for which a frameless function is available.
+Since only arity-based optimizations are supported, the tag has the form: `@frameless-function
+{"arity": NUM}`. `NUM` is the number of parameters for which a frameless function is available.
 
 The stub of `in_array()` is a good example:
 
-```php
+.. code:: php
 
    /**
     * @compile-time-eval
@@ -642,12 +636,11 @@ The stub of `in_array()` is a good example:
     * @frameless-function {"arity": 3}
     */
    function in_array(mixed $needle, array $haystack, bool $strict = false): bool {}
-```
 
 Apart from being compile-time evaluable, it has a frameless function counterpart for both the 2 and
 the 3-parameter signatures:
 
-```c
+.. code:: c
 
    /* The regular in_array() function */
    PHP_FUNCTION(in_array)
@@ -682,9 +675,9 @@ the 3-parameter signatures:
 
    flf_clean:;
    }
-```
 
-## Generating Signatures for the Manual
+Generating Signatures for the Manual
+--------------------------------------
 
 The manual should reflect the exact same signatures which are represented by the stubs. This is not
 exactly the case yet for built-in symbols, but `gen_stub.php` has multiple features to automate
@@ -693,7 +686,8 @@ the process of synchronization.
 Newly added functions or methods can be documented by providing the `--generate-methodsynopses`
 option.
 
-Running `./build/gen_stub.php --generate-methodsynopses ./ext/mbstring ../doc-en/reference/mbstring` will create a dedicated page for each `ext/mbstring` function which
+Running `./build/gen_stub.php --generate-methodsynopses ./ext/mbstring
+../doc-en/reference/mbstring` will create a dedicated page for each `ext/mbstring` function which
 is not yet documented, and saves them into the `../doc-en/reference/mbstring/functions` directory.
 
 Since these are stub documentation pages, many of the sections are empty. Relevant descriptions have
@@ -717,7 +711,8 @@ stub file to be added to the manual, this PHPDoc tag should be applied to the fi
 These flags are useful for symbols which exist only for testing purposes (e.g. the ones declared for
 `ext/zend_test`), or by some other reason documentation is not possible.
 
-## Validation
+Validation
+------------
 
 You can use the `--verify` flag to `gen_stub.php` to validate whether the alias function/method
 signatures are correct.
@@ -730,7 +725,7 @@ types differ.
 In order to suppress the error when the check is false positive, the `@no-verify` PHPDoc tag
 should be applied to the alias:
 
-```php
+.. code:: php
 
    /**
     * @param resource $bz
@@ -738,11 +733,11 @@ should be applied to the alias:
     * @no-verify Uses different parameter name
     */
    function bzwrite($bz, string $data, ?int $length = null): int|false {}
-```
 
 Besides aliases, the contents of the documentation can also be validated by providing the
 `--verify-manual` option to `gen_stub.php`. This flag requires the directory with the source
-stubs, and the target manual directory, as in `./build/gen_stub.php --verify-manual ./ ../doc-en/`.
+stubs, and the target manual directory, as in `./build/gen_stub.php --verify-manual ./
+../doc-en/`.
 
 For this validation, all `php-src` stubs and the full English documentation should be available by
 the specified path.
@@ -756,16 +751,16 @@ This feature performs the following validations:
 
 Running it with the stub examples that are used in this guide, the following warnings are shown:
 
-```shell
+.. code:: shell
 
    Warning: Missing class synopsis for Number
    Warning: Missing class synopsis for Elephant
    Warning: Missing class synopsis for Atmosphere
    Warning: Missing method synopsis for fahrenheitToCelsius()
    Warning: Missing method synopsis for Atmosphere::calculateBar()
-```
 
-## Parameter Statistics
+Parameter Statistics
+----------------------
 
 The `gen_stub.php` flag `--parameter-stats` counts how many times a parameter name occurs in the
 codebase.

@@ -1,4 +1,7 @@
-# Reference counting
+Reference counting
+====================
+
+.. default-role:: code
 
 In languages like C, when you need memory for storing data for an indefinite period of time or in a
 large amount, you call `malloc` and `free` to acquire and release blocks of memory of some size.
@@ -15,13 +18,12 @@ used by another party. When the party no longer needs the value, it is responsib
 the reference count. Once the reference count reaches zero, we know the value is no longer needed
 anywhere, and that it may be freed.
 
-```php
+.. code:: php
 
    $a = new stdClass; // RC 1
    $b = $a;           // RC 2
    unset($a);         // RC 1
    unset($b);         // RC 0, free
-```
 
 Reference counting is needed for types that store auxiliary data, which are the following:
 
@@ -38,7 +40,7 @@ value at all (`null`, `false`, `true`) or their value is small enough to fit dir
 
 All of the reference counted types share a common initial struct sequence.
 
-```c
+.. code:: c
 
    typedef struct _zend_refcounted_h {
        uint32_t refcount; /* reference counter 32-bit */
@@ -56,25 +58,25 @@ All of the reference counted types share a common initial struct sequence.
         zend_refcounted_h gc;
         // ...
     };
-```
 
 The `zend_refcounted_h` struct is simple. It contains the reference count, and a `type_info`
 field that repeats some of the type information that is also stored in the `zval`, for situations
 where we're not dealing with a `zval` directly. It also stores some additional fields, described
-under [GC flags](#gc-flags).
+under `GC flags`_.
 
-## Macros
+Macros
+--------
 
 As with `zval`, `zend_refcounted_h` members should not be accessed directly. Instead, you should
 use the provided macros. There are macros that work with reference counted types directly, prefixed
 with `GC_`, or macros that work on `zval` values, usually prefixed with `Z_`. Unfortunately,
 naming is not always consistent.
 
-~~~{list-table} `zval` macros
+.. list-table:: `zval` macros
    :header-rows: 1
 
    -  -  Macro
-      -  Non-RC [^non-rc]
+      -  Non-RC [#non-rc]_
       -  Description
 
    -  -  `Z_REFCOUNT[_P]`
@@ -93,18 +95,16 @@ naming is not always consistent.
       -  Yes
       -  Decreases the reference count and frees the value if the reference count reaches zero.
 
-~~~
+.. [#non-rc]
 
-[^non-rc]:
+   Whether the macro works with non-reference counted types. If it does, the operation is usually a
+   no-op. If it does not, using the macro on these values is undefined behavior.
 
-    Whether the macro works with non-reference counted types. If it does, the operation is usually a
-    no-op. If it does not, using the macro on these values is undefined behavior.
-
-~~~{list-table} `zend_refcounted_h` macros
+.. list-table:: `zend_refcounted_h` macros
    :header-rows: 1
 
    -  -  Macro
-      -  Immutable [^immutable]
+      -  Immutable [#immutable]_
       -  Description
 
    -  -  `GC_REFCOUNT[_P]`
@@ -123,13 +123,12 @@ naming is not always consistent.
       -  Yes
       -  Decreases the reference count and frees the value if the reference count reaches zero.
 
-~~~
+.. [#immutable]
 
-[^immutable]:
+   Whether the macro works with immutable types, described under `Immutable reference counted types`_.
 
-    Whether the macro works with immutable types, described under [Immutable reference counted types](#immutable-reference-counted-types).
-
-## Separation
+Separation
+------------
 
 PHP has value and reference types. Reference types are types that are shared through a reference, a
 "pointer" to the value, rather than the value itself. Modifying such a value in one place changes it
@@ -143,16 +142,16 @@ the value is not observable from other places. Modifying a value with RC 1 is un
 we are the values sole owner. However, if the value has a reference count of >1, we need to create a
 fresh copy before modifying it. This process is called separation or CoW (copy on write).
 
-```php
+.. code:: php
 
    $a = [1, 2, 3]; // RC 1
    $b = $a;        // RC 2
    $b[] = 4;       // Separation, $a RC 1, $b RC 1
    var_dump($a);   // [1, 2, 3]
    var_dump($b);   // [1, 2, 3, 4]
-```
 
-## Immutable reference counted types
+Immutable reference counted types
+-----------------------------------
 
 Sometimes, even a reference counted type is not reference counted. When PHP runs in a multi-process
 or multi-threaded environment with opcache enabled, it shares some common values between processes
@@ -169,11 +168,12 @@ will not check whether the value is immutable before performing the reference co
 You may execute PHP with the `-d opcache.protect_memory=1` flag to mark the shared memory as
 read-only and trigger a hardware exception if the code accidentally attempts to modify it.
 
-## Cycle collector
+Cycle collector
+-----------------
 
 Sometimes, reference counting is not enough. Consider the following example:
 
-```php
+.. code:: php
 
    $a = new stdClass;
    $b = new stdClass;
@@ -181,7 +181,6 @@ Sometimes, reference counting is not enough. Consider the following example:
    $b->a = $a;
    unset($a);
    unset($b);
-```
 
 When this code finishes, the reference count of both instances of `stdClass` will still be 1, as
 they reference each other. This is called a reference cycle.
@@ -189,12 +188,13 @@ they reference each other. This is called a reference cycle.
 PHP implements a cycle collector that detects such cycles and frees values that are only reachable
 through their own references. The cycle collector will record values that may be involved in a
 cycle, and run when this buffer becomes full. It is also possible to invoke it explicitly by calling
-the `gc_collect_cycles()` function. The cycle collectors design is described in the <a
-href="todo">Cycle collector</a> chapter.
+the `gc_collect_cycles()` function. The cycle collectors design is described in the `Cycle
+collector <todo>`_ chapter.
 
-## GC flags
+GC flags
+----------
 
-```c
+.. code:: c
 
    /* zval_gc_flags(zval.value->gc.u.type_info) (common flags) */
    #define GC_NOT_COLLECTABLE  (1<<4)
@@ -202,7 +202,6 @@ href="todo">Cycle collector</a> chapter.
    #define GC_IMMUTABLE        (1<<6) /* can't be changed in place */
    #define GC_PERSISTENT       (1<<7) /* allocated using malloc */
    #define GC_PERSISTENT_LOCAL (1<<8) /* persistent, but thread-local */
-```
 
 The `GC_NOT_COLLECTABLE` flag indicates that the value may not be involved in a reference cycle.
 This allows for a fast way to detect values that don't need to be added to the cycle collector
@@ -213,11 +212,11 @@ example, `var_dump` recursively prints the contents of values, and marks visited
 `GC_PROTECTED` flag. If the value is recursive, it prevents the same value from being visited
 again.
 
-`GC_IMMUTABLE` has been discussed in [Immutable reference counted types](#immutable-reference-counted-types).
+`GC_IMMUTABLE` has been discussed in `Immutable reference counted types`_.
 
 The `GC_PERSISTENT` flag indicates that the value was allocated using `malloc`, instead of PHPs
 own allocator. Usually, such values are alive for the entire lifetime of the process, instead of
-being freed at the end of the request. See the <a href="todo">Zend allocator</a> chapter for more
+being freed at the end of the request. See the `Zend allocator <todo>`_ chapter for more
 information.
 
 The `GC_PERSISTENT_LOCAL` flag indicates that a `GC_PERSISTENT` value is only accessible in one
