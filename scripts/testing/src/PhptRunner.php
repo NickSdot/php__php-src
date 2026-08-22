@@ -21,7 +21,8 @@ final class PhptRunner
         private ProcessRunner $process,
         private Output $output,
         private string $testPhp,
-        private string $temporaryDirectory
+        private string $temporaryDirectory,
+        private int $jobs
     ) {}
 
     /** @param ?list<string> $tests */
@@ -38,7 +39,7 @@ final class PhptRunner
             PHP_BINARY,
             $runner,
             '-q',
-            '-j' . TestCoverageCommand::WORKERS,
+            '-j' . $this->jobs,
             '-p',
             $this->testPhp,
             '-W',

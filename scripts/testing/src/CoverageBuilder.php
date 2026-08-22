@@ -34,7 +34,8 @@ final class CoverageBuilder
         private GitRepository $repository,
         private ProcessRunner $process,
         private Output $output,
-        private string $gcov
+        private string $gcov,
+        private int $jobs
     ) {}
 
     public function build(TestCoverageOptions $options, string $baseRevision, string $treeRevision, string $temporaryDirectory): CoverageRuntimes
@@ -273,7 +274,7 @@ final class CoverageBuilder
         $this->output->printLine('Building %s', $role);
 
         $this->process->command(
-            [$this->makeCommand(), '-j' . TestCoverageCommand::WORKERS, 'cli'],
+            [$this->makeCommand(), '-j' . $this->jobs, 'cli'],
             $build->buildDirectory
         );
     }
@@ -294,7 +295,8 @@ final class CoverageBuilder
                 $this->process,
                 $this->output,
                 Path::absoluteFile($build->buildDirectory . self::PHP, $this->repository->path()),
-                $temporaryDirectory
+                $temporaryDirectory,
+                $this->jobs
             ),
             $dependencies
         );

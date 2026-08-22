@@ -12,6 +12,7 @@ use function array_slice;
 use function count;
 use function explode;
 use function in_array;
+use function preg_match;
 use function str_contains;
 use function str_starts_with;
 use function substr;
@@ -19,7 +20,7 @@ use function substr;
 final class TestCoverageCommand
 {
     // todo(NickSdot): use auto-detection when run-tests.php is extracted
-    public const WORKERS = 10;
+    private const int DEFAULT_JOBS = 10;
 
     private const USAGE = <<<'USAGE'
     Usage:
@@ -30,6 +31,7 @@ final class TestCoverageCommand
       --tree REF             Tree branch or commit (default: working tree)
       --source PATH          Limit source scope (repeatable)
       --global               Compare every discovered source
+      -jN, --jobs N          Use N parallel jobs (default: 10)
       -h, --help             Show help
 
     Examples:
@@ -84,6 +86,7 @@ final class TestCoverageCommand
             'sources' => [],
             'testPaths' => [],
             'global' => false,
+            'jobs' => self::DEFAULT_JOBS,
             'help' => false,
         ];
 
@@ -98,6 +101,20 @@ final class TestCoverageCommand
                 break;
             }
 
+            if (str_starts_with($argument, '-j') === true) {
+
+                $value = $argument === '-j'
+                    ? ($arguments[$index++] ?? '')
+                    : substr($argument, 2);
+
+                if ($value === '') {
+                    throw new InvalidArgumentException('-j requires value');
+                }
+
+                $options['jobs'] = $this->jobCount($value);
+                continue;
+            }
+
             if ($argument === '-h' || $argument === '--help') {
                 $options['help'] = true;
                 continue;
@@ -110,7 +127,7 @@ final class TestCoverageCommand
 
             $name = $this->optionName($argument);
 
-            if (in_array($name, ['base', 'tree', 'source', 'global'], true) === false) {
+            if (in_array($name, ['base', 'tree', 'source', 'global', 'jobs'], true) === false) {
                 throw new InvalidArgumentException("Unknown option: --$name");
             }
 
@@ -141,6 +158,10 @@ final class TestCoverageCommand
                 continue;
             }
 
+            if ($name === 'jobs') {
+                $options['jobs'] = $this->jobCount($value);
+                continue;
+            }
         }
 
         if ($options['global'] === true && $options['sources'] !== []) {
@@ -173,5 +194,14 @@ final class TestCoverageCommand
     private function optionName(string $argument): string
     {
         return explode('=', substr($argument, 2), 2)[0];
+    }
+
+    private function jobCount(string $value): int
+    {
+        if (preg_match('/^[1-9]\d*$/D', $value) !== 1) {
+            throw new InvalidArgumentException('Jobs must be a positive integer');
+        }
+
+        return (int) $value;
     }
 }

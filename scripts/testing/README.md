@@ -18,7 +18,10 @@ paths limit runs to matching PHPT files and compare their components plus change
 source components. `--source` limits the source scope and `--global` compares all
 discovered sources, including vendored sources. Known vendor sources are excluded
 unless changed or explicitly selected via `--source`. The tree uses current files
-including uncommitted changes; `--tree` selects a branch/commit. CLI builds use
+including uncommitted changes; `--tree` selects a branch/commit. By default, runs
+builds and tests with 10 parallel; `-jN` or `--jobs N` allow overrides.
+
+CLI Builds
 `config.nice` with `gcov` and `zend_test` automatically appended.
 
 ## Tests

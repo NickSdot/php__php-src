@@ -16,6 +16,7 @@ final readonly class TestCoverageOptions
         public array $sources,
         public array $testPaths,
         public bool $global,
+        public int $jobs,
         public bool $help
     ) {}
 }

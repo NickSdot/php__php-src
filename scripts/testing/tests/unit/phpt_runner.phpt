@@ -25,10 +25,11 @@ file_put_contents($runner, <<<'PHP'
         str_repeat("PASSED\t" . __DIR__ . "/test.phpt\n", 41)
             . "SKIPPED\t" . __DIR__ . "/skipped.phpt\n"
     );
+    file_put_contents(__DIR__ . '/arguments', implode("\n", $argv));
     PHP);
 
 ob_start();
-$run = (new PhptRunner(new ProcessRunner(), new Output(), PHP_BINARY, $directory))->run(
+$run = (new PhptRunner(new ProcessRunner(), new Output(), PHP_BINARY, $directory, 17))->run(
     'tree',
     $runner,
     ['first.phpt', 'redirect.phpt']
@@ -38,6 +39,7 @@ ob_end_clean();
 var_dump($run->testCount());
 var_dump($run->results->paths());
 var_dump($run->results->status('skipped.phpt'));
+var_dump(str_contains(file_get_contents("$directory/arguments"), '-j17'));
 
 $temporary->remove();
 ?>
@@ -59,3 +61,4 @@ array(2) {
   string(9) "test.phpt"
 }
 string(4) "SKIP"
+bool(true)

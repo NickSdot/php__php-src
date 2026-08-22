@@ -81,7 +81,7 @@ $trees = new TestTrees($source, $source, new PhptSuites(
     ["$source/vendor/acme/tests/example.phpt"],
     ["$source/vendor/acme/tests/example.phpt"]
 ));
-$options = new TestCoverageOptions('master', null, [], ['vendor/acme/tests'], false, false);
+$options = new TestCoverageOptions('master', null, [], ['vendor/acme/tests'], false, 10, false);
 $resolver = new CoverageScopeResolver();
 
 var_dump($resolver->resolve($options, $trees, ['vendor/acme/shared header.h'], $dependencies)->description());

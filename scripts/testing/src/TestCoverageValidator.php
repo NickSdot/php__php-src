@@ -48,7 +48,15 @@ final class TestCoverageValidator
 
         try {
 
-            $runtimes = (new CoverageBuilder($repository, $this->process, $this->output, $this->gcov()))->build(
+            $builder = new CoverageBuilder(
+                $repository,
+                $this->process,
+                $this->output,
+                $this->gcov(),
+                $options->jobs,
+            );
+
+            $runtimes = ($builder)->build(
                 $options,
                 $baseRevision,
                 $treeRevision,

@@ -20,6 +20,9 @@ run(['--wat', 'value']);
 run(['--wat']);
 run(['--global', '--source', 'ext/uri']);
 run(['--global=yes']);
+run(['-j']);
+run(['-j0']);
+run(['--jobs=no']);
 ?>
 --EXPECT--
 int(1)
@@ -34,3 +37,9 @@ int(1)
 Error: --global cannot be combined with --source
 int(1)
 Error: --global does not take value
+int(1)
+Error: -j requires value
+int(1)
+Error: Jobs must be a positive integer
+int(1)
+Error: Jobs must be a positive integer
