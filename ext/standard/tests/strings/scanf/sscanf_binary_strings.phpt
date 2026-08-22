@@ -8,13 +8,13 @@ $format = "%s\0%s\0%s";
 try {
     var_dump(sscanf($str, $format));
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 try {
     var_dump(sscanf($str, $format, $a, $b, $c));
     var_dump($a, $b, $c);
 } catch (Throwable $e) {
-    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--

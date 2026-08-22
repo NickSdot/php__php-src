@@ -32,7 +32,7 @@ foreach ($formats as $format) {
 	try {
 	    sscanf($str, $format);
 	} catch (Throwable $e) {
-	    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+		echo $e::class, ': ', $e->getMessage(), "\n";
 	}
 }
 ?>

@@ -17,14 +17,14 @@ foreach ($formats as $format) {
 	try {
 	    var_dump(sscanf($str, $format));
 	} catch (Throwable $e) {
-	    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+		echo $e::class, ': ', $e->getMessage(), "\n";
 	}
 	try {
 	    var_dump(sscanf($str, $format, $a, $b, $c));
 	    var_dump($a, $b, $c);
 	    $a = $b = $c = null;
 	} catch (Throwable $e) {
-	    echo $e::class, ': ', $e->getMessage(), PHP_EOL;
+		echo $e::class, ': ', $e->getMessage(), "\n";
 	}
 }
 
@@ -38,8 +38,8 @@ foreach ($formats as $format) {
 	echo "Using format string '$format':\n";
 	try {
 		var_dump(sscanf($str, $format));
-	} catch (ValueError $exception) {
-		echo $exception->getMessage(), PHP_EOL;
+	} catch (Throwable $e) {
+		echo $e::class, ': ', $e->getMessage(), "\n";
 	}
 }
 
@@ -47,8 +47,8 @@ echo "XPG argument beyond supplied references:\n";
 $value = null;
 try {
 	sscanf('a', '%2$s', $value);
-} catch (ValueError $exception) {
-	echo $exception->getMessage(), PHP_EOL;
+} catch (Throwable $e) {
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 echo "Suppressed assignments:\n";
@@ -66,8 +66,8 @@ echo "Invalid format with more than 16 references:\n";
 $values = array_fill(0, 18, null);
 try {
 	sscanf($input, $format . ' %Q', ...$values);
-} catch (ValueError $exception) {
-	echo $exception->getMessage(), PHP_EOL;
+} catch (Throwable $e) {
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 echo "More than 32 results:\n";
@@ -118,13 +118,13 @@ Using format string '%s %*s %3$s':
 ValueError: cannot mix "%" and "%n$" conversion specifiers
 ValueError: cannot mix "%" and "%n$" conversion specifiers
 Using format string '%0$s':
-"%n$" argument index out of range
+ValueError: "%n$" argument index out of range
 Using format string '%256$s':
-"%n$" argument index out of range
+ValueError: "%n$" argument index out of range
 Using format string '%1$s %s':
-cannot mix "%" and "%n$" conversion specifiers
+ValueError: cannot mix "%" and "%n$" conversion specifiers
 XPG argument beyond supplied references:
-"%n$" argument index out of range
+ValueError: "%n$" argument index out of range
 Suppressed assignments:
 array(1) {
   [0]=>
@@ -139,7 +139,7 @@ int(17)
 int(1)
 int(17)
 Invalid format with more than 16 references:
-Bad scan conversion character "Q"
+ValueError: Bad scan conversion character "Q"
 More than 32 results:
 int(33)
 int(1)
