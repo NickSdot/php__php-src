@@ -61,7 +61,7 @@ final class CoverageReporter
             ],
             [
                 'Change',
-                $this->countChange($baseRun->testCount(), $treeRun->testCount()),
+                $this->testChanges($testChanges),
                 $this->countChange($comparison->baseSources(), $comparison->treeSources()),
                 $this->coverageChange(
                     count($gainedLines),
@@ -86,6 +86,11 @@ final class CoverageReporter
 
         $this->output->table($rows);
         $this->output->printLine('Report: %s', $this->file);
+    }
+
+    private function testChanges(PhptChanges $changes): string
+    {
+        return sprintf('+%d / -%d', count($changes->created()), count($changes->deleted()));
     }
 
     private function countChange(int $base, int $tree): string
