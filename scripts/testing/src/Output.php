@@ -11,7 +11,6 @@ use function function_exists;
 use function fwrite;
 use function getenv;
 use function implode;
-use function in_array;
 use function max;
 use function sapi_windows_vt100_support;
 use function sprintf;
@@ -79,24 +78,6 @@ final class Output
 
         foreach ($header as $line) {
             $this->printLine($line);
-        }
-    }
-
-    /** @param list<string> $header */
-    public function updateProgressHeader(array $header): void
-    {
-        $previous = $this->progressHeader;
-        $this->progressHeader = $header;
-
-        if ($this->interactive === true) {
-            $this->renderProgress();
-            return;
-        }
-
-        foreach ($header as $line) {
-            if (in_array($line, $previous, true) === false) {
-                $this->printLine($line);
-            }
         }
     }
 

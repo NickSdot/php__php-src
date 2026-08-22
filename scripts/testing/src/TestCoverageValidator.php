@@ -7,7 +7,6 @@ namespace PHP\Testing;
 use RuntimeException;
 
 use function getenv;
-use function sprintf;
 
 final class TestCoverageValidator
 {
@@ -31,7 +30,11 @@ final class TestCoverageValidator
             $this->output->warning($warning);
         }
 
-        $this->output->startProgress($this->header($options, $baseRevision, $treeRevision, $this->initialCoverage($options)));
+        $this->output->startProgress((new TestCoverageHeader(
+            $options,
+            $baseRevision,
+            $treeRevision
+        ))->lines());
 
         $lock = CoverageLock::acquire($repository->commonDirectory());
 
@@ -80,8 +83,6 @@ final class TestCoverageValidator
                 $runtimes->treeChangedPaths,
                 $runtimes->dependencies()
             );
-
-            $this->output->updateProgressHeader($this->header($options, $baseRevision, $treeRevision, $scope->description()));
 
             $runs = (new CoverageSuiteRunner($runtimes->base, $runtimes->tree))->run($trees, $scope);
 
@@ -154,36 +155,6 @@ final class TestCoverageValidator
         }
 
         return $gcov;
-    }
-
-    /** @return list<string> */
-    private function header(TestCoverageOptions $options, string $baseRevision, string $treeRevision, ?string $coverage = null): array
-    {
-        $lines = [];
-
-        if ($coverage !== null) {
-            $lines[] = "Coverage: $coverage";
-            $lines[] = '';
-        }
-
-        $lines[] = sprintf('Base: %s %s', $baseRevision, $options->base);
-        $lines[] = sprintf('Tree: %s %s', $treeRevision, $options->tree ?? 'working tree');
-        $lines[] = '';
-
-        return $lines;
-    }
-
-    private function initialCoverage(TestCoverageOptions $options): ?string
-    {
-        if ($options->global === true || ($options->sources === [] && $options->testPaths === [])) {
-            return 'global';
-        }
-
-        if ($options->sources !== []) {
-            return CoverageScope::paths($options->sources)->description();
-        }
-
-        return null;
     }
 
 }

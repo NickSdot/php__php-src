@@ -171,7 +171,7 @@ final readonly class CoverageIntegrationTest
             throw new RuntimeException("$name returned $status instead of $expectedStatus\n$output");
         }
 
-        foreach (['Coverage: ' . self::SOURCE, 'Report: ', "\n$result\n"] as $expected) {
+        foreach (["Coverage:\n  " . self::SOURCE . "\n  " . self::TESTS, 'Report: ', "\n$result\n"] as $expected) {
             if (str_contains($output, $expected) === false) {
                 throw new RuntimeException("$name output does not contain: $expected\n$output");
             }
