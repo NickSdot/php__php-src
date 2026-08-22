@@ -11,6 +11,7 @@ use function function_exists;
 use function fwrite;
 use function getenv;
 use function implode;
+use function in_array;
 use function max;
 use function sapi_windows_vt100_support;
 use function sprintf;
@@ -21,6 +22,21 @@ use function stream_isatty;
 
 final class Output
 {
+    /** @var list<string> */
+    private array $progressHeader = [];
+
+    /** @var list<string> */
+    private array $progressLines = [];
+
+    private bool $interactive;
+
+    private int $renderedProgressLines = 0;
+
+    public function __construct(?bool $interactive = null)
+    {
+        $this->interactive = $interactive ?? $this->supportsTerminal(STDOUT);
+    }
+
     public function line(string $message = '', mixed ...$values): string
     {
         if ($values !== []) {
@@ -49,6 +65,67 @@ final class Output
     public function warning(string $message): void
     {
         fwrite(STDERR, $this->line($this->colour("\033[33m") . "Warning: $message" . $this->colour("\033[0m")));
+    }
+
+    /** @param list<string> $header */
+    public function startProgress(array $header): void
+    {
+        $this->progressHeader = $header;
+
+        if ($this->interactive === true) {
+            $this->renderProgress();
+            return;
+        }
+
+        foreach ($header as $line) {
+            $this->printLine($line);
+        }
+    }
+
+    /** @param list<string> $header */
+    public function updateProgressHeader(array $header): void
+    {
+        $previous = $this->progressHeader;
+        $this->progressHeader = $header;
+
+        if ($this->interactive === true) {
+            $this->renderProgress();
+            return;
+        }
+
+        foreach ($header as $line) {
+            if (in_array($line, $previous, true) === false) {
+                $this->printLine($line);
+            }
+        }
+    }
+
+    public function progress(string $message, mixed ...$values): void
+    {
+        if ($values !== []) {
+            $message = sprintf($message, ...$values);
+        }
+
+        $this->progressLines[] = $message;
+
+        if ($this->interactive === true) {
+            $this->renderProgress();
+            return;
+        }
+
+        $this->printLine($message);
+    }
+
+    public function finishProgress(): void
+    {
+        if ($this->interactive === true) {
+            $this->progressLines = [];
+            $this->renderProgress();
+            $this->renderedProgressLines = 0;
+        }
+
+        $this->progressHeader = [];
+        $this->progressLines = [];
     }
 
     /** @param list<list<string>> $rows */
@@ -94,18 +171,43 @@ final class Output
 
     private function colour(string $colour): string
     {
-        $supported = function_exists('stream_isatty')
-            && stream_isatty(STDERR)
-            && getenv('NO_COLOR') === false
-            && getenv('TERM') !== 'dumb'
-            && (PHP_OS_FAMILY !== 'Windows'
-                || (function_exists('sapi_windows_vt100_support')
-                && sapi_windows_vt100_support(STDERR)));
-
-        if ($supported === true) {
+        if ($this->supportsTerminal(STDERR) === true && getenv('NO_COLOR') === false) {
             return $colour;
         }
 
         return '';
+    }
+
+    /** @param resource $stream */
+    private function supportsTerminal(mixed $stream): bool
+    {
+        return function_exists('stream_isatty')
+            && stream_isatty($stream)
+            && getenv('TERM') !== 'dumb'
+            && (PHP_OS_FAMILY !== 'Windows'
+                || (function_exists('sapi_windows_vt100_support')
+                && sapi_windows_vt100_support($stream)));
+    }
+
+    private function renderProgress(): void
+    {
+        $this->clearProgress();
+
+        $lines = [...$this->progressHeader, ...$this->progressLines];
+
+        foreach ($lines as $line) {
+            $this->printLine($line);
+        }
+
+        $this->renderedProgressLines = count($lines);
+    }
+
+    private function clearProgress(): void
+    {
+        if ($this->renderedProgressLines === 0) {
+            return;
+        }
+
+        echo "\033[{$this->renderedProgressLines}F\033[J";
     }
 }

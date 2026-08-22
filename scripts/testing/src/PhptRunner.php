@@ -29,7 +29,7 @@ final class PhptRunner
     public function run(string $name, string $runner, ?array $tests): PhptRun
     {
         if ($tests === []) {
-            $this->output->printLine('Running %s 0 tests', $name);
+            $this->output->progress('Running %s 0 tests', $name);
             return new PhptRun();
         }
 
@@ -47,7 +47,7 @@ final class PhptRunner
         ];
 
         if ($tests === null) {
-            $this->output->printLine('Running %s tests', $name);
+            $this->output->progress('Running %s tests', $name);
         }
 
         if ($tests !== null) {
@@ -104,7 +104,7 @@ final class PhptRunner
             throw new RuntimeException("Could not write test list: $list");
         }
 
-        $this->output->printLine('Running %s %d tests', $name, count($tests));
+        $this->output->progress('Running %s %d tests', $name, count($tests));
 
         return [...$command, '-r', $list];
     }

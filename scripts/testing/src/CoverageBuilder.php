@@ -271,7 +271,7 @@ final class CoverageBuilder
 
     private function make(string $role, CoverageBuild $build): void
     {
-        $this->output->printLine('Building %s', $role);
+        $this->output->progress('Building %s', $role);
 
         $this->process->command(
             [$this->makeCommand(), '-j' . $this->jobs, 'cli'],
