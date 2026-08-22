@@ -30,8 +30,8 @@ foreach ($scope->files($root, ['tests']) as $file) {
 
 try {
     $scope->files($root, ['tests/ignored.txt']);
-} catch (InvalidArgumentException $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), "\n";
+} catch (Throwable $e) {
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 ?>

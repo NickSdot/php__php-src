@@ -80,8 +80,8 @@ $treeSource->recordLine(5, false);
 
 try {
     (new CoverageComparator())->compare($base, $tree);
-} catch (RuntimeException $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), "\n";
+} catch (Throwable $e) {
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
 ?>

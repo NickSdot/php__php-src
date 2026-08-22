@@ -128,8 +128,8 @@ var_dump($ambiguous->description());
 
 try {
     CoverageScope::paths(['ext/missing'])->sources($coverage, new CoverageSnapshot());
-} catch (RuntimeException $exception) {
-    echo $exception::class, ': ', $exception->getMessage(), "\n";
+} catch (Throwable $e) {
+	echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
 --EXPECT--
