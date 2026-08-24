@@ -410,6 +410,9 @@ PHPAPI zend_result php_stream_filter_append_ex(php_stream_filter_chain *chain, p
 				}
 				break;
 			case PSFS_PASS_ON:
+
+				ZEND_ASSERT(!brig_in.head);
+
 				/* If any data is consumed, we cannot rely upon the existing read buffer,
 				   as the filtered data must replace the existing data, so invalidate the cache */
 				stream->writepos = 0;
@@ -479,6 +482,10 @@ PHPAPI zend_result php_stream_filter_flush(php_stream_filter *filter, bool finis
 		if (status == PSFS_ERR_FATAL) {
 			return FAILURE;
 		}
+
+		ZEND_ASSERT(status == PSFS_PASS_ON);
+		ZEND_ASSERT(!inp->head);
+
 		/* Otherwise we have data available to PASS_ON
 			Swap the brigades and continue */
 		brig_temp = inp;

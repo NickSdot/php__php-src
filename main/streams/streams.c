@@ -480,6 +480,8 @@ PHPAPI zend_result php_stream_fill_read_buffer(php_stream *stream, size_t size)
 					break;
 				}
 
+				ZEND_ASSERT(!brig_inp->head);
+
 				/* brig_out becomes brig_in.
 				 * brig_in will always be empty here, as the filter MUST attach any un-consumed buckets
 				 * to its own brigade */
@@ -1135,6 +1137,9 @@ static ssize_t php_stream_write_filtered(php_stream *stream, const char *buf, si
 		if (status != PSFS_PASS_ON) {
 			break;
 		}
+
+		ZEND_ASSERT(!brig_inp->head);
+
 		/* brig_out becomes brig_in.
 		 * brig_in will always be empty here, as the filter MUST attach any un-consumed buckets
 		 * to its own brigade */

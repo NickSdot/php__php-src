@@ -160,6 +160,16 @@ static zend_result userfilter_assign_stream(php_stream *stream, zval *obj,
 	return SUCCESS;
 }
 
+static void userfilter_free_buckets(php_stream_bucket_brigade *buckets)
+{
+	php_stream_bucket *bucket;
+
+	while ((bucket = buckets->head)) {
+		php_stream_bucket_unlink(bucket);
+		php_stream_bucket_delref(bucket);
+	}
+}
+
 static php_stream_filter_status_t userfilter_filter(
 			php_stream *stream,
 			php_stream_filter *thisfilter,
@@ -188,6 +198,7 @@ static php_stream_filter_status_t userfilter_filter(
 	zend_string *stream_name = NULL;
 	if (userfilter_assign_stream(stream, obj, &stream_name, orig_no_fclose) == FAILURE) {
 		if (buckets_in->head) {
+			userfilter_free_buckets(buckets_in);
 			php_error_docref(NULL, E_WARNING, "Unprocessed filter buckets remaining on input brigade");
 		}
 		return PSFS_ERR_FATAL;
@@ -228,7 +239,18 @@ static php_stream_filter_status_t userfilter_filter(
 	}
 
 	if (buckets_in->head) {
+		userfilter_free_buckets(buckets_in);
 		php_error_docref(NULL, E_WARNING, "Unprocessed filter buckets remaining on input brigade");
+
+		/* warning might invoked userland code
+		 * that adds buckets */
+		userfilter_free_buckets(buckets_in);
+	}
+
+	/* might broke contract and added output
+	 * buckets despite not passing them. */
+	if (ret != PSFS_PASS_ON) {
+		userfilter_free_buckets(buckets_out);
 	}
 
 	/* filter resources are cleaned up by the stream destructor,

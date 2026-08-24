@@ -87,6 +87,10 @@ PHP                                                                        NEWS
 - Standard:
   . Fixed incorrect parameter name in convert_uudecode() warning. (lacatoire)
 
+- Streams:
+  . Fixed memory leaks from unprocessed input and output buckets in user
+    stream filters. (NickSdot)
+
 - Zip:
   . Fixed bug GH-17787 (ZipArchive stream stops reading early when the archive
     is freed while the stream is still open). (Eyüp Can Akman)
