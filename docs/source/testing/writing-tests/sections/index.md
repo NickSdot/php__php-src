@@ -5,11 +5,12 @@ alternatives that may be used if the situation warrants it. The phpt sections ar
 
 ## `--TEST--`
 
-**Description:** Title of test as a single line short description.
+Title of test as a single line short description.
 
-**Required:** Yes
-
-**Format:** Plain text. We recommend a single line only.
+|              |                                              |
+| ------------ | -------------------------------------------- |
+| **Required** | Yes                                          |
+| **Format**   | Plain text. We recommend a single line only. |
 
 Example 1 (snippet):
 
@@ -23,13 +24,14 @@ Example 1 (full): {ref}`sample001.phpt`
 
 ## `--DESCRIPTION--`
 
-**Description:** If your test requires more than a single line title to adequately describe it, you
+If your test requires more than a single line title to adequately describe it, you
 can use this section for further explanation. Multiple lines are allowed and besides being used for
 information, this section is completely ignored by the test binary.
 
-**Required:** No
-
-**Format:** Plain text, multiple lines.
+|              |                             |
+| ------------ | --------------------------- |
+| **Required** | No                          |
+| **Format**   | Plain text, multiple lines. |
 
 Example 1 (snippet):
 
@@ -43,16 +45,14 @@ Example 1 (full): {ref}`sample001.phpt`
 
 ## `--CREDITS--`
 
-**Description:** Used to credit contributors without CVS commit rights, who put their name and email
+Used to credit contributors without CVS commit rights, who put their name and email
 on the first line. If the test was part of a TestFest event, then # followed by the name of the
 event and the date (YYYY-MM-DD) on the second line.
 
-**Required:** No. For newly created tests the section should no longer be used for simple authorship
-claims or listing all contributors who edited the test; as it is already accurately tracked by Git.
-It may be used if more specific attribution is useful, for example to credit the original reporter
-of a bug or a contributor who is not credited via `Co-authored-by` tag.
-
-**Format:** Name Email [Event]
+|              |                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required** | No. For newly created tests the section should no longer be used for simple authorship claims or listing all contributors who edited the test; as it is already accurately tracked by Git. It may be used if more specific attribution is useful, for example to credit the original reporter of a bug or a contributor who is not credited via `Co-authored-by` tag. |
+| **Format**   | Name Email [Event]                                                                                                                                                                                                                                                                                                                                                    |
 
 Example 1 (snippet):
 
@@ -77,7 +77,7 @@ Example 2 (full): {ref}`sample002.phpt`
 
 ## `--SKIPIF--`
 
-**Description:** A condition or set of conditions used to determine if a test should be skipped.
+A condition or set of conditions used to determine if a test should be skipped.
 Tests that are only applicable to a certain platform, extension or PHP version are good reasons for
 using a `--SKIPIF--` section.
 
@@ -85,12 +85,10 @@ A common practice for extension tests is to write your `--SKIPIF--` extension cr
 call skipif.inc and then including that file in the `--SKIPIF--` section of all your extension
 tests. This promotes the DRY principle and reduces future code maintenance.
 
-**Required:** No.
-
-**Format:** PHP code enclosed by PHP tags. If the output of this scripts starts with "skip", the
-test is skipped. If the output starts with "xfail", the test is marked as expected failure. If the
-output starts with "flaky", the test is marked as flaky test. The "xfail" convention is supported as
-of PHP 7.2.0. The "flaky" convention is supported as of PHP 8.2.25 and PHP 8.3.13, respectively.
+|              |                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required** | No.                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Format**   | PHP code enclosed by PHP tags. If the output of this scripts starts with "skip", the test is skipped. If the output starts with "xfail", the test is marked as expected failure. If the output starts with "flaky", the test is marked as flaky test. The "xfail" convention is supported as of PHP 7.2.0. The "flaky" convention is supported as of PHP 8.2.25 and PHP 8.3.13, respectively. |
 
 Example 1 (snippet):
 
@@ -167,7 +165,7 @@ certain test files need the same values for some input.
 
 ## `--CONFLICTS--`
 
-**Description:** This section is only relevant for parallel test execution (available as of PHP
+This section is only relevant for parallel test execution (available as of PHP
 7.4.0), and allows to specify conflict keys. While a test that conflicts with key K is running, no
 other test that conflicts with K is run. For tests conflicting with "all", no other tests are run in
 parallel.
@@ -176,9 +174,10 @@ An alternative to have a `--CONFLICTS--` section is to add a file named `CONFLIC
 directory containing the tests. The contents of the `CONFLICTS` file must have the same format as
 the contents of the `--CONFLICTS--` section.
 
-**Required:** No.
-
-**Format:** One conflict key per line. Comment lines starting with # are also allowed.
+|              |                                                                            |
+| ------------ | -------------------------------------------------------------------------- |
+| **Required** | No.                                                                        |
+| **Format**   | One conflict key per line. Comment lines starting with # are also allowed. |
 
 Example 1 (snippet):
 
@@ -192,16 +191,17 @@ Example 1 (full): {ref}`conflicts_1.phpt`
 
 ## `--WHITESPACE_SENSITIVE--`
 
-**Description:** This flag is used to indicate that the test should not be changed by automated
+This flag is used to indicate that the test should not be changed by automated
 formatting changes. Available as of PHP 7.4.3.
 
-**Required:** No.
-
-**Format:** No value, just the `--WHITESPACE_SENSITIVE--` statement.
+|              |                                                          |
+| ------------ | -------------------------------------------------------- |
+| **Required** | No.                                                      |
+| **Format**   | No value, just the `--WHITESPACE_SENSITIVE--` statement. |
 
 ## `--CAPTURE_STDIO--`
 
-**Description:** This section enables which I/O streams the `run-tests.php` test script will use
+This section enables which I/O streams the `run-tests.php` test script will use
 when comparing executed file to the expected output. The `STDIN` is the standard input stream.
 When `STDOUT` is enabled, the test script will also check the contents of the standard output.
 `When STDERR` is enabled, the test script will also compare the contents of the standard error I/O
@@ -210,10 +210,10 @@ stream.
 If this section is left out of the test, by default, all three streams are enabled, so the tests
 without this section capture all and is the same as enabling all three manually.
 
-**Required:** No.
-
-**Format:** A case insensitive space, newline or otherwise delimited list of one or more strings of
-STDIN, STDOUT, and/or STDERR.
+|              |                                                                                                                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| **Required** | No.                                                                                                                   |
+| **Format**   | A case insensitive space, newline or otherwise delimited list of one or more strings of STDIN, STDOUT, and/or STDERR. |
 
 Example 1 (snippet):
 
@@ -247,14 +247,15 @@ Example 3(full): {ref}`capture_stdio_3.phpt`
 
 ## `--EXTENSIONS--`
 
-**Description:** Additional required shared extensions to be loaded when running the test. When the
+Additional required shared extensions to be loaded when running the test. When the
 `run-tests.php` script is executed it loads all the extensions that are available and enabled for
 that particular PHP at the time. If the test requires additional extension to be loaded and they
 aren't loaded prior to running the test, this section loads them.
 
-**Required:** No.
-
-**Format:** A case sensitive newline separated list of extension names.
+|              |                                                             |
+| ------------ | ----------------------------------------------------------- |
+| **Required** | No.                                                         |
+| **Format**   | A case sensitive newline separated list of extension names. |
 
 Example 1 (snippet):
 
@@ -287,14 +288,14 @@ and skip the test if it's not there.
 
 ## `--POST--`
 
-**Description:** POST variables or data to be passed to the test script. This section forces the use
+POST variables or data to be passed to the test script. This section forces the use
 of the CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements: PHP CGI binary.
-
-**Format:** Follows the HTTP post data format.
+|              |                                    |
+| ------------ |------------------------------------|
+| **Required**     | No.                                |
+| **Requirements** | PHP CGI binary.                    |
+| **Format**       | Follows the HTTP post data format. |
 
 Example 1 (snippet):
 
@@ -327,17 +328,15 @@ Example 2 (full): {ref}`sample005.phpt`
 
 ## `--POST_RAW--`
 
-**Description:** Raw POST data to be passed to the test script. This differs from the section above
+Raw POST data to be passed to the test script. This differs from the section above
 because it doesn't automatically set the Content-Type, this leaves you free to define your own
 within the section. This section forces the use of the CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements: PHP CGI binary.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** Follows the HTTP post data format.
+|                  |                                    |
+| ---------------- | ---------------------------------- |
+| **Required**     | No.                                |
+| **Requirements** | PHP CGI binary.                    |
+| **Format**       | Follows the HTTP post data format. |
 
 Example 1 (snippet):
 
@@ -361,16 +360,14 @@ Example 1 (full): {ref}`sample006.phpt`
 
 ## `--PUT--`
 
-**Description:** Similar to the section above, PUT data to be passed to the test script. This
+Similar to the section above, PUT data to be passed to the test script. This
 section forces the use of the CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements: PHP CGI binary.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** Raw data optionally preceded by a Content-Type header.
+|                  |                                                        |
+| ---------------- | ------------------------------------------------------ |
+| **Required**     | No.                                                    |
+| **Requirements** | PHP CGI binary.                                        |
+| **Format**       | Raw data optionally preceded by a Content-Type header. |
 
 Example 1 (snippet):
 
@@ -384,14 +381,13 @@ Example 1 (snippet):
 
 ## `--GZIP_POST--`
 
-**Description:** When this section exists, the POST data will be gzencode()'d. This section forces
+When this section exists, the POST data will be gzencode()'d. This section forces
 the use of the CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** Just add the content to be gzencode()'d in the section.
+|              |                                                         |
+| ------------ | ------------------------------------------------------- |
+| **Required** | No.                                                     |
+| **Format**   | Just add the content to be gzencode()'d in the section. |
 
 Example 1 (snippet):
 
@@ -414,16 +410,13 @@ Example 1 (full): {ref}`sample005.phpt`
 
 ## `--DEFLATE_POST--`
 
-**Description:** When this section exists, the POST data will be gzcompress()'ed. This section
+When this section exists, the POST data will be gzcompress()'ed. This section
 forces the use of the CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements:
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** Just add the content to be gzcompress()'ed in the section.
+|              |                                                            |
+| ------------ | ---------------------------------------------------------- |
+| **Required** | No.                                                        |
+| **Format**   | Just add the content to be gzcompress()'ed in the section. |
 
 Example 1 (snippet):
 
@@ -447,14 +440,14 @@ Example 1 (full): {ref}`sample007.phpt`
 
 ## `--GET--`
 
-**Description:** GET variables to be passed to the test script. This section forces the use of the
+GET variables to be passed to the test script. This section forces the use of the
 CGI binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements: PHP CGI binary.
-
-**Format:** A single line of text passed as the GET data to the script.
+|                  |                                                             |
+| ---------------- | ----------------------------------------------------------- |
+| **Required**     | No.                                                         |
+| **Requirements** | PHP CGI binary.                                             |
+| **Format**       | A single line of text passed as the GET data to the script. |
 
 Example 1 (snippet):
 
@@ -478,16 +471,14 @@ Example 2 (full): {ref}`sample008.phpt`
 
 ## `--COOKIE--`
 
-**Description:** Cookies to be passed to the test script. This section forces the use of the CGI
+Cookies to be passed to the test script. This section forces the use of the CGI
 binary instead of the usual CLI one.
 
-**Required:** No.
-
-Requirements: PHP CGI binary.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** A single line of text in a valid HTTP cookie format.
+|                  |                                                      |
+| ---------------- | ---------------------------------------------------- |
+| **Required**     | No.                                                  |
+| **Requirements** | PHP CGI binary.                                      |
+| **Format**       | A single line of text in a valid HTTP cookie format. |
 
 Example 1 (snippet):
 
@@ -501,13 +492,12 @@ Example 1 (full): {ref}`sample002.phpt`
 
 ## `--STDIN--`
 
-**Description:** Data to be fed to the test script's standard input.
+Data to be fed to the test script's standard input.
 
-**Required:** No.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** Any text within this section is passed as STDIN to PHP.
+|              |                                                         |
+| ------------ | ------------------------------------------------------- |
+| **Required** | No.                                                     |
+| **Format**   | Any text within this section is passed as STDIN to PHP. |
 
 Example 1 (snippet):
 
@@ -522,12 +512,12 @@ Example 1 (full): {ref}`sample009.phpt`
 
 ## `--INI--`
 
-**Description:** To be used if you need a specific php.ini setting for the test.
+To be used if you need a specific php.ini setting for the test.
 
-**Required:** No.
-
-**Format:** Key value pairs including automatically replaced tags. One setting per line. Content
-that is not a valid ini setting may cause failures.
+|              |                                                                                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required** | No.                                                                                                                                      |
+| **Format**   | Key value pairs including automatically replaced tags. One setting per line. Content that is not a valid ini setting may cause failures. |
 
 The following is a list of all tags and what they are used to represent:
 
@@ -560,11 +550,12 @@ Example 2 (full): {ref}`sample003.phpt`
 
 ## `--ARGS--`
 
-**Description:** A single line defining the arguments passed to PHP.
+A single line defining the arguments passed to PHP.
 
-**Required:** No.
-
-**Format:** A single line of text that is passed as the argument(s) to the PHP CLI.
+|              |                                                                         |
+| ------------ | ----------------------------------------------------------------------- |
+| **Required** | No.                                                                     |
+| **Format**   | A single line of text that is passed as the argument(s) to the PHP CLI. |
 
 Example 1 (snippet):
 
@@ -578,12 +569,13 @@ Example 1 (full): {ref}`sample010.phpt`
 
 ## `--ENV--`
 
-**Description:** Configures environment variables such as those found in the `$_SERVER` global
+Configures environment variables such as those found in the `$_SERVER` global
 array.
 
-**Required:** No.
-
-**Format:** Key value pairs. One setting per line.
+|              |                                        |
+| ------------ | -------------------------------------- |
+| **Required** | No.                                    |
+| **Format**   | Key value pairs. One setting per line. |
 
 Example 1 (snippet):
 
@@ -599,12 +591,13 @@ Example 1 (full): {ref}`sample018.phpt`
 
 ## `--PHPDBG--`
 
-**Description:** This section takes arbitrary phpdbg commands and executes the test file according
+This section takes arbitrary phpdbg commands and executes the test file according
 to them as it would be run in the phpdbg prompt.
 
-**Required:** No.
-
-**Format:** Arbitrary phpdbg commands
+|              |                           |
+| ------------ | ------------------------- |
+| **Required** | No.                       |
+| **Format**   | Arbitrary phpdbg commands |
 
 Example 1 (snippet):
 
@@ -631,11 +624,12 @@ Example 1 (full): {ref}`phpdbg_1.phpt`
 
 ## `--FILE--`
 
-**Description:** The test source code.
+The test source code.
 
-**Required:** One of the `FILE` type sections is required.
-
-**Format:** PHP source code enclosed by PHP tags.
+|              |                                              |
+| ------------ | -------------------------------------------- |
+| **Required** | One of the `FILE` type sections is required. |
+| **Format**   | PHP source code enclosed by PHP tags.        |
 
 Example 1 (snippet):
 
@@ -664,15 +658,14 @@ Example 1 (full): {ref}`sample001.phpt`
 
 ## `--FILEEOF--`
 
-**Description:** An alternative to `--FILE--` where any trailing line breaks (n || r || rn
+An alternative to `--FILE--` where any trailing line breaks (n || r || rn
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
 time you won't need this section.
 
-**Required:** One of the `FILE` type sections is required.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** PHP source code enclosed by PHP tags.
+|              |                                              |
+| ------------ | -------------------------------------------- |
+| **Required** | One of the `FILE` type sections is required. |
+| **Format**   | PHP source code enclosed by PHP tags.        |
 
 Example 1 (snippet):
 
@@ -689,17 +682,16 @@ Example 1 (full): {ref}`sample011.phpt`
 
 ## `--FILE_EXTERNAL--`
 
-**Description:** An alternative to `--FILE--`. This is used to specify that an external file
+An alternative to `--FILE--`. This is used to specify that an external file
 should be used as the `--FILE--` contents of the test file, and is designed for running the same
 test file with different ini, environment, post/get or other external inputs. Basically it allows
 you to DRY up some of your tests. The file must be in the same directory as the test file, or in a
 subdirectory.
 
-**Required:** One of the `FILE` type sections is required.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** path/to/file. Single line.
+|              |                                              |
+| ------------ | -------------------------------------------- |
+| **Required** | One of the `FILE` type sections is required. |
+| **Format**   | path/to/file. Single line.                   |
 
 Example 1 (snippet):
 
@@ -713,16 +705,13 @@ Example 1 (full): {ref}`sample012.phpt`
 
 ## `--REDIRECTTEST--`
 
-**Description:** This block allows you to redirect from one test to a bunch of other tests. It also
+This block allows you to redirect from one test to a bunch of other tests. It also
 allows you to set configurations which are used on all tests in your destination.
 
-**Required:** One of the `FILE` type sections is required.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** PHP source which is run through `eval()`. The tests destination is the value of an
-array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed
-to by another test which contains a `REDIRECTTEST`. In other words, no nesting.
+|              |                                                                                                                                                                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required** | One of the `FILE` type sections is required.                                                                                                                                                                                                                        |
+| **Format**   | PHP source which is run through `eval()`. The tests destination is the value of an array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed to by another test which contains a `REDIRECTTEST`. In other words, no nesting. |
 
 The relative path declared in 'TESTS' is relative to the base directory for the PHP source code, not
 relative to the current directory.
@@ -784,12 +773,13 @@ Example 2 (full): {ref}`sample014.phpt`
 
 ## `--CGI--`
 
-**Description:** This section takes no value. It merely provides a simple marker for tests that MUST
+This section takes no value. It merely provides a simple marker for tests that MUST
 be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
 
-**Required:** No.
-
-**Format:** No value, just the `--CGI--` statement.
+|              |                                         |
+| ------------ | --------------------------------------- |
+| **Required** | No.                                     |
+| **Format**   | No value, just the `--CGI--` statement. |
 
 Example 1 (snippet):
 
@@ -802,7 +792,7 @@ Example 1 (full): {ref}`sample016.phpt`
 
 ## `--XFAIL--`
 
-**Description:** This section identifies this test as one that is currently expected to fail. It
+This section identifies this test as one that is currently expected to fail. It
 should include a brief description of why it's expected to fail. Reasons for such expectations
 include tests that are written before the functionality they are testing is implemented or notice of
 a bug which is due to upstream code such as an extension which provides PHP support for some other
@@ -811,11 +801,10 @@ software.
 Please do NOT include an `--XFAIL--` without providing a text description for the reason it's
 being used.
 
-**Required:** No.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** A short plain text description of why this test is currently expected to fail.
+|              |                                                                                |
+| ------------ | ------------------------------------------------------------------------------ |
+| **Required** | No.                                                                            |
+| **Format**   | A short plain text description of why this test is currently expected to fail. |
 
 Example 1 (snippet):
 
@@ -829,7 +818,7 @@ Example 1 (full): {ref}`sample017.phpt`
 
 ## `--FLAKY--`
 
-**Description:** This section identifies this test as one that occasionally fails. If the test
+This section identifies this test as one that occasionally fails. If the test
 actually fails, it will be retried one more time, and that result will be reported. The section
 should include a brief description of why the test is flaky. Reasons for this include tests that
 rely on relatively precise timing, or temporary disc states. Available as of PHP 8.1.22 and 8.2.9,
@@ -838,11 +827,10 @@ respectively.
 Please do NOT include a `--FLAKY--` section without providing a text description for the reason it
 is being used.
 
-**Required:** No.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** A short plain text description of why this test is flaky.
+|              |                                                           |
+| ------------ | --------------------------------------------------------- |
+| **Required** | No.                                                       |
+| **Format**   | A short plain text description of why this test is flaky. |
 
 Example 1 (snippet):
 
@@ -856,13 +844,14 @@ Example 1 (full): flaky.phpt
 
 ## `--EXPECTHEADERS--`
 
-**Description:** The expected headers. Any header specified here must exist in the response and have
+The expected headers. Any header specified here must exist in the response and have
 the same value or the test fails. Additional headers found in the actual tests while running are
 ignored.
 
-**Required:** No.
-
-**Format:** HTTP style headers. May include multiple lines.
+|              |                                                 |
+| ------------ | ----------------------------------------------- |
+| **Required** | No.                                             |
+| **Format**   | HTTP style headers. May include multiple lines. |
 
 Example 1 (snippet):
 
@@ -885,12 +874,13 @@ Example 1 (full): {ref}`sample018.phpt`
 
 ## `--EXPECT--`
 
-**Description:** The expected output from the test script. This must match the actual output from
+The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Format:** Plain text. Multiple lines of text are allowed.
+|              |                                                 |
+| ------------ | ----------------------------------------------- |
+| **Required** | One of the `EXPECT` type sections is required.  |
+| **Format**   | Plain text. Multiple lines of text are allowed. |
 
 Example 1 (snippet):
 
@@ -909,12 +899,12 @@ Example 1 (full): {ref}`sample002.phpt`
 
 ## `--EXPECT_EXTERNAL--`
 
-**Description:** Similar to `--EXPECT--` section, but just stating a filename where to load the
+Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Test Script Support:** `run-tests.php`
+|              |                                                |
+| ------------ | ---------------------------------------------- |
+| **Required** | One of the `EXPECT` type sections is required. |
 
 Example 1 (snippet):
 
@@ -938,16 +928,15 @@ Example 1 (snippet):
 
 ## `--EXPECTF--`
 
-**Description:** An alternative of `--EXPECT--`. Where it differs from `--EXPECT--` is that it
+An alternative of `--EXPECT--`. Where it differs from `--EXPECT--` is that it
 uses a number of substitution tags for strings, spaces, digits, etc. that appear in test case output
 but which may vary between test runs. The most common example of this is to use %s and %d to match
 the file path and line number which are output by PHP Warnings.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Format:** Plain text including tags which are inserted to represent different types of output
-which are not guaranteed to have the same value on subsequent runs or when run on different
-platforms.
+|              |                                                                                                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Required** | One of the `EXPECT` type sections is required.                                                                                                                                             |
+| **Format**   | Plain text including tags which are inserted to represent different types of output which are not guaranteed to have the same value on subsequent runs or when run on different platforms. |
 
 The following is a list of all tags and what they are used to represent:
 
@@ -1076,22 +1065,22 @@ only, `%f` for floating point values, `%c` for single characters, `%x` for hexad
 
 ## `--EXPECTF_EXTERNAL--`
 
-**Description:** Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
+Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Test Script Support:** `run-tests.php`
+|              |                                                |
+| ------------ | ---------------------------------------------- |
+| **Required** | One of the `EXPECT` type sections is required. |
 
 ## `--EXPECTREGEX--`
 
-**Description:** An alternative of `--EXPECT--`. This form allows the tester to specify the result
+An alternative of `--EXPECT--`. This form allows the tester to specify the result
 in a regular expression.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Format:** Plain text including regular expression patterns which represent data that can vary
-between subsequent runs of a test or when run on different platforms.
+|              |                                                                                                                                                           |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required** | One of the `EXPECT` type sections is required.                                                                                                            |
+| **Format**   | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms. |
 
 Example 1 (snippet):
 
@@ -1180,16 +1169,16 @@ otherwise they would be interpreted as a regular expression.
 
 ## `--EXPECTREGEX_EXTERNAL--`
 
-**Description:** Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
+Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
 
-**Required:** One of the `EXPECT` type sections is required.
-
-**Test Script Support:** `run-tests.php`
+|              |                                                |
+| ------------ | ---------------------------------------------- |
+| **Required** | One of the `EXPECT` type sections is required. |
 
 ## `--CLEAN--`
 
-**Description:** Code that is executed after a test completes. It's main purpose is to allow you to
+Code that is executed after a test completes. It's main purpose is to allow you to
 clean up after yourself. You might need to remove files created during the test or close sockets or
 database connections following a test. Infact, even if a test fails or encounters a fatal error
 during the test, the code found in the `--CLEAN--` section will still run.
@@ -1202,11 +1191,10 @@ Using the switch `--no-clean` on `run-tests.php`, you can prevent the code found
 `--CLEAN--` section of a test from running. This allows you to inspect generated data or files
 without them being removed by the `--CLEAN--` section.
 
-**Required:** No.
-
-**Test Script Support:** `run-tests.php`
-
-**Format:** PHP source code enclosed by PHP tags.
+|              |                                       |
+| ------------ | ------------------------------------- |
+| **Required** | No.                                   |
+| **Format**   | PHP source code enclosed by PHP tags. |
 
 Example 1 (snippet):
 
