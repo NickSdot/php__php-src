@@ -3,7 +3,7 @@
 A phpt test can have many more parts than just the minimum. In fact some of the mandatory parts have
 alternatives that may be used if the situation warrants it. The phpt sections are documented here.
 
-## `--TEST--`
+## --TEST--
 
 Title of test as a single line short description.
 
@@ -24,7 +24,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample001.phpt`
 
-## `--DESCRIPTION--`
+## --DESCRIPTION--
 
 If your test requires more than a single line title to adequately describe it, you
 can use this section for further explanation. Multiple lines are allowed and besides being used for
@@ -47,7 +47,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample001.phpt`
 
-## `--CREDITS--`
+## --CREDITS--
 
 Used to credit contributors without CVS commit rights, who put their name and email
 on the first line. If the test was part of a TestFest event, then # followed by the name of the
@@ -81,7 +81,7 @@ Example 2 (snippet):
 
 Example 2 (full): {ref}`sample002.phpt`
 
-## `--SKIPIF--`
+## --SKIPIF--
 
 A condition or set of conditions used to determine if a test should be skipped.
 Tests that are only applicable to a certain platform, extension or PHP version are good reasons for
@@ -171,7 +171,7 @@ certain test files need the same values for some input.
 > named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
 > "test.inc".
 
-## `--CONFLICTS--`
+## --CONFLICTS--
 
 This section is only relevant for parallel test execution (available as of PHP
 7.4.0), and allows to specify conflict keys. While a test that conflicts with key K is running, no
@@ -199,7 +199,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`conflicts_1.phpt`
 
-## `--WHITESPACE_SENSITIVE--`
+## --WHITESPACE_SENSITIVE--
 
 This flag is used to indicate that the test should not be changed by automated
 formatting changes. Available as of PHP 7.4.3.
@@ -209,7 +209,7 @@ formatting changes. Available as of PHP 7.4.3.
 | **Required** | No.                                                      |
 | **Format**   | No value, just the `--WHITESPACE_SENSITIVE--` statement. |
 
-## `--CAPTURE_STDIO--`
+## --CAPTURE_STDIO--
 
 This section enables which I/O streams the `run-tests.php` test script will use
 when comparing executed file to the expected output. The `STDIN` is the standard input stream.
@@ -257,7 +257,7 @@ Example 3 (snippet):
 
 Example 3(full): {ref}`capture_stdio_3.phpt`
 
-## `--EXTENSIONS--`
+## --EXTENSIONS--
 
 Additional required shared extensions to be loaded when running the test. When the
 `run-tests.php` script is executed it loads all the extensions that are available and enabled for
@@ -300,7 +300,7 @@ and skip the test if it's not there.
    $n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
 ```
 
-## `--POST--`
+## --POST--
 
 POST variables or data to be passed to the test script. This section forces the use
 of the CGI binary instead of the usual CLI one.
@@ -342,7 +342,7 @@ Example 2 (snippet):
 
 Example 2 (full): {ref}`sample005.phpt`
 
-## `--POST_RAW--`
+## --POST_RAW--
 
 Raw POST data to be passed to the test script. This differs from the section above
 because it doesn't automatically set the Content-Type, this leaves you free to define your own
@@ -376,7 +376,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample006.phpt`
 
-## `--PUT--`
+## --PUT--
 
 Similar to the section above, PUT data to be passed to the test script. This
 section forces the use of the CGI binary instead of the usual CLI one.
@@ -399,7 +399,7 @@ Example 1 (snippet):
    {"name":"default output handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
 ```
 
-## `--GZIP_POST--`
+## --GZIP_POST--
 
 When this section exists, the POST data will be gzencode()'d. This section forces
 the use of the CGI binary instead of the usual CLI one.
@@ -430,7 +430,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample005.phpt`
 
-## `--DEFLATE_POST--`
+## --DEFLATE_POST--
 
 When this section exists, the POST data will be gzcompress()'ed. This section
 forces the use of the CGI binary instead of the usual CLI one.
@@ -462,7 +462,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample007.phpt`
 
-## `--GET--`
+## --GET--
 
 GET variables to be passed to the test script. This section forces the use of the
 CGI binary instead of the usual CLI one.
@@ -495,7 +495,7 @@ Example 2 (snippet):
 
 Example 2 (full): {ref}`sample008.phpt`
 
-## `--COOKIE--`
+## --COOKIE--
 
 Cookies to be passed to the test script. This section forces the use of the CGI
 binary instead of the usual CLI one.
@@ -518,7 +518,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample002.phpt`
 
-## `--STDIN--`
+## --STDIN--
 
 Data to be fed to the test script's standard input.
 
@@ -540,7 +540,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample009.phpt`
 
-## `--INI--`
+## --INI--
 
 To be used if you need a specific php.ini setting for the test.
 
@@ -580,7 +580,7 @@ Example 2 (snippet):
 
 Example 2 (full): {ref}`sample003.phpt`
 
-## `--ARGS--`
+## --ARGS--
 
 A single line defining the arguments passed to PHP.
 
@@ -601,7 +601,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample010.phpt`
 
-## `--ENV--`
+## --ENV--
 
 Configures environment variables such as those found in the `$_SERVER` global
 array.
@@ -625,7 +625,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample018.phpt`
 
-## `--PHPDBG--`
+## --PHPDBG--
 
 This section takes arbitrary phpdbg commands and executes the test file according
 to them as it would be run in the phpdbg prompt.
@@ -660,14 +660,14 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`phpdbg_1.phpt`
 
-## `--FILE--`
+## --FILE--
 
 The test source code.
 
 |                  |                                                                                                                 |
 | ---------------- | --------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                       |
-| **Alternatives** | [§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Alternatives** | [§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
 | **Format**       | PHP source code enclosed by PHP tags.                                                                           |
 
 ### Examples
@@ -697,7 +697,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample001.phpt`
 
-## `--FILEEOF--`
+## --FILEEOF--
 
 An alternative to `--FILE--` where any trailing line breaks (n || r || rn
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
@@ -706,7 +706,7 @@ time you won't need this section.
 |                  |                                                                                                           |
 | ---------------- | --------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                 |
-| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
 | **Format**       | PHP source code enclosed by PHP tags.                                                                     |
 
 ### Examples
@@ -724,7 +724,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample011.phpt`
 
-## `--FILE_EXTERNAL--`
+## --FILE_EXTERNAL--
 
 An alternative to `--FILE--`. This is used to specify that an external file
 should be used as the `--FILE--` contents of the test file, and is designed for running the same
@@ -735,7 +735,7 @@ subdirectory.
 |                  |                                                                                               |
 | ---------------- | --------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                     |
-| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
 | **Format**       | path/to/file. Single line.                                                                    |
 
 ### Examples
@@ -750,7 +750,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample012.phpt`
 
-## `--REDIRECTTEST--`
+## --REDIRECTTEST--
 
 This block allows you to redirect from one test to a bunch of other tests. It also
 allows you to set configurations which are used on all tests in your destination.
@@ -758,7 +758,7 @@ allows you to set configurations which are used on all tests in your destination
 |                  |                                                                                                                                                                                                                                                                     |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                           |
-| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`                                                                                                                                                                     |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`                                                                                                                                                                     |
 | **Format**       | PHP source which is run through `eval()`. The tests destination is the value of an array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed to by another test which contains a `REDIRECTTEST`. In other words, no nesting. |
 
 The relative path declared in 'TESTS' is relative to the base directory for the PHP source code, not
@@ -821,7 +821,7 @@ Example 2 (full): {ref}`sample014.phpt`
 > The destination tests for this example are not included. See the PDO extension tests for
 > reference to live tests using this section.
 
-## `--CGI--`
+## --CGI--
 
 This section takes no value. It merely provides a simple marker for tests that MUST
 be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
@@ -842,7 +842,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample016.phpt`
 
-## `--XFAIL--`
+## --XFAIL--
 
 This section identifies this test as one that is currently expected to fail. It
 should include a brief description of why it's expected to fail. Reasons for such expectations
@@ -870,7 +870,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample017.phpt`
 
-## `--FLAKY--`
+## --FLAKY--
 
 This section identifies this test as one that occasionally fails. If the test
 actually fails, it will be retried one more time, and that result will be reported. The section
@@ -898,7 +898,7 @@ Example 1 (snippet):
 
 Example 1 (full): flaky.phpt
 
-## `--EXPECTHEADERS--`
+## --EXPECTHEADERS--
 
 The expected headers. Any header specified here must exist in the response and have
 the same value or the test fails. Additional headers found in the actual tests while running are
@@ -930,7 +930,7 @@ Example 1 (full): {ref}`sample018.phpt`
 > The destination tests for this example are not included. See the phar extension tests for
 > reference to live tests using this section.
 
-## `--EXPECT--`
+## --EXPECT--
 
 The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
@@ -938,7 +938,7 @@ the test script exactly for the test to pass.
 |                  |                                                                                                                                                                                                                             |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                   |
-| **Alternatives** | [§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Alternatives** | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 | **Format**       | Plain text. Multiple lines of text are allowed.                                                                                                                                                                             |
 
 ### Examples
@@ -958,7 +958,7 @@ Example 1 (snippet):
 
 Example 1 (full): {ref}`sample002.phpt`
 
-## `--EXPECT_EXTERNAL--`
+## --EXPECT_EXTERNAL--
 
 Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
@@ -966,7 +966,7 @@ expected output from.
 |                  |                                                                                                                                                                                                           |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                 |
-| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 ### Examples
 
@@ -990,7 +990,7 @@ Example 1 (snippet):
    }
 ```
 
-## `--EXPECTF--`
+## --EXPECTF--
 
 An alternative of `--EXPECT--`. Where it differs from `--EXPECT--` is that it
 uses a number of substitution tags for strings, spaces, digits, etc. that appear in test case output
@@ -1000,7 +1000,7 @@ the file path and line number which are output by PHP Warnings.
 |                  |                                                                                                                                                                                                                           |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                 |
-| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 | **Format**       | Plain text including tags which are inserted to represent different types of output which are not guaranteed to have the same value on subsequent runs or when run on different platforms.                                |
 
 The following is a list of all tags and what they are used to represent:
@@ -1130,7 +1130,7 @@ only, `%f` for floating point values, `%c` for single characters, `%x` for hexad
    string(3) "123"
 ```
 
-## `--EXPECTF_EXTERNAL--`
+## --EXPECTF_EXTERNAL--
 
 Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
@@ -1138,9 +1138,9 @@ just stating a filename where to load the expected output from.
 |                  |                                                                                                                                                                                                         |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                               |
-| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
-## `--EXPECTREGEX--`
+## --EXPECTREGEX--
 
 An alternative of `--EXPECT--`. This form allows the tester to specify the result
 in a regular expression.
@@ -1148,7 +1148,7 @@ in a regular expression.
 |                  |                                                                                                                                                                                                                   |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                         |
-| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 | **Format**       | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms.                                                         |
 
 ### Examples
@@ -1238,7 +1238,7 @@ otherwise they would be interpreted as a regular expression.
    string\(19\) \" nica\x00turska panica\"
 ```
 
-## `--EXPECTREGEX_EXTERNAL--`
+## --EXPECTREGEX_EXTERNAL--
 
 Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
@@ -1246,9 +1246,9 @@ section just stating a filename where to load the expected output from.
 |                  |                                                                                                                                                                                                 |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                       |
-| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--` |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--` |
 
-## `--CLEAN--`
+## --CLEAN--
 
 Code that is executed after a test completes. It's main purpose is to allow you to
 clean up after yourself. You might need to remove files created during the test or close sockets or
