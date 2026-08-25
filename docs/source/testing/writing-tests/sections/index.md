@@ -305,8 +305,8 @@ and skip the test if it's not there.
 POST variables or data to be passed to the test script. This section forces the use
 of the CGI binary instead of the usual CLI one.
 
-|              |                                    |
-| ------------ |------------------------------------|
+|                  |                                    |
+| ---------------- | ---------------------------------- |
 | **Required**     | No.                                |
 | **Requirements** | PHP CGI binary.                    |
 | **Format**       | Follows the HTTP post data format. |
@@ -664,10 +664,11 @@ Example 1 (full): {ref}`phpdbg_1.phpt`
 
 The test source code.
 
-|              |                                              |
-| ------------ | -------------------------------------------- |
-| **Required** | One of the `FILE` type sections is required. |
-| **Format**   | PHP source code enclosed by PHP tags.        |
+|                  |                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                       |
+| **Alternatives** | [§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Format**       | PHP source code enclosed by PHP tags.                                                                           |
 
 ### Examples
 
@@ -702,10 +703,11 @@ An alternative to `--FILE--` where any trailing line breaks (n || r || rn
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
 time you won't need this section.
 
-|              |                                              |
-| ------------ | -------------------------------------------- |
-| **Required** | One of the `FILE` type sections is required. |
-| **Format**   | PHP source code enclosed by PHP tags.        |
+|                  |                                                                                                           |
+| ---------------- | --------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                 |
+| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Format**       | PHP source code enclosed by PHP tags.                                                                     |
 
 ### Examples
 
@@ -730,10 +732,11 @@ test file with different ini, environment, post/get or other external inputs. Ba
 you to DRY up some of your tests. The file must be in the same directory as the test file, or in a
 subdirectory.
 
-|              |                                              |
-| ------------ | -------------------------------------------- |
-| **Required** | One of the `FILE` type sections is required. |
-| **Format**   | path/to/file. Single line.                   |
+|                  |                                                                                               |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                     |
+| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#redirecttest) `--REDIRECTTEST--` |
+| **Format**       | path/to/file. Single line.                                                                    |
 
 ### Examples
 
@@ -752,10 +755,11 @@ Example 1 (full): {ref}`sample012.phpt`
 This block allows you to redirect from one test to a bunch of other tests. It also
 allows you to set configurations which are used on all tests in your destination.
 
-|              |                                                                                                                                                                                                                                                                     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required** | One of the `FILE` type sections is required.                                                                                                                                                                                                                        |
-| **Format**   | PHP source which is run through `eval()`. The tests destination is the value of an array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed to by another test which contains a `REDIRECTTEST`. In other words, no nesting. |
+|                  |                                                                                                                                                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                           |
+| **Alternatives** | [§](index.md#file) `--FILE--`<br>[§](index.md#fileeof) `--FILEEOF--`<br>[§](index.md#file-external) `--FILE_EXTERNAL--`                                                                                                                                                                     |
+| **Format**       | PHP source which is run through `eval()`. The tests destination is the value of an array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed to by another test which contains a `REDIRECTTEST`. In other words, no nesting. |
 
 The relative path declared in 'TESTS' is relative to the base directory for the PHP source code, not
 relative to the current directory.
@@ -931,10 +935,11 @@ Example 1 (full): {ref}`sample018.phpt`
 The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
 
-|              |                                                 |
-| ------------ | ----------------------------------------------- |
-| **Required** | One of the `EXPECT` type sections is required.  |
-| **Format**   | Plain text. Multiple lines of text are allowed. |
+|                  |                                                                                                                                                                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                   |
+| **Alternatives** | [§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Format**       | Plain text. Multiple lines of text are allowed.                                                                                                                                                                             |
 
 ### Examples
 
@@ -958,9 +963,10 @@ Example 1 (full): {ref}`sample002.phpt`
 Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
 
-|              |                                                |
-| ------------ | ---------------------------------------------- |
-| **Required** | One of the `EXPECT` type sections is required. |
+|                  |                                                                                                                                                                                                           |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                 |
+| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
 
 ### Examples
 
@@ -991,10 +997,11 @@ uses a number of substitution tags for strings, spaces, digits, etc. that appear
 but which may vary between test runs. The most common example of this is to use %s and %d to match
 the file path and line number which are output by PHP Warnings.
 
-|              |                                                                                                                                                                                            |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required** | One of the `EXPECT` type sections is required.                                                                                                                                             |
-| **Format**   | Plain text including tags which are inserted to represent different types of output which are not guaranteed to have the same value on subsequent runs or when run on different platforms. |
+|                  |                                                                                                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                 |
+| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Format**       | Plain text including tags which are inserted to represent different types of output which are not guaranteed to have the same value on subsequent runs or when run on different platforms.                                |
 
 The following is a list of all tags and what they are used to represent:
 
@@ -1128,19 +1135,21 @@ only, `%f` for floating point values, `%c` for single characters, `%x` for hexad
 Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
 
-|              |                                                |
-| ------------ | ---------------------------------------------- |
-| **Required** | One of the `EXPECT` type sections is required. |
+|                  |                                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                               |
+| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectregex) `--EXPECTREGEX--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
 
 ## `--EXPECTREGEX--`
 
 An alternative of `--EXPECT--`. This form allows the tester to specify the result
 in a regular expression.
 
-|              |                                                                                                                                                           |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required** | One of the `EXPECT` type sections is required.                                                                                                            |
-| **Format**   | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms. |
+|                  |                                                                                                                                                                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                         |
+| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex-external) `--EXPECTREGEX_EXTERNAL--` |
+| **Format**       | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms.                                                         |
 
 ### Examples
 
@@ -1234,9 +1243,10 @@ otherwise they would be interpreted as a regular expression.
 Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
 
-|              |                                                |
-| ------------ | ---------------------------------------------- |
-| **Required** | One of the `EXPECT` type sections is required. |
+|                  |                                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                       |
+| **Alternatives** | [§](index.md#expect) `--EXPECT--`<br>[§](index.md#expect-external) `--EXPECT_EXTERNAL--`<br>[§](index.md#expectf) `--EXPECTF--`<br>[§](index.md#expectf-external) `--EXPECTF_EXTERNAL--`<br>[§](index.md#expectregex) `--EXPECTREGEX--` |
 
 ## `--CLEAN--`
 
