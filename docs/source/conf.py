@@ -19,6 +19,7 @@ extensions = [
     'sphinx_design',
     'sphinx.ext.autosectionlabel',
 ]
+autosectionlabel_maxdepth = 2
 exclude_patterns = ['**/*TODO.md']
 myst_enable_extensions = [
     'alert',
