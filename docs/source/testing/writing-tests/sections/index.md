@@ -14,7 +14,7 @@ Title of test as a single line short description.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -22,7 +22,7 @@ Example 1 (snippet):
    Test filter_input() with GET and POST data.
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
 ## --DESCRIPTION--
 
@@ -37,7 +37,7 @@ information, this section is completely ignored by the test binary.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -45,7 +45,7 @@ Example 1 (snippet):
    This test covers both valid and invalid usages of filter_input() with INPUT_GET and INPUT_POST data and several different filter sanitizers.
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
 ## --CREDITS--
 
@@ -60,7 +60,7 @@ event and the date (YYYY-MM-DD) on the second line.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -68,9 +68,9 @@ Example 1 (snippet):
    Felipe Pena
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -79,7 +79,7 @@ Example 2 (snippet):
    # TestFest Munich 2009-05-19
 ```
 
-Example 2 (full): {ref}`sample002.phpt`
+Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 
 ## --SKIPIF--
 
@@ -98,7 +98,7 @@ tests. This promotes the DRY principle and reduces future code maintenance.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```php
 
@@ -106,9 +106,9 @@ Example 1 (snippet):
    <?php if (!extension_loaded("filter")) die("Skipped: filter extension required."); ?>
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```php
 
@@ -116,9 +116,9 @@ Example 2 (snippet):
    <?php include('skipif.inc'); ?>
 ```
 
-Example 2 (full): {ref}`sample003.phpt`
+Full example: [sample003.phpt](../samples/index.md#sample003phpt)
 
-Example 3 (snippet):
+#### Example 3
 
 ```php
 
@@ -126,9 +126,9 @@ Example 3 (snippet):
    <?php if (getenv('SKIP_ASAN')) die('xfail Startup failure leak'); ?>
 ```
 
-Example 3 (full): {ref}`xfailif.phpt`
+Full example: [xfailif.phpt](../samples/index.md#xfailifphpt)
 
-Example 4 (snippet):
+#### Example 4
 
 ```php
 
@@ -189,7 +189,7 @@ the contents of the `--CONFLICTS--` section.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -197,7 +197,7 @@ Example 1 (snippet):
    server
 ```
 
-Example 1 (full): {ref}`conflicts_1.phpt`
+Full example: [conflicts_1.phpt](../samples/index.md#conflicts_1phpt)
 
 ## --WHITESPACE_SENSITIVE--
 
@@ -227,7 +227,7 @@ without this section capture all and is the same as enabling all three manually.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -235,9 +235,9 @@ Example 1 (snippet):
    STDIN STDERR
 ```
 
-Example 1 (full): {ref}`capture_stdio_1.phpt`
+Full example: [capture_stdio_1.phpt](../samples/index.md#capture_stdio_1phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -245,9 +245,9 @@ Example 2 (snippet):
    STDIN STDOUT
 ```
 
-Example 2 (full): {ref}`capture_stdio_2.phpt`
+Full example: [capture_stdio_2.phpt](../samples/index.md#capture_stdio_2phpt)
 
-Example 3 (snippet):
+#### Example 3
 
 ```text
 
@@ -255,7 +255,7 @@ Example 3 (snippet):
    STDIN STDOUT STDERR
 ```
 
-Example 3(full): {ref}`capture_stdio_3.phpt`
+Full example: [capture_stdio_3.phpt](../samples/index.md#capture_stdio_3phpt)
 
 ## --EXTENSIONS--
 
@@ -271,7 +271,7 @@ aren't loaded prior to running the test, this section loads them.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -281,7 +281,7 @@ Example 1 (snippet):
    tokenizer
 ```
 
-Example 1 (full): {ref}`extensions.phpt`
+Full example: [extensions.phpt](../samples/index.md#extensionsphpt)
 
 Some tests depend on PHP extensions that may be unavailable. These extensions should be listed in
 the `EXTENSIONS` section. If an extension is missing, PHP will try to find it in a shared module
@@ -313,7 +313,7 @@ of the CGI binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -321,9 +321,9 @@ Example 1 (snippet):
    c=<p>string</p>&d=12345.7
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```xml
 
@@ -340,7 +340,7 @@ Example 2 (snippet):
    </SOAP-ENV:Envelope>
 ```
 
-Example 2 (full): {ref}`sample005.phpt`
+Full example: [sample005.phpt](../samples/index.md#sample005phpt)
 
 ## --POST_RAW--
 
@@ -356,7 +356,7 @@ within the section. This section forces the use of the CGI binary instead of the
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -374,7 +374,7 @@ Example 1 (snippet):
    --AaB03x--
 ```
 
-Example 1 (full): {ref}`sample006.phpt`
+Full example: [sample006.phpt](../samples/index.md#sample006phpt)
 
 ## --PUT--
 
@@ -389,7 +389,7 @@ section forces the use of the CGI binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -411,7 +411,7 @@ the use of the CGI binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```xml
 
@@ -428,7 +428,7 @@ Example 1 (snippet):
    </SOAP-ENV:Envelope>
 ```
 
-Example 1 (full): {ref}`sample005.phpt`
+Full example: [sample005.phpt](../samples/index.md#sample005phpt)
 
 ## --DEFLATE_POST--
 
@@ -442,7 +442,7 @@ forces the use of the CGI binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```xml
 
@@ -460,7 +460,7 @@ Example 1 (snippet):
    </SOAP-ENV:Envelope>
 ```
 
-Example 1 (full): {ref}`sample007.phpt`
+Full example: [sample007.phpt](../samples/index.md#sample007phpt)
 
 ## --GET--
 
@@ -475,7 +475,7 @@ CGI binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -483,9 +483,9 @@ Example 1 (snippet):
    a=<b>test</b>&b=http://example.com
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -493,7 +493,7 @@ Example 2 (snippet):
    ar[elm1]=1234&ar[elm2]=0660&a=0234
 ```
 
-Example 2 (full): {ref}`sample008.phpt`
+Full example: [sample008.phpt](../samples/index.md#sample008phpt)
 
 ## --COOKIE--
 
@@ -508,7 +508,7 @@ binary instead of the usual CLI one.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```
 
@@ -516,7 +516,7 @@ Example 1 (snippet):
    hello=World;goodbye=MrChips
 ```
 
-Example 1 (full): {ref}`sample002.phpt`
+Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 
 ## --STDIN--
 
@@ -529,7 +529,7 @@ Data to be fed to the test script's standard input.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -538,7 +538,7 @@ Example 1 (snippet):
    use this to input some thing to the php script
 ```
 
-Example 1 (full): {ref}`sample009.phpt`
+Full example: [sample009.phpt](../samples/index.md#sample009phpt)
 
 ## --INI--
 
@@ -556,7 +556,7 @@ The following is a list of all tags and what they are used to represent:
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -564,9 +564,9 @@ Example 1 (snippet):
    precision=14
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -578,7 +578,7 @@ Example 2 (snippet):
    session.save_handler=files
 ```
 
-Example 2 (full): {ref}`sample003.phpt`
+Full example: [sample003.phpt](../samples/index.md#sample003phpt)
 
 ## --ARGS--
 
@@ -591,7 +591,7 @@ A single line defining the arguments passed to PHP.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -599,7 +599,7 @@ Example 1 (snippet):
    --arg value --arg=value -avalue -a=value -a value
 ```
 
-Example 1 (full): {ref}`sample010.phpt`
+Full example: [sample010.phpt](../samples/index.md#sample010phpt)
 
 ## --ENV--
 
@@ -613,7 +613,7 @@ array.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -623,7 +623,7 @@ Example 1 (snippet):
    PATH_INFO=/hi
 ```
 
-Example 1 (full): {ref}`sample018.phpt`
+Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 
 ## --PHPDBG--
 
@@ -637,7 +637,7 @@ to them as it would be run in the phpdbg prompt.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -658,7 +658,7 @@ Example 1 (snippet):
    q
 ```
 
-Example 1 (full): {ref}`phpdbg_1.phpt`
+Full example: [phpdbg_1.phpt](../samples/index.md#phpdbg_1phpt)
 
 ## --FILE--
 
@@ -672,7 +672,7 @@ The test source code.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```php
 
@@ -695,7 +695,7 @@ Example 1 (snippet):
    ?>
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
 ## --FILEEOF--
 
@@ -711,7 +711,7 @@ time you won't need this section.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```php
 
@@ -722,7 +722,7 @@ Example 1 (snippet):
    //last line comment
 ```
 
-Example 1 (full): {ref}`sample011.phpt`
+Full example: [sample011.phpt](../samples/index.md#sample011phpt)
 
 ## --FILE_EXTERNAL--
 
@@ -740,7 +740,7 @@ subdirectory.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -748,7 +748,7 @@ Example 1 (snippet):
    files/file012.inc
 ```
 
-Example 1 (full): {ref}`sample012.phpt`
+Full example: [sample012.phpt](../samples/index.md#sample012phpt)
 
 ## --REDIRECTTEST--
 
@@ -768,7 +768,7 @@ Last note, the array in this section must be returned to work.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```php
 
@@ -781,13 +781,13 @@ Example 1 (snippet):
      );
 ```
 
-Example 1 (full): {ref}`sample013.phpt`
+Full example: [sample013.phpt](../samples/index.md#sample013phpt)
 
 > [!NOTE]
 > The destination tests for this example are not included. See the PDO extension tests for
 > reference to live tests using this section.
 
-Example 2 (snippet):
+#### Example 2
 
 ```php
 
@@ -815,7 +815,7 @@ Example 2 (snippet):
    return $config;
 ```
 
-Example 2 (full): {ref}`sample014.phpt`
+Full example: [sample014.phpt](../samples/index.md#sample014phpt)
 
 > [!NOTE]
 > The destination tests for this example are not included. See the PDO extension tests for
@@ -833,14 +833,14 @@ be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test 
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
    --CGI--
 ```
 
-Example 1 (full): {ref}`sample016.phpt`
+Full example: [sample016.phpt](../samples/index.md#sample016phpt)
 
 ## --XFAIL--
 
@@ -860,7 +860,7 @@ being used.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -868,7 +868,7 @@ Example 1 (snippet):
    This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
 ```
 
-Example 1 (full): {ref}`sample017.phpt`
+Full example: [sample017.phpt](../samples/index.md#sample017phpt)
 
 ## --FLAKY--
 
@@ -888,7 +888,7 @@ is being used.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```
 
@@ -896,7 +896,7 @@ Example 1 (snippet):
    This test frequently fails in CI
 ```
 
-Example 1 (full): flaky.phpt
+Full example: flaky.phpt
 
 ## --EXPECTHEADERS--
 
@@ -911,11 +911,11 @@ ignored.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 --EXPECTHEADERS-- Status: 404
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -924,7 +924,7 @@ Example 1 (snippet):
    Status: 403 Access Denied
 ```
 
-Example 1 (full): {ref}`sample018.phpt`
+Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 
 > [!NOTE]
 > The destination tests for this example are not included. See the phar extension tests for
@@ -943,7 +943,7 @@ the test script exactly for the test to pass.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -956,7 +956,7 @@ Example 1 (snippet):
    }
 ```
 
-Example 1 (full): {ref}`sample002.phpt`
+Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 
 ## --EXPECT_EXTERNAL--
 
@@ -970,7 +970,7 @@ expected output from.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -1023,7 +1023,7 @@ The following is a list of all tags and what they are used to represent:
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -1053,9 +1053,9 @@ Example 1 (snippet):
    Done
 ```
 
-Example 1 (full): {ref}`sample001.phpt`
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -1082,9 +1082,9 @@ Example 2 (snippet):
    resource(%d) of type (stream) Done
 ```
 
-Example 2 (full): {ref}`sample019.phpt`
+Full example: [sample019.phpt](../samples/index.md#sample019phpt)
 
-Example 3 (snippet):
+#### Example 3
 
 ```text
 
@@ -1101,7 +1101,7 @@ Example 3 (snippet):
    bool(false)
 ```
 
-Example 2 (full): {ref}`sample020.phpt`
+Full example: [sample020.phpt](../samples/index.md#sample020phpt)
 
 `/ext/standard/tests/strings/str_shuffle.phpt` is a good example for using `EXPECTF` instead of
 `EXPECT`. From time to time the algorithm used for shuffle changed and sometimes the machine used
@@ -1153,7 +1153,7 @@ in a regular expression.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```text
 
@@ -1177,9 +1177,9 @@ Example 1 (snippet):
    M_SQRT3   : 1.732050[0-9]*
 ```
 
-Example 1 (full): {ref}`sample021.phpt`
+Full example: [sample021.phpt](../samples/index.md#sample021phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```text
 
@@ -1201,9 +1201,9 @@ Example 2 (snippet):
    }
 ```
 
-Example 2 (full): {ref}`sample025.phpt`
+Full example: [sample025.phpt](../samples/index.md#sample025phpt)
 
-Example 3 (snippet):
+#### Example 3
 
 ```text
 
@@ -1214,7 +1214,7 @@ Example 3 (snippet):
    (string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
 ```
 
-Example 3 (full): {ref}`sample023.phpt`
+Full example: [sample023.phpt](../samples/index.md#sample023phpt)
 
 `/ext/standard/tests/strings/strings001.phpt` is a good example for using `EXPECTREGEX` instead
 of `EXPECT`. This test also shows that in `EXPECTREGEX` some characters need to be escaped since
@@ -1270,7 +1270,7 @@ without them being removed by the `--CLEAN--` section.
 
 ### Examples
 
-Example 1 (snippet):
+#### Example 1
 
 ```php
 
@@ -1280,9 +1280,9 @@ Example 1 (snippet):
    ?>
 ```
 
-Example 1 (full): {ref}`sample024.phpt`
+Full example: [sample024.phpt](../samples/index.md#sample024phpt)
 
-Example 2 (snippet):
+#### Example 2
 
 ```php
 
@@ -1292,9 +1292,9 @@ Example 2 (snippet):
    ?>
 ```
 
-Example 2 (full): {ref}`sample025.phpt`
+Full example: [sample025.phpt](../samples/index.md#sample025phpt)
 
-Example 3 (snippet):
+#### Example 3
 
 ```php
 
@@ -1306,4 +1306,4 @@ Example 3 (snippet):
    ?>
 ```
 
-Example 3 (full): {ref}`sample022.phpt`
+Full example: [sample022.phpt](../samples/index.md#sample022phpt)
