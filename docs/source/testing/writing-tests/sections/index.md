@@ -12,6 +12,8 @@ Title of test as a single line short description.
 | **Required** | Yes                                          |
 | **Format**   | Plain text. We recommend a single line only. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -33,6 +35,8 @@ information, this section is completely ignored by the test binary.
 | **Required** | No                          |
 | **Format**   | Plain text, multiple lines. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -53,6 +57,8 @@ event and the date (YYYY-MM-DD) on the second line.
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required** | No. For newly created tests the section should no longer be used for simple authorship claims or listing all contributors who edited the test; as it is already accurately tracked by Git. It may be used if more specific attribution is useful, for example to credit the original reporter of a bug or a contributor who is not credited via `Co-authored-by` tag. |
 | **Format**   | Name Email [Event]                                                                                                                                                                                                                                                                                                                                                    |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -89,6 +95,8 @@ tests. This promotes the DRY principle and reduces future code maintenance.
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Required** | No.                                                                                                                                                                                                                                                                                                                                                                                           |
 | **Format**   | PHP code enclosed by PHP tags. If the output of this scripts starts with "skip", the test is skipped. If the output starts with "xfail", the test is marked as expected failure. If the output starts with "flaky", the test is marked as flaky test. The "xfail" convention is supported as of PHP 7.2.0. The "flaky" convention is supported as of PHP 8.2.25 and PHP 8.3.13, respectively. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -179,6 +187,8 @@ the contents of the `--CONFLICTS--` section.
 | **Required** | No.                                                                        |
 | **Format**   | One conflict key per line. Comment lines starting with # are also allowed. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -214,6 +224,8 @@ without this section capture all and is the same as enabling all three manually.
 | ------------ | --------------------------------------------------------------------------------------------------------------------- |
 | **Required** | No.                                                                                                                   |
 | **Format**   | A case insensitive space, newline or otherwise delimited list of one or more strings of STDIN, STDOUT, and/or STDERR. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -257,6 +269,8 @@ aren't loaded prior to running the test, this section loads them.
 | **Required** | No.                                                         |
 | **Format**   | A case sensitive newline separated list of extension names. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -296,6 +310,8 @@ of the CGI binary instead of the usual CLI one.
 | **Required**     | No.                                |
 | **Requirements** | PHP CGI binary.                    |
 | **Format**       | Follows the HTTP post data format. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -338,6 +354,8 @@ within the section. This section forces the use of the CGI binary instead of the
 | **Requirements** | PHP CGI binary.                    |
 | **Format**       | Follows the HTTP post data format. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -369,6 +387,8 @@ section forces the use of the CGI binary instead of the usual CLI one.
 | **Requirements** | PHP CGI binary.                                        |
 | **Format**       | Raw data optionally preceded by a Content-Type header. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -388,6 +408,8 @@ the use of the CGI binary instead of the usual CLI one.
 | ------------ | ------------------------------------------------------- |
 | **Required** | No.                                                     |
 | **Format**   | Just add the content to be gzencode()'d in the section. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -417,6 +439,8 @@ forces the use of the CGI binary instead of the usual CLI one.
 | ------------ | ---------------------------------------------------------- |
 | **Required** | No.                                                        |
 | **Format**   | Just add the content to be gzcompress()'ed in the section. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -449,6 +473,8 @@ CGI binary instead of the usual CLI one.
 | **Requirements** | PHP CGI binary.                                             |
 | **Format**       | A single line of text passed as the GET data to the script. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -480,6 +506,8 @@ binary instead of the usual CLI one.
 | **Requirements** | PHP CGI binary.                                      |
 | **Format**       | A single line of text in a valid HTTP cookie format. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```
@@ -498,6 +526,8 @@ Data to be fed to the test script's standard input.
 | ------------ | ------------------------------------------------------- |
 | **Required** | No.                                                     |
 | **Format**   | Any text within this section is passed as STDIN to PHP. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -523,6 +553,8 @@ The following is a list of all tags and what they are used to represent:
 
 - `{PWD}`: Represents the directory of the file containing the `--INI--` section.
 - `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
+
+### Examples
 
 Example 1 (snippet):
 
@@ -557,6 +589,8 @@ A single line defining the arguments passed to PHP.
 | **Required** | No.                                                                     |
 | **Format**   | A single line of text that is passed as the argument(s) to the PHP CLI. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -576,6 +610,8 @@ array.
 | ------------ | -------------------------------------- |
 | **Required** | No.                                    |
 | **Format**   | Key value pairs. One setting per line. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -598,6 +634,8 @@ to them as it would be run in the phpdbg prompt.
 | ------------ | ------------------------- |
 | **Required** | No.                       |
 | **Format**   | Arbitrary phpdbg commands |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -630,6 +668,8 @@ The test source code.
 | ------------ | -------------------------------------------- |
 | **Required** | One of the `FILE` type sections is required. |
 | **Format**   | PHP source code enclosed by PHP tags.        |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -667,6 +707,8 @@ time you won't need this section.
 | **Required** | One of the `FILE` type sections is required. |
 | **Format**   | PHP source code enclosed by PHP tags.        |
 
+### Examples
+
 Example 1 (snippet):
 
 ```php
@@ -693,6 +735,8 @@ subdirectory.
 | **Required** | One of the `FILE` type sections is required. |
 | **Format**   | path/to/file. Single line.                   |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -717,6 +761,8 @@ The relative path declared in 'TESTS' is relative to the base directory for the 
 relative to the current directory.
 
 Last note, the array in this section must be returned to work.
+
+### Examples
 
 Example 1 (snippet):
 
@@ -781,6 +827,8 @@ be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test 
 | **Required** | No.                                     |
 | **Format**   | No value, just the `--CGI--` statement. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -805,6 +853,8 @@ being used.
 | ------------ | ------------------------------------------------------------------------------ |
 | **Required** | No.                                                                            |
 | **Format**   | A short plain text description of why this test is currently expected to fail. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -832,6 +882,8 @@ is being used.
 | **Required** | No.                                                       |
 | **Format**   | A short plain text description of why this test is flaky. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```
@@ -852,6 +904,8 @@ ignored.
 | ------------ | ----------------------------------------------- |
 | **Required** | No.                                             |
 | **Format**   | HTTP style headers. May include multiple lines. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -882,6 +936,8 @@ the test script exactly for the test to pass.
 | **Required** | One of the `EXPECT` type sections is required.  |
 | **Format**   | Plain text. Multiple lines of text are allowed. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -905,6 +961,8 @@ expected output from.
 |              |                                                |
 | ------------ | ---------------------------------------------- |
 | **Required** | One of the `EXPECT` type sections is required. |
+
+### Examples
 
 Example 1 (snippet):
 
@@ -955,6 +1013,8 @@ The following is a list of all tags and what they are used to represent:
 > - `%c`: A single character of any sort (.).
 > - `%r...%r`: Any string (...) enclosed between two `%r` will be treated as a regular
 >   expression.
+
+### Examples
 
 Example 1 (snippet):
 
@@ -1082,6 +1142,8 @@ in a regular expression.
 | **Required** | One of the `EXPECT` type sections is required.                                                                                                            |
 | **Format**   | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms. |
 
+### Examples
+
 Example 1 (snippet):
 
 ```text
@@ -1195,6 +1257,8 @@ without them being removed by the `--CLEAN--` section.
 | ------------ | ------------------------------------- |
 | **Required** | No.                                   |
 | **Format**   | PHP source code enclosed by PHP tags. |
+
+### Examples
 
 Example 1 (snippet):
 
