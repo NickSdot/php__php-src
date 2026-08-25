@@ -114,6 +114,12 @@ Options:
     --show-slow <n>
                 Show all tests that took longer than <n> milliseconds to run.
 
+    --shard-plan <runners>
+                Print a deterministic JSON plan for <runners> external test
+                runners, then exit without running tests. Each runner contains
+                the number of worker lanes selected by -j, or by the normal
+                automatic worker detection when -j is omitted.
+
     --no-clean  Do not execute clean section if any.
 
     --color
@@ -127,6 +133,12 @@ Options:
                 output of the last execution (CLI SAPI only).
 
     --bless     Bless failed tests using scripts/dev/bless_tests.php.
+
+Environment:
+    TEST_PHP_TIMINGS
+                Historical timing file with nine observations per test and
+                build configuration. Defaults to php_test_timings.json in the
+                source directory. Set to 0 to disable timing persistence.
 
 HELP;
 }
@@ -161,6 +173,8 @@ function main(): void
     // Temporary for the duration of refactoring
     /** @var JUnit $junit */
     global $junit;
+    /** @var TestDurationHistory $durationHistory */
+    global $durationHistory;
 
     define('IS_WINDOWS', substr(PHP_OS, 0, 3) == "WIN");
 
@@ -362,6 +376,8 @@ function main(): void
     $show_progress = true;
     $ignored_by_ext = [];
     $online = null;
+    $shard_plan_count = null;
+    $workerPlan = null;
 
     $cfgtypes = ['show', 'keep'];
     $cfgfiles = ['skip', 'php', 'clean', 'out', 'diff', 'exp', 'mem'];
@@ -548,6 +564,13 @@ function main(): void
                     }
                     $slow_min_ms = intval($slow_min_ms, 10);
                     break;
+                case '--shard-plan':
+                    $shard_plan_count = $argv[++$i] ?? '';
+                    if (!preg_match('/^[1-9]\d*$/D', $shard_plan_count)) {
+                        error("'$shard_plan_count' is not a valid number of shards, try e.g. --shard-plan 3");
+                    }
+                    $shard_plan_count = intval($shard_plan_count, 10);
+                    break;
                 case '--temp-source':
                     $temp_source = $argv[++$i];
                     break;
@@ -719,7 +742,23 @@ function main(): void
     }
 
     verify_config($php);
-    write_information($user_tests, $phpdbg);
+    $durationConfiguration = write_information($user_tests, $phpdbg, $shard_plan_count === null);
+    $durationHistory = TestDurationHistory::load($durationConfiguration);
+
+    if ($shard_plan_count !== null) {
+        if ($selected_tests) {
+            error('--shard-plan cannot be combined with selected tests');
+        }
+
+        $test_files = discover_all_tests($user_tests);
+        $workerCount = $workers ?? 1;
+        $totalWorkerCount = $shard_plan_count * $workerCount;
+        $plan = new TestDurationPlan($test_files, $totalWorkerCount, $durationHistory);
+        $runnerPlan = $plan->createRunnerPlan($shard_plan_count, $workerCount);
+
+        echo $runnerPlan->toJson(), PHP_EOL;
+        return;
+    }
 
     if ($file_cache === 'prime') {
         $cache_dir = get_file_cache_dir();
@@ -731,12 +770,24 @@ function main(): void
         $exts_tested = [];
         $exts_skipped = [];
         usort($test_files, "test_sort");
+
+        $canPlanWorkers = !$shuffle
+            && $workers !== null
+            && count(array_filter($test_files, 'is_string')) === count($test_files)
+            && $durationHistory->hasHistoricalDurationsFor($test_files);
+
+        if ($canPlanWorkers) {
+            $workerCount = min($workers, count($test_files));
+            $plan = new TestDurationPlan($test_files, $workerCount, $durationHistory);
+            $workerPlan = $plan->createWorkerPlan();
+        }
+
         $start_time = hrtime(true);
 
         echo "Running selected tests.\n";
 
         $test_idx = 0;
-        run_all_tests($test_files, $environment);
+        run_all_tests($test_files, $environment, workerPlan: $workerPlan);
         $end_time = hrtime(true);
 
         if ($failed_tests_file) {
@@ -761,23 +812,16 @@ function main(): void
         }
     } else {
         // Compile a list of all test files (*.phpt).
-        $test_files = [];
-        $exts_tested = $exts_to_test;
-        $exts_skipped = [];
-        sort($exts_to_test);
-
-        foreach (['Zend', 'tests', 'ext', 'sapi'] as $dir) {
-            if (is_dir($dir)) {
-                find_files(TEST_PHP_SRCDIR . "/{$dir}", $dir == 'ext');
-            }
-        }
-
-        foreach ($user_tests as $dir) {
-            find_files($dir, $dir == 'ext');
-        }
-
-        $test_files = array_unique($test_files);
+        $test_files = discover_all_tests($user_tests);
         usort($test_files, "test_sort");
+
+        if (!$shuffle
+                && $workers !== null
+                && $durationHistory->hasHistoricalDurationsFor($test_files)) {
+            $workerCount = min($workers, count($test_files));
+            $plan = new TestDurationPlan($test_files, $workerCount, $durationHistory);
+            $workerPlan = $plan->createWorkerPlan();
+        }
 
         $start_timestamp = time();
         $start_time = hrtime(true);
@@ -785,7 +829,7 @@ function main(): void
 
         $test_cnt = count($test_files);
         $test_idx = 0;
-        run_all_tests($test_files, $environment);
+        run_all_tests($test_files, $environment, workerPlan: $workerPlan);
         $end_time = hrtime(true);
 
         if ($failed_tests_file) {
@@ -811,10 +855,13 @@ function main(): void
         save_results($output_file, /* prompt_to_save_results: */ !$just_save_results);
     }
 
+    $durationHistory->save();
     $junit->saveXML();
+
     if ($bless) {
         bless_failed_tests($PHP_FAILED_TESTS['FAILED']);
     }
+
     if (getenv('REPORT_EXIT_STATUS') !== '0' && getenv('REPORT_EXIT_STATUS') !== 'no' &&
             ($sum_results['FAILED'] || $sum_results['BORKED'] || $sum_results['LEAKED'])) {
         exit(1);
@@ -879,12 +926,15 @@ function verify_config(string $php): void
     }
 }
 
-/**
- * @param string[] $user_tests
- */
-function write_information(array $user_tests, $phpdbg): void
+/** @param string[] $user_tests */
+function write_information(
+    array $user_tests,
+    $phpdbg,
+    bool $displayInformation = true,
+): TestDurationConfiguration
 {
-    global $php, $php_cgi, $php_info, $ini_overwrites, $pass_option_args, $exts_to_test, $valgrind, $no_file_cache;
+    global $php, $php_cgi, $php_info, $ini_overwrites, $pass_option_args, $exts_to_test,
+           $valgrind, $no_file_cache, $preload, $file_cache, $environment;
     $php_escaped = escapeshellarg($php);
     $escaped_pass_options = escaped_shell_string_from($pass_option_args);
     $escaped_no_file_cache = escaped_shell_string_from($no_file_cache);
@@ -906,7 +956,7 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
     $php_info = shell_exec("$php_escaped $escaped_pass_options $info_params $escaped_no_file_cache \"$info_file\"");
     define('TESTED_PHP_VERSION', shell_exec("$php_escaped -n -r \"echo PHP_VERSION;\""));
 
-    if ($php_cgi && $php != $php_cgi) {
+    if ($displayInformation && $php_cgi && $php != $php_cgi) {
         $php_cgi_escaped = escapeshellarg($php_cgi);
         $php_info_cgi = shell_exec("$php_cgi_escaped $escaped_pass_options $info_params $escaped_no_file_cache -q \"$info_file\"");
         $php_info_sep = "\n---------------------------------------------------------------------";
@@ -915,7 +965,7 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
         $php_cgi_info = '';
     }
 
-    if ($phpdbg) {
+    if ($displayInformation && $phpdbg) {
         $phpdbg_escaped = escapeshellarg($phpdbg);
         $phpdbg_info = shell_exec("$phpdbg_escaped $escaped_pass_options $info_params $escaped_no_file_cache -qrr \"$info_file\"");
         $php_info_sep = "\n---------------------------------------------------------------------";
@@ -934,10 +984,12 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
         <?php
         $exts = get_loaded_extensions();
         $ext_dir = ini_get('extension_dir');
-        foreach (scandir($ext_dir) as $file) {
-            if (preg_match('/^(?:php_)?([_a-zA-Z0-9]+)\.(?:' . PHP_SHLIB_SUFFIX . ')$/', $file, $matches)) {
-                if (!extension_loaded($matches[1])) {
-                    $exts[] = $matches[1];
+        if (is_dir($ext_dir)) {
+            foreach (scandir($ext_dir) as $file) {
+                if (preg_match('/^(?:php_)?([_a-zA-Z0-9]+)\.(?:' . PHP_SHLIB_SUFFIX . ')$/', $file, $matches)) {
+                    if (!extension_loaded($matches[1])) {
+                        $exts[] = $matches[1];
+                    }
                 }
             }
         }
@@ -964,6 +1016,23 @@ More .INIs  : " , (function_exists(\'php_ini_scanned_files\') ? str_replace("\n"
     }
     @unlink($info_file);
 
+    $durationConfiguration = TestDurationConfiguration::detect(
+        $php,
+        $php_cgi,
+        $phpdbg,
+        $exts_to_test,
+        $ini_overwrites,
+        $pass_option_args,
+        $valgrind !== null,
+        $preload,
+        $file_cache,
+        $environment,
+    );
+
+    if (!$displayInformation) {
+        return $durationConfiguration;
+    }
+
     // Write test context information.
     echo "
 =====================================================================
@@ -977,6 +1046,8 @@ Extra dirs  : ";
 VALGRIND    : " . ($valgrind ? $valgrind->getHeader() : 'Not used') . "
 =====================================================================
 ";
+
+    return $durationConfiguration;
 }
 
 function save_results(string $output_file, bool $prompt_to_save_results): void
@@ -1128,6 +1199,1044 @@ function find_files(string $dir, bool $is_ext_dir = false, bool $ignore = false)
     }
 
     closedir($o);
+}
+
+/** @param string[] $user_tests */
+function discover_all_tests(array $user_tests): array
+{
+    global $test_files, $exts_to_test, $exts_tested, $exts_skipped;
+
+    $test_files = [];
+    $exts_tested = $exts_to_test;
+    $exts_skipped = [];
+    sort($exts_to_test);
+
+    foreach (['Zend', 'tests', 'ext', 'sapi'] as $dir) {
+        if (is_dir($dir)) {
+            find_files(TEST_PHP_SRCDIR . "/{$dir}", $dir === 'ext');
+        }
+    }
+
+    foreach ($user_tests as $dir) {
+        find_files($dir, $dir === 'ext');
+    }
+
+    return array_values(array_unique($test_files));
+}
+
+final class TestDurationConfiguration
+{
+    /** @param array<string, mixed> $values */
+    private function __construct(private array $values)
+    {
+    }
+
+    /**
+     * @param string[] $extensions
+     * @param string[] $iniOverwrites
+     * @param string[] $passOptions
+     * @param array<string, mixed> $environment
+     */
+    public static function detect(
+        string $php,
+        ?string $phpCgi,
+        ?string $phpdbg,
+        array $extensions,
+        array $iniOverwrites,
+        array $passOptions,
+        bool $valgrind,
+        bool $preload,
+        ?string $fileCache,
+        array $environment,
+    ): self {
+        $metadataScript = <<<'PHP'
+            ob_start();
+            phpinfo(INFO_GENERAL);
+            $generalInformation = str_replace("\r", '', ob_get_clean());
+            preg_match('/^Configure Command =>\s*(.*)$/m', $generalInformation, $matches);
+            echo json_encode([
+                'architecture' => php_uname('m'),
+                'configure_command' => $matches[1] ?? '',
+                'debug' => PHP_DEBUG,
+                'integer_size' => PHP_INT_SIZE,
+                'os_family' => PHP_OS_FAMILY,
+                'php_version' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION,
+                'sapi' => PHP_SAPI,
+                'zts' => PHP_ZTS,
+            ], JSON_THROW_ON_ERROR);
+            PHP;
+        $command = escapeshellarg($php) . ' -n -r ' . escapeshellarg($metadataScript);
+        $metadataJson = shell_exec($command);
+
+        try {
+            $metadata = json_decode((string) $metadataJson, true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            error("Cannot identify the tested PHP configuration: {$exception->getMessage()}");
+        }
+
+        if (!is_array($metadata)) {
+            error('Cannot identify the tested PHP configuration');
+        }
+
+        $configureCommand = $metadata['configure_command'] ?? '';
+
+        if (!is_string($configureCommand)) {
+            error('The tested PHP returned an invalid configure command');
+        }
+
+        unset($metadata['configure_command']);
+        $metadata['configure_options'] = self::normalizeConfigureCommand($configureCommand);
+
+        $extensions = array_values(array_unique($extensions));
+        sort($extensions, SORT_STRING);
+        $iniOverwrites = array_values(array_unique($iniOverwrites));
+        sort($iniOverwrites, SORT_STRING);
+
+        $metadata['available_sapis'] = [
+            'cgi' => $phpCgi !== null,
+            'phpdbg' => $phpdbg !== null,
+        ];
+        $metadata['extensions'] = $extensions;
+        $metadata['runner'] = [
+            'file_cache' => $fileCache,
+            'ini_overwrites' => $iniOverwrites,
+            'offline' => ($environment['SKIP_ONLINE_TESTS'] ?? '1') !== '0',
+            'pass_options' => array_values($passOptions),
+            'preload' => $preload,
+            'sanitizer' => isset($environment['SKIP_MSAN'])
+                ? 'msan'
+                : (isset($environment['SKIP_ASAN']) ? 'asan' : null),
+            'valgrind' => $valgrind,
+        ];
+
+        return new self(self::canonicalize($metadata));
+    }
+
+    public function fingerprint(): string
+    {
+        return self::fingerprintFor($this->values);
+    }
+
+    /** @return array<string, mixed> */
+    public function values(): array
+    {
+        return $this->values;
+    }
+
+    /** @param array<string, mixed> $values */
+    public static function fingerprintFor(array $values): string
+    {
+        try {
+            $json = json_encode(
+                self::canonicalize($values),
+                JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $exception) {
+            error("Cannot encode a test duration configuration: {$exception->getMessage()}");
+        }
+
+        return hash('sha256', $json);
+    }
+
+    /** @return list<string> */
+    private static function normalizeConfigureCommand(string $command): array
+    {
+        if ($command === '') {
+            return [];
+        }
+
+        $arguments = str_getcsv(trim($command), ' ', "'", '\\');
+        $options = [];
+
+        foreach ($arguments as $argument) {
+            if ($argument === '' || $argument === './configure' || $argument[0] !== '-') {
+                continue;
+            }
+
+            [$name, $value] = array_pad(explode('=', $argument, 2), 2, null);
+
+            if (in_array($name, [
+                '--prefix',
+                '--with-config-file-path',
+                '--with-config-file-scan-dir',
+            ], true)) {
+                continue;
+            }
+
+            if ($value !== null && self::isAbsolutePath($value)) {
+                $argument = $name;
+            }
+
+            $options[] = $argument;
+        }
+
+        $options = array_values(array_unique($options));
+        sort($options, SORT_STRING);
+
+        return $options;
+    }
+
+    private static function isAbsolutePath(string $path): bool
+    {
+        return str_starts_with($path, '/')
+            || preg_match('/^[a-z]:[\\\\\/]/i', $path) === 1;
+    }
+
+    private static function canonicalize(mixed $value): mixed
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        if (array_is_list($value)) {
+            return array_map(self::canonicalize(...), $value);
+        }
+
+        ksort($value, SORT_STRING);
+
+        foreach ($value as &$entry) {
+            $entry = self::canonicalize($entry);
+        }
+        unset($entry);
+
+        return $value;
+    }
+}
+
+final class TestDurationStorage
+{
+    private const VERSION = 2;
+    private const MAX_SAMPLES = 9;
+
+    /**
+     * @param array<string, array{
+     *     configuration: array<string, mixed>,
+     *     tests: array<string, list<float>>,
+     * }> $configurations
+     */
+    private function __construct(private array $configurations)
+    {
+    }
+
+    public static function create(): self
+    {
+        return new self([]);
+    }
+
+    public static function read(string $filePath): self
+    {
+        $contents = @file_get_contents($filePath);
+
+        if ($contents === false) {
+            error("Cannot read timing history '$filePath'");
+        }
+
+        try {
+            $data = json_decode($contents, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            error("Invalid timing history '$filePath': {$exception->getMessage()}");
+        }
+
+        if (!$data instanceof stdClass) {
+            error("Timing history '$filePath' must contain an object");
+        }
+
+        if (($data->version ?? null) === 1) {
+            self::validateLegacyHistory($data, $filePath);
+
+            return self::create();
+        }
+
+        if (($data->version ?? null) !== self::VERSION
+                || !isset($data->configurations)
+                || !$data->configurations instanceof stdClass) {
+            error("Timing history '$filePath' must contain version 2 and a configurations object");
+        }
+
+        $configurations = [];
+
+        foreach (get_object_vars($data->configurations) as $fingerprint => $configurationData) {
+            if (!$configurationData instanceof stdClass
+                    || !isset($configurationData->configuration, $configurationData->tests)
+                    || !$configurationData->configuration instanceof stdClass
+                    || !$configurationData->tests instanceof stdClass) {
+                error("Timing history '$filePath' contains an invalid configuration '$fingerprint'");
+            }
+
+            $configuration = self::objectToArray(
+                $configurationData->configuration,
+                $filePath,
+                "configuration '$fingerprint'",
+            );
+
+            if (TestDurationConfiguration::fingerprintFor($configuration) !== $fingerprint) {
+                error("Timing history '$filePath' contains a mismatched configuration '$fingerprint'");
+            }
+
+            $tests = [];
+
+            foreach (get_object_vars($configurationData->tests) as $testPath => $samples) {
+                if (!is_array($samples)
+                        || $samples === []
+                        || count($samples) > self::MAX_SAMPLES) {
+                    error("Timing history '$filePath' contains invalid samples for '$testPath'");
+                }
+
+                foreach ($samples as $sample) {
+                    self::validateDuration($sample, $filePath, $testPath);
+                }
+
+                $tests[$testPath] = array_map(floatval(...), $samples);
+            }
+
+            ksort($tests, SORT_STRING);
+            $configurations[$fingerprint] = [
+                'configuration' => $configuration,
+                'tests' => $tests,
+            ];
+        }
+
+        ksort($configurations, SORT_STRING);
+
+        return new self($configurations);
+    }
+
+    /** @return array<string, float> */
+    public function durationsFor(TestDurationConfiguration $configuration): array
+    {
+        $tests = $this->configurations[$configuration->fingerprint()]['tests'] ?? [];
+        $durations = [];
+
+        foreach ($tests as $testPath => $samples) {
+            $durations[$testPath] = array_sum($samples) / count($samples);
+        }
+
+        return $durations;
+    }
+
+    /** @param array<string, float> $observations */
+    public function append(
+        TestDurationConfiguration $configuration,
+        array $observations,
+    ): void {
+        $fingerprint = $configuration->fingerprint();
+        $configurationData = $this->configurations[$fingerprint] ?? [
+            'configuration' => $configuration->values(),
+            'tests' => [],
+        ];
+
+        foreach ($observations as $testPath => $duration) {
+            $samples = $configurationData['tests'][$testPath] ?? [];
+            $samples[] = $duration;
+            $configurationData['tests'][$testPath] = array_slice(
+                $samples,
+                -self::MAX_SAMPLES,
+            );
+        }
+
+        ksort($configurationData['tests'], SORT_STRING);
+        $this->configurations[$fingerprint] = $configurationData;
+        ksort($this->configurations, SORT_STRING);
+    }
+
+    public function toJson(): string
+    {
+        $configurations = [];
+
+        foreach ($this->configurations as $fingerprint => $configurationData) {
+            $configurations[$fingerprint] = [
+                'configuration' => (object) $configurationData['configuration'],
+                'tests' => (object) $configurationData['tests'],
+            ];
+        }
+
+        try {
+            return json_encode([
+                'version' => self::VERSION,
+                'configurations' => (object) $configurations,
+            ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            error("Cannot encode timing history: {$exception->getMessage()}");
+        }
+    }
+
+    private static function validateLegacyHistory(stdClass $data, string $filePath): void
+    {
+        if (!isset($data->durations) || !$data->durations instanceof stdClass) {
+            error("Timing history '$filePath' must contain version 1 and a durations object");
+        }
+
+        foreach (get_object_vars($data->durations) as $testPath => $duration) {
+            self::validateDuration($duration, $filePath, $testPath);
+        }
+    }
+
+    private static function validateDuration(mixed $duration, string $filePath, string $testPath): void
+    {
+        if ((!is_int($duration) && !is_float($duration))
+                || !is_finite((float) $duration)
+                || $duration < 0) {
+            error("Timing history '$filePath' contains an invalid duration for '$testPath'");
+        }
+    }
+
+    /** @return array<string, mixed> */
+    private static function objectToArray(
+        stdClass $object,
+        string $filePath,
+        string $description,
+    ): array {
+        try {
+            return json_decode(
+                json_encode($object, JSON_THROW_ON_ERROR),
+                true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $exception) {
+            error("Timing history '$filePath' contains an invalid $description: {$exception->getMessage()}");
+        }
+    }
+}
+
+final class TestDurationHistory
+{
+    private ?string $filePath;
+
+    private ?TestDurationConfiguration $configuration;
+
+    /** @var array<string, float> */
+    private array $historicalDurations;
+
+    /** @var array<string, float> */
+    private array $observedDurations = [];
+
+    private bool $recordingEnabled;
+
+    /** @param array<string, float> $historicalDurations */
+    private function __construct(
+        ?string $filePath,
+        ?TestDurationConfiguration $configuration,
+        array $historicalDurations,
+        bool $recordingEnabled = true,
+    ) {
+        $this->filePath = $filePath;
+        $this->configuration = $configuration;
+        $this->historicalDurations = $historicalDurations;
+        $this->recordingEnabled = $recordingEnabled;
+    }
+
+    public static function load(TestDurationConfiguration $configuration): self
+    {
+        $filePath = getenv('TEST_PHP_TIMINGS');
+
+        if ($filePath === '0') {
+            return new self(null, null, [], false);
+        }
+
+        if ($filePath === false || $filePath === '') {
+            $filePath = TEST_PHP_SRCDIR . '/php_test_timings.json';
+        }
+
+        if (file_exists($filePath) && !is_file($filePath)) {
+            error("Timing history '$filePath' is not a file");
+        }
+
+        $storage = is_file($filePath)
+            ? TestDurationStorage::read($filePath)
+            : TestDurationStorage::create();
+
+        return new self(
+            $filePath,
+            $configuration,
+            $storage->durationsFor($configuration),
+        );
+    }
+
+    public function durationFor(string $testFile): ?float
+    {
+        $testPath = self::sourceRelativePathFor($testFile);
+
+        if ($testPath === null) {
+            return null;
+        }
+
+        return $this->historicalDurations[$testPath] ?? null;
+    }
+
+    /** @param list<string> $testFiles */
+    public function hasHistoricalDurationsFor(array $testFiles): bool
+    {
+        foreach ($testFiles as $testFile) {
+            if ($this->durationFor($testFile) !== null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function record(string $testFile, float $duration): void
+    {
+        if (!$this->recordingEnabled) {
+            return;
+        }
+
+        $testPath = self::sourceRelativePathFor($testFile);
+
+        if ($testPath === null) {
+            return;
+        }
+
+        $this->observedDurations[$testPath] = round($duration, 6);
+    }
+
+    public function mergeObservationsFrom(self $other): void
+    {
+        $this->observedDurations = array_replace(
+            $this->observedDurations,
+            $other->observedDurations,
+        );
+    }
+
+    public function clearObservations(): void
+    {
+        $this->observedDurations = [];
+    }
+
+    public function save(): void
+    {
+        if ($this->filePath === null
+                || $this->configuration === null
+                || $this->observedDurations === []) {
+            return;
+        }
+
+        $lockPath = $this->filePath . '.lock';
+        $lockHandle = @fopen($lockPath, 'c');
+
+        if ($lockHandle === false) {
+            error("Cannot open timing history lock '$lockPath'");
+        }
+
+        if (!flock($lockHandle, LOCK_EX)) {
+            fclose($lockHandle);
+            error("Cannot lock timing history '$lockPath'");
+        }
+
+        try {
+            $storage = is_file($this->filePath)
+                ? TestDurationStorage::read($this->filePath)
+                : TestDurationStorage::create();
+            $storage->append($this->configuration, $this->observedDurations);
+            $json = $storage->toJson();
+
+            foreach (glob($this->filePath . '.tmp.*') ?: [] as $staleTemporaryFile) {
+                @unlink($staleTemporaryFile);
+            }
+
+            $temporaryFile = tempnam(
+                dirname($this->filePath),
+                basename($this->filePath) . '.tmp.',
+            );
+
+            if ($temporaryFile === false) {
+                error("Cannot create a temporary timing history for '{$this->filePath}'");
+            }
+
+            if (file_put_contents($temporaryFile, $json . PHP_EOL, LOCK_EX) === false) {
+                @unlink($temporaryFile);
+                error("Cannot write temporary timing history '$temporaryFile'");
+            }
+
+            if (!rename($temporaryFile, $this->filePath)) {
+                @unlink($temporaryFile);
+                error("Cannot replace timing history '{$this->filePath}'");
+            }
+        } finally {
+            flock($lockHandle, LOCK_UN);
+            fclose($lockHandle);
+        }
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'recordingEnabled' => $this->recordingEnabled,
+            'observedDurations' => $this->observedDurations,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->filePath = null;
+        $this->configuration = null;
+        $this->historicalDurations = [];
+        $this->recordingEnabled = $data['recordingEnabled'];
+        $this->observedDurations = $data['observedDurations'];
+    }
+
+    public static function sourceRelativePathFor(string $testFile): ?string
+    {
+        $normalizedTestFile = str_replace('\\', '/', $testFile);
+
+        if (!self::isAbsolutePath($normalizedTestFile)) {
+            $testFile = TEST_PHP_SRCDIR . '/' . $testFile;
+            $testFile = realpath($testFile) ?: $testFile;
+            $normalizedTestFile = str_replace('\\', '/', $testFile);
+        }
+
+        $sourceDirectory = rtrim(str_replace('\\', '/', TEST_PHP_SRCDIR), '/');
+        $sourcePrefix = $sourceDirectory . '/';
+        $isWithinSource = IS_WINDOWS
+            ? strncasecmp($normalizedTestFile, $sourcePrefix, strlen($sourcePrefix)) === 0
+            : strncmp($normalizedTestFile, $sourcePrefix, strlen($sourcePrefix)) === 0;
+
+        if (!$isWithinSource) {
+            return null;
+        }
+
+        return substr($normalizedTestFile, strlen($sourcePrefix));
+    }
+
+    private static function isAbsolutePath(string $path): bool
+    {
+        return str_starts_with($path, '/')
+            || (IS_WINDOWS && preg_match('/^[a-z]:\//i', $path) === 1);
+    }
+}
+
+final class TestDurationPlan
+{
+    private int $workerCount;
+
+    /** @var list<string> */
+    private array $testPaths;
+
+    /** @var array<string, string> */
+    private array $testFiles = [];
+
+    /** @var array<string, float> */
+    private array $historicalDurations = [];
+
+    /** @var list<list<string>> */
+    private array $testPathsByWorker;
+
+    /** @var list<float> */
+    private array $estimatedLoadsByWorker;
+
+    /** @param list<string> $testFiles */
+    public function __construct(
+        array $testFiles,
+        int $workerCount,
+        TestDurationHistory $durationHistory,
+    ) {
+        $this->workerCount = $workerCount;
+
+        foreach ($testFiles as $testFile) {
+            $testPath = self::pathFor($testFile);
+            $this->testFiles[$testPath] = $testFile;
+
+            $duration = $durationHistory->durationFor($testFile);
+
+            if ($duration !== null) {
+                $this->historicalDurations[$testPath] = $duration;
+            }
+        }
+
+        $this->testPaths = array_keys($this->testFiles);
+        sort($this->testPaths, SORT_STRING);
+
+        $testCount = count($this->testPaths);
+
+        if ($testCount === 0 || $this->workerCount > $testCount) {
+            error("Cannot distribute $testCount tests across {$this->workerCount} non-empty worker lanes");
+        }
+
+        $this->testPathsByWorker = array_fill(0, $this->workerCount, []);
+        $this->estimatedLoadsByWorker = array_fill(0, $this->workerCount, 0.0);
+
+        $this->assignTimedTests();
+        $this->assignUntimedTests();
+        $this->staggerWorkerQueues();
+        $this->validate();
+    }
+
+    public function createWorkerPlan(): TestWorkerPlan
+    {
+        $workerQueues = [];
+        $estimatedDurations = [];
+
+        foreach ($this->testPathsByWorker as $testPaths) {
+            $workerQueue = [];
+
+            foreach ($testPaths as $testPath) {
+                $testFile = $this->testFiles[$testPath];
+                $workerQueue[] = $testFile;
+                $estimatedDurations[$testFile] = $this->estimatedDurationFor($testPath);
+            }
+
+            $workerQueues[] = $workerQueue;
+        }
+
+        return new TestWorkerPlan($workerQueues, $estimatedDurations);
+    }
+
+    public function createRunnerPlan(int $runnerCount, int $workerCount): TestRunnerPlan
+    {
+        if ($runnerCount * $workerCount !== $this->workerCount) {
+            error('Runner topology does not match the number of planned worker lanes');
+        }
+
+        return new TestRunnerPlan(
+            $runnerCount,
+            $workerCount,
+            $this->testPathsByWorker,
+            $this->estimatedLoadsByWorker,
+        );
+    }
+
+    private function assignTimedTests(): void
+    {
+        $testPaths = array_keys($this->historicalDurations);
+        usort($testPaths, function (string $first, string $second): int {
+            return $this->historicalDurations[$second] <=> $this->historicalDurations[$first]
+                ?: strcmp($first, $second);
+        });
+
+        foreach ($testPaths as $testPath) {
+            $worker = $this->findLightestWorker();
+            $this->testPathsByWorker[$worker][] = $testPath;
+            $this->estimatedLoadsByWorker[$worker] += $this->historicalDurations[$testPath];
+        }
+    }
+
+    private function assignUntimedTests(): void
+    {
+        $testPaths = array_values(array_diff(
+            $this->testPaths,
+            array_keys($this->historicalDurations),
+        ));
+        $testCount = count($testPaths);
+        $baseQuota = intdiv($testCount, $this->workerCount);
+        $quotaByWorker = array_fill(0, $this->workerCount, $baseQuota);
+
+        $workersByLoad = range(0, $this->workerCount - 1);
+        usort($workersByLoad, function (int $first, int $second): int {
+            return $this->estimatedLoadsByWorker[$first] <=> $this->estimatedLoadsByWorker[$second]
+                ?: $first <=> $second;
+        });
+
+        $remainder = $testCount % $this->workerCount;
+
+        for ($index = 0; $index < $remainder; $index++) {
+            $quotaByWorker[$workersByLoad[$index]]++;
+        }
+
+        $assignedByWorker = array_fill(0, $this->workerCount, 0);
+        $position = 0;
+
+        foreach ($testPaths as $testPath) {
+            do {
+                $worker = $workersByLoad[$position % $this->workerCount];
+                $position++;
+            } while ($assignedByWorker[$worker] >= $quotaByWorker[$worker]);
+
+            $this->testPathsByWorker[$worker][] = $testPath;
+            $assignedByWorker[$worker]++;
+            $this->estimatedLoadsByWorker[$worker] += $this->estimatedDurationFor($testPath);
+        }
+    }
+
+    private function estimatedDurationFor(string $testPath): float
+    {
+        if (isset($this->historicalDurations[$testPath])) {
+            return $this->historicalDurations[$testPath];
+        }
+
+        if ($this->historicalDurations === []) {
+            return 1.0;
+        }
+
+        return array_sum($this->historicalDurations) / count($this->historicalDurations);
+    }
+
+    private function staggerWorkerQueues(): void
+    {
+        if ($this->historicalDurations === []) {
+            return;
+        }
+
+        foreach ($this->testPathsByWorker as $worker => $testPaths) {
+            $targetDuration = $this->estimatedLoadsByWorker[$worker]
+                * $worker / $this->workerCount;
+            $duration = 0.0;
+            $offset = 0;
+
+            while ($offset < count($testPaths) && $duration < $targetDuration) {
+                $duration += $this->estimatedDurationFor($testPaths[$offset]);
+                $offset++;
+            }
+
+            $this->testPathsByWorker[$worker] = array_merge(
+                array_slice($testPaths, $offset),
+                array_slice($testPaths, 0, $offset),
+            );
+        }
+    }
+
+    private function findLightestWorker(): int
+    {
+        $lightestWorker = 0;
+
+        for ($worker = 1; $worker < $this->workerCount; $worker++) {
+            if ($this->estimatedLoadsByWorker[$worker]
+                    < $this->estimatedLoadsByWorker[$lightestWorker]) {
+                $lightestWorker = $worker;
+                continue;
+            }
+
+            if ($this->estimatedLoadsByWorker[$worker]
+                    !== $this->estimatedLoadsByWorker[$lightestWorker]) {
+                continue;
+            }
+
+            if (count($this->testPathsByWorker[$worker])
+                    < count($this->testPathsByWorker[$lightestWorker])) {
+                $lightestWorker = $worker;
+            }
+        }
+
+        return $lightestWorker;
+    }
+
+    private function validate(): void
+    {
+        $assignedTestPaths = array_merge(...$this->testPathsByWorker);
+        sort($assignedTestPaths, SORT_STRING);
+
+        $hasEmptyWorker = in_array([], $this->testPathsByWorker, true);
+
+        if ($assignedTestPaths !== $this->testPaths || $hasEmptyWorker) {
+            error('Test plan is incomplete, contains duplicates, or has an empty worker lane');
+        }
+    }
+
+    private static function pathFor(string $testFile): string
+    {
+        $sourceRelativePath = TestDurationHistory::sourceRelativePathFor($testFile);
+
+        if ($sourceRelativePath !== null) {
+            return $sourceRelativePath;
+        }
+
+        return str_replace('\\', '/', realpath($testFile) ?: $testFile);
+    }
+}
+
+final class TestRunnerPlan
+{
+    private const VERSION = 1;
+
+    /** @var list<list<list<string>>> */
+    private array $testPathsByRunner;
+
+    /**
+     * @param list<list<string>> $testPathsByWorker
+     * @param list<float> $estimatedLoadsByWorker
+     */
+    public function __construct(
+        private int $runnerCount,
+        private int $workerCount,
+        array $testPathsByWorker,
+        array $estimatedLoadsByWorker,
+    ) {
+        if (count($testPathsByWorker) !== $this->runnerCount * $this->workerCount
+                || count($estimatedLoadsByWorker) !== count($testPathsByWorker)) {
+            error('Runner plan does not match its declared topology');
+        }
+
+        $this->testPathsByRunner = array_fill(0, $this->runnerCount, []);
+        $estimatedLoadsByRunner = array_fill(0, $this->runnerCount, 0.0);
+        $workers = array_keys($testPathsByWorker);
+
+        usort($workers, static function (int $first, int $second) use ($estimatedLoadsByWorker): int {
+            return $estimatedLoadsByWorker[$second] <=> $estimatedLoadsByWorker[$first]
+                ?: $first <=> $second;
+        });
+
+        foreach ($workers as $worker) {
+            $runner = $this->findLightestRunner($estimatedLoadsByRunner);
+            $this->testPathsByRunner[$runner][] = $testPathsByWorker[$worker];
+            $estimatedLoadsByRunner[$runner] += $estimatedLoadsByWorker[$worker];
+        }
+
+        $this->validate();
+    }
+
+    public function toJson(): string
+    {
+        $runners = array_map(
+            static fn(array $workers): array => ['workers' => $workers],
+            $this->testPathsByRunner,
+        );
+
+        try {
+            return json_encode([
+                'version' => self::VERSION,
+                'runner_count' => $this->runnerCount,
+                'worker_count' => $this->workerCount,
+                'runners' => $runners,
+            ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            error("Cannot encode runner plan: {$exception->getMessage()}");
+        }
+    }
+
+    /** @param list<float> $estimatedLoadsByRunner */
+    private function findLightestRunner(array $estimatedLoadsByRunner): int
+    {
+        $lightestRunner = null;
+
+        for ($runner = 0; $runner < $this->runnerCount; $runner++) {
+            if (count($this->testPathsByRunner[$runner]) === $this->workerCount) {
+                continue;
+            }
+
+            if ($lightestRunner === null
+                    || $estimatedLoadsByRunner[$runner] < $estimatedLoadsByRunner[$lightestRunner]
+                    || ($estimatedLoadsByRunner[$runner] === $estimatedLoadsByRunner[$lightestRunner]
+                        && count($this->testPathsByRunner[$runner])
+                            < count($this->testPathsByRunner[$lightestRunner]))) {
+                $lightestRunner = $runner;
+            }
+        }
+
+        if ($lightestRunner === null) {
+            error('Runner plan contains too many worker lanes');
+        }
+
+        return $lightestRunner;
+    }
+
+    private function validate(): void
+    {
+        foreach ($this->testPathsByRunner as $workers) {
+            if (count($workers) !== $this->workerCount || in_array([], $workers, true)) {
+                error('Runner plan contains an incomplete or empty worker lane');
+            }
+        }
+    }
+}
+
+final class TestWorkerPlan
+{
+    /** @var list<list<string>> */
+    private array $workerQueues;
+
+    /** @var array<string, float> */
+    private array $estimatedDurations;
+
+    /** @var list<float> */
+    private array $remainingDurations;
+
+    /**
+     * @param list<list<string>> $workerQueues
+     * @param array<string, float> $estimatedDurations
+     */
+    public function __construct(array $workerQueues, array $estimatedDurations)
+    {
+        $this->workerQueues = array_map('array_reverse', $workerQueues);
+        $this->estimatedDurations = $estimatedDurations;
+        $this->updateRemainingDurations();
+    }
+
+    /** @param callable(string): bool $keepTest */
+    public function filter(callable $keepTest): void
+    {
+        foreach ($this->workerQueues as &$workerQueue) {
+            $workerQueue = array_values(array_filter($workerQueue, $keepTest));
+        }
+        unset($workerQueue);
+
+        $this->updateRemainingDurations();
+    }
+
+    /** @param list<string> $tests */
+    public function remove(array $tests): void
+    {
+        $testMap = array_fill_keys($tests, true);
+        $this->filter(static fn(string $test): bool => !isset($testMap[$test]));
+    }
+
+    public function hasPendingTests(): bool
+    {
+        foreach ($this->workerQueues as $workerQueue) {
+            if ($workerQueue !== []) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function dequeue(int $worker): ?string
+    {
+        $workerQueue = $worker - 1;
+
+        if (($this->workerQueues[$workerQueue] ?? []) !== []) {
+            return $this->dequeueFrom($workerQueue);
+        }
+
+        $workerQueue = $this->findHeaviestQueue();
+
+        if ($workerQueue === null) {
+            return null;
+        }
+
+        return $this->dequeueFrom($workerQueue);
+    }
+
+    private function dequeueFrom(int $workerQueue): string
+    {
+        $test = array_pop($this->workerQueues[$workerQueue]);
+        $this->remainingDurations[$workerQueue] -= $this->estimatedDurations[$test];
+
+        return $test;
+    }
+
+    private function findHeaviestQueue(): ?int
+    {
+        $heaviestQueue = null;
+
+        foreach ($this->workerQueues as $workerQueue => $tests) {
+            if ($tests === []) {
+                continue;
+            }
+
+            if ($heaviestQueue === null
+                    || $this->remainingDurations[$workerQueue]
+                        > $this->remainingDurations[$heaviestQueue]) {
+                $heaviestQueue = $workerQueue;
+            }
+        }
+
+        return $heaviestQueue;
+    }
+
+    private function updateRemainingDurations(): void
+    {
+        $this->remainingDurations = [];
+
+        foreach ($this->workerQueues as $workerQueue) {
+            $remainingDuration = 0.0;
+
+            foreach ($workerQueue as $test) {
+                $remainingDuration += $this->estimatedDurations[$test];
+            }
+
+            $this->remainingDurations[] = $remainingDuration;
+        }
+    }
 }
 
 function get_file_cache_dir(): string
@@ -1438,28 +2547,42 @@ function create_shell_invocation(string $command): array|string
     return ['/bin/sh', '-c', "exec $command"];
 }
 
-function run_all_tests(array $test_files, array $env, ?string $redir_tested = null): void
+function run_all_tests(
+    array $test_files,
+    array $env,
+    ?string $redir_tested = null,
+    ?TestWorkerPlan $workerPlan = null,
+): void
 {
     global $test_results, $failed_tests_file, $result_tests_file, $php, $test_idx, $file_cache, $shuffle;
     global $preload;
     // Parallel testing
     global $PHP_FAILED_TESTS, $workers, $workerID, $workerSock;
+    /** @var TestDurationHistory $durationHistory */
+    global $durationHistory;
 
     if ($file_cache !== null || $preload) {
         /* Automatically skip opcache tests in --file-cache and --preload mode,
          * because opcache generally expects these to run under a default configuration. */
-        $test_files = array_filter($test_files, function($test) use($preload) {
+        $shouldRunTest = function ($test) use ($preload) {
             if (!is_string($test)) {
                 return true;
             }
+
             if (false !== strpos($test, 'ext/opcache')) {
                 return false;
             }
+
             if ($preload && false !== strpos($test, 'ext/zend_test/tests/observer')) {
                 return false;
             }
+
             return true;
-        });
+        };
+
+        $test_files = array_filter($test_files, $shouldRunTest);
+
+        $workerPlan?->filter($shouldRunTest);
     }
 
     // To discover parallelization issues and order dependent tests it is useful to randomize the test order.
@@ -1470,7 +2593,7 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
     /* Ignore -jN if there is only one file to analyze. */
     if ($workers !== null && count($test_files) > 1 && !$workerID
             && $redir_tested === null) {
-        run_all_tests_parallel($test_files, $env, $redir_tested);
+        run_all_tests_parallel($test_files, $env, $redir_tested, $workerPlan);
         return;
     }
 
@@ -1493,7 +2616,11 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
             ob_start();
         }
 
+        $testFile = is_array($name) ? $name[0] : $name;
+        $startedAt = hrtime(true);
         $result = run_test($php, $name, $env);
+        $durationHistory->record($testFile, (hrtime(true) - $startedAt) / 1e9);
+
         if ($workerID) {
             $resultText = ob_get_clean();
         }
@@ -1522,11 +2649,18 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
     }
 }
 
-function run_all_tests_parallel(array $test_files, array $env, ?string $redir_tested): void
+function run_all_tests_parallel(
+    array $test_files,
+    array $env,
+    ?string $redir_tested,
+    ?TestWorkerPlan $workerPlan,
+): void
 {
     global $workers, $test_cnt, $test_idx, $test_results, $failed_tests_file, $result_tests_file, $PHP_FAILED_TESTS, $shuffle, $valgrind, $show_progress;
 
     global $junit;
+    /** @var TestDurationHistory $durationHistory */
+    global $durationHistory;
 
     // The PHP binary running run-tests.php, and run-tests.php itself
     // This PHP executable is *not* necessarily the same as the tested version
@@ -1570,15 +2704,20 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
         $fileConflictsWith[$file] = $conflicts;
     }
 
-    // Some tests assume that they are executed in a certain order. We will be popping from
-    // $test_files, so reverse its order here. This makes sure that order is preserved at least
-    // for tests with a common conflict key.
-    if (!$shuffle) {
+    $totalFileCount = count($test_files);
+
+    if ($workerPlan !== null) {
+        $workerPlan->remove($sequentialTests);
+        $test_files = [];
+    } elseif (!$shuffle) {
+        // Some tests assume that they are executed in a certain order. We will be popping from
+        // $test_files, so reverse its order here. This makes sure that order is preserved at least
+        // for tests with a common conflict key.
         $test_files = array_reverse($test_files);
     }
 
     // Don't start more workers than test files.
-    $workers = max(1, min($workers, count($test_files)));
+    $workers = max(1, min($workers, $totalFileCount));
 
     echo "Spawning $workers workers... ";
 
@@ -1594,8 +2733,6 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     }
     $sockPort = substr($sockName, $portPos + 1);
     $sockUri = "tcp://$sockHost:$sockPort";
-    $totalFileCount = count($test_files);
-
     $startTime = microtime(true);
     for ($i = 1; $i <= $workers; $i++) {
         $proc = proc_open(
@@ -1671,8 +2808,20 @@ function run_all_tests_parallel(array $test_files, array $env, ?string $redir_te
     // Tests waiting due to conflicts. Map from conflict key to array.
     $waitingTests = [];
 
+    $hasPendingTests = static function () use (&$test_files, $workerPlan): bool {
+        return $test_files !== [] || $workerPlan?->hasPendingTests() === true;
+    };
+
+    $dequeueTest = static function (int $worker) use (&$test_files, $workerPlan): ?string {
+        if ($test_files !== []) {
+            return array_pop($test_files);
+        }
+
+        return $workerPlan?->dequeue($worker);
+    };
+
 escape:
-    while ($test_files || $sequentialTests || $testsInProgress > 0) {
+    while ($hasPendingTests() || $sequentialTests || $testsInProgress > 0) {
         $toRead = array_values($workerSocks);
         $toWrite = null;
         $toExcept = null;
@@ -1723,6 +2872,7 @@ escape:
                                 }
                             }
                             $junit->mergeResults($message["junit"]);
+                            $durationHistory->mergeObservationsFrom($message["durationHistory"]);
                             // no break
                         case "ready":
                             // Schedule sequential tests only once we are down to one worker.
@@ -1739,7 +2889,9 @@ escape:
                             $maxBatchSize = $valgrind ? 1 : 4;
                             $averageFilesPerWorker = max(1, (int) ceil($totalFileCount / count($workerProcs)));
                             $batchSize = min($maxBatchSize, $averageFilesPerWorker);
-                            while (count($files) < $batchSize && $file = array_pop($test_files)) {
+
+                            while (count($files) < $batchSize
+                                    && ($file = $dequeueTest($i)) !== null) {
                                 foreach ($fileConflictsWith[$file] as $conflictKey) {
                                     if (isset($activeConflicts[$conflictKey])) {
                                         $waitingTests[$conflictKey][] = $file;
@@ -1838,6 +2990,7 @@ escape:
     if ($testsInProgress < 0) {
         error("$testsInProgress test batches “in progress”, which is less than zero. THIS SHOULD NOT HAPPEN.");
     }
+
 }
 
 /**
@@ -1898,6 +3051,8 @@ function run_worker(): void
     global $workerID, $workerSock;
 
     global $junit;
+    /** @var TestDurationHistory $durationHistory */
+    global $durationHistory;
 
     $sockUri = getenv("TEST_PHP_URI");
 
@@ -1946,8 +3101,10 @@ function run_worker(): void
                 send_message($workerSock, [
                     "type" => "tests_finished",
                     "junit" => $junit->isEnabled() ? $junit : null,
+                    "durationHistory" => $durationHistory,
                 ]);
                 $junit->clear();
+                $durationHistory->clearObservations();
                 break;
             default:
                 send_message($workerSock, [
