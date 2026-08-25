@@ -20,7 +20,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
 ]
 autosectionlabel_maxdepth = 2
-exclude_patterns = ['**/*TODO.md']
+exclude_patterns = ['**/*TODO.md', '**/README.internal.md']
 myst_enable_extensions = [
     'alert',
     'gfm_autolink',

@@ -7,10 +7,12 @@ alternatives that may be used if the situation warrants it. The phpt sections ar
 
 Title of test as a single line short description.
 
-|              |                                              |
-| ------------ | -------------------------------------------- |
-| **Required** | Yes                                          |
-| **Format**   | Plain text. We recommend a single line only. |
+|               |               |
+|---------------|---------------|
+| **Mandatory** | Yes           |
+| **Position**  | First in file |
+| **Content**   | Plain text    |
+| **Lines**     | One           |
 
 ### Examples
 
@@ -29,10 +31,12 @@ If your test requires more than a single line title to adequately describe it, y
 can use this section for further explanation. Multiple lines are allowed and besides being used for
 information, this section is completely ignored by the test binary.
 
-|              |                             |
-| ------------ | --------------------------- |
-| **Required** | No                          |
-| **Format**   | Plain text, multiple lines. |
+|               |                  |
+|---------------|------------------|
+| **Mandatory** | No               |
+| **Position**  | After `--TEST--` |
+| **Content**   | Plain text       |
+| **Lines**     | One or more      |
 
 ### Examples
 
@@ -51,10 +55,16 @@ Used to credit contributors without CVS commit rights, who put their name and em
 on the first line. If the test was part of a TestFest event, then # followed by the name of the
 event and the date (YYYY-MM-DD) on the second line.
 
-|              |                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required** | No. For newly created tests the section should no longer be used for simple authorship claims or listing all contributors who edited the test; as it is already accurately tracked by Git. It may be used if more specific attribution is useful, for example to credit the original reporter of a bug or a contributor who is not credited via `Co-authored-by` tag. |
-| **Format**   | Name Email [Event]                                                                                                                                                                                                                                                                                                                                                    |
+|               |                                       |
+|---------------|---------------------------------------|
+| **Mandatory** | No                                    |
+| **Position**  | After `--TEST--` or `--DESCRIPTION--` |
+| **Content**   | Contributor credits                   |
+| **Lines**     | One or more                           |
+
+For newly created tests, do not use this section for simple authorship claims or to list everyone
+who edited the test; Git already records that. It may provide more specific attribution, such as
+crediting the original reporter or a contributor not named in a `Co-authored-by` tag.
 
 ### Examples
 
@@ -87,10 +97,15 @@ A common practice for extension tests is to write your `--SKIPIF--` extension cr
 call skipif.inc and then including that file in the `--SKIPIF--` section of all your extension
 tests. This promotes the DRY principle and reduces future code maintenance.
 
-|              |                                                                                                                                                                                                                                                                                                                                                                                               |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required** | No.                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Format**   | PHP code enclosed by PHP tags. If the output of this scripts starts with "skip", the test is skipped. If the output starts with "xfail", the test is marked as expected failure. If the output starts with "flaky", the test is marked as flaky test. The "xfail" convention is supported as of PHP 7.2.0. The "flaky" convention is supported as of PHP 8.2.25 and PHP 8.3.13, respectively. |
+|               |                               |
+|---------------|-------------------------------|
+| **Mandatory** | No                            |
+| **Position**  | Before execution section      |
+| **Content**   | PHP code enclosed by PHP tags |
+
+If output starts with `skip`, the test is skipped. If it starts with `xfail`, the test is marked
+as an expected failure. If it starts with `flaky`, the test is marked as flaky. The `xfail`
+convention is supported as of PHP 7.2.0; `flaky` as of PHP 8.2.25 and PHP 8.3.13.
 
 ### Examples
 
@@ -173,10 +188,16 @@ An alternative to have a `--CONFLICTS--` section is to add a file named `CONFLIC
 directory containing the tests. The contents of the `CONFLICTS` file must have the same format as
 the contents of the `--CONFLICTS--` section.
 
-|              |                                                                            |
-| ------------ | -------------------------------------------------------------------------- |
-| **Required** | No.                                                                        |
-| **Format**   | One conflict key per line. Comment lines starting with # are also allowed. |
+|               |                              |
+|---------------|------------------------------|
+| **Mandatory** | No                           |
+| **Position**  | Before execution section     |
+| **Content**   | Conflict keys, e.g. `server` |
+| **Case**      | Sensitive                    |
+| **Lines**     | One or more                  |
+| **Separator** | Newline                      |
+
+Lines beginning with `#` are comments.
 
 ### Examples
 
@@ -194,10 +215,11 @@ Full example: [conflicts_1.phpt](../samples/index.md#conflicts_1phpt)
 This flag is used to indicate that the test should not be changed by automated
 formatting changes. Available as of PHP 7.4.3.
 
-|              |                                                          |
-| ------------ | -------------------------------------------------------- |
-| **Required** | No.                                                      |
-| **Format**   | No value, just the `--WHITESPACE_SENSITIVE--` statement. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | None                     |
 
 ## --CAPTURE_STDIO--
 
@@ -210,10 +232,17 @@ stream.
 If this section is left out of the test, by default, all three streams are enabled, so the tests
 without this section capture all and is the same as enabling all three manually.
 
-|              |                                                                                                                       |
-| ------------ | --------------------------------------------------------------------------------------------------------------------- |
-| **Required** | No.                                                                                                                   |
-| **Format**   | A case insensitive space, newline or otherwise delimited list of one or more strings of STDIN, STDOUT, and/or STDERR. |
+|               |                                           |
+|---------------|-------------------------------------------|
+| **Mandatory** | No                                        |
+| **Position**  | Before execution section                  |
+| **Default**   | All streams                               |
+| **Content**   | Stream names: `STDIN`, `STDOUT`, `STDERR` |
+| **Case**      | Insensitive                               |
+| **Lines**     | One or more                               |
+| **Separator** | None required                             |
+
+Names are case-insensitive and may be separated by spaces, newlines, or other delimiters.
 
 ### Examples
 
@@ -251,10 +280,14 @@ Additional required shared extensions to be loaded when running the test. When t
 that particular PHP at the time. If the test requires additional extension to be loaded and they
 aren't loaded prior to running the test, this section loads them.
 
-|              |                                                             |
-| ------------ | ----------------------------------------------------------- |
-| **Required** | No.                                                         |
-| **Format**   | A case sensitive newline separated list of extension names. |
+|               |                              |
+|---------------|------------------------------|
+| **Mandatory** | No                           |
+| **Position**  | Before execution section     |
+| **Content**   | Extension names, e.g. `curl` |
+| **Case**      | Sensitive                    |
+| **Lines**     | One or more                  |
+| **Separator** | Newline                      |
 
 ### Examples
 
@@ -290,11 +323,12 @@ $n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff8
 POST variables or data to be passed to the test script. This section forces the use
 of the CGI binary instead of the usual CLI one.
 
-|                  |                                    |
-| ---------------- | ---------------------------------- |
-| **Required**     | No.                                |
-| **Requirements** | PHP CGI binary.                    |
-| **Format**       | Follows the HTTP post data format. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | POST body                |
+| **Requires**  | PHP CGI binary           |
 
 ### Examples
 
@@ -331,11 +365,12 @@ Raw POST data to be passed to the test script. This differs from the section abo
 because it doesn't automatically set the Content-Type, this leaves you free to define your own
 within the section. This section forces the use of the CGI binary instead of the usual CLI one.
 
-|                  |                                    |
-| ---------------- | ---------------------------------- |
-| **Required**     | No.                                |
-| **Requirements** | PHP CGI binary.                    |
-| **Format**       | Follows the HTTP post data format. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Raw POST body            |
+| **Requires**  | PHP CGI binary           |
 
 ### Examples
 
@@ -363,11 +398,14 @@ Full example: [sample006.phpt](../samples/index.md#sample006phpt)
 Similar to the section above, PUT data to be passed to the test script. This
 section forces the use of the CGI binary instead of the usual CLI one.
 
-|                  |                                                        |
-| ---------------- | ------------------------------------------------------ |
-| **Required**     | No.                                                    |
-| **Requirements** | PHP CGI binary.                                        |
-| **Format**       | Raw data optionally preceded by a Content-Type header. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Raw PUT body             |
+| **Requires**  | PHP CGI binary           |
+
+The body may be preceded by a `Content-Type` header.
 
 ### Examples
 
@@ -385,10 +423,12 @@ Content-Type: text/json
 When this section exists, the POST data will be gzencode()'d. This section forces
 the use of the CGI binary instead of the usual CLI one.
 
-|              |                                                         |
-| ------------ | ------------------------------------------------------- |
-| **Required** | No.                                                     |
-| **Format**   | Just add the content to be gzencode()'d in the section. |
+|               |                                |
+|---------------|--------------------------------|
+| **Mandatory** | No                             |
+| **Position**  | Before execution section       |
+| **Content**   | POST body                      |
+| **Requires**  | PHP CGI binary, zlib extension |
 
 ### Examples
 
@@ -415,10 +455,12 @@ Full example: [sample005.phpt](../samples/index.md#sample005phpt)
 When this section exists, the POST data will be gzcompress()'ed. This section
 forces the use of the CGI binary instead of the usual CLI one.
 
-|              |                                                            |
-| ------------ | ---------------------------------------------------------- |
-| **Required** | No.                                                        |
-| **Format**   | Just add the content to be gzcompress()'ed in the section. |
+|               |                                |
+|---------------|--------------------------------|
+| **Mandatory** | No                             |
+| **Position**  | Before execution section       |
+| **Content**   | POST body                      |
+| **Requires**  | PHP CGI binary, zlib extension |
 
 ### Examples
 
@@ -446,11 +488,14 @@ Full example: [sample007.phpt](../samples/index.md#sample007phpt)
 GET variables to be passed to the test script. This section forces the use of the
 CGI binary instead of the usual CLI one.
 
-|                  |                                                             |
-| ---------------- | ----------------------------------------------------------- |
-| **Required**     | No.                                                         |
-| **Requirements** | PHP CGI binary.                                             |
-| **Format**       | A single line of text passed as the GET data to the script. |
+|               |                                       |
+|---------------|---------------------------------------|
+| **Mandatory** | No                                    |
+| **Position**  | Before execution section              |
+| **Content**   | GET variables, e.g. `a=value&b=value` |
+| **Lines**     | One                                   |
+| **Separator** | `&` between key-value pairs           |
+| **Requires**  | PHP CGI binary                        |
 
 ### Examples
 
@@ -477,11 +522,16 @@ Full example: [sample008.phpt](../samples/index.md#sample008phpt)
 Cookies to be passed to the test script. This section forces the use of the CGI
 binary instead of the usual CLI one.
 
-|                  |                                                      |
-| ---------------- | ---------------------------------------------------- |
-| **Required**     | No.                                                  |
-| **Requirements** | PHP CGI binary.                                      |
-| **Format**       | A single line of text in a valid HTTP cookie format. |
+|               |                                                   |
+|---------------|---------------------------------------------------|
+| **Mandatory** | No                                                |
+| **Position**  | Before execution section                          |
+| **Content**   | HTTP cookies, e.g. `hello=World; goodbye=MrChips` |
+| **Lines**     | One                                               |
+| **Separator** | `;` between cookies                               |
+| **Requires**  | PHP CGI binary                                    |
+
+The value must use valid HTTP cookie syntax.
 
 ### Examples
 
@@ -498,10 +548,11 @@ Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 
 Data to be fed to the test script's standard input.
 
-|              |                                                         |
-| ------------ | ------------------------------------------------------- |
-| **Required** | No.                                                     |
-| **Format**   | Any text within this section is passed as STDIN to PHP. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Standard input           |
 
 ### Examples
 
@@ -519,10 +570,16 @@ Full example: [sample009.phpt](../samples/index.md#sample009phpt)
 
 To be used if you need a specific php.ini setting for the test.
 
-|              |                                                                                                                                          |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required** | No.                                                                                                                                      |
-| **Format**   | Key value pairs including automatically replaced tags. One setting per line. Content that is not a valid ini setting may cause failures. |
+|               |                                       |
+|---------------|---------------------------------------|
+| **Mandatory** | No                                    |
+| **Position**  | Before execution section              |
+| **Content**   | PHP INI settings, e.g. `precision=14` |
+| **Lines**     | One or more                           |
+| **Separator** | Newline                               |
+
+Lines beginning with `;` or `#` are comments. Values may include automatically replaced tags.
+Invalid settings may cause failures.
 
 The following is a list of all tags and what they are used to represent:
 
@@ -557,10 +614,12 @@ Full example: [sample003.phpt](../samples/index.md#sample003phpt)
 
 A single line defining the arguments passed to PHP.
 
-|              |                                                                         |
-| ------------ | ----------------------------------------------------------------------- |
-| **Required** | No.                                                                     |
-| **Format**   | A single line of text that is passed as the argument(s) to the PHP CLI. |
+|               |                                   |
+|---------------|-----------------------------------|
+| **Mandatory** | No                                |
+| **Position**  | Before execution section          |
+| **Content**   | CLI arguments, e.g. `--arg value` |
+| **Lines**     | One                               |
 
 ### Examples
 
@@ -578,10 +637,14 @@ Full example: [sample010.phpt](../samples/index.md#sample010phpt)
 Configures environment variables such as those found in the `$_SERVER` global
 array.
 
-|              |                                        |
-| ------------ | -------------------------------------- |
-| **Required** | No.                                    |
-| **Format**   | Key value pairs. One setting per line. |
+|               |                                          |
+|---------------|------------------------------------------|
+| **Mandatory** | No                                       |
+| **Position**  | Before execution section                 |
+| **Content**   | Environment variables, e.g. `NAME=value` |
+| **Case**      | Platform-dependent                       |
+| **Lines**     | One or more                              |
+| **Separator** | Newline                                  |
 
 ### Examples
 
@@ -601,10 +664,13 @@ Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 This section takes arbitrary phpdbg commands and executes the test file according
 to them as it would be run in the phpdbg prompt.
 
-|              |                           |
-| ------------ | ------------------------- |
-| **Required** | No.                       |
-| **Format**   | Arbitrary phpdbg commands |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | phpdbg commands          |
+| **Lines**     | One or more              |
+| **Requires**  | phpdbg binary            |
 
 ### Examples
 
@@ -634,11 +700,12 @@ Full example: [phpdbg_1.phpt](../samples/index.md#phpdbg_1phpt)
 
 The test source code.
 
-|                  |                                                                                                                                                        |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                              |
+|                  |                                                                                                                                                     |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                            |
+| **Position**     | After setup and input sections                                                                                                                      |
+| **Content**      | PHP code enclosed by PHP tags                                                                                                                       |
 | **Alternatives** | [§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
-| **Format**       | PHP source code enclosed by PHP tags.                                                                                                                  |
 
 ### Examples
 
@@ -672,11 +739,12 @@ An alternative to `--FILE--` where any trailing line breaks (n || r || rn
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
 time you won't need this section.
 
-|                  |                                                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                        |
+|                  |                                                                                                                                               |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                      |
+| **Position**     | After setup and input sections                                                                                                                |
+| **Content**      | PHP code enclosed by PHP tags                                                                                                                 |
 | **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
-| **Format**       | PHP source code enclosed by PHP tags.                                                                                                            |
 
 ### Examples
 
@@ -700,11 +768,13 @@ test file with different ini, environment, post/get or other external inputs. Ba
 you to DRY up some of your tests. The file must be in the same directory as the test file, or in a
 subdirectory.
 
-|                  |                                                                                                                                      |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                            |
+|                  |                                                                                                                                   |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                          |
+| **Position**     | After setup and input sections                                                                                                    |
+| **Content**      | Relative path, e.g. `files/file012.inc`                                                                                           |
+| **Lines**        | One                                                                                                                               |
 | **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
-| **Format**       | path/to/file. Single line.                                                                                                           |
 
 ### Examples
 
@@ -722,11 +792,15 @@ Full example: [sample012.phpt](../samples/index.md#sample012phpt)
 This block allows you to redirect from one test to a bunch of other tests. It also
 allows you to set configurations which are used on all tests in your destination.
 
-|                  |                                                                                                                                                                                                                                                                     |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                           |
-| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`                                                                                                                              |
-| **Format**       | PHP source which is run through `eval()`. The tests destination is the value of an array index 'TESTS'. Also, keep in mind, you can not use a `REDIRECTTEST` which is being pointed to by another test which contains a `REDIRECTTEST`. In other words, no nesting. |
+|                  |                                                                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                            |
+| **Position**     | After setup and input sections                                                                                                      |
+| **Content**      | PHP source returning a configuration array                                                                                          |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--` |
+
+The source is run through `eval()`, and the `TESTS` array key specifies the destination. A
+`REDIRECTTEST` cannot be nested inside another `REDIRECTTEST`.
 
 The relative path declared in 'TESTS' is relative to the base directory for the PHP source code, not
 relative to the current directory.
@@ -791,10 +865,12 @@ Full example: [sample014.phpt](../samples/index.md#sample014phpt)
 This section takes no value. It merely provides a simple marker for tests that MUST
 be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
 
-|              |                                         |
-| ------------ | --------------------------------------- |
-| **Required** | No.                                     |
-| **Format**   | No value, just the `--CGI--` statement. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | None                     |
+| **Requires**  | PHP CGI binary           |
 
 ### Examples
 
@@ -817,10 +893,12 @@ software.
 Please do NOT include an `--XFAIL--` without providing a text description for the reason it's
 being used.
 
-|              |                                                                                |
-| ------------ | ------------------------------------------------------------------------------ |
-| **Required** | No.                                                                            |
-| **Format**   | A short plain text description of why this test is currently expected to fail. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain-text reason        |
+| **Lines**     | One or more              |
 
 ### Examples
 
@@ -844,10 +922,12 @@ respectively.
 Please do NOT include a `--FLAKY--` section without providing a text description for the reason it
 is being used.
 
-|              |                                                           |
-| ------------ | --------------------------------------------------------- |
-| **Required** | No.                                                       |
-| **Format**   | A short plain text description of why this test is flaky. |
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain-text reason        |
+| **Lines**     | One or more              |
 
 ### Examples
 
@@ -866,10 +946,15 @@ The expected headers. Any header specified here must exist in the response and h
 the same value or the test fails. Additional headers found in the actual tests while running are
 ignored.
 
-|              |                                                 |
-| ------------ | ----------------------------------------------- |
-| **Required** | No.                                             |
-| **Format**   | HTTP style headers. May include multiple lines. |
+|               |                                                        |
+|---------------|--------------------------------------------------------|
+| **Mandatory** | No                                                     |
+| **Position**  | After `--CLEAN--` or execution, before expected output |
+| **Content**   | HTTP headers, e.g. `Content-Type: text/plain`          |
+| **Case**      | Sensitive                                              |
+| **Lines**     | One or more                                            |
+| **Separator** | Newline                                                |
+| **Requires**  | PHP CGI binary                                         |
 
 ### Examples
 
@@ -896,11 +981,12 @@ Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
 
-|                  |                                                                                                                                                                                                                                                                                              |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                                                    |
+|                  |                                                                                                                                                                                                                                                                                         |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                                |
+| **Position**     | Last in file                                                                                                                                                                                                                                                                            |
+| **Content**      | Plain text                                                                                                                                                                                                                                                                              |
 | **Alternatives** | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
-| **Format**       | Plain text. Multiple lines of text are allowed.                                                                                                                                                                                                                                              |
 
 ### Examples
 
@@ -923,9 +1009,12 @@ Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
 
-|                  |                                                                                                                                                                                                                                                                            |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                                  |
+|                  |                                                                                                                                                                                                                                                                       |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                              |
+| **Position**     | Last in file                                                                                                                                                                                                                                                          |
+| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                                 |
+| **Lines**        | One                                                                                                                                                                                                                                                                   |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 ### Examples
@@ -955,11 +1044,14 @@ uses a number of substitution tags for strings, spaces, digits, etc. that appear
 but which may vary between test runs. The most common example of this is to use %s and %d to match
 the file path and line number which are output by PHP Warnings.
 
-|                  |                                                                                                                                                                                                                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                                                  |
+|                  |                                                                                                                                                                                                                                                                                       |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                              |
+| **Position**     | Last in file                                                                                                                                                                                                                                                                          |
+| **Content**      | Plain text with substitution tags                                                                                                                                                                                                                                                     |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
-| **Format**       | Plain text including tags which are inserted to represent different types of output which are not guaranteed to have the same value on subsequent runs or when run on different platforms.                                                                                                 |
+
+The tags represent output that may vary between runs or platforms.
 
 The following is a list of all tags and what they are used to represent:
 
@@ -1088,9 +1180,12 @@ string(3) "123"
 Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
 
-|                  |                                                                                                                                                                                                                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                                |
+|                  |                                                                                                                                                                                                                                                                     |
+|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                            |
+| **Position**     | Last in file                                                                                                                                                                                                                                                        |
+| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                               |
+| **Lines**        | One                                                                                                                                                                                                                                                                 |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 ## --EXPECTREGEX--
@@ -1098,11 +1193,14 @@ just stating a filename where to load the expected output from.
 An alternative of `--EXPECT--`. This form allows the tester to specify the result
 in a regular expression.
 
-|                  |                                                                                                                                                                                                                                                                                    |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                                          |
+|                  |                                                                                                                                                                                                                                                                               |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                      |
+| **Position**     | Last in file                                                                                                                                                                                                                                                                  |
+| **Content**      | Regular expression                                                                                                                                                                                                                                                            |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
-| **Format**       | Plain text including regular expression patterns which represent data that can vary between subsequent runs of a test or when run on different platforms.                                                                                                                          |
+
+The pattern may represent output that varies between runs or platforms.
 
 ### Examples
 
@@ -1192,9 +1290,12 @@ string\(19\) \" nica\x00turska panica\"
 Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
 
-|                  |                                                                                                                                                                                                                                                                  |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Required**     | Yes, if none of the alternatives is used.                                                                                                                                                                                                                        |
+|                  |                                                                                                                                                                                                                                                             |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                    |
+| **Position**     | Last in file                                                                                                                                                                                                                                                |
+| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                       |
+| **Lines**        | One                                                                                                                                                                                                                                                         |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--` |
 
 ## --CLEAN--
@@ -1212,10 +1313,11 @@ Using the switch `--no-clean` on `run-tests.php`, you can prevent the code found
 `--CLEAN--` section of a test from running. This allows you to inspect generated data or files
 without them being removed by the `--CLEAN--` section.
 
-|              |                                       |
-| ------------ | ------------------------------------- |
-| **Required** | No.                                   |
-| **Format**   | PHP source code enclosed by PHP tags. |
+|               |                                  |
+|---------------|----------------------------------|
+| **Mandatory** | No                               |
+| **Position**  | Before any `--EXPECT*--` section |
+| **Content**   | PHP code enclosed by PHP tags    |
 
 ### Examples
 
