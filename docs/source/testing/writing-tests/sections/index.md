@@ -18,6 +18,7 @@ explains when and how each one is used.
 **Test Control:**
  [SKIPIF](#--skipif--),
  [XFAIL](#--xfail--),
+ [XLEAK](#--xleak--),
  [FLAKY](#--flaky--),
  [CONFLICTS](#--conflicts--),
  [WHITESPACE_SENSITIVE](#--whitespace_sensitive--)
@@ -973,6 +974,29 @@ This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
 
 Full example: [sample017.phpt](../samples/index.md#sample017phpt)
 
+### --XLEAK--
+
+Marks a test whose Valgrind leak is expected. Include a brief reason. When run with Valgrind, a
+detected leak is reported as XLEAK instead of LEAK, while a leak-free result produces a warning.
+The test runner skips XLEAK tests under ASAN and MSAN.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain text               |
+| **Lines**     | One or more              |
+| **Requires**  | Valgrind                 |
+
+#### Examples
+
+**Example 1**
+
+```text
+--XLEAK--
+A bug in the dependency causes a memory leak when reconnecting after closing.
+```
+
 ### --FLAKY--
 
 This section identifies this test as one that occasionally fails. If the test
@@ -1435,6 +1459,7 @@ omittable sections; `|` separates alternatives.
 
 [--SKIPIF--]
 [--XFAIL--]
+[--XLEAK--]
 [--FLAKY--]
 [--CONFLICTS--]
 [--WHITESPACE_SENSITIVE--]
