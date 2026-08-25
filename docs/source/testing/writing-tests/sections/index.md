@@ -959,7 +959,7 @@ being used.
 |---------------|--------------------------|
 | **Mandatory** | No                       |
 | **Position**  | Before execution section |
-| **Content**   | Plain-text reason        |
+| **Content**   | Plain text reason        |
 | **Lines**     | One or more              |
 
 #### Examples
@@ -988,7 +988,7 @@ is being used.
 |---------------|--------------------------|
 | **Mandatory** | No                       |
 | **Position**  | Before execution section |
-| **Content**   | Plain-text reason        |
+| **Content**   | Plain text  reason       |
 | **Lines**     | One or more              |
 
 #### Examples
