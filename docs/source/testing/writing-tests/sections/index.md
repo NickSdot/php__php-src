@@ -17,9 +17,8 @@ Title of test as a single line short description.
 #### Example 1
 
 ```text
-
-   --TEST--
-   Test filter_input() with GET and POST data.
+--TEST--
+Test filter_input() with GET and POST data.
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -40,9 +39,8 @@ information, this section is completely ignored by the test binary.
 #### Example 1
 
 ```text
-
-   --DESCRIPTION--
-   This test covers both valid and invalid usages of filter_input() with INPUT_GET and INPUT_POST data and several different filter sanitizers.
+--DESCRIPTION--
+This test covers both valid and invalid usages of filter_input() with INPUT_GET and INPUT_POST data and several different filter sanitizers.
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -63,9 +61,8 @@ event and the date (YYYY-MM-DD) on the second line.
 #### Example 1
 
 ```text
-
-   --CREDITS--
-   Felipe Pena
+--CREDITS--
+Felipe Pena
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -73,10 +70,9 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```text
-
-   --CREDITS--
-   Zoe Slattery zoe@php.net
-   # TestFest Munich 2009-05-19
+--CREDITS--
+Zoe Slattery zoe@php.net
+# TestFest Munich 2009-05-19
 ```
 
 Full example: [sample002.phpt](../samples/index.md#sample002phpt)
@@ -101,9 +97,8 @@ tests. This promotes the DRY principle and reduces future code maintenance.
 #### Example 1
 
 ```php
-
-   --SKIPIF--
-   <?php if (!extension_loaded("filter")) die("Skipped: filter extension required."); ?>
+--SKIPIF--
+<?php if (!extension_loaded("filter")) die("Skipped: filter extension required."); ?>
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -111,9 +106,8 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```php
-
-   --SKIPIF--
-   <?php include('skipif.inc'); ?>
+--SKIPIF--
+<?php include('skipif.inc'); ?>
 ```
 
 Full example: [sample003.phpt](../samples/index.md#sample003phpt)
@@ -121,9 +115,8 @@ Full example: [sample003.phpt](../samples/index.md#sample003phpt)
 #### Example 3
 
 ```php
-
-   --SKIPIF--
-   <?php if (getenv('SKIP_ASAN')) die('xfail Startup failure leak'); ?>
+--SKIPIF--
+<?php if (getenv('SKIP_ASAN')) die('xfail Startup failure leak'); ?>
 ```
 
 Full example: [xfailif.phpt](../samples/index.md#xfailifphpt)
@@ -131,12 +124,11 @@ Full example: [xfailif.phpt](../samples/index.md#xfailifphpt)
 #### Example 4
 
 ```php
-
-   --SKIPIF--
-   <?php
-   if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
-           die("flaky Occasionally segfaults on macOS for unknown reasons");
-   }
+--SKIPIF--
+<?php
+if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
+        die("flaky Occasionally segfaults on macOS for unknown reasons");
+}
 ```
 
 Some tests depend on modules or functions available only in certain versions or they even require
@@ -148,17 +140,16 @@ why the test should skip.
 *ext/sodium/tests/pwhash_argon2i.phpt*
 
 ```php
-
-   --TEST--
-   Check for libsodium argon2i
-   --EXTENSIONS--
-   sodium
-   --SKIPIF--
-   <?php
-   if (!defined('SODIUM_CRYPTO_PWHASH_SALTBYTES')) print "skip libsodium without argon2i";
-   ?>
-   --FILE--
-   [snip]
+--TEST--
+Check for libsodium argon2i
+--EXTENSIONS--
+sodium
+--SKIPIF--
+<?php
+if (!defined('SODIUM_CRYPTO_PWHASH_SALTBYTES')) print "skip libsodium without argon2i";
+?>
+--FILE--
+[snip]
 ```
 
 Test script and `SKIPIF` code should be directly written into `\*.phpt`. However, it is
@@ -192,9 +183,8 @@ the contents of the `--CONFLICTS--` section.
 #### Example 1
 
 ```text
-
-   --CONFLICTS--
-   server
+--CONFLICTS--
+server
 ```
 
 Full example: [conflicts_1.phpt](../samples/index.md#conflicts_1phpt)
@@ -230,9 +220,8 @@ without this section capture all and is the same as enabling all three manually.
 #### Example 1
 
 ```text
-
-   --CAPTURE_STDIO--
-   STDIN STDERR
+--CAPTURE_STDIO--
+STDIN STDERR
 ```
 
 Full example: [capture_stdio_1.phpt](../samples/index.md#capture_stdio_1phpt)
@@ -240,9 +229,8 @@ Full example: [capture_stdio_1.phpt](../samples/index.md#capture_stdio_1phpt)
 #### Example 2
 
 ```text
-
-   --CAPTURE_STDIO--
-   STDIN STDOUT
+--CAPTURE_STDIO--
+STDIN STDOUT
 ```
 
 Full example: [capture_stdio_2.phpt](../samples/index.md#capture_stdio_2phpt)
@@ -250,9 +238,8 @@ Full example: [capture_stdio_2.phpt](../samples/index.md#capture_stdio_2phpt)
 #### Example 3
 
 ```text
-
-   --CAPTURE_STDIO--
-   STDIN STDOUT STDERR
+--CAPTURE_STDIO--
+STDIN STDOUT STDERR
 ```
 
 Full example: [capture_stdio_3.phpt](../samples/index.md#capture_stdio_3phpt)
@@ -274,11 +261,10 @@ aren't loaded prior to running the test, this section loads them.
 #### Example 1
 
 ```text
-
-   --EXTENSIONS--
-   curl
-   imagick
-   tokenizer
+--EXTENSIONS--
+curl
+imagick
+tokenizer
 ```
 
 Full example: [extensions.phpt](../samples/index.md#extensionsphpt)
@@ -290,14 +276,13 @@ and skip the test if it's not there.
 */ext/sodium/tests/crypto_scalarmult.phpt*
 
 ```php
-
-   --TEST--
-   Check for libsodium scalarmult
-   --EXTENSIONS--
-   sodium
-   --FILE--
-   <?php
-   $n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+--TEST--
+Check for libsodium scalarmult
+--EXTENSIONS--
+sodium
+--FILE--
+<?php
+$n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
 ```
 
 ## --POST--
@@ -316,9 +301,8 @@ of the CGI binary instead of the usual CLI one.
 #### Example 1
 
 ```text
-
-   --POST--
-   c=<p>string</p>&d=12345.7
+--POST--
+c=<p>string</p>&d=12345.7
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -326,18 +310,17 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```xml
-
-   --POST--
-   <SOAP-ENV:Envelope
-     SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-     xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xmlns:si="http://soapinterop.org/xsd">
-     <SOAP-ENV:Body>
-           <ns1:test xmlns:ns1="http://testuri.org" />
-     </SOAP-ENV:Body>
-   </SOAP-ENV:Envelope>
+--POST--
+<SOAP-ENV:Envelope
+  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:si="http://soapinterop.org/xsd">
+  <SOAP-ENV:Body>
+        <ns1:test xmlns:ns1="http://testuri.org" />
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 Full example: [sample005.phpt](../samples/index.md#sample005phpt)
@@ -359,19 +342,18 @@ within the section. This section forces the use of the CGI binary instead of the
 #### Example 1
 
 ```text
+--POST_RAW--
+Content-type: multipart/form-data, boundary=AaB03x
 
-   --POST_RAW--
-   Content-type: multipart/form-data, boundary=AaB03x
+--AaB03x content-disposition: form-data; name="field1"
 
-   --AaB03x content-disposition: form-data; name="field1"
+Joe Blow
+--AaB03x
+content-disposition: form-data; name="pics"; filename="file1.txt"
+Content-Type: text/plain
 
-   Joe Blow
-   --AaB03x
-   content-disposition: form-data; name="pics"; filename="file1.txt"
-   Content-Type: text/plain
-
-   abcdef123456789
-   --AaB03x--
+abcdef123456789
+--AaB03x--
 ```
 
 Full example: [sample006.phpt](../samples/index.md#sample006phpt)
@@ -392,11 +374,10 @@ section forces the use of the CGI binary instead of the usual CLI one.
 #### Example 1
 
 ```text
+--PUT--
+Content-Type: text/json
 
-   --PUT--
-   Content-Type: text/json
-
-   {"name":"default output handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
+{"name":"default output handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
 ```
 
 ## --GZIP_POST--
@@ -414,18 +395,17 @@ the use of the CGI binary instead of the usual CLI one.
 #### Example 1
 
 ```xml
-
-   --GZIP_POST--
-   <SOAP-ENV:Envelope
-     SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-     xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xmlns:si="http://soapinterop.org/xsd">
-     <SOAP-ENV:Body>
-           <ns1:test xmlns:ns1="http://testuri.org" />
-     </SOAP-ENV:Body>
-   </SOAP-ENV:Envelope>
+--GZIP_POST--
+<SOAP-ENV:Envelope
+  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:si="http://soapinterop.org/xsd">
+  <SOAP-ENV:Body>
+        <ns1:test xmlns:ns1="http://testuri.org" />
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 Full example: [sample005.phpt](../samples/index.md#sample005phpt)
@@ -445,19 +425,18 @@ forces the use of the CGI binary instead of the usual CLI one.
 #### Example 1
 
 ```xml
-
-   --DEFLATE_POST--
-   <?xml version="1.0" encoding="ISO-8859-1"?>
-   <SOAP-ENV:Envelope
-     SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-     xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xmlns:si="http://soapinterop.org/xsd">
-     <SOAP-ENV:Body>
-           <ns1:test xmlns:ns1="http://testuri.org" />
-     </SOAP-ENV:Body>
-   </SOAP-ENV:Envelope>
+--DEFLATE_POST--
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SOAP-ENV:Envelope
+  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:si="http://soapinterop.org/xsd">
+  <SOAP-ENV:Body>
+        <ns1:test xmlns:ns1="http://testuri.org" />
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
 ```
 
 Full example: [sample007.phpt](../samples/index.md#sample007phpt)
@@ -478,9 +457,8 @@ CGI binary instead of the usual CLI one.
 #### Example 1
 
 ```text
-
-   --GET--
-   a=<b>test</b>&b=http://example.com
+--GET--
+a=<b>test</b>&b=http://example.com
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -488,9 +466,8 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```text
-
-   --GET--
-   ar[elm1]=1234&ar[elm2]=0660&a=0234
+--GET--
+ar[elm1]=1234&ar[elm2]=0660&a=0234
 ```
 
 Full example: [sample008.phpt](../samples/index.md#sample008phpt)
@@ -511,9 +488,8 @@ binary instead of the usual CLI one.
 #### Example 1
 
 ```
-
-   --COOKIE--
-   hello=World;goodbye=MrChips
+--COOKIE--
+hello=World;goodbye=MrChips
 ```
 
 Full example: [sample002.phpt](../samples/index.md#sample002phpt)
@@ -532,10 +508,9 @@ Data to be fed to the test script's standard input.
 #### Example 1
 
 ```text
-
-   --STDIN--
-   fooBar
-   use this to input some thing to the php script
+--STDIN--
+fooBar
+use this to input some thing to the php script
 ```
 
 Full example: [sample009.phpt](../samples/index.md#sample009phpt)
@@ -559,9 +534,8 @@ The following is a list of all tags and what they are used to represent:
 #### Example 1
 
 ```text
-
-   --INI--
-   precision=14
+--INI--
+precision=14
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -569,13 +543,12 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```text
-
-   --INI--
-   session.use_cookies=0
-   session.cache_limiter=
-   register_globals=1
-   session.serialize_handler=php
-   session.save_handler=files
+--INI--
+session.use_cookies=0
+session.cache_limiter=
+register_globals=1
+session.serialize_handler=php
+session.save_handler=files
 ```
 
 Full example: [sample003.phpt](../samples/index.md#sample003phpt)
@@ -594,9 +567,8 @@ A single line defining the arguments passed to PHP.
 #### Example 1
 
 ```text
-
-   --ARGS--
-   --arg value --arg=value -avalue -a=value -a value
+--ARGS--
+--arg value --arg=value -avalue -a=value -a value
 ```
 
 Full example: [sample010.phpt](../samples/index.md#sample010phpt)
@@ -616,11 +588,10 @@ array.
 #### Example 1
 
 ```text
-
-   --ENV--
-   SCRIPT_NAME=/frontcontroller10.php
-   REQUEST_URI=/frontcontroller10.php/hi
-   PATH_INFO=/hi
+--ENV--
+SCRIPT_NAME=/frontcontroller10.php
+REQUEST_URI=/frontcontroller10.php/hi
+PATH_INFO=/hi
 ```
 
 Full example: [sample018.phpt](../samples/index.md#sample018phpt)
@@ -640,22 +611,21 @@ to them as it would be run in the phpdbg prompt.
 #### Example 1
 
 ```text
-
-   --PHPDBG--
-   b
-   4
-   b
-   del
-   0
-   b
-   5
-   r
-   b
-   del
-   1
-   r
-   y
-   q
+--PHPDBG--
+b
+4
+b
+del
+0
+b
+5
+r
+b
+del
+1
+r
+y
+q
 ```
 
 Full example: [phpdbg_1.phpt](../samples/index.md#phpdbg_1phpt)
@@ -675,24 +645,23 @@ The test source code.
 #### Example 1
 
 ```php
-
-   --FILE--
-   <?php
-   ini_set('html_errors', false);
-   var_dump(filter_input(INPUT_GET, "a", FILTER_SANITIZE_STRIPPED));
-   var_dump(filter_input(INPUT_GET, "b", FILTER_SANITIZE_URL));
-   var_dump(filter_input(INPUT_GET, "a", FILTER_SANITIZE_SPECIAL_CHARS, array(1,2,3,4,5)));
-   var_dump(filter_input(INPUT_GET, "b", FILTER_VALIDATE_FLOAT, new stdClass));
-   var_dump(filter_input(INPUT_POST, "c", FILTER_SANITIZE_STRIPPED, array(5,6,7,8)));
-   var_dump(filter_input(INPUT_POST, "d", FILTER_VALIDATE_FLOAT));
-   var_dump(filter_input(INPUT_POST, "c", FILTER_SANITIZE_SPECIAL_CHARS));
-   var_dump(filter_input(INPUT_POST, "d", FILTER_VALIDATE_INT));
-   var_dump(filter_var(new stdClass, "d"));
-   var_dump(filter_input(INPUT_POST, "c", "", ""));
-   var_dump(filter_var("", "", "", "", ""));
-   var_dump(filter_var(0, 0, 0, 0, 0));
-   echo "Done\n";
-   ?>
+--FILE--
+<?php
+ini_set('html_errors', false);
+var_dump(filter_input(INPUT_GET, "a", FILTER_SANITIZE_STRIPPED));
+var_dump(filter_input(INPUT_GET, "b", FILTER_SANITIZE_URL));
+var_dump(filter_input(INPUT_GET, "a", FILTER_SANITIZE_SPECIAL_CHARS, array(1,2,3,4,5)));
+var_dump(filter_input(INPUT_GET, "b", FILTER_VALIDATE_FLOAT, new stdClass));
+var_dump(filter_input(INPUT_POST, "c", FILTER_SANITIZE_STRIPPED, array(5,6,7,8)));
+var_dump(filter_input(INPUT_POST, "d", FILTER_VALIDATE_FLOAT));
+var_dump(filter_input(INPUT_POST, "c", FILTER_SANITIZE_SPECIAL_CHARS));
+var_dump(filter_input(INPUT_POST, "d", FILTER_VALIDATE_INT));
+var_dump(filter_var(new stdClass, "d"));
+var_dump(filter_input(INPUT_POST, "c", "", ""));
+var_dump(filter_var("", "", "", "", ""));
+var_dump(filter_var(0, 0, 0, 0, 0));
+echo "Done\n";
+?>
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -714,12 +683,11 @@ time you won't need this section.
 #### Example 1
 
 ```php
-
-   --FILEEOF--
-   <?php
-   eval("echo 'Hello'; // comment");
-   echo " World";
-   //last line comment
+--FILEEOF--
+<?php
+eval("echo 'Hello'; // comment");
+echo " World";
+//last line comment
 ```
 
 Full example: [sample011.phpt](../samples/index.md#sample011phpt)
@@ -743,9 +711,8 @@ subdirectory.
 #### Example 1
 
 ```text
-
-   --FILE_EXTERNAL--
-   files/file012.inc
+--FILE_EXTERNAL--
+files/file012.inc
 ```
 
 Full example: [sample012.phpt](../samples/index.md#sample012phpt)
@@ -771,14 +738,13 @@ Last note, the array in this section must be returned to work.
 #### Example 1
 
 ```php
-
-   --REDIRECTTEST--
-   return array(
-     'ENV' => array(
-             'PDOTEST_DSN' => 'sqlite2::memory:'
-           ),
-     'TESTS' => 'ext/pdo/tests'
-     );
+--REDIRECTTEST--
+return array(
+  'ENV' => array(
+          'PDOTEST_DSN' => 'sqlite2::memory:'
+        ),
+  'TESTS' => 'ext/pdo/tests'
+  );
 ```
 
 Full example: [sample013.phpt](../samples/index.md#sample013phpt)
@@ -790,29 +756,28 @@ Full example: [sample013.phpt](../samples/index.md#sample013phpt)
 #### Example 2
 
 ```php
+--REDIRECTTEST--
+# magic auto-configuration
 
-   --REDIRECTTEST--
-   # magic auto-configuration
+$config = array(
+  'TESTS' => 'ext/pdo/tests'
+);
 
-   $config = array(
-     'TESTS' => 'ext/pdo/tests'
-   );
+if (false !== getenv('PDO_MYSQL_TEST_DSN')) {
+  # user set them from their shell
+  $config['ENV']['PDOTEST_DSN'] = getenv('PDO_MYSQL_TEST_DSN');
+  $config['ENV']['PDOTEST_USER'] = getenv('PDO_MYSQL_TEST_USER');
+  $config['ENV']['PDOTEST_PASS'] = getenv('PDO_MYSQL_TEST_PASS');
+  if (false !== getenv('PDO_MYSQL_TEST_ATTR')) {
+        $config['ENV']['PDOTEST_ATTR'] = getenv('PDO_MYSQL_TEST_ATTR');
+  }
+} else {
+  $config['ENV']['PDOTEST_DSN'] = 'mysql:host=localhost;dbname=test';
+  $config['ENV']['PDOTEST_USER'] = 'root';
+  $config['ENV']['PDOTEST_PASS'] = '';
+}
 
-   if (false !== getenv('PDO_MYSQL_TEST_DSN')) {
-     # user set them from their shell
-     $config['ENV']['PDOTEST_DSN'] = getenv('PDO_MYSQL_TEST_DSN');
-     $config['ENV']['PDOTEST_USER'] = getenv('PDO_MYSQL_TEST_USER');
-     $config['ENV']['PDOTEST_PASS'] = getenv('PDO_MYSQL_TEST_PASS');
-     if (false !== getenv('PDO_MYSQL_TEST_ATTR')) {
-           $config['ENV']['PDOTEST_ATTR'] = getenv('PDO_MYSQL_TEST_ATTR');
-     }
-   } else {
-     $config['ENV']['PDOTEST_DSN'] = 'mysql:host=localhost;dbname=test';
-     $config['ENV']['PDOTEST_USER'] = 'root';
-     $config['ENV']['PDOTEST_PASS'] = '';
-   }
-
-   return $config;
+return $config;
 ```
 
 Full example: [sample014.phpt](../samples/index.md#sample014phpt)
@@ -836,8 +801,7 @@ be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test 
 #### Example 1
 
 ```text
-
-   --CGI--
+--CGI--
 ```
 
 Full example: [sample016.phpt](../samples/index.md#sample016phpt)
@@ -863,9 +827,8 @@ being used.
 #### Example 1
 
 ```text
-
-   --XFAIL--
-   This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
+--XFAIL--
+This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
 ```
 
 Full example: [sample017.phpt](../samples/index.md#sample017phpt)
@@ -891,9 +854,8 @@ is being used.
 #### Example 1
 
 ```
-
-   --FLAKY--
-   This test frequently fails in CI
+--FLAKY--
+This test frequently fails in CI
 ```
 
 Full example: flaky.phpt
@@ -918,10 +880,9 @@ ignored.
 #### Example 1
 
 ```text
-
-   --EXPECTHEADERS--
-   Content-type: text/html; charset=UTF-8
-   Status: 403 Access Denied
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+Status: 403 Access Denied
 ```
 
 Full example: [sample018.phpt](../samples/index.md#sample018phpt)
@@ -946,14 +907,13 @@ the test script exactly for the test to pass.
 #### Example 1
 
 ```text
-
-   --EXPECT--
-   array(2) {
-     ["hello"]=>
-     string(5) "World"
-     ["goodbye"]=>
-     string(7) "MrChips"
-   }
+--EXPECT--
+array(2) {
+  ["hello"]=>
+  string(5) "World"
+  ["goodbye"]=>
+  string(7) "MrChips"
+}
 ```
 
 Full example: [sample002.phpt](../samples/index.md#sample002phpt)
@@ -973,21 +933,19 @@ expected output from.
 #### Example 1
 
 ```text
-
-   --EXPECT_EXTERNAL--
-   test001.expected.txt
+--EXPECT_EXTERNAL--
+test001.expected.txt
 ```
 
 *test001.expected.txt*
 
 ```php
-
-   array(2) {
-     ["hello"]=>
-     string(5) "World"
-     ["goodbye"]=>
-     string(7) "MrChips"
-   }
+array(2) {
+  ["hello"]=>
+  string(5) "World"
+  ["goodbye"]=>
+  string(7) "MrChips"
+}
 ```
 
 ## --EXPECTF--
@@ -1026,31 +984,30 @@ The following is a list of all tags and what they are used to represent:
 #### Example 1
 
 ```text
+--EXPECTF--
+string(4) "test"
+string(18) "http://example.com"
+string(27) "&#60;b&#62;test&#60;/b&#62;"
 
-   --EXPECTF--
-   string(4) "test"
-   string(18) "http://example.com"
-   string(27) "&#60;b&#62;test&#60;/b&#62;"
+Notice: Object of class stdClass could not be converted to int in %ssample001.php on line %d
+bool(false)
+string(6) "string"
+float(12345.7)
+string(29) "&#60;p&#62;string&#60;/p&#62;"
+bool(false)
 
-   Notice: Object of class stdClass could not be converted to int in %ssample001.php on line %d
-   bool(false)
-   string(6) "string"
-   float(12345.7)
-   string(29) "&#60;p&#62;string&#60;/p&#62;"
-   bool(false)
+Warning: filter_var() expects parameter 2 to be long, string given in %s011.php on line %d
+NULL
 
-   Warning: filter_var() expects parameter 2 to be long, string given in %s011.php on line %d
-   NULL
+Warning: filter_input() expects parameter 3 to be long, string given in %s011.php on line %d
+NULL
 
-   Warning: filter_input() expects parameter 3 to be long, string given in %s011.php on line %d
-   NULL
+Warning: filter_var() expects at most 3 parameters, 5 given in %s011.php on line %d
+NULL
 
-   Warning: filter_var() expects at most 3 parameters, 5 given in %s011.php on line %d
-   NULL
-
-   Warning: filter_var() expects at most 3 parameters, 5 given in %s011.php on line %d
-   NULL
-   Done
+Warning: filter_var() expects at most 3 parameters, 5 given in %s011.php on line %d
+NULL
+Done
 ```
 
 Full example: [sample001.phpt](../samples/index.md#sample001phpt)
@@ -1058,28 +1015,27 @@ Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 #### Example 2
 
 ```text
+--EXPECTF--
+Warning: bzopen() expects exactly 2 parameters, 0 given in %s on line %d NULL
 
-   --EXPECTF--
-   Warning: bzopen() expects exactly 2 parameters, 0 given in %s on line %d NULL
+Warning: bzopen(): '' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
+bool(false)
 
-   Warning: bzopen(): '' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
-   bool(false)
+Warning: bzopen(): filename cannot be empty in %s on line %d
+bool(false)
 
-   Warning: bzopen(): filename cannot be empty in %s on line %d
-   bool(false)
+Warning: bzopen(): filename cannot be empty in %s on line %d
+bool(false)
 
-   Warning: bzopen(): filename cannot be empty in %s on line %d
-   bool(false)
+Warning: bzopen(): 'x' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
+bool(false)
 
-   Warning: bzopen(): 'x' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
-   bool(false)
+Warning: bzopen(): 'rw' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
+bool(false)
 
-   Warning: bzopen(): 'rw' is not a valid mode for bzopen(). Only 'w' and 'r' are supported. in %s on line %d
-   bool(false)
-
-   Warning: bzopen(no_such_file): failed to open stream: No such file or directory in %s on line %d
-   bool(false)
-   resource(%d) of type (stream) Done
+Warning: bzopen(no_such_file): failed to open stream: No such file or directory in %s on line %d
+bool(false)
+resource(%d) of type (stream) Done
 ```
 
 Full example: [sample019.phpt](../samples/index.md#sample019phpt)
@@ -1087,18 +1043,17 @@ Full example: [sample019.phpt](../samples/index.md#sample019phpt)
 #### Example 3
 
 ```text
-
-   --EXPECTF--
-   object(DOMNodeList)#%d (0) {
-   }
-   int(0)
-   bool(true)
-   bool(true)
-   string(0) ""
-   bool(true)
-   bool(true)
-   bool(false)
-   bool(false)
+--EXPECTF--
+object(DOMNodeList)#%d (0) {
+}
+int(0)
+bool(true)
+bool(true)
+string(0) ""
+bool(true)
+bool(true)
+bool(false)
+bool(false)
 ```
 
 Full example: [sample020.phpt](../samples/index.md#sample020phpt)
@@ -1115,19 +1070,18 @@ only, `%f` for floating point values, `%c` for single characters, `%x` for hexad
 */ext/standard/tests/strings/str_shuffle.phpt*
 
 ```php
-
-   --TEST--
-   Testing str_shuffle.
-   --FILE--
-   <?php
-   /* Do not change this test it is a README.TESTING example. */
-   $s = '123';
-   var_dump(str_shuffle($s));
-   var_dump($s);
-   ?>
-   --EXPECTF--
-   string(3) "%s"
-   string(3) "123"
+--TEST--
+Testing str_shuffle.
+--FILE--
+<?php
+/* Do not change this test it is a README.TESTING example. */
+$s = '123';
+var_dump(str_shuffle($s));
+var_dump($s);
+?>
+--EXPECTF--
+string(3) "%s"
+string(3) "123"
 ```
 
 ## --EXPECTF_EXTERNAL--
@@ -1156,25 +1110,24 @@ in a regular expression.
 #### Example 1
 
 ```text
-
-   --EXPECTREGEX--
-   M_E       : 2.718281[0-9]*
-   M_LOG2E   : 1.442695[0-9]*
-   M_LOG10E  : 0.434294[0-9]*
-   M_LN2     : 0.693147[0-9]*
-   M_LN10    : 2.302585[0-9]*
-   M_PI      : 3.141592[0-9]*
-   M_PI_2    : 1.570796[0-9]*
-   M_PI_4    : 0.785398[0-9]*
-   M_1_PI    : 0.318309[0-9]*
-   M_2_PI    : 0.636619[0-9]*
-   M_SQRTPI  : 1.772453[0-9]*
-   M_2_SQRTPI: 1.128379[0-9]*
-   M_LNPI    : 1.144729[0-9]*
-   M_EULER   : 0.577215[0-9]*
-   M_SQRT2   : 1.414213[0-9]*
-   M_SQRT1_2 : 0.707106[0-9]*
-   M_SQRT3   : 1.732050[0-9]*
+--EXPECTREGEX--
+M_E       : 2.718281[0-9]*
+M_LOG2E   : 1.442695[0-9]*
+M_LOG10E  : 0.434294[0-9]*
+M_LN2     : 0.693147[0-9]*
+M_LN10    : 2.302585[0-9]*
+M_PI      : 3.141592[0-9]*
+M_PI_2    : 1.570796[0-9]*
+M_PI_4    : 0.785398[0-9]*
+M_1_PI    : 0.318309[0-9]*
+M_2_PI    : 0.636619[0-9]*
+M_SQRTPI  : 1.772453[0-9]*
+M_2_SQRTPI: 1.128379[0-9]*
+M_LNPI    : 1.144729[0-9]*
+M_EULER   : 0.577215[0-9]*
+M_SQRT2   : 1.414213[0-9]*
+M_SQRT1_2 : 0.707106[0-9]*
+M_SQRT3   : 1.732050[0-9]*
 ```
 
 Full example: [sample021.phpt](../samples/index.md#sample021phpt)
@@ -1182,23 +1135,22 @@ Full example: [sample021.phpt](../samples/index.md#sample021phpt)
 #### Example 2
 
 ```text
-
-   --EXPECTF--
-   *** Testing imap_append() : basic functionality ***
-   Create a new mailbox for test
-   Create a temporary mailbox and add 0 msgs
-   .. mailbox '%s' created
-   Add a couple of msgs to new mailbox {%s}INBOX.%s
-   bool(true)
-   bool(true)
-   Msg Count after append : 2
-   List the msg headers
-   array(2) {
-     [0]=>
-     string(%d) "%w%s       1)%s webmaster@something. Test message (%d chars)"
-     [1]=>
-     string(%d) "%w%s       2)%s webmaster@something. Another test (%d chars)"
-   }
+--EXPECTF--
+*** Testing imap_append() : basic functionality ***
+Create a new mailbox for test
+Create a temporary mailbox and add 0 msgs
+.. mailbox '%s' created
+Add a couple of msgs to new mailbox {%s}INBOX.%s
+bool(true)
+bool(true)
+Msg Count after append : 2
+List the msg headers
+array(2) {
+  [0]=>
+  string(%d) "%w%s       1)%s webmaster@something. Test message (%d chars)"
+  [1]=>
+  string(%d) "%w%s       2)%s webmaster@something. Another test (%d chars)"
+}
 ```
 
 Full example: [sample025.phpt](../samples/index.md#sample025phpt)
@@ -1206,12 +1158,11 @@ Full example: [sample025.phpt](../samples/index.md#sample025phpt)
 #### Example 3
 
 ```text
-
-   --EXPECTREGEX--
-   string\(4\) \"-012\"
-   string\(8\) \"2d303132\"
-   (string\(13\) \"   4294967284\"|string\(20\) \"18446744073709551604\")
-   (string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
+--EXPECTREGEX--
+string\(4\) \"-012\"
+string\(8\) \"2d303132\"
+(string\(13\) \"   4294967284\"|string\(20\) \"18446744073709551604\")
+(string\(26\) \"20202034323934393637323834\"|string\(40\) \"3138343436373434303733373039353531363034\")
 ```
 
 Full example: [sample023.phpt](../samples/index.md#sample023phpt)
@@ -1223,19 +1174,18 @@ otherwise they would be interpreted as a regular expression.
 */ext/standard/tests/strings/strings001.phpt*
 
 ```php
-
-   --TEST--
-   Test whether strstr() and strrchr() are binary safe.
-   --FILE--
-   <?php
-   /* Do not change this test it is a README.TESTING example. */
-   $s = "alabala nica".chr(0)."turska panica";
-   var_dump(strstr($s, "nic"));
-   var_dump(strrchr($s," nic"));
-   ?>
-   --EXPECTREGEX--
-   string\(18\) \"nica\x00turska panica\"
-   string\(19\) \" nica\x00turska panica\"
+--TEST--
+Test whether strstr() and strrchr() are binary safe.
+--FILE--
+<?php
+/* Do not change this test it is a README.TESTING example. */
+$s = "alabala nica".chr(0)."turska panica";
+var_dump(strstr($s, "nic"));
+var_dump(strrchr($s," nic"));
+?>
+--EXPECTREGEX--
+string\(18\) \"nica\x00turska panica\"
+string\(19\) \" nica\x00turska panica\"
 ```
 
 ## --EXPECTREGEX_EXTERNAL--
@@ -1273,11 +1223,10 @@ without them being removed by the `--CLEAN--` section.
 #### Example 1
 
 ```php
-
-   --CLEAN--
-   <?php
-   unlink(__DIR__.'/DomDocument_save_basic.tmp');
-   ?>
+--CLEAN--
+<?php
+unlink(__DIR__.'/DomDocument_save_basic.tmp');
+?>
 ```
 
 Full example: [sample024.phpt](../samples/index.md#sample024phpt)
@@ -1285,11 +1234,10 @@ Full example: [sample024.phpt](../samples/index.md#sample024phpt)
 #### Example 2
 
 ```php
-
-   --CLEAN--
-   <?php
-   require_once('clean.inc');
-   ?>
+--CLEAN--
+<?php
+require_once('clean.inc');
+?>
 ```
 
 Full example: [sample025.phpt](../samples/index.md#sample025phpt)
@@ -1297,13 +1245,12 @@ Full example: [sample025.phpt](../samples/index.md#sample025phpt)
 #### Example 3
 
 ```php
-
-   --CLEAN--
-   <?php
-   $key = ftok(__DIR__.'/003.phpt', 'q');
-   $s = shm_attach($key);
-   shm_remove($s);
-   ?>
+--CLEAN--
+<?php
+$key = ftok(__DIR__.'/003.phpt', 'q');
+$s = shm_attach($key);
+shm_remove($s);
+?>
 ```
 
 Full example: [sample022.phpt](../samples/index.md#sample022phpt)
