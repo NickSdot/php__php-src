@@ -1,7 +1,59 @@
 # Sections
 
-A phpt test can have many more parts than just the minimum. In fact some of the mandatory parts have
-alternatives that may be used if the situation warrants it. The phpt sections are documented here.
+## Types
+
+**Metadata:**
+ [TEST](#--test--),
+ [DESCRIPTION](#--description--),
+ [CREDITS](#--credits--)
+
+**Runtime Setup:**
+ [INI](#--ini--),
+ [EXTENSIONS](#--extensions--)
+
+**Test Control:**
+ [SKIPIF](#--skipif--),
+ [XFAIL](#--xfail--),
+ [FLAKY](#--flaky--),
+ [CONFLICTS](#--conflicts--),
+ [WHITESPACE_SENSITIVE](#--whitespace_sensitive--)
+
+**Invocation:**
+ [ENV](#--env--),
+ [ARGS](#--args--),
+ [CGI](#--cgi--),
+ [PHPDBG](#--phpdbg--),
+ [CAPTURE_STDIO](#--capture_stdio--)
+
+**Input:**
+ [GET](#--get--),
+ [POST](#--post--),
+ [POST_RAW](#--post_raw--),
+ [PUT](#--put--),
+ [GZIP_POST](#--gzip_post--),
+ [DEFLATE_POST](#--deflate_post--),
+ [COOKIE](#--cookie--),
+ [STDIN](#--stdin--)
+
+**Test Source:**
+ [FILE](#--file--),
+ [FILEEOF](#--fileeof--),
+ [FILE_EXTERNAL](#--file_external--),
+ [REDIRECTTEST](#--redirecttest--)
+
+**Cleanup:**
+ [CLEAN](#--clean--)
+
+**Expected Headers:**
+ [EXPECTHEADERS](#--expectheaders--)
+
+**Expected Output:**
+ [EXPECT](#--expect--),
+ [EXPECTF](#--expectf--),
+ [EXPECTREGEX](#--expectregex--),
+ [EXPECT_EXTERNAL](#--expect_external--),
+ [EXPECTF_EXTERNAL](#--expectf_external--),
+ [EXPECTREGEX_EXTERNAL](#--expectregex_external--)
 
 ## --TEST--
 
