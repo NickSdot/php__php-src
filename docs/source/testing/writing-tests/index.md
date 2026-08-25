@@ -5,7 +5,7 @@
 hidden:
 ---
 Basics <self>
-sections/index
+Sections <sections/index>
 samples/index
 ```
 

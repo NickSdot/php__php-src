@@ -141,5 +141,11 @@ def generate_redirects(_app):
         yield source, context, 'redirect.html'
 
 
+def set_default_tocdepth(_app, env):
+    for metadata in env.metadata.values():
+        metadata.setdefault('tocdepth', 3)
+
+
 def setup(app):
+    app.connect('env-updated', set_default_tocdepth)
     app.connect('html-collect-pages', generate_redirects)
