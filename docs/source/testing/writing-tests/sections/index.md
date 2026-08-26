@@ -223,10 +223,7 @@ opcache.preload={PWD}/foo.inc
 
 ### --EXTENSIONS--
 
-Additional required shared extensions to be loaded when running the test. When the
-`run-tests.php` script is executed it loads all the extensions that are available and enabled for
-that particular PHP at the time. If the test requires additional extension to be loaded and they
-aren't loaded prior to running the test, this section loads them.
+Use EXTENSIONS when a test needs additional PHP extensions.
 
 |               |                              |
 |---------------|------------------------------|
@@ -237,33 +234,38 @@ aren't loaded prior to running the test, this section loads them.
 | **Lines**     | One or more                  |
 | **Separator** | Newline                      |
 
+The runner loads listed extensions when necessary. If an extension is unavailable as a built-in or
+shared module, it skips the test.
+
 #### Examples
 
-**Example 1**
-
-```text
---EXTENSIONS--
-curl
-imagick
-tokenizer
-```
-
-Full example: [extensions.phpt](../samples/index.md#extensionsphpt)
-
-Some tests depend on PHP extensions that may be unavailable. These extensions should be listed in
-the `EXTENSIONS` section. If an extension is missing, PHP will try to find it in a shared module
-and skip the test if it's not there.
-
-*/ext/sodium/tests/crypto_scalarmult.phpt*
+Assume a test in `ext/uri` needs reflection to exercise the behaviour under test. List the
+`reflection` extension so the runner loads it:
 
 ```php
---TEST--
-Check for libsodium scalarmult
 --EXTENSIONS--
-sodium
+reflection
 --FILE--
 <?php
-$n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+try {
+    $reflectionClass = new ReflectionClass(Uri\Rfc3986\Uri::class);
+    $reflectionClass->newInstanceWithoutConstructor();
+} catch (Throwable $e) {
+    echo $e::class, ': ', $e->getMessage(), "\n";
+}
+?>
+```
+
+The `zend_test` extension exposes helpers used only by tests. List it when a test calls one of them:
+
+```php
+--EXTENSIONS--
+zend_test
+--FILE--
+<?php
+$url = 'https://%65user:%65pass@%65xample.com:123';
+var_dump(zend_test_uri_parser($url, 'parse_url'));
+?>
 ```
 
 ### --SKIPIF--
