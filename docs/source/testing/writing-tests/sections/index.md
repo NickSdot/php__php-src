@@ -146,6 +146,95 @@ Zoe Slattery zoe@php.net
 
 Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 
+### --INI--
+
+To be used if you need a specific php.ini setting for the test.
+
+|               |                                       |
+|---------------|---------------------------------------|
+| **Mandatory** | No                                    |
+| **Position**  | Before execution section              |
+| **Content**   | PHP INI settings, e.g. `precision=14` |
+| **Lines**     | One or more                           |
+| **Separator** | Newline                               |
+
+Lines beginning with `;` or `#` are comments. Values may include automatically replaced tags.
+Invalid settings may cause failures.
+
+The following is a list of all tags and what they are used to represent:
+
+- `{PWD}`: Represents the directory of the file containing the `--INI--` section.
+- `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
+
+#### Examples
+
+**Example 1**
+
+```text
+--INI--
+precision=14
+```
+
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
+
+**Example 2**
+
+```text
+--INI--
+session.use_cookies=0
+session.cache_limiter=
+register_globals=1
+session.serialize_handler=php
+session.save_handler=files
+```
+
+Full example: [sample003.phpt](../samples/index.md#sample003phpt)
+
+### --EXTENSIONS--
+
+Additional required shared extensions to be loaded when running the test. When the
+`run-tests.php` script is executed it loads all the extensions that are available and enabled for
+that particular PHP at the time. If the test requires additional extension to be loaded and they
+aren't loaded prior to running the test, this section loads them.
+
+|               |                              |
+|---------------|------------------------------|
+| **Mandatory** | No                           |
+| **Position**  | Before execution section     |
+| **Content**   | Extension names, e.g. `curl` |
+| **Case**      | Sensitive                    |
+| **Lines**     | One or more                  |
+| **Separator** | Newline                      |
+
+#### Examples
+
+**Example 1**
+
+```text
+--EXTENSIONS--
+curl
+imagick
+tokenizer
+```
+
+Full example: [extensions.phpt](../samples/index.md#extensionsphpt)
+
+Some tests depend on PHP extensions that may be unavailable. These extensions should be listed in
+the `EXTENSIONS` section. If an extension is missing, PHP will try to find it in a shared module
+and skip the test if it's not there.
+
+*/ext/sodium/tests/crypto_scalarmult.phpt*
+
+```php
+--TEST--
+Check for libsodium scalarmult
+--EXTENSIONS--
+sodium
+--FILE--
+<?php
+$n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+```
+
 ### --SKIPIF--
 
 A condition or set of conditions used to determine if a test should be skipped.
@@ -236,6 +325,87 @@ certain test files need the same values for some input.
 > named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
 > "test.inc".
 
+### --XFAIL--
+
+This section identifies this test as one that is currently expected to fail. It
+should include a brief description of why it's expected to fail. Reasons for such expectations
+include tests that are written before the functionality they are testing is implemented or notice of
+a bug which is due to upstream code such as an extension which provides PHP support for some other
+software.
+
+Please do NOT include an `--XFAIL--` without providing a text description for the reason it's
+being used.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain text reason        |
+| **Lines**     | One or more              |
+
+#### Examples
+
+**Example 1**
+
+```text
+--XFAIL--
+This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
+```
+
+Full example: [sample017.phpt](../samples/index.md#sample017phpt)
+
+### --XLEAK--
+
+Marks a test whose Valgrind leak is expected. Include a brief reason. When run with Valgrind, a
+detected leak is reported as XLEAK instead of LEAK, while a leak-free result produces a warning.
+The test runner skips XLEAK tests under ASAN and MSAN.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain text               |
+| **Lines**     | One or more              |
+| **Requires**  | Valgrind                 |
+
+#### Examples
+
+**Example 1**
+
+```text
+--XLEAK--
+A bug in the dependency causes a memory leak when reconnecting after closing.
+```
+
+### --FLAKY--
+
+This section identifies this test as one that occasionally fails. If the test
+actually fails, it will be retried one more time, and that result will be reported. The section
+should include a brief description of why the test is flaky. Reasons for this include tests that
+rely on relatively precise timing, or temporary disc states. Available as of PHP 8.1.22 and 8.2.9,
+respectively.
+
+Please do NOT include a `--FLAKY--` section without providing a text description for the reason it
+is being used.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | Plain text  reason       |
+| **Lines**     | One or more              |
+
+#### Examples
+
+**Example 1**
+
+```
+--FLAKY--
+This test frequently fails in CI
+```
+
+Full example: flaky.phpt
+
 ### --CONFLICTS--
 
 This section is only relevant for parallel test execution (available as of PHP
@@ -279,6 +449,116 @@ formatting changes. Available as of PHP 7.4.3.
 | **Mandatory** | No                       |
 | **Position**  | Before execution section |
 | **Content**   | None                     |
+
+### --ENV--
+
+Configures environment variables such as those found in the `$_SERVER` global
+array.
+
+|               |                                          |
+|---------------|------------------------------------------|
+| **Mandatory** | No                                       |
+| **Position**  | Before execution section                 |
+| **Content**   | Environment variables, e.g. `NAME=value` |
+| **Case**      | Platform-dependent                       |
+| **Lines**     | One or more                              |
+| **Separator** | Newline                                  |
+
+#### Examples
+
+**Example 1**
+
+```text
+--ENV--
+SCRIPT_NAME=/frontcontroller10.php
+REQUEST_URI=/frontcontroller10.php/hi
+PATH_INFO=/hi
+```
+
+Full example: [sample018.phpt](../samples/index.md#sample018phpt)
+
+### --ARGS--
+
+A single line defining the arguments passed to PHP.
+
+|               |                                   |
+|---------------|-----------------------------------|
+| **Mandatory** | No                                |
+| **Position**  | Before execution section          |
+| **Content**   | CLI arguments, e.g. `--arg value` |
+| **Lines**     | One                               |
+
+#### Examples
+
+**Example 1**
+
+```text
+--ARGS--
+--arg value --arg=value -avalue -a=value -a value
+```
+
+Full example: [sample010.phpt](../samples/index.md#sample010phpt)
+
+### --CGI--
+
+This section takes no value. It merely provides a simple marker for tests that MUST
+be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | None                     |
+| **Requires**  | PHP CGI binary           |
+
+#### Examples
+
+**Example 1**
+
+```text
+--CGI--
+```
+
+Full example: [sample016.phpt](../samples/index.md#sample016phpt)
+
+### --PHPDBG--
+
+This section takes arbitrary phpdbg commands and executes the test file according
+to them as it would be run in the phpdbg prompt.
+
+PHPDBG tests may omit an execution source.
+
+|               |                          |
+|---------------|--------------------------|
+| **Mandatory** | No                       |
+| **Position**  | Before execution section |
+| **Content**   | phpdbg commands          |
+| **Lines**     | One or more              |
+| **Requires**  | phpdbg binary            |
+
+#### Examples
+
+**Example 1**
+
+```text
+--PHPDBG--
+b
+4
+b
+del
+0
+b
+5
+r
+b
+del
+1
+r
+y
+q
+```
+
+Full example: [phpdbg_1.phpt](../samples/index.md#phpdbg_1phpt)
 
 ### --CAPTURE_STDIO--
 
@@ -332,50 +612,39 @@ STDIN STDOUT STDERR
 
 Full example: [capture_stdio_3.phpt](../samples/index.md#capture_stdio_3phpt)
 
-### --EXTENSIONS--
+### --GET--
 
-Additional required shared extensions to be loaded when running the test. When the
-`run-tests.php` script is executed it loads all the extensions that are available and enabled for
-that particular PHP at the time. If the test requires additional extension to be loaded and they
-aren't loaded prior to running the test, this section loads them.
+GET variables to be passed to the test script. This section forces the use of the
+CGI binary instead of the usual CLI one.
 
-|               |                              |
-|---------------|------------------------------|
-| **Mandatory** | No                           |
-| **Position**  | Before execution section     |
-| **Content**   | Extension names, e.g. `curl` |
-| **Case**      | Sensitive                    |
-| **Lines**     | One or more                  |
-| **Separator** | Newline                      |
+|               |                                       |
+|---------------|---------------------------------------|
+| **Mandatory** | No                                    |
+| **Position**  | Before execution section              |
+| **Content**   | GET variables, e.g. `a=value&b=value` |
+| **Lines**     | One                                   |
+| **Separator** | `&` between key-value pairs           |
+| **Requires**  | PHP CGI binary                        |
 
 #### Examples
 
 **Example 1**
 
 ```text
---EXTENSIONS--
-curl
-imagick
-tokenizer
+--GET--
+a=<b>test</b>&b=http://example.com
 ```
 
-Full example: [extensions.phpt](../samples/index.md#extensionsphpt)
+Full example: [sample001.phpt](../samples/index.md#sample001phpt)
 
-Some tests depend on PHP extensions that may be unavailable. These extensions should be listed in
-the `EXTENSIONS` section. If an extension is missing, PHP will try to find it in a shared module
-and skip the test if it's not there.
+**Example 2**
 
-*/ext/sodium/tests/crypto_scalarmult.phpt*
-
-```php
---TEST--
-Check for libsodium scalarmult
---EXTENSIONS--
-sodium
---FILE--
-<?php
-$n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+```text
+--GET--
+ar[elm1]=1234&ar[elm2]=0660&a=0234
 ```
+
+Full example: [sample008.phpt](../samples/index.md#sample008phpt)
 
 ### --POST--
 
@@ -542,40 +811,6 @@ forces the use of the CGI binary instead of the usual CLI one.
 
 Full example: [sample007.phpt](../samples/index.md#sample007phpt)
 
-### --GET--
-
-GET variables to be passed to the test script. This section forces the use of the
-CGI binary instead of the usual CLI one.
-
-|               |                                       |
-|---------------|---------------------------------------|
-| **Mandatory** | No                                    |
-| **Position**  | Before execution section              |
-| **Content**   | GET variables, e.g. `a=value&b=value` |
-| **Lines**     | One                                   |
-| **Separator** | `&` between key-value pairs           |
-| **Requires**  | PHP CGI binary                        |
-
-#### Examples
-
-**Example 1**
-
-```text
---GET--
-a=<b>test</b>&b=http://example.com
-```
-
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
-
-**Example 2**
-
-```text
---GET--
-ar[elm1]=1234&ar[elm2]=0660&a=0234
-```
-
-Full example: [sample008.phpt](../samples/index.md#sample008phpt)
-
 ### --COOKIE--
 
 Cookies to be passed to the test script. This section forces the use of the CGI
@@ -624,138 +859,6 @@ use this to input some thing to the php script
 ```
 
 Full example: [sample009.phpt](../samples/index.md#sample009phpt)
-
-### --INI--
-
-To be used if you need a specific php.ini setting for the test.
-
-|               |                                       |
-|---------------|---------------------------------------|
-| **Mandatory** | No                                    |
-| **Position**  | Before execution section              |
-| **Content**   | PHP INI settings, e.g. `precision=14` |
-| **Lines**     | One or more                           |
-| **Separator** | Newline                               |
-
-Lines beginning with `;` or `#` are comments. Values may include automatically replaced tags.
-Invalid settings may cause failures.
-
-The following is a list of all tags and what they are used to represent:
-
-- `{PWD}`: Represents the directory of the file containing the `--INI--` section.
-- `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
-
-#### Examples
-
-**Example 1**
-
-```text
---INI--
-precision=14
-```
-
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
-
-**Example 2**
-
-```text
---INI--
-session.use_cookies=0
-session.cache_limiter=
-register_globals=1
-session.serialize_handler=php
-session.save_handler=files
-```
-
-Full example: [sample003.phpt](../samples/index.md#sample003phpt)
-
-### --ARGS--
-
-A single line defining the arguments passed to PHP.
-
-|               |                                   |
-|---------------|-----------------------------------|
-| **Mandatory** | No                                |
-| **Position**  | Before execution section          |
-| **Content**   | CLI arguments, e.g. `--arg value` |
-| **Lines**     | One                               |
-
-#### Examples
-
-**Example 1**
-
-```text
---ARGS--
---arg value --arg=value -avalue -a=value -a value
-```
-
-Full example: [sample010.phpt](../samples/index.md#sample010phpt)
-
-### --ENV--
-
-Configures environment variables such as those found in the `$_SERVER` global
-array.
-
-|               |                                          |
-|---------------|------------------------------------------|
-| **Mandatory** | No                                       |
-| **Position**  | Before execution section                 |
-| **Content**   | Environment variables, e.g. `NAME=value` |
-| **Case**      | Platform-dependent                       |
-| **Lines**     | One or more                              |
-| **Separator** | Newline                                  |
-
-#### Examples
-
-**Example 1**
-
-```text
---ENV--
-SCRIPT_NAME=/frontcontroller10.php
-REQUEST_URI=/frontcontroller10.php/hi
-PATH_INFO=/hi
-```
-
-Full example: [sample018.phpt](../samples/index.md#sample018phpt)
-
-### --PHPDBG--
-
-This section takes arbitrary phpdbg commands and executes the test file according
-to them as it would be run in the phpdbg prompt.
-
-PHPDBG tests may omit an execution source.
-
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | phpdbg commands          |
-| **Lines**     | One or more              |
-| **Requires**  | phpdbg binary            |
-
-#### Examples
-
-**Example 1**
-
-```text
---PHPDBG--
-b
-4
-b
-del
-0
-b
-5
-r
-b
-del
-1
-r
-y
-q
-```
-
-Full example: [phpdbg_1.phpt](../samples/index.md#phpdbg_1phpt)
 
 ### --FILE--
 
@@ -923,109 +1026,63 @@ Full example: [sample014.phpt](../samples/index.md#sample014phpt)
 > The destination tests for this example are not included. See the PDO extension tests for
 > reference to live tests using this section.
 
-### --CGI--
+### --CLEAN--
 
-This section takes no value. It merely provides a simple marker for tests that MUST
-be run as CGI, even if there is no `--POST--` or `--GET--` sections in the test file.
+Code that is executed after a test completes. It's main purpose is to allow you to
+clean up after yourself. You might need to remove files created during the test or close sockets or
+database connections following a test. Infact, even if a test fails or encounters a fatal error
+during the test, the code found in the `--CLEAN--` section will still run.
 
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | None                     |
-| **Requires**  | PHP CGI binary           |
+Code in the clean section is run in a completely different process than the one the test was run in.
+So do not try accessing variables you created in the `--FILE--` section from inside the
+`--CLEAN--` section, they won't exist.
 
-#### Examples
+Using the switch `--no-clean` on `run-tests.php`, you can prevent the code found in the
+`--CLEAN--` section of a test from running. This allows you to inspect generated data or files
+without them being removed by the `--CLEAN--` section.
 
-**Example 1**
-
-```text
---CGI--
-```
-
-Full example: [sample016.phpt](../samples/index.md#sample016phpt)
-
-### --XFAIL--
-
-This section identifies this test as one that is currently expected to fail. It
-should include a brief description of why it's expected to fail. Reasons for such expectations
-include tests that are written before the functionality they are testing is implemented or notice of
-a bug which is due to upstream code such as an extension which provides PHP support for some other
-software.
-
-Please do NOT include an `--XFAIL--` without providing a text description for the reason it's
-being used.
-
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text reason        |
-| **Lines**     | One or more              |
+|               |                                  |
+|---------------|----------------------------------|
+| **Mandatory** | No                               |
+| **Position**  | Before any `--EXPECT*--` section |
+| **Content**   | PHP code enclosed by PHP tags    |
 
 #### Examples
 
 **Example 1**
 
-```text
---XFAIL--
-This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
+```php
+--CLEAN--
+<?php
+unlink(__DIR__.'/DomDocument_save_basic.tmp');
+?>
 ```
 
-Full example: [sample017.phpt](../samples/index.md#sample017phpt)
+Full example: [sample024.phpt](../samples/index.md#sample024phpt)
 
-### --XLEAK--
+**Example 2**
 
-Marks a test whose Valgrind leak is expected. Include a brief reason. When run with Valgrind, a
-detected leak is reported as XLEAK instead of LEAK, while a leak-free result produces a warning.
-The test runner skips XLEAK tests under ASAN and MSAN.
-
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text               |
-| **Lines**     | One or more              |
-| **Requires**  | Valgrind                 |
-
-#### Examples
-
-**Example 1**
-
-```text
---XLEAK--
-A bug in the dependency causes a memory leak when reconnecting after closing.
+```php
+--CLEAN--
+<?php
+require_once('clean.inc');
+?>
 ```
 
-### --FLAKY--
+Full example: [sample025.phpt](../samples/index.md#sample025phpt)
 
-This section identifies this test as one that occasionally fails. If the test
-actually fails, it will be retried one more time, and that result will be reported. The section
-should include a brief description of why the test is flaky. Reasons for this include tests that
-rely on relatively precise timing, or temporary disc states. Available as of PHP 8.1.22 and 8.2.9,
-respectively.
+**Example 3**
 
-Please do NOT include a `--FLAKY--` section without providing a text description for the reason it
-is being used.
-
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text  reason       |
-| **Lines**     | One or more              |
-
-#### Examples
-
-**Example 1**
-
-```
---FLAKY--
-This test frequently fails in CI
+```php
+--CLEAN--
+<?php
+$key = ftok(__DIR__.'/003.phpt', 'q');
+$s = shm_attach($key);
+shm_remove($s);
+?>
 ```
 
-Full example: flaky.phpt
-
+Full example: [sample022.phpt](../samples/index.md#sample022phpt)
 ### --EXPECTHEADERS--
 
 The expected headers. Any header specified here must exist in the response and have
@@ -1384,63 +1441,6 @@ section just stating a filename where to load the expected output from.
 | **Lines**        | One                                                                                                                                                                                                                                                         |
 | **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--` |
 
-### --CLEAN--
-
-Code that is executed after a test completes. It's main purpose is to allow you to
-clean up after yourself. You might need to remove files created during the test or close sockets or
-database connections following a test. Infact, even if a test fails or encounters a fatal error
-during the test, the code found in the `--CLEAN--` section will still run.
-
-Code in the clean section is run in a completely different process than the one the test was run in.
-So do not try accessing variables you created in the `--FILE--` section from inside the
-`--CLEAN--` section, they won't exist.
-
-Using the switch `--no-clean` on `run-tests.php`, you can prevent the code found in the
-`--CLEAN--` section of a test from running. This allows you to inspect generated data or files
-without them being removed by the `--CLEAN--` section.
-
-|               |                                  |
-|---------------|----------------------------------|
-| **Mandatory** | No                               |
-| **Position**  | Before any `--EXPECT*--` section |
-| **Content**   | PHP code enclosed by PHP tags    |
-
-#### Examples
-
-**Example 1**
-
-```php
---CLEAN--
-<?php
-unlink(__DIR__.'/DomDocument_save_basic.tmp');
-?>
-```
-
-Full example: [sample024.phpt](../samples/index.md#sample024phpt)
-
-**Example 2**
-
-```php
---CLEAN--
-<?php
-require_once('clean.inc');
-?>
-```
-
-Full example: [sample025.phpt](../samples/index.md#sample025phpt)
-
-**Example 3**
-
-```php
---CLEAN--
-<?php
-$key = ftok(__DIR__.'/003.phpt', 'q');
-$s = shm_attach($key);
-shm_remove($s);
-?>
-```
-
-Full example: [sample022.phpt](../samples/index.md#sample022phpt)
 
 ## Order
 
