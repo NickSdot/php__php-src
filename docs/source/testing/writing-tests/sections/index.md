@@ -237,13 +237,9 @@ $n = sodium_hex2bin("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff8
 
 ### --SKIPIF--
 
-A condition or set of conditions used to determine if a test should be skipped.
-Tests that are only applicable to a certain platform, extension or PHP version are good reasons for
-using a `--SKIPIF--` section.
-
-A common practice for extension tests is to write your `--SKIPIF--` extension criteria into a file
-call skipif.inc and then including that file in the `--SKIPIF--` section of all your extension
-tests. This promotes the DRY principle and reduces future code maintenance.
+Some tests should not run under specific conditions. Use SKIPIF to skip them based on the build,
+operating system, dependencies, environment, or other conditions. It can also apply XFAIL, XLEAK,
+or FLAKY only when a condition is met.
 
 |               |                               |
 |---------------|-------------------------------|
@@ -251,79 +247,119 @@ tests. This promotes the DRY principle and reduces future code maintenance.
 | **Position**  | Before execution section      |
 | **Content**   | PHP code enclosed by PHP tags |
 
-If output starts with `skip`, the test is skipped. If it starts with `xfail`, the test is marked
-as an expected failure. If it starts with `flaky`, the test is marked as flaky. The `xfail`
-convention is supported as of PHP 7.2.0; `flaky` as of PHP 8.2.25 and PHP 8.3.13.
+#### Output Conventions
+
+When a condition matches, stop the check with `die('prefix reason')`. If none of the conditions
+produces output, the test runs normally.
+
+| Output (`prefix <reason>`) | Test                    | Result                          |
+|----------------------------|-------------------------|---------------------------------|
+| *(none)*                   | Runs                    | Normal result                   |
+| `skip <reason>`            | Skips                   | Reports SKIP                    |
+| `info <reason>`            | Runs                    | Adds information                |
+| `warn <reason>`            | Runs                    | Adds warning                    |
+| `xfail <reason>`           | Runs                    | Conditional [XFAIL](#--xfail--) |
+| `xleak <reason>`           | Runs, without ASAN/MSAN | Conditional [XLEAK](#--xleak--) |
+| `flaky <reason>`           | Runs                    | Conditional [FLAKY](#--flaky--) |
+
+Any non-empty output that does not start with one of the six accepted prefixes is invalid and causes
+the test to BORK.
+
+#### When **Not** to Use
+
+- If a test fails normally, fix the cause rather than skipping the test.
+- If a test is flaky in every supported configuration, use [FLAKY](#--flaky--).
+- If a persistent failure affects every supported configuration, use [XFAIL](#--xfail--).
+- If a known leak appears in every supported Valgrind run, use [XLEAK](#--xleak--).
 
 #### Examples
 
-**Example 1**
-
-```php
---SKIPIF--
-<?php if (!extension_loaded("filter")) die("Skipped: filter extension required."); ?>
-```
-
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
-
-**Example 2**
-
-```php
---SKIPIF--
-<?php include('skipif.inc'); ?>
-```
-
-Full example: [sample003.phpt](../samples/index.md#sample003phpt)
-
-**Example 3**
-
-```php
---SKIPIF--
-<?php if (getenv('SKIP_ASAN')) die('xfail Startup failure leak'); ?>
-```
-
-Full example: [xfailif.phpt](../samples/index.md#xfailifphpt)
-
-**Example 4**
-
-```php
---SKIPIF--
-<?php
-if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
-        die("flaky Occasionally segfaults on macOS for unknown reasons");
-}
-```
-
-Some tests depend on modules or functions available only in certain versions or they even require
-minimum version of php or zend. These tests should be skipped when the requirement cannot be
-fulfilled. To achieve this you can use the `SKIPIF` section. To tell `run-tests.php` that your
-test should be skipped the `SKIPIF` section must print out the word "skip" followed by a reason
-why the test should skip.
-
-*ext/sodium/tests/pwhash_argon2i.phpt*
+Assume a sodium test needs Argon2i. Loading the extension is not enough because the version of
+libsodium may not provide the feature. Hence, list extension, then check for the feature in SKIPIF:
 
 ```php
 --TEST--
-Check for libsodium argon2i
+Test sodium password hashing with Argon2i
 --EXTENSIONS--
 sodium
 --SKIPIF--
 <?php
-if (!defined('SODIUM_CRYPTO_PWHASH_SALTBYTES')) print "skip libsodium without argon2i";
+if (!defined('SODIUM_CRYPTO_PWHASH_SALTBYTES')) {
+    die('skip libsodium without Argon2i');
+}
 ?>
---FILE--
-[snip]
 ```
 
-Test script and `SKIPIF` code should be directly written into `\*.phpt`. However, it is
-recommended to use include files when more test scripts depend on the same `SKIPIF` code or when
-certain test files need the same values for some input.
+If the constant is missing, the runner skips the test and reports the reason. Otherwise, the check
+produces no output and the test runs. Remember to [load the extension explicitly](#--extensions--); without
+EXTENSIONS, an available shared extension may not be loaded when this check runs.
+
+The same pattern applies to platform-specific behaviour. This zlib test covers mandatory file
+locking on Windows, so it should not run elsewhere:
+
+```php
+--TEST--
+Test mandatory locking on Windows
+--EXTENSIONS--
+zlib
+--SKIPIF--
+<?php
+if (PHP_OS_FAMILY !== 'Windows') {
+    die('skip Depends on Windows mandatory file locking');
+}
+?>
+```
+
+The test is skipped on other systems with the reason that identifies the behaviour, not merely the
+required platform.
+
+Sometimes the test should run everywhere, but a persistent failure affects only one config. Return
+`xfail <reason>` from SKIPIF so the remaining configs must still pass:
+
+```php
+--TEST--
+Output buffering rejects recursive buffer flushing
+--SKIPIF--
+<?php
+$jitEnabled = ini_get('opcache.jit')
+  && ini_get('opcache.jit_buffer_size');
+
+if (PHP_OS_FAMILY === 'Windows' && $jitEnabled && !PHP_DEBUG) {
+    die('xfail JIT-enabled release builds crash on Windows');
+}
+?>
+```
+
+#### Shared Checks
+
+Often, several tests need the exact same checks. A common pattern is to place them in `skipif.inc`
+beside the tests and include that file from each test's SKIPIF section using `__DIR__`.
+
+```php
+--SKIPIF--
+<?php
+require __DIR__ . '/skipif.inc';
+?>
+```
+
+The content of a `skipif.inc` is identical to content in SKIPIF sections. The conventions of SKIPIF
+must be followed, and the script must not contain any test code or other outputs:
+
+```php
+<?php
+if (PHP_OS_FAMILY !== 'Windows') {
+    die('skip Depends on Windows mandatory file locking');
+}
+
+// root not allowed when not set in env
+if (!getmyuid() && !getenv('TEST_FPM_RUN_AS_ROOT')) {
+    die('skip Cannot run as root');
+}
+```
 
 > [!NOTE]
-> No file used by any test should have one of the following extensions: ".php", ".log", ".mem",
-> ".exp", ".out" or ".diff". When you use an include file for the `SKIPIF` section it should be
-> named "skipif.inc" and an include file used in the `FILE` section of many tests should be named
-> "test.inc".
+> Shared helpers should use `.inc`. The runner owns `.php`, `.log`, `.mem`, `.exp`, `.out` and
+> `.diff` files next to PHPT tests and may overwrite or remove them.
 
 ### --XFAIL--
 
