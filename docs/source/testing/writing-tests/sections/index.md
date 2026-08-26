@@ -1015,12 +1015,14 @@ Full example: [sample009.phpt](../samples/index.md#sample009phpt)
 
 The test source code.
 
-|                  |                                                                                                                                                     |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                            |
-| **Position**     | After setup and input sections                                                                                                                      |
-| **Content**      | PHP code enclosed by PHP tags                                                                                                                       |
-| **Alternatives** | [§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
+|                  |                                                     |
+|------------------|-----------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used            |
+| **Position**     | After setup and input sections                      |
+| **Content**      | PHP code enclosed by PHP tags                       |
+| **Alternatives** | [§](index.md#--fileeof--) `--FILEEOF--`             |
+|                  | [§](index.md#--file_external--) `--FILE_EXTERNAL--` |
+|                  | [§](index.md#--redirecttest--) `--REDIRECTTEST--`   |
 
 #### Examples
 
@@ -1054,12 +1056,14 @@ An alternative to `--FILE--` where any trailing line breaks (n || r || rn
 found at the end of the section) are omitted. This is an extreme edge-case feature, so 99.99% of the
 time you won't need this section.
 
-|                  |                                                                                                                                               |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                      |
-| **Position**     | After setup and input sections                                                                                                                |
-| **Content**      | PHP code enclosed by PHP tags                                                                                                                 |
-| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
+|                  |                                                     |
+|------------------|-----------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used            |
+| **Position**     | After setup and input sections                      |
+| **Content**      | PHP code enclosed by PHP tags                       |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`                   |
+|                  | [§](index.md#--file_external--) `--FILE_EXTERNAL--` |
+|                  | [§](index.md#--redirecttest--) `--REDIRECTTEST--`   |
 
 #### Examples
 
@@ -1083,13 +1087,15 @@ test file with different ini, environment, post/get or other external inputs. Ba
 you to DRY up some of your tests. The file must be in the same directory as the test file, or in a
 subdirectory.
 
-|                  |                                                                                                                                   |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                          |
-| **Position**     | After setup and input sections                                                                                                    |
-| **Content**      | Relative path, e.g. `files/file012.inc`                                                                                           |
-| **Lines**        | One                                                                                                                               |
-| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--redirecttest--) `--REDIRECTTEST--` |
+|                  |                                                   |
+|------------------|---------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used          |
+| **Position**     | After setup and input sections                    |
+| **Content**      | Relative path, e.g. `files/file012.inc`           |
+| **Lines**        | One                                               |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`                 |
+|                  | [§](index.md#--fileeof--) `--FILEEOF--`           |
+|                  | [§](index.md#--redirecttest--) `--REDIRECTTEST--` |
 
 #### Examples
 
@@ -1109,12 +1115,14 @@ allows you to set configurations which are used on all tests in your destination
 
 Redirect tests do not use cleanup or expectation sections.
 
-|                  |                                                                                                                                     |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                            |
-| **Position**     | After setup and input sections                                                                                                      |
-| **Content**      | PHP source returning a configuration array                                                                                          |
-| **Alternatives** | [§](index.md#--file--) `--FILE--`<br>[§](index.md#--fileeof--) `--FILEEOF--`<br>[§](index.md#--file_external--) `--FILE_EXTERNAL--` |
+|                  |                                                     |
+|------------------|-----------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used            |
+| **Position**     | After setup and input sections                      |
+| **Content**      | PHP source returning a configuration array          |
+| **Alternatives** | [§](index.md#--file--) `--FILE--`                   |
+|                  | [§](index.md#--fileeof--) `--FILEEOF--`             |
+|                  | [§](index.md#--file_external--) `--FILE_EXTERNAL--` |
 
 The source is run through `eval()`, and the `TESTS` array key specifies the destination. A
 `REDIRECTTEST` cannot be nested inside another `REDIRECTTEST`.
@@ -1275,12 +1283,16 @@ Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 The expected output from the test script. This must match the actual output from
 the test script exactly for the test to pass.
 
-|                  |                                                                                                                                                                                                                                                                                         |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                                |
-| **Position**     | Last in file                                                                                                                                                                                                                                                                            |
-| **Content**      | Plain text                                                                                                                                                                                                                                                                              |
-| **Alternatives** | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
+|                  |                                                                   |
+|------------------|-------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                          |
+| **Position**     | Last in file                                                      |
+| **Content**      | Plain text                                                        |
+| **Alternatives** | [§](index.md#--expectf--) `--EXPECTF--`                           |
+|                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`           |
+|                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`         |
+|                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`                   |
+|                  | [§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 #### Examples
 
@@ -1303,13 +1315,17 @@ Full example: [sample002.phpt](../samples/index.md#sample002phpt)
 Similar to `--EXPECT--` section, but just stating a filename where to load the
 expected output from.
 
-|                  |                                                                                                                                                                                                                                                                       |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                              |
-| **Position**     | Last in file                                                                                                                                                                                                                                                          |
-| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                                 |
-| **Lines**        | One                                                                                                                                                                                                                                                                   |
-| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
+|                  |                                                                   |
+|------------------|-------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                          |
+| **Position**     | Last in file                                                      |
+| **Content**      | Filename, e.g. `test001.expected.txt`                             |
+| **Lines**        | One                                                               |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`                             |
+|                  | [§](index.md#--expectf--) `--EXPECTF--`                           |
+|                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`         |
+|                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`                   |
+|                  | [§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 #### Examples
 
@@ -1338,12 +1354,16 @@ uses a number of substitution tags for strings, spaces, digits, etc. that appear
 but which may vary between test runs. The most common example of this is to use %s and %d to match
 the file path and line number which are output by PHP Warnings.
 
-|                  |                                                                                                                                                                                                                                                                                       |
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                              |
-| **Position**     | Last in file                                                                                                                                                                                                                                                                          |
-| **Content**      | Plain text with substitution tags                                                                                                                                                                                                                                                     |
-| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
+|                  |                                                                   |
+|------------------|-------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                          |
+| **Position**     | Last in file                                                      |
+| **Content**      | Plain text with substitution tags                                 |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`                             |
+|                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`           |
+|                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`         |
+|                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`                   |
+|                  | [§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 The tags represent output that may vary between runs or platforms.
 
@@ -1474,25 +1494,33 @@ string(3) "123"
 Similar to `--EXPECTF--` section, but like the `--EXPECT_EXTERNAL--` section
 just stating a filename where to load the expected output from.
 
-|                  |                                                                                                                                                                                                                                                                     |
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                            |
-| **Position**     | Last in file                                                                                                                                                                                                                                                        |
-| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                               |
-| **Lines**        | One                                                                                                                                                                                                                                                                 |
-| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
+|                  |                                                                   |
+|------------------|-------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                          |
+| **Position**     | Last in file                                                      |
+| **Content**      | Filename, e.g. `test001.expected.txt`                             |
+| **Lines**        | One                                                               |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`                             |
+|                  | [§](index.md#--expectf--) `--EXPECTF--`                           |
+|                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`           |
+|                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`                   |
+|                  | [§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 ### --EXPECTREGEX--
 
 An alternative of `--EXPECT--`. This form allows the tester to specify the result in a regular
 expression.
 
-|                  |                                                                                                                                                                                                                                                                               |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                                      |
-| **Position**     | Last in file                                                                                                                                                                                                                                                                  |
-| **Content**      | Regular expression                                                                                                                                                                                                                                                            |
-| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
+|                  |                                                                   |
+|------------------|-------------------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                          |
+| **Position**     | Last in file                                                      |
+| **Content**      | Regular expression                                                |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`                             |
+|                  | [§](index.md#--expectf--) `--EXPECTF--`                           |
+|                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`           |
+|                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`         |
+|                  | [§](index.md#--expectregex_external--) `--EXPECTREGEX_EXTERNAL--` |
 
 The pattern may represent output that varies between runs or platforms.
 
@@ -1584,14 +1612,17 @@ string\(19\) \" nica\x00turska panica\"
 Similar to `--EXPECTREGEX--` section, but like the `--EXPECT_EXTERNAL--`
 section just stating a filename where to load the expected output from.
 
-|                  |                                                                                                                                                                                                                                                             |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Mandatory**    | Yes, if none of the alternatives is used                                                                                                                                                                                                                    |
-| **Position**     | Last in file                                                                                                                                                                                                                                                |
-| **Content**      | Filename, e.g. `test001.expected.txt`                                                                                                                                                                                                                       |
-| **Lines**        | One                                                                                                                                                                                                                                                         |
-| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`<br>[§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`<br>[§](index.md#--expectf--) `--EXPECTF--`<br>[§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--`<br>[§](index.md#--expectregex--) `--EXPECTREGEX--` |
-
+|                  |                                                           |
+|------------------|-----------------------------------------------------------|
+| **Mandatory**    | Yes, if none of the alternatives is used                  |
+| **Position**     | Last in file                                              |
+| **Content**      | Filename, e.g. `test001.expected.txt`                     |
+| **Lines**        | One                                                       |
+| **Alternatives** | [§](index.md#--expect--) `--EXPECT--`                     |
+|                  | [§](index.md#--expectf--) `--EXPECTF--`                   |
+|                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`   |
+|                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--` |
+|                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`           |
 
 ## Order
 
