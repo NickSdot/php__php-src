@@ -1242,6 +1242,7 @@ shm_remove($s);
 ```
 
 Full example: [sample022.phpt](../samples/index.md#sample022phpt)
+
 ### --EXPECTHEADERS--
 
 The expected headers. Any header specified here must exist in the response and have
