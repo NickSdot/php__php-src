@@ -401,84 +401,167 @@ if (!getmyuid() && !getenv('TEST_FPM_RUN_AS_ROOT')) {
 
 ### --XFAIL--
 
-This section identifies this test as one that is currently expected to fail. It
-should include a brief description of why it's expected to fail. Reasons for such expectations
-include tests that are written before the functionality they are testing is implemented or notice of
-a bug which is due to upstream code such as an extension which provides PHP support for some other
-software.
+Some known test failures cannot be fixed straight away. Use XFAIL when such a failure affects all
+supported configs. The test still runs, and the failure is treated as expected.
 
-Please do NOT include an `--XFAIL--` without providing a text description for the reason it's
-being used.
+|                  |                                     |
+|------------------|-------------------------------------|
+| **Mandatory**    | No                                  |
+| **Position**     | Before execution section            |
+| **Content**      | Plain text                          |
+| **Lines**        | One or more                         |
+| **Alternatives** | [§](index.md#--xleak--) `--XLEAK--` |
+|                  | [§](index.md#--flaky--) `--FLAKY--` |
 
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text reason        |
-| **Lines**     | One or more              |
+The test runner still executes the test and compares its output. A mismatch is
+reported as XFAIL instead of FAIL. If the test unexpectedly passes, the runner
+warns. This likely means that the underlying issue has been fixed and XFAIL may
+no longer be needed.
+
+Write a short reason that explains what remains broken. Include an issue
+reference when it helps track the work but keep the explanation useful on its
+own.
+
+#### When **Not** to Use
+
+- If the test sometimes passes and sometimes fails, use [FLAKY](#--flaky--).
+- If a prerequisite is missing, use [SKIPIF](#--skipif--) to skip the test.
+- If the failure affects only one config, output `xfail <reason>` from [SKIPIF](#--skipif--).
+- If the problem is a Valgrind leak, use [XLEAK](#--xleak--).
 
 #### Examples
 
-**Example 1**
+GH-18985 currently produces the wrong line number in optimiser output:
 
 ```text
+--TEST--
+GH-18985: Correct line numbers for multiline expressions
+--EXTENSIONS--
+opcache
+--INI--
+opcache.opt_debug_level=0x40010000
 --XFAIL--
-This bug might be still open on aix5.2-ppc64 and hpux11.23-ia64
+GH-18985: Optimiser uses wrong line for multiline expressions.
 ```
 
-Full example: [sample017.phpt](../samples/index.md#sample017phpt)
+Nested iterators provide a different kind of persistent failure. The reason
+states both the operation and the observable result:
+
+```text
+--TEST--
+GH-10519: Nested RecursiveArrayIterator updates its backing array
+--XFAIL--
+GH-10519: Updating a nested array does not update the original array.
+```
 
 ### --XLEAK--
 
-Marks a test whose Valgrind leak is expected. Include a brief reason. When run with Valgrind, a
-detected leak is reported as XLEAK instead of LEAK, while a leak-free result produces a warning.
-The test runner skips XLEAK tests under ASAN and MSAN.
+Some known leaks cannot be fixed straight away. Use XLEAK when a leak is
+expected whenever the test runs under Valgrind. It marks the leak as expected
+without hiding other test failures.
 
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text               |
-| **Lines**     | One or more              |
-| **Requires**  | Valgrind                 |
+|                  |                                     |
+|------------------|-------------------------------------|
+| **Mandatory**    | No                                  |
+| **Position**     | Before execution section            |
+| **Content**      | Plain text                          |
+| **Lines**        | One or more                         |
+| **Requires**     | Valgrind                            |
+| **Alternatives** | [§](index.md#--xfail--) `--XFAIL--` |
+|                  | [§](index.md#--flaky--) `--FLAKY--` |
+
+With Valgrind, the runner reports a detected leak as XLEAK rather than LEAK and
+shows the reason from this section. If the leak disappears, the runner warns.
+This likely means that the underlying issue has been fixed and XLEAK may no
+longer be needed.
+
+XLEAK tests are skipped under ASAN and MSAN. Without Valgrind, XLEAK has no
+effect on ordinary test failures. In the reason, identify the component and the
+operation that leaks, and include an issue reference when useful.
+
+#### When **Not** to Use
+
+- If the expected leak affects only one config, output `xleak <reason>` from [SKIPIF](#--skipif--).
+- If the expected problem is not a leak, use [XFAIL](#--xfail--) or [FLAKY](#--flaky--).
 
 #### Examples
 
-**Example 1**
+An exception thrown from an interrupt handler currently leaks during live-variable cleanup:
 
 ```text
+--TEST--
+Interrupt-handler exceptions during live-variable cleanup
+--EXTENSIONS--
+pcntl
+posix
 --XLEAK--
-A bug in the dependency causes a memory leak when reconnecting after closing.
+Interrupt-handler exceptions leak during live-variable cleanup.
+```
+
+Leaks may also come from a third-party library. Name that library, and if one exists, mention the
+upstream issue so the context is easy to gather:
+
+```text
+--TEST--
+GH-17383: PDO Firebird connection errors
+--EXTENSIONS--
+pdo_firebird
+--XLEAK--
+Firebird leaks when isc_attach_database() is called.
+See Firebird issue 7849.
 ```
 
 ### --FLAKY--
 
-This section identifies this test as one that occasionally fails. If the test
-actually fails, it will be retried one more time, and that result will be reported. The section
-should include a brief description of why the test is flaky. Reasons for this include tests that
-rely on relatively precise timing, or temporary disc states. Available as of PHP 8.1.22 and 8.2.9,
-respectively.
+Some tests fail randomly even though their relevant code and configuration have not changed. Use
+FLAKY when the same test sometimes passes and sometimes fails.
 
-Please do NOT include a `--FLAKY--` section without providing a text description for the reason it
-is being used.
+|                  |                                     |
+|------------------|-------------------------------------|
+| **Mandatory**    | No                                  |
+| **Position**     | Before execution section            |
+| **Content**      | Plain text                          |
+| **Lines**        | One or more                         |
+| **Alternatives** | [§](index.md#--xfail--) `--XFAIL--` |
+|                  | [§](index.md#--xleak--) `--XLEAK--` |
 
-|               |                          |
-|---------------|--------------------------|
-| **Mandatory** | No                       |
-| **Position**  | Before execution section |
-| **Content**   | Plain text  reason       |
-| **Lines**     | One or more              |
+When a FLAKY test fails, the runner retries it once. A passing retry produces a warning; another
+failure remains FAIL. A test that passes on its first run remains PASS and is not retried.
+
+Describe the behaviour that can vary and why a retry is justified. A reason such as `This test
+sometimes fails in CI` is not helpful and gives nothing useful to investigate.
+
+#### When **Not** to Use
+
+- If the test fails persistently, use [XFAIL](#--xfail--).
+- If the test is flaky in one config, use [SKIPIF](#--skipif--) to output `flaky <reason>`.
+- If a condition means the test should not run, use [SKIPIF](#--skipif--).
+- If the expected problem is a Valgrind leak, use [XLEAK](#--xleak--).
 
 #### Examples
 
-**Example 1**
+Timing comparisons can occasionally cross a narrow tolerance. State the exact measurement that
+varies:
 
-```
+```text
+--TEST--
+hrtime() aligns with microtime()
 --FLAKY--
-This test frequently fails in CI
+Intervals measured by hrtime() and microtime() may differ by more than 5%.
 ```
 
-Full example: flaky.phpt
+Some tests depend on how quickly a workload reaches several timeout stages. Add the relevant
+settings so the reason is understandable in context:
+
+```text
+--TEST--
+Hard timeout reports both time limits
+--INI--
+max_execution_time=1
+hard_timeout=1
+--FLAKY--
+Processing speed can change whether soft or hard timeout is reached.
+```
 
 ### --CONFLICTS--
 
