@@ -187,7 +187,8 @@ marcosptf - <marcosptf@yahoo.com.br>
 
 ### --INI--
 
-To be used if you need a specific php.ini setting for the test.
+Many tests require customised `php.ini` settings. INI is the inline version of a `php.ini` file, and
+allows custom settings for the test that are set before every test invocation.
 
 |               |                                       |
 |---------------|---------------------------------------|
@@ -197,37 +198,28 @@ To be used if you need a specific php.ini setting for the test.
 | **Lines**     | One or more                           |
 | **Separator** | Newline                               |
 
-Lines beginning with `;` or `#` are comments. Values may include automatically replaced tags.
-Invalid settings may cause failures.
+`php.ini` rules apply: each line is one key-value pair. Lines beginning with `;` or `#` are
+comments. Values may include placeholders which will be automatically replaced before the test runs.
 
-The following is a list of all tags and what they are used to represent:
+#### Placeholders
 
-- `{PWD}`: Represents the directory of the file containing the `--INI--` section.
-- `{TMP}`: Represents the system's temporary directory. Available as of PHP 7.2.19 and 7.3.6.
+| Placeholder | Description                 | Example                         |
+|------------|-----------------------------|---------------------------------|
+| `{PWD}`    | Current test file directory | `opcache.preload={PWD}/foo.inc` |
+| `{TMP}`    | System temporary directory  | `opcache.file_cache="{TMP}"`    |
+
+> [!WARNING]
+> The section is not validated; invalid settings may cause unexpected behaviour or failures.
 
 #### Examples
-
-**Example 1**
 
 ```text
 --INI--
 precision=14
+opcache.enable=1
+opcache.file_cache="{TMP}"
+opcache.preload={PWD}/foo.inc
 ```
-
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
-
-**Example 2**
-
-```text
---INI--
-session.use_cookies=0
-session.cache_limiter=
-register_globals=1
-session.serialize_handler=php
-session.save_handler=files
-```
-
-Full example: [sample003.phpt](../samples/index.md#sample003phpt)
 
 ### --EXTENSIONS--
 
