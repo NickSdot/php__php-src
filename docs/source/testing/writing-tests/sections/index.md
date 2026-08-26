@@ -560,10 +560,9 @@ Processing speed can change whether soft or hard timeout is reached.
 
 ### --CONFLICTS--
 
-This section is only relevant for parallel test execution (available as of PHP
-7.4.0), and allows to specify conflict keys. While a test that conflicts with key K is running, no
-other test that conflicts with K is run. For tests conflicting with "all", no other tests are run in
-parallel.
+This section is only relevant for parallel test execution (available as of PHP 7.4.0), and allows to
+specify conflict keys. While a test that conflicts with key K is running, no other test that
+conflicts with K is run. For tests conflicting with "all", no other tests are run in parallel.
 
 An alternative to have a `--CONFLICTS--` section is to add a file named `CONFLICTS` to the
 directory containing the tests. The contents of the `CONFLICTS` file must have the same format as
@@ -1080,7 +1079,7 @@ Full example: [sample011.phpt](../samples/index.md#sample011phpt)
 
 An alternative to `--FILE--`. This is used to specify that an external file
 should be used as the `--FILE--` contents of the test file, and is designed for running the same
-test file with different ini, environment, post/get or other external inputs. Basically it allows
+test file with different ini, environment, post/get or other external inputs. Basically, it allows
 you to DRY up some of your tests. The file must be in the same directory as the test file, or in a
 subdirectory.
 
@@ -1485,8 +1484,8 @@ just stating a filename where to load the expected output from.
 
 ### --EXPECTREGEX--
 
-An alternative of `--EXPECT--`. This form allows the tester to specify the result
-in a regular expression.
+An alternative of `--EXPECT--`. This form allows the tester to specify the result in a regular
+expression.
 
 |                  |                                                                                                                                                                                                                                                                               |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
