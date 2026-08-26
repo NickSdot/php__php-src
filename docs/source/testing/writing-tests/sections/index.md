@@ -1,8 +1,8 @@
 # PHPT Test File Sections
 
-Each PHPT test consists of named sections that describe their purpose, execution, and expected
-result. Most sections are optional; the reference below lists all existing section types and
-explains when and how each one is used.
+PHPT tests consist of different named sections, each serving a different purpose. For instance, for
+metadata, setup, input, failure handling, and expected output assertions. Most sections are, while
+generally useful, optional; this reference explains when and how each one is used.
 
 ## Types
 
@@ -64,7 +64,8 @@ explains when and how each one is used.
 
 ### --TEST--
 
-Title of test as a single line short description.
+Every test needs a concise, single-line title. Aside from giving ourselves context in the test file,
+the test runner uses the content of the TEST section to identify the test in its output.
 
 |               |               |
 |---------------|---------------|
@@ -73,16 +74,53 @@ Title of test as a single line short description.
 | **Content**   | Plain text    |
 | **Lines**     | One           |
 
+A good title describes the behaviour and case well without relying on the filename. Prefer titles
+that make clear which underlying API and behaviour is tested. When multiple tests form a group,
+it's a common pattern to reflect this in the title by sorting information from broad to more
+specific, e.g. API, outcome, then input. Below are examples that are meant to give inspiration, but
+there are no hard rules.
+
+#### When **Not** to Use
+
+- for longer explanations or more context, use [DESCRIPTION](#--description--).
+
 #### Examples
 
-**Example 1**
+Assume `host_success_ipv6.phpt` verifies that `setHost()` can set an IPv6 address:
 
 ```text
 --TEST--
-Test filter_input() with GET and POST data.
+Test Uri\Rfc3986\UriBuilder::setHost() - success - IPv6 address
 ```
 
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
+The title is concise and clearly communicates what is tested, the expected outcome, and the input.
+The inverse would be `host_error_ipv6_closing_brace.phpt`:
+
+```text
+--TEST--
+Test Uri\Rfc3986\UriBuilder::setHost() - error - missing IPv6 closing brace
+```
+
+The titles alone, not the code, make us understand what these tests do. Structured titles like these
+also help to locate related tests even if they do not live next to each other:
+
+```text
+Test Uri\Rfc3986\Uri component modification - userinfo - empty string
+Test Uri\Rfc3986\Uri component modification - userinfo - reserved characters
+Test Uri\Rfc3986\Uri component modification - userinfo - unsetting existing
+
+Test Uri\Rfc3986\Uri component modification - query - empty string
+Test Uri\Rfc3986\Uri component modification - query - URL encoded characters
+Test Uri\Rfc3986\Uri component modification - query - unsetting existing
+```
+
+For a regression test, begin with the issue number followed by a description of what behaviour is
+tested rather than just repeating the issue title:
+
+```text
+--TEST--
+GH-19892: Successful \Uri\WhatWg\Url::parse() with empty errors array
+```
 
 ### --DESCRIPTION--
 
