@@ -1370,20 +1370,20 @@ The tags represent output that may vary between runs or platforms.
 
 The following is a list of all tags and what they are used to represent:
 
-| Tag       | Represents                                                                               |
-| --------- | ---------------------------------------------------------------------------------------- |
-| `%e`      | A directory separator, for example / on Linux.                                           |
-| `%s`      | One or more of anything (character or white space) except the end of line character.     |
-| `%S`      | Zero or more of anything (character or white space) except the end of line character.    |
-| `%a`      | One or more of anything (character or white space) including the end of line character.  |
-| `%A`      | Zero or more of anything (character or white space) including the end of line character. |
-| `%w`      | Zero or more white space characters.                                                     |
-| `%i`      | A signed integer value, for example +3142, -3142, 3142.                                  |
-| `%d`      | An unsigned integer value, for example 123456.                                           |
-| `%x`      | One or more hexadecimal character. That is, characters in the range 0-9, a-f, A-F.       |
-| `%f`      | A floating point number, for example: 3.142, -3.142, 3.142E-10, 3.142e+10.               |
-| `%c`      | A single character of any sort (.).                                                      |
-| `%r...%r` | Any string (...) enclosed between two `%r` will be treated as a regular expression.      |
+| Tag       | Represents                                                                        |
+|-----------|-----------------------------------------------------------------------------------|
+| `%e`      | A directory separator, for example / on Linux.                                    |
+| `%s`      | One or more of any character or white space except the end of line character.     |
+| `%S`      | Zero or more of any character or white space except the end of line character.    |
+| `%a`      | One or more of any character or white space including the end of line character.  |
+| `%A`      | Zero or more of any character or white space including the end of line character. |
+| `%w`      | Zero or more white space characters.                                              |
+| `%i`      | A signed integer value, for example +3142, -3142, 3142.                           |
+| `%d`      | An unsigned integer value, for example 123456.                                    |
+| `%x`      | One or more hexadecimal characters (range 0-9, a-f, A-F).                         |
+| `%f`      | A floating point number, for example: 3.142, -3.142, 3.142E-10, 3.142e+10.        |
+| `%c`      | A single character of any sort (.).                                               |
+| `%r...%r` | Any string (...) enclosed between two `%r` is treated as a regular expression.    |
 
 #### Examples
 
