@@ -894,7 +894,7 @@ The body may be preceded by a `Content-Type` header.
 --PUT--
 Content-Type: text/json
 
-{"name":"default output handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
+{"name":"handler","type":0,"flags":112,"level":0,"chunk_size":0,"buffer_size":16384,"buffer_used":3}
 ```
 
 ### --GZIP_POST--
