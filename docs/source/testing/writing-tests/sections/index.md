@@ -124,9 +124,8 @@ GH-19892: Successful \Uri\WhatWg\Url::parse() with empty errors array
 
 ### --DESCRIPTION--
 
-If your test requires more than a single line title to adequately describe it, you
-can use this section for further explanation. Multiple lines are allowed and besides being used for
-information, this section is completely ignored by the test binary.
+Descriptions should rarely be needed. If your test really needs more than a title and its code to
+adequately describe it, DESCRIPTION can be used for further explanation.
 
 |               |                  |
 |---------------|------------------|
@@ -135,22 +134,14 @@ information, this section is completely ignored by the test binary.
 | **Content**   | Plain text       |
 | **Lines**     | One or more      |
 
-#### Examples
-
-**Example 1**
-
-```text
---DESCRIPTION--
-This test covers both valid and invalid usages of filter_input() with INPUT_GET and INPUT_POST data and several different filter sanitizers.
-```
-
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
+Ideally, a test is self-explanatory. In most cases the test file name and its code - perhaps with
+some inline comments - should be enough to understand a test. If that is not the case, it could mean
+that the test does more than it should. The test runner does not use the description in any output.
 
 ### --CREDITS--
 
-Used to credit contributors without CVS commit rights, who put their name and email
-on the first line. If the test was part of a TestFest event, then # followed by the name of the
-event and the date (YYYY-MM-DD) on the second line.
+Sometimes it is required to credit a contributor, for example, when someone privately reported a
+security issue or otherwise collaborated externally. Use CREDITS only for such cases.
 
 |               |                                       |
 |---------------|---------------------------------------|
@@ -158,31 +149,41 @@ event and the date (YYYY-MM-DD) on the second line.
 | **Position**  | After `--TEST--` or `--DESCRIPTION--` |
 | **Content**   | Contributor credits                   |
 | **Lines**     | One or more                           |
+| **Separator** | Newline                               |
 
-For newly created tests, do not use this section for simple authorship claims or to list everyone
-who edited the test; Git already records that. It may provide more specific attribution, such as
-crediting the original reporter or a contributor not named in a `Co-authored-by` tag.
+> [!WARNING]
+> For newly created tests, do not use this section for simple authorship claims or to list everyone
+> who edited the test; Git already records that. It may provide more specific attribution, such as
+> crediting the original reporter or a contributor not named in a `Co-authored-by` tag.
 
 #### Examples
 
-**Example 1**
+Names, usernames, profile links, e-mail addresses, and combinations of these are allowed. When more
+than one contributor is credited, they must be separated with a newline.
 
 ```text
 --CREDITS--
 Felipe Pena
+
+--CREDITS--
+https://github.com/recepasan
+
+--CREDITS--
+Antonio Diaz Ruiz <dejalatele@gmail.com>
 ```
 
-Full example: [sample001.phpt](../samples/index.md#sample001phpt)
-
-**Example 2**
+If the test was part of a TestFest or another event, put the contributor name and email on the first
+line, and # followed by the name of the event and the date (YYYY-MM-DD) on the second line.
 
 ```text
 --CREDITS--
 Zoe Slattery zoe@php.net
 # TestFest Munich 2009-05-19
-```
 
-Full example: [sample002.phpt](../samples/index.md#sample002phpt)
+--CREDITS--
+marcosptf - <marcosptf@yahoo.com.br>
+#phparty7 - @phpsp - novatec/2015 - sao paulo - br
+```
 
 ### --INI--
 
