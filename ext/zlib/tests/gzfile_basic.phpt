@@ -2,6 +2,10 @@
 Test function gzfile() reading a gzip relative file
 --EXTENSIONS--
 zlib
+--SETUP--
+<?php
+TestContext::useRelativeWorkspace();
+?>
 --FILE--
 <?php
 $plaintxt = <<<EOT
@@ -9,23 +13,13 @@ hello world
 is a very common test
 for all languages
 EOT;
-$dirname = 'gzfile_temp';
-$filename = $dirname.'/gzfile_basic.txt.gz';
-mkdir($dirname);
+$filename = TestPath::file('gzfile_basic.txt.gz')->path;
 $h = gzopen($filename, 'w');
 gzwrite($h, $plaintxt);
 gzclose($h);
 
 
 var_dump(gzfile( $filename ) );
-
-?>
---CLEAN--
-<?php
-$dirname = 'gzfile_temp';
-$filename = $dirname.'/gzfile_basic.txt.gz';
-@unlink($filename);
-@rmdir($dirname);
 ?>
 --EXPECT--
 array(3) {

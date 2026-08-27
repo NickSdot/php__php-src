@@ -9,7 +9,7 @@ in_array('compress.zlib', stream_get_wrappers()) || die('skip No zlib wrapper');
 --FILE--
 <?php declare(strict_types=1);
 
-$filename = tempnam(sys_get_temp_dir(), "php-zlib-test-");
+$filename = TestPath::file()->path;
 $thisfile = file_get_contents(__FILE__);
 
 function write_at_level(int $level) {
@@ -22,7 +22,6 @@ function write_at_level(int $level) {
   }
   fclose($fp);
   $size = filesize($filename);
-  unlink($filename);
   return $size;
 }
 
