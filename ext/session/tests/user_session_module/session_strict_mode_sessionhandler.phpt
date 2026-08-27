@@ -10,9 +10,9 @@ session.cache_limiter=
 session.gc_probability=0
 --FILE--
 <?php
-$save_path = sys_get_temp_dir() . '/sess_strict_mode_sessionhandler';
-@mkdir($save_path);
-ini_set('session.save_path', $save_path);
+$save_path = TestPath::directory();
+mkdir($save_path);
+ini_set('session.save_path', $save_path->path);
 
 $known_id = 'knownfilesessionid';
 file_put_contents($save_path . '/sess_' . $known_id, 'value|s:5:"files";');
@@ -29,14 +29,6 @@ session_id('attackerchosensessionid');
 session_start();
 var_dump(session_id() === 'attackerchosensessionid');
 session_write_close();
-?>
---CLEAN--
-<?php
-$save_path = sys_get_temp_dir() . '/sess_strict_mode_sessionhandler';
-foreach (glob($save_path . '/sess_*') as $file) {
-    unlink($file);
-}
-rmdir($save_path);
 ?>
 --EXPECT--
 bool(true)
