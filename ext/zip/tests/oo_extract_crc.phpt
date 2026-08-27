@@ -4,34 +4,26 @@ ZipArchive::extractTo() and getFrom*() fail on a CRC-corrupted entry
 zip
 --FILE--
 <?php
-$dirname = __DIR__ . '/oo_extract_crc_dir';
-mkdir($dirname);
-$file = $dirname . '/corrupt.zip';
+$archive = TestPath::file('corrupt.zip');
+$entry = TestPath::file('a.txt');
 $payload = str_repeat('A', 64) . 'PAYLOAD-END';
 
 $zip = new ZipArchive();
-$zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-$zip->addFromString('a.txt', $payload);
-$zip->setCompressionName('a.txt', ZipArchive::CM_STORE);
+$zip->open($archive->path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+$zip->addFromString($entry->name, $payload);
+$zip->setCompressionName($entry->name, ZipArchive::CM_STORE);
 $zip->close();
 
-$raw = file_get_contents($file);
+$raw = file_get_contents($archive);
 $raw[strpos($raw, 'AAAA') + 2] = 'Z';
-file_put_contents($file, $raw);
+file_put_contents($archive, $raw);
 
 $zip = new ZipArchive();
-$zip->open($file);
-var_dump($zip->extractTo($dirname, 'a.txt'));
-var_dump($zip->getFromName('a.txt'));
+$zip->open($archive->path);
+var_dump($zip->extractTo($entry->directory, $entry->name));
+var_dump($zip->getFromName($entry->name));
 var_dump($zip->getFromIndex(0));
 $zip->close();
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_extract_crc_dir';
-@unlink($dirname . '/a.txt');
-@unlink($dirname . '/corrupt.zip');
-@rmdir($dirname);
 ?>
 --EXPECTF--
 Warning: ZipArchive::extractTo(): Cannot extract "a.txt": "CRC error" in %s on line %d

@@ -15,9 +15,9 @@ die('skip not for AIX');
 --FILE--
 <?php
 include __DIR__."/mcast_helpers.php.inc";
-$path = sys_get_temp_dir() . "/socket_cmsg_rights.sock";
 
-@unlink($path);
+$path = TestPath::file('socket_cmsg_rights.sock');
+chdir($path->directory);
 
 echo "creating send socket\n";
 $sends1 = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");
@@ -27,12 +27,12 @@ socket_set_nonblock($sends1) or die("Could not put in non-blocking mode");
 echo "creating receive socket\n";
 $s = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");
 var_dump($s);
-$br = socket_bind($s, $path) or die("err");
+$br = socket_bind($s, $path->name) or die("err");
 var_dump($br);
 socket_set_nonblock($s) or die("Could not put in non-blocking mode");
 
 $r = socket_sendmsg($sends1, [
-  "name" => [ "path" => $path ],
+  "name" => [ "path" => $path->name ],
   "iov" => ["test ", "thing", "\n"],
   "control" => [
     [
@@ -74,11 +74,6 @@ if ($data["control"]) {
     echo "FAIL CONTROL\n";
     var_dump($data);
 }
-?>
---CLEAN--
-<?php
-$path = sys_get_temp_dir() . "/socket_cmsg_rights.sock";
-@unlink($path);
 ?>
 --EXPECTF--
 creating send socket

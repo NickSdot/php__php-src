@@ -162,6 +162,11 @@ function main(): void
     /** @var JUnit $junit */
     global $junit;
 
+    require_once __DIR__
+        . DIRECTORY_SEPARATOR . 'testing'
+        . DIRECTORY_SEPARATOR . 'Context'
+        . DIRECTORY_SEPARATOR . 'TestContextExecution.php';
+
     define('IS_WINDOWS', substr(PHP_OS, 0, 3) == "WIN");
 
     $workerID = 0;
@@ -2137,7 +2142,12 @@ TEST $file
         $temp_dir = str_replace($temp_source, $temp_target, $temp_dir);
     }
 
-    $main_file_name = basename($file, 'phpt');
+    $testContextExecution = new \TestSuite\Context\TestContextExecution(
+        testFile: $file,
+        preserve: $no_clean || !in_array(false, $cfg['keep'], true),
+    );
+
+    $main_file_name = basename($file, 'phpt') . $testContextExecution->id . '.';
 
     $diff_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'diff';
     $log_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'log';
@@ -2268,6 +2278,8 @@ TEST $file
     //$ini_overwrites[] = 'setting=value';
     settings2array($ini_overwrites, $ini_settings);
 
+    $originalAutoPrependFile = $testContextExecution->installBootstrap($ini_settings);
+
     $orig_ini_settings_args = settings2arguments($ini_settings);
     if ($file_cache !== null) {
         $ini_settings['opcache.file_cache'] = get_file_cache_dir();
@@ -2314,6 +2326,11 @@ TEST $file
         }
     }
 
+    $testAutoPrependFile = $testContextExecution->installBootstrap(
+        $ini_settings,
+        $originalAutoPrependFile,
+    );
+
     $test_ini_settings = $ini_settings;
     $ini_settings = settings2params($ini_settings);
 
@@ -2341,6 +2358,11 @@ TEST $file
             $skip_env['ZEND_DONT_UNLOAD_MODULES'] = 1;
         }
 
+        $testContextExecution->configureEnvironment(
+            $skip_env,
+            $originalAutoPrependFile,
+        );
+
         $junit->startTimer($shortname);
 
         $startTime = microtime(true);
@@ -2360,7 +2382,13 @@ TEST $file
             '-d',
             'display_startup_errors=0',
         ];
-        $output = $skipCache->checkSkip($commandLine, $test->getSection('SKIPIF'), $test_skipif, $temp_skipif, $skip_env);
+        $output = $skipCache->checkSkip(
+            $commandLine,
+            $test->getSection('SKIPIF'),
+            $test_skipif,
+            $temp_skipif,
+            $skip_env,
+        );
 
         $time = microtime(true) - $startTime;
         $junit->stopTimer($shortname);
@@ -2682,6 +2710,8 @@ TEST $file
         );
     }
 
+    $testContextExecution->configureEnvironment($env, $testAutoPrependFile);
+
     if ($test->hasSection('XLEAK')) {
         $env['ZEND_ALLOC_PRINT_LEAKS'] = '0';
         if (isset($env['SKIP_ASAN'])) {
@@ -2761,6 +2791,11 @@ COMMAND $orig_cmd
                     $clean_env['SCRIPT_FILENAME'],
                 );
             }
+            $testContextExecution->configureEnvironment(
+                $clean_env,
+                $originalAutoPrependFile,
+            );
+
             $clean_output = system_with_timeout($clean_command, $clean_env);
         }
 
@@ -3884,7 +3919,7 @@ class SkipCache
         // Extension tests frequently use something like <?php require 'skipif.inc';
         // for skip checks. This forces us to cache per directory to avoid pollution.
         $dir = dirname($checkFile);
-        $key = implode("\0", $command) . " => $dir";
+        $key = implode("\0", $command) . " => $dir => " . $env['PHP_TEST_CONTEXT_ID'];
 
         if (isset($this->skips[$key][$code])) {
             $this->hits++;
