@@ -11,22 +11,25 @@ if (defined("PHP_WINDOWS_VERSION_MAJOR")) die("skip not for Windows")
 umask(022);
 var_dump(decoct(umask()));
 
-$sFile = tempnam(__DIR__, 'test77022');
-var_dump(decoct(stat($sFile)['mode']));
+$source = TestPath::touch(permissions: 0600);
+var_dump(decoct(stat($source)['mode']));
 
-foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
+foreach([
+    Phar::TAR => TestPath::file('archive.tar'),
+    Phar::ZIP => TestPath::file('archive.zip'),
+] as $format => $archive) {
+
+    $fromFile = TestPath::file();
+    $fromString = TestPath::file();
+
     clearstatcache();
-    $phar = new PharData(__DIR__ . '/test77022.' . $ext, format: $format);
-    $phar->addFile($sFile, 'test-file-phar');
-    $phar->addFromString("test-from-string", 'test-file-phar');
-    $phar->extractTo(__DIR__);
-    var_dump(decoct(stat(__DIR__ . '/test-file-phar')['mode']));
-    var_dump(decoct(stat(__DIR__ . '/test-from-string')['mode']));
-    unlink(__DIR__ . '/test-file-phar');
-    unlink(__DIR__ . '/test-from-string');
-    unlink(__DIR__ . '/test77022.' . $ext);
+    $phar = new PharData($archive->path, format: $format);
+    $phar->addFile($source->path, $fromFile->name);
+    $phar->addFromString($fromString->name, 'contents');
+    $phar->extractTo($archive->directory);
+    var_dump(decoct(stat($fromFile->path)['mode']));
+    var_dump(decoct(stat($fromString->path)['mode']));
 }
-unlink($sFile);
 ?>
 --EXPECT--
 string(2) "22"
