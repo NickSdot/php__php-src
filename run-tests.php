@@ -162,6 +162,16 @@ function main(): void
     /** @var JUnit $junit */
     global $junit;
 
+    require_once __DIR__
+        . DIRECTORY_SEPARATOR . 'testing'
+        . DIRECTORY_SEPARATOR . 'Context'
+        . DIRECTORY_SEPARATOR . 'RunnerContext.php';
+
+    require_once __DIR__
+        . DIRECTORY_SEPARATOR . 'testing'
+        . DIRECTORY_SEPARATOR . 'Context'
+        . DIRECTORY_SEPARATOR . 'Bootstrap.php';
+
     define('IS_WINDOWS', substr(PHP_OS, 0, 3) == "WIN");
 
     $workerID = 0;
@@ -1442,6 +1452,7 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
 {
     global $test_results, $failed_tests_file, $result_tests_file, $php, $test_idx, $file_cache, $shuffle;
     global $preload;
+    global $cfg, $no_clean;
     // Parallel testing
     global $PHP_FAILED_TESTS, $workers, $workerID, $workerSock;
 
@@ -1493,7 +1504,25 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
             ob_start();
         }
 
-        $result = run_test($php, $name, $env);
+        $testFile = is_array($name) ? $name[0] : $name;
+
+        $runnerContext = \TestSuite\Context\RunnerContext::instance();
+
+        $testContextId = $runnerContext->startTest(
+            testFile: $testFile,
+            preserve: $no_clean || !in_array(false, $cfg['keep'], true),
+        );
+
+        $testEnvironment = $env;
+
+        $testEnvironment['PHP_TEST_CONTEXT'] = $runnerContext->stateFileFor($testContextId);
+
+        try {
+            $result = run_test($php, $name, $testEnvironment, $testContextId);
+        } finally {
+            $runnerContext->finishTest($testContextId);
+        }
+
         if ($workerID) {
             $resultText = ob_get_clean();
         }
@@ -1999,7 +2028,7 @@ function skip_test(string $tested, string $tested_file, string $shortname, strin
 /**
  * @param string|array $file
  */
-function run_test(string $php, $file, array $env): string
+function run_test(string $php, $file, array $env, string $testContextId): string
 {
     global $log_format, $ini_overwrites, $PHP_FAILED_TESTS;
     global $pass_option_args, $DETAILED, $IN_REDIRECT, $test_cnt, $test_idx;
@@ -2137,7 +2166,7 @@ TEST $file
         $temp_dir = str_replace($temp_source, $temp_target, $temp_dir);
     }
 
-    $main_file_name = basename($file, 'phpt');
+    $main_file_name = $testContextId . '.';
 
     $diff_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'diff';
     $log_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'log';
@@ -2150,6 +2179,8 @@ TEST $file
     $test_file = $test_dir . DIRECTORY_SEPARATOR . $main_file_name . 'php';
     $temp_skipif = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'skip.php';
     $test_skipif = $test_dir . DIRECTORY_SEPARATOR . $main_file_name . 'skip.php';
+    $temp_setup = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'setup.php';
+    $test_setup = $test_dir . DIRECTORY_SEPARATOR . $main_file_name . 'setup.php';
     $temp_clean = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'clean.php';
     $test_clean = $test_dir . DIRECTORY_SEPARATOR . $main_file_name . 'clean.php';
     $preload_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'preload.php';
@@ -2158,6 +2189,7 @@ TEST $file
 
     if ($temp_source && $temp_target) {
         $temp_skipif .= 's';
+        $temp_setup .= 's';
         $temp_file .= 's';
         $temp_clean .= 's';
         $copy_file = $temp_dir . DIRECTORY_SEPARATOR . basename($file) . '.phps';
@@ -2189,6 +2221,8 @@ TEST $file
     @unlink($test_file);
     @unlink($temp_skipif);
     @unlink($test_skipif);
+    @unlink($temp_setup);
+    @unlink($test_setup);
     @unlink($tmp_post);
     @unlink($temp_clean);
     @unlink($test_clean);
@@ -2203,6 +2237,64 @@ TEST $file
     $env['CONTENT_TYPE'] = '';
     $env['CONTENT_LENGTH'] = '';
     $env['TZ'] = '';
+
+    if ($test->hasSection('SETUP')) {
+
+        show_file_block('php', $test->getSection('SETUP'), 'SETUP');
+        save_text($test_setup, $test->getSection('SETUP'), $temp_setup);
+
+        $setupIniSettings = $workerID
+            ? ['opcache.cache_id' => "worker$workerID"]
+            : [];
+
+        settings2array($ini_overwrites, $setupIniSettings);
+
+        $setupAutoPrependFile = \TestSuite\Context\Bootstrap::installSetup($setupIniSettings);
+
+        $setupEnvironment = $env;
+
+        \TestSuite\Context\Bootstrap::configureEnvironment(
+            $setupEnvironment,
+            $setupAutoPrependFile,
+        );
+
+        $setupResult = system_with_timeout(
+            [
+                $php,
+                ...$pass_option_args,
+                '-q',
+                ...settings2arguments($setupIniSettings),
+                $test_setup,
+            ],
+            $setupEnvironment,
+        );
+
+        $setupResult = $setupResult === false
+            ? 'Cannot start SETUP process'
+            : trim($setupResult);
+
+        if (!$cfg['keep']['php']) {
+            @unlink($test_setup);
+            @unlink($temp_setup);
+        }
+
+        if ($setupResult !== '') {
+
+            show_result('BORK', $setupResult, $tested_file, 'reason: invalid output from SETUP');
+
+            $PHP_FAILED_TESTS['BORKED'][] = [
+                'name' => $file,
+                'test_name' => '',
+                'output' => '',
+                'diff' => '',
+                'info' => "$setupResult [$file]",
+            ];
+
+            $junit->markTestAs('BORK', $shortname, $tested, null, $setupResult);
+
+            return 'BORKED';
+        }
+    }
 
     if ($test->sectionNotEmpty('ENV')) {
         $env_str = str_replace('{PWD}', dirname($file), $test->getSection('ENV'));
@@ -2314,6 +2406,8 @@ TEST $file
         }
     }
 
+    $testAutoPrependFile = \TestSuite\Context\Bootstrap::installFile($ini_settings);
+
     $test_ini_settings = $ini_settings;
     $ini_settings = settings2params($ini_settings);
 
@@ -2360,7 +2454,13 @@ TEST $file
             '-d',
             'display_startup_errors=0',
         ];
-        $output = $skipCache->checkSkip($commandLine, $test->getSection('SKIPIF'), $test_skipif, $temp_skipif, $skip_env);
+        $output = $skipCache->checkSkip(
+            $commandLine,
+            $test->getSection('SKIPIF'),
+            $test_skipif,
+            $temp_skipif,
+            $skip_env,
+        );
 
         $time = microtime(true) - $startTime;
         $junit->stopTimer($shortname);
@@ -2681,6 +2781,11 @@ TEST $file
             strpos($test_file, "pcre") !== false,
         );
     }
+
+    \TestSuite\Context\Bootstrap::configureEnvironment(
+        $env,
+        $testAutoPrependFile,
+    );
 
     if ($test->hasSection('XLEAK')) {
         $env['ZEND_ALLOC_PRINT_LEAKS'] = '0';
@@ -4017,7 +4122,7 @@ class TestFile
         'POST', 'POST_RAW', 'GZIP_POST', 'DEFLATE_POST', 'PUT', 'GET', 'COOKIE', 'ARGS',
         'FILE', 'FILEEOF', 'FILE_EXTERNAL', 'REDIRECTTEST',
         'CAPTURE_STDIO', 'STDIN', 'CGI', 'PHPDBG',
-        'INI', 'ENV', 'EXTENSIONS',
+        'INI', 'ENV', 'EXTENSIONS', 'SETUP',
         'SKIPIF', 'XFAIL', 'XLEAK', 'CLEAN',
         'CREDITS', 'DESCRIPTION', 'CONFLICTS', 'WHITESPACE_SENSITIVE',
         'FLAKY',
