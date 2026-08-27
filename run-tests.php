@@ -1807,6 +1807,8 @@ final class TestDurationHistory
 
 final class TestDurationPlan
 {
+    private const MAX_PATH_BATCH_SIZE = 32;
+
     private int $workerCount;
 
     /** @var list<string> */
@@ -1820,6 +1822,9 @@ final class TestDurationPlan
 
     /** @var list<list<string>> */
     private array $testPathsByWorker;
+
+    /** @var list<list<list<string>>> */
+    private array $testPathBatchesByWorker;
 
     /** @var list<float> */
     private array $estimatedLoadsByWorker;
@@ -1853,11 +1858,17 @@ final class TestDurationPlan
         }
 
         $this->testPathsByWorker = array_fill(0, $this->workerCount, []);
+        $this->testPathBatchesByWorker = array_fill(0, $this->workerCount, []);
         $this->estimatedLoadsByWorker = array_fill(0, $this->workerCount, 0.0);
 
-        $this->assignTimedTests();
-        $this->assignUntimedTests();
-        $this->staggerWorkerQueues();
+        if ($this->historicalDurations === []) {
+            $this->assignUntimedTests();
+        } else {
+            $this->assignDurationBalancedBatches();
+            $this->staggerWorkerQueues();
+            $this->flattenWorkerBatches();
+        }
+
         $this->validate();
     }
 
@@ -1895,18 +1906,25 @@ final class TestDurationPlan
         );
     }
 
-    private function assignTimedTests(): void
+    private function assignDurationBalancedBatches(): void
     {
-        $testPaths = array_keys($this->historicalDurations);
-        usort($testPaths, function (string $first, string $second): int {
-            return $this->historicalDurations[$second] <=> $this->historicalDurations[$first]
-                ?: strcmp($first, $second);
+        $batchSize = min(
+            self::MAX_PATH_BATCH_SIZE,
+            max(1, intdiv(count($this->testPaths), $this->workerCount)),
+        );
+        $testPathBatches = array_chunk($this->testPaths, $batchSize);
+
+        usort($testPathBatches, function (array $first, array $second): int {
+            return $this->estimatedDurationForBatch($second)
+                <=> $this->estimatedDurationForBatch($first)
+                ?: strcmp($first[0], $second[0]);
         });
 
-        foreach ($testPaths as $testPath) {
+        foreach ($testPathBatches as $testPathBatch) {
             $worker = $this->findLightestWorker();
-            $this->testPathsByWorker[$worker][] = $testPath;
-            $this->estimatedLoadsByWorker[$worker] += $this->historicalDurations[$testPath];
+            $this->testPathBatchesByWorker[$worker][] = $testPathBatch;
+            $this->estimatedLoadsByWorker[$worker] +=
+                $this->estimatedDurationForBatch($testPathBatch);
         }
     }
 
@@ -1960,27 +1978,39 @@ final class TestDurationPlan
         return array_sum($this->historicalDurations) / count($this->historicalDurations);
     }
 
+    /** @param list<string> $testPathBatch */
+    private function estimatedDurationForBatch(array $testPathBatch): float
+    {
+        return array_sum(array_map(
+            $this->estimatedDurationFor(...),
+            $testPathBatch,
+        ));
+    }
+
     private function staggerWorkerQueues(): void
     {
-        if ($this->historicalDurations === []) {
-            return;
-        }
-
-        foreach ($this->testPathsByWorker as $worker => $testPaths) {
+        foreach ($this->testPathBatchesByWorker as $worker => $testPathBatches) {
             $targetDuration = $this->estimatedLoadsByWorker[$worker]
                 * $worker / $this->workerCount;
             $duration = 0.0;
             $offset = 0;
 
-            while ($offset < count($testPaths) && $duration < $targetDuration) {
-                $duration += $this->estimatedDurationFor($testPaths[$offset]);
+            while ($offset < count($testPathBatches) && $duration < $targetDuration) {
+                $duration += $this->estimatedDurationForBatch($testPathBatches[$offset]);
                 $offset++;
             }
 
-            $this->testPathsByWorker[$worker] = array_merge(
-                array_slice($testPaths, $offset),
-                array_slice($testPaths, 0, $offset),
+            $this->testPathBatchesByWorker[$worker] = array_merge(
+                array_slice($testPathBatches, $offset),
+                array_slice($testPathBatches, 0, $offset),
             );
+        }
+    }
+
+    private function flattenWorkerBatches(): void
+    {
+        foreach ($this->testPathBatchesByWorker as $worker => $testPathBatches) {
+            $this->testPathsByWorker[$worker] = array_merge(...$testPathBatches);
         }
     }
 
@@ -2000,8 +2030,8 @@ final class TestDurationPlan
                 continue;
             }
 
-            if (count($this->testPathsByWorker[$worker])
-                    < count($this->testPathsByWorker[$lightestWorker])) {
+            if (count($this->testPathBatchesByWorker[$worker])
+                    < count($this->testPathBatchesByWorker[$lightestWorker])) {
                 $lightestWorker = $worker;
             }
         }

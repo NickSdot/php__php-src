@@ -265,6 +265,17 @@ $check(max($workerDurations($plan, $durations)) === 9, 'worker plan exceeded the
 $check($status === 0, "second duration plan failed: $secondOutput");
 $check($output === $secondOutput, 'plan output is not deterministic');
 
+[$status, $output] = $run(['-j2', '--shard-plan', '1']);
+$check($status === 0, "path-batched plan failed: $output");
+$pathBatchedPlan = $readJson($output);
+$check(
+    $pathBatchedPlan->runners[0]->workers === [
+        array_slice($testPaths, 0, 3),
+        array_slice($testPaths, 3, 3),
+    ],
+    'duration plan did not preserve path-local batches',
+);
+
 unset($durations['tests/c.phpt']);
 $writeHistory($durations);
 [$status, $output] = $run(['-j2', '--shard-plan', '3']);

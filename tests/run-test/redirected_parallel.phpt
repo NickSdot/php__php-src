@@ -32,6 +32,7 @@ function runRedirectedTests(array $testFiles): array
         'PATH' => getenv('PATH'),
         'TEST_PHP_EXECUTABLE' => getenv('TEST_PHP_EXECUTABLE'),
         'TEST_PHP_FORK_SERVER' => '0',
+        'TEST_PHP_TIMINGS' => '0',
     ];
     foreach (['SystemRoot', 'TEMP', 'TMPDIR'] as $name) {
         if (($value = getenv($name)) !== false) {
