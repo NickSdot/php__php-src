@@ -7,7 +7,8 @@ phar.readonly=0
 --FILE--
 <?php
 Phar::interceptFileFuncs();
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('fopen_edgecases2.phar.php')->path;
+$sidecar = TestPath::file('fopen_edgecases2.txt');
 $pname = 'phar://' . $fname;
 
 try {
@@ -17,7 +18,7 @@ try {
 }
 chdir(__DIR__);
 file_put_contents($fname, "blah\n");
-file_put_contents("fopen_edgecases2.txt", "test\n");
+file_put_contents($sidecar, "test\n");
 $a = fopen($fname, 'rb');
 echo fread($a, 1000);
 fclose($a);
@@ -25,7 +26,7 @@ unlink($fname);
 mkdir($pname . '/oops');
 file_put_contents($pname . '/foo/hi', '<?php
 $context = stream_context_create();
-$a = fopen("fopen_edgecases2.txt", "rb", false, $context);
+$a = fopen($sidecar, "rb", false, $context);
 echo fread($a, 1000);
 fclose($a);
 fopen("../oops", "r");
@@ -33,9 +34,6 @@ fopen("../oops", "r");
 ');
 include $pname . '/foo/hi';
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
-<?php unlink(__DIR__ . '/fopen_edgecases2.txt'); ?>
 --EXPECTF--
 TypeError: fopen(): Argument #1 ($filename) must be of type string, array given
 blah

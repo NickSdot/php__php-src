@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('pharfileinfo_construct.phar')->path;
 $pname = 'phar://' . $fname;
 
 try {
@@ -45,8 +45,6 @@ $a = new PharFileInfo(__FILE__);
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECTF--
 RuntimeException: Cannot open phar file 'phar://%spharfileinfo_construct.phar/oops': internal corruption of phar "%spharfileinfo_construct.phar" (truncated entry)
 TypeError: PharFileInfo::__construct(): Argument #1 ($filename) must be of type string, array given

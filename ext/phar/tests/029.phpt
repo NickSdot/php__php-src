@@ -6,8 +6,8 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname1 = __DIR__ . '/' . basename(__FILE__, '.php') . '.1.phar.php';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.php';
+$fname1 = TestPath::file('029.1.phar.php')->path;
+$fname2 = TestPath::file('029.2.phar.php')->path;
 $fname = $fname1;
 $alias = '';
 $pname = 'phar://hio';
@@ -36,11 +36,6 @@ catch (Exception $e)
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.1.phar.php');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.php');
 ?>
 --EXPECTF--
 bool(true)

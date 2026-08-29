@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('metadata_write.phar.php')->path;
 $pname = 'phar://' . $fname;
 $file = "<?php __HALT_COMPILER(); ?>";
 
@@ -38,8 +38,6 @@ foreach($files as $name => $cont) {
     var_dump(file_get_contents($pname.'/'.$name));
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECT--
 string(1) "a"
 string(1) "b"
