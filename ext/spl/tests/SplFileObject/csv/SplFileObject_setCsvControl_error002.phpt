@@ -4,24 +4,21 @@ SPL: SplFileObject::setCsvControl error 002
 Erwin Poeze <erwin.poeze at gmail.com>
 --FILE--
 <?php
-file_put_contents('csv_control_data_error002.csv',
+$file = TestPath::file('csv_control_data_error002.csv')->path;
+file_put_contents($file,
 <<<CDATA
 'groene appelen'|10
 'gele bananen'|20
 'rode kersen'|30
 CDATA
 );
-$s = new SplFileObject('csv_control_data_error002.csv');
+$s = new SplFileObject($file);
 $s->setFlags(SplFileObject::READ_CSV);
 try {
     $s->setCsvControl('|', 'two');
 } catch (ValueError $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink('csv_control_data_error002.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::setCsvControl() is deprecated since 8.6 in %s on line %d
