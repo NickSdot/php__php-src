@@ -17,17 +17,12 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$dirname = 'DirectoryIterator_getGroup_basic';
+$dirname = TestPath::directory('DirectoryIterator_getGroup_basic')->path;
 mkdir($dirname);
 $dir = new DirectoryIterator($dirname);
 $expected = filegroup($dirname);
 $actual = $dir->getGroup();
 var_dump($expected == $actual);
-?>
---CLEAN--
-<?php
-$dirname = 'DirectoryIterator_getGroup_basic';
-rmdir($dirname);
 ?>
 --EXPECT--
 bool(true)
