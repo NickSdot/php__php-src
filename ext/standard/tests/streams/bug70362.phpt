@@ -4,16 +4,11 @@ Bug #70362 (Can't copy() large 'data://' with open_basedir)
 open_basedir=.
 --FILE--
 <?php
-$file = __DIR__ . '/bug70362.txt';
+$file = TestPath::file('bug70362.txt')->path;
 $data = str_repeat('0', 4096);
 $data = 'data://plain/text;base64,' . base64_encode($data);
 var_dump(copy($data, $file));
 echo file_get_contents($file);
-?>
---CLEAN--
-<?php
-$file = __DIR__ . '/bug70362.txt';
-@unlink($file);
 ?>
 --EXPECT--
 bool(true)
