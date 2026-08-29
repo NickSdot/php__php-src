@@ -4,7 +4,7 @@ setCompressionName and setCompressionIndex methods
 zip
 --FILE--
 <?php
-$tmpfile = __DIR__ . '/oo_setcompression.zip';
+$tmpfile = TestPath::file('oo_setcompression.zip')->path;
 
 if (file_exists($tmpfile)) {
     unlink($tmpfile);
@@ -59,11 +59,6 @@ while ($e = zip_read($zip)) {
     echo zip_entry_name($e) . ': ' . zip_entry_compressionmethod($e) . "\n";
 }
 zip_close($zip);
-?>
---CLEAN--
-<?php
-$tmpfile = __DIR__ . '/oo_setcompression.zip';
-unlink($tmpfile);
 ?>
 --EXPECTF--
 bool(true)

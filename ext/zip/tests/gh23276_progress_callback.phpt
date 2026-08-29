@@ -10,7 +10,7 @@ if (!method_exists(ZipArchive::class, 'registerProgressCallback')) {
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . '/gh23276_progress_callback.zip';
+$filename = TestPath::file('gh23276_progress_callback.zip')->path;
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -37,10 +37,6 @@ var_dump($callbackStateRef->get() !== null);
 var_dump(stream_get_contents($stream));
 fclose($stream);
 var_dump($callbackStateRef->get());
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh23276_progress_callback.zip');
 ?>
 --EXPECT--
 bool(true)

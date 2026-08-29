@@ -4,9 +4,11 @@ ZipArchive::getFrom*() rejects an entry with an inconsistent uncompressed size
 zip
 --FILE--
 <?php
-$dirname = __DIR__ . '/oo_get_from_length_dir';
+$directory = TestPath::directory('oo_get_from_length_dir');
+$dirname = $directory->path;
+$file = $directory->file('inconsistent.zip')->path;
+$entry = $directory->file('a.txt');
 mkdir($dirname);
-$file = $dirname . '/inconsistent.zip';
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -30,13 +32,6 @@ $zip->open($file);
 var_dump($zip->getFromName('a.txt'));
 var_dump($zip->getFromIndex(0));
 $zip->close();
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_get_from_length_dir';
-@unlink($dirname . '/a.txt');
-@unlink($dirname . '/inconsistent.zip');
-@rmdir($dirname);
 ?>
 --EXPECTF--
 Warning: ZipArchive::getFromName(): Cannot read entry: Zip archive inconsistent%s

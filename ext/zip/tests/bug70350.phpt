@@ -5,26 +5,22 @@ zip
 --FILE--
 <?php
 
-$dir = __DIR__."/bug70350";
+$directory = TestPath::directory('bug70350');
+$dir = $directory->path;
+$archiveFile = $directory->file('a.zip')->path;
+$down = $directory->directory('down2');
 mkdir($dir);
 $archive = new ZipArchive();
-$archive->open("$dir/a.zip",ZipArchive::CREATE);
+$archive->open($archiveFile,ZipArchive::CREATE);
 $archive->addEmptyDir("../down2/");
 $archive->close();
 
 $archive2 = new ZipArchive();
-$archive2->open("$dir/a.zip");
+$archive2->open($archiveFile);
 $archive2->extractTo($dir);
 $archive2->close();
 var_dump(file_exists("$dir/down2/"));
 var_dump(file_exists("../down2/"));
-?>
---CLEAN--
-<?php
-$dir = __DIR__."/bug70350";
-rmdir("$dir/down2");
-unlink("$dir/a.zip");
-rmdir($dir);
 ?>
 --EXPECT--
 bool(true)

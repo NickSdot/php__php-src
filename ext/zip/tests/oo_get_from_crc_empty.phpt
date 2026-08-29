@@ -9,9 +9,11 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$dirname = __DIR__ . '/oo_get_from_crc_empty_dir';
+$directory = TestPath::directory('oo_get_from_crc_empty_dir');
+$dirname = $directory->path;
 mkdir($dirname);
-$file = $dirname . '/corrupt.zip';
+$empty = $directory->file('empty.txt');
+$file = $directory->file('corrupt.zip')->path;
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -36,13 +38,6 @@ $zip->open($file);
 var_dump($zip->getFromName('empty.txt'));
 var_dump($zip->getFromIndex(0));
 $zip->close();
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_get_from_crc_empty_dir';
-@unlink($dirname . '/empty.txt');
-@unlink($dirname . '/corrupt.zip');
-@rmdir($dirname);
 ?>
 --EXPECTF--
 Warning: ZipArchive::getFromName(): Cannot read entry: CRC error in %s on line %d

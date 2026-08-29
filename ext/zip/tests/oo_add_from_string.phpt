@@ -10,7 +10,7 @@ zip
 <?php
 
 include __DIR__ . '/utils.inc';
-$dirname = __DIR__ . '/oo_add_from_string_dir/';
+$dirname = TestPath::directory('oo_add_from_string_dir')->path . '/';
 $file = $dirname . 'tmp.zip';
 
 @mkdir($dirname);
@@ -39,12 +39,6 @@ if ($zip->status == ZipArchive::ER_OK) {
 }
 ?>
 Done
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_add_from_string_dir/';
-unlink($dirname . 'tmp.zip');
-rmdir($dirname);
-?>
 --EXPECT--
 bool(true)
 bool(true)

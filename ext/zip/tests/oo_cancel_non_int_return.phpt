@@ -12,7 +12,7 @@ date.timezone=UTC
 --FILE--
 <?php
 $dirname = dirname(__FILE__) . '/';
-$file = $dirname . '__tmp_oo_cancel_incorrect_return.zip';
+$file = TestPath::file('__tmp_oo_cancel_incorrect_return.zip')->path;
 
 $zip = new ZipArchive;
 if (!$zip->open($file, ZIPARCHIVE::CREATE)) {
@@ -34,13 +34,6 @@ var_dump($zip->getStatusString());
 @unlink($file);
 ?>
 Done
---CLEAN--
-<?php
-$dirname = dirname(__FILE__) . '/';
-$file = $dirname . '__tmp_oo_cancel_incorrect_return.zip';
-
-@unlink($file);
-?>
 --EXPECTF--
 bool(true)
 bool(true)

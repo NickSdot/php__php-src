@@ -5,13 +5,9 @@ zip
 --FILE--
 <?php
 
-$archive = new ZipArchive(__DIR__.'/property_existence.zip');
+$archive = new ZipArchive(TestPath::file('property_existence.zip')->path);
 var_dump(array_column([$archive], 'lastId'));
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__.'/property_existence.zip');
 ?>
 --EXPECT--
 array(1) {

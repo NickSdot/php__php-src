@@ -6,7 +6,7 @@ zip
 <?php
 $dirname = __DIR__ . '/';
 include $dirname . 'utils.inc';
-$file = $dirname . 'oo_namelocate.zip';
+$file = TestPath::file('oo_namelocate.zip')->path;
 
 @unlink($file);
 
@@ -41,7 +41,3 @@ int(0)
 bool(false)
 int(1)
 int(2)
---CLEAN--
-<?php
-unlink(__DIR__ . '/oo_namelocate.zip');
-?>
