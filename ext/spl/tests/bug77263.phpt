@@ -2,11 +2,15 @@
 Bug #77263 (Segfault when using 2 RecursiveFilterIterator)
 --FILE--
 <?php
-$dir = __DIR__ . '/bug77263';
-mkdir($dir);
-mkdir("$dir/subdir");
-touch("$dir/file1");
-touch("$dir/subdir/file2");
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('bug77263');
+mkdir($dir->path);
+$subdir = $dir->directory('subdir');
+mkdir($subdir->path);
+$file1 = $dir->file('file1');
+$file2 = $subdir->file('file2');
+touch($file1->path);
+touch($file2->path);
 
 class Filter1 extends RecursiveFilterIterator {
     public function accept(): bool { return $this->getInnerIterator()->getSubPathname() != ''; }
@@ -28,13 +32,5 @@ foreach ( $iterator as $item ) {
 }
 ?>
 OK
---CLEAN--
-<?php
-$dir = __DIR__ . '/bug77263';
-unlink("$dir/file1");
-unlink("$dir/subdir/file2");
-rmdir("$dir/subdir");
-rmdir($dir);
-?>
 --EXPECT--
 OK

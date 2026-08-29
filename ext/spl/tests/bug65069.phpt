@@ -2,18 +2,23 @@
 Bug #65069: GlobIterator fails to access files inside an open_basedir restricted dir
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 $file_path = __DIR__;
 // temp dirname used here
-$dirname = "$file_path/bug65069";
+$directory = TestPath::directory('bug65069');
+$dirname = $directory->path;
 // temp dir created
 mkdir($dirname);
 
 ini_set('open_basedir', $dirname);
 
 // temp files created
-touch("$dirname/wonder12345");
-touch("$dirname/wonder.txt");
-touch("$dirname/file.text");
+$wonder12345 = $directory->file('wonder12345');
+$wonder = $directory->file('wonder.txt');
+$file = $directory->file('file.text');
+touch($wonder12345->path);
+touch($wonder->path);
+touch($file->path);
 
 $spl_glob_it = new \GlobIterator("$dirname/*.txt");
 foreach ($spl_glob_it as $file_info) {
@@ -35,15 +40,6 @@ var_dump(iterator_to_array(new \GlobIterator(dirname(dirname($dirname)))));
 var_dump(iterator_to_array(new \GlobIterator("$file_path/bug65069-this-will-never-exists")));
 
 
-?>
---CLEAN--
-<?php
-$file_path = dirname(__FILE__);
-$dirname = "$file_path/bug65069";
-unlink("$dirname/wonder12345");
-unlink("$dirname/wonder.txt");
-unlink("$dirname/file.text");
-rmdir($dirname);
 ?>
 --EXPECT--
 wonder.txt

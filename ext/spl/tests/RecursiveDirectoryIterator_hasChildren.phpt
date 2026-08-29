@@ -3,11 +3,12 @@ SPL: RecursiveDirectoryIterator::hasChildren() follow symlinks test
 --FILE--
 <?php
 
-$dir = __DIR__ . DIRECTORY_SEPARATOR . 'symlinktest';
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('symlinktest');
 
-if (!mkdir($dir)) {
+if (!mkdir($dir->path)) {
     die('Failed to create temporary directory for testing');
-} elseif (!symlink(__DIR__, $dir . DIRECTORY_SEPARATOR . 'symlink')) {
+} elseif (!symlink(__DIR__, $dir->file('symlink')->path)) {
     die('Failed to create symbolic link');
 }
 
@@ -27,13 +28,3 @@ string(7) "symlink"
 bool(true)
 string(7) "symlink"
 bool(false)
---CLEAN--
-<?php
-$dir = __DIR__ . DIRECTORY_SEPARATOR . 'symlinktest';
-if (PHP_OS_FAMILY == 'Windows') {
-    rmdir($dir . DIRECTORY_SEPARATOR . 'symlink');
-} else {
-    unlink($dir . DIRECTORY_SEPARATOR . 'symlink');
-}
-rmdir($dir);
-?>
