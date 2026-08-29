@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different hexa format types with boolean data ***\n";
 
 // create a file
-$filename = "$file_path/fscanf_variation38.tmp";
+$filename = TestPath::file('fscanf_variation38.tmp');
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -58,12 +58,6 @@ foreach($hexa_formats as $hexa_format) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation38.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Test fscanf(): different hexa format types with boolean data ***

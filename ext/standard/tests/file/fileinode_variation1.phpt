@@ -12,8 +12,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Creating soft and hard links to a file and applying fileinode() on links */
 
-$file_path = __DIR__;
-fclose( fopen($file_path."/fileinode_variation1.tmp", "w") );
+$file = TestPath::file('fileinode_variation1.tmp');
+$file_path = $file->directory;
+fclose( fopen($file->path, "w") );
 
 echo "*** Testing fileinode() with links ***\n";
 /* With symlink */
@@ -27,13 +28,6 @@ var_dump( fileinode($file_path."/fileinode_variation1_link.tmp") );  // expected
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/fileinode_variation1_symlink.tmp");
-unlink($file_path."/fileinode_variation1_link.tmp");
-unlink($file_path."/fileinode_variation1.tmp");
 ?>
 --EXPECTF--
 *** Testing fileinode() with links ***
