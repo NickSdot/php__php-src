@@ -4,7 +4,7 @@ zlib.deflate write filter: write_seek_mode parameter
 zlib
 --FILE--
 <?php
-$file = __DIR__ . '/zlib_filter_write_seek_modes.zlib';
+$file = TestPath::file('zlib_filter_write_seek_modes.zlib');
 
 $text1 = 'First message that will be discarded.';
 $text2 = 'Second message that replaces the first.';
@@ -57,10 +57,6 @@ stream_filter_append($fp, 'zlib.deflate', STREAM_FILTER_WRITE,
     ['write_seek_mode' => 'rewind']);
 fclose($fp);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/zlib_filter_write_seek_modes.zlib');
 ?>
 --EXPECTF--
 bool(true)
