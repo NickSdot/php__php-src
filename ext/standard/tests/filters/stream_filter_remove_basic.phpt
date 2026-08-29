@@ -9,7 +9,7 @@ if(! in_array( "string.rot13", $filters )) die( "skip rot13 filter not available
 <?php
 echo "*** Testing stream_filter_remove() : basic functionality ***\n";
 
-$file = __DIR__ . DIRECTORY_SEPARATOR . 'streamfilterTestBasics.txt';
+$file = TestPath::file('streamfilterTestBasics.txt')->path;
 touch( $file );
 
 $fp = fopen( $file, 'w+' );
@@ -24,11 +24,6 @@ rewind( $fp );
 fpassthru( $fp );
 fclose( $fp );
 
-?>
---CLEAN--
-<?php
-$file = __DIR__ . DIRECTORY_SEPARATOR . 'streamfilterTestBasics.txt';
-@unlink($file);
 ?>
 --EXPECT--
 *** Testing stream_filter_remove() : basic functionality ***
