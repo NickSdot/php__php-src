@@ -3,7 +3,7 @@ flock() tests
 --FILE--
 <?php
 
-$file = __DIR__."/flock.dat";
+$file = TestPath::file('flock.dat')->path;
 
 $fp = fopen($file, "w");
 fclose($fp);
@@ -45,11 +45,6 @@ try {
     echo $e->getMessage() . \PHP_EOL;
 }
 
-?>
---CLEAN--
-<?php
-$file = __DIR__."/flock.dat";
-unlink($file);
 ?>
 --EXPECT--
 flock(): Argument #1 ($stream) must be an open stream resource
