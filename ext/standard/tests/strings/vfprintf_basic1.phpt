@@ -15,7 +15,7 @@ $arg3 = array("one","two","three");
 
 
 /* creating dumping file */
-$data_file = __DIR__ . '/vfprintf_basic1.txt';
+$data_file = TestPath::file('vfprintf_basic1.txt');
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
@@ -29,7 +29,6 @@ var_dump($result);
 fclose($fp);
 print_r(file_get_contents($data_file));
 
-unlink($data_file);
 
 ?>
 --EXPECT--

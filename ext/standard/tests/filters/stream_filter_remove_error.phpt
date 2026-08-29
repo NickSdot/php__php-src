@@ -7,7 +7,7 @@ if(! in_array( "string.rot13", $filters )) die( "skip rot13 filter not available
 ?>
 --FILE--
 <?php
-$file = __DIR__ . DIRECTORY_SEPARATOR . 'streamfilterTestErrors.txt';
+$file = TestPath::file('streamfilterTestErrors.txt');
 touch( $file );
 $fp = fopen( $file, 'w+' );
 $filter = stream_filter_append( $fp, "string.rot13", STREAM_FILTER_WRITE );
@@ -32,11 +32,6 @@ try {
 
 fclose( $fp );
 
-?>
---CLEAN--
-<?php
-$file = __DIR__ . DIRECTORY_SEPARATOR . 'streamfilterTestErrors.txt';
-@unlink($file);
 ?>
 --EXPECT--
 *** Testing stream_filter_remove() : error conditions ***

@@ -14,7 +14,7 @@ $arg2 = array(TRUE,FALSE);
 $arg3 = array(TRUE,FALSE,TRUE);
 
 /* creating dumping file */
-$data_file = __DIR__ . '/vfprintf_basic4.txt';
+$data_file = TestPath::file('vfprintf_basic4.txt');
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
@@ -30,7 +30,6 @@ fprintf($fp, "\n");
 fclose($fp);
 print_r(file_get_contents($data_file));
 
-unlink($data_file);
 ?>
 --EXPECT--
 *** Testing vfprintf() : basic functionality - using bool format ***

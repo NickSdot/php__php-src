@@ -14,7 +14,7 @@ $arg2 = array(65,66);
 $arg3 = array(65,66,67);
 
 /* creating dumping file */
-$data_file = __DIR__ . '/vfprintf_basic5.txt';
+$data_file = TestPath::file('vfprintf_basic5.txt');
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
@@ -30,7 +30,6 @@ fprintf($fp, "\n");
 fclose($fp);
 print_r(file_get_contents($data_file));
 
-unlink($data_file);
 ?>
 --EXPECT--
 *** Testing vfprintf() : basic functionality - using char format ***

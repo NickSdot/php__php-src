@@ -6,14 +6,10 @@ The test expectation is due to bug #81345.
 bz2
 --FILE--
 <?php
-$s = fopen("compress.bzip2://" . __DIR__ . "/bug81346.bz2", "w");
+$s = fopen("compress.bzip2://" . TestPath::file('bug81346.bz2')->path, "w");
 fwrite($s, str_repeat("hello world", 100));
 fflush($s);
 var_dump(ftell($s));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug81346.bz2");
 ?>
 --EXPECT--
 int(1100)

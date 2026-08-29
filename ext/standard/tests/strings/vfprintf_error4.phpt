@@ -7,7 +7,7 @@ precision=14
 --FILE--
 <?php
 // Open handle
-$file = 'vfprintf_error4.txt';
+$file = TestPath::file('vfprintf_error4.txt');
 $fp = fopen( $file, "a+" );
 
 echo "\n-- Testing vfprintf() function with other strangeties  --\n";
@@ -23,13 +23,6 @@ try {
 }
 // Close handle
 fclose( $fp );
-
-?>
---CLEAN--
-<?php
-
-$file = 'vfprintf_error4.txt';
-unlink( $file );
 
 ?>
 --EXPECT--
