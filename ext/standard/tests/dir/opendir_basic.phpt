@@ -2,13 +2,13 @@
 Test opendir() function : basic functionality
 --FILE--
 <?php
+$base_dir_path = TestPath::directory('opendir_basic')->path;
 /*
  * Test basic functionality of opendir() with absolute and relative paths as $path argument
  */
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_basic';
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "level_one";
@@ -34,13 +34,6 @@ closedir($dh1);
 var_dump($dh1);
 closedir($dh2);
 var_dump($dh2);
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_basic';
-rmdir("$base_dir_path/level_one/level_two");
-rmdir("$base_dir_path/level_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : basic functionality ***

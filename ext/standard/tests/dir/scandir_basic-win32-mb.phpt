@@ -18,7 +18,7 @@ echo "*** Testing scandir() : basic functionality ***\n";
 include (__DIR__ . '/../file/file.inc');
 
 // set up directory
-$directory = __DIR__ . '/私はガラスを食べられますscandir_basic';
+$directory = TestPath::directory('scandir_basic-mb')->path;
 mkdir($directory);
 create_files($directory, 3, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 
@@ -31,11 +31,6 @@ $context = stream_context_create();
 var_dump(scandir($directory, $sorting_order, $context));
 
 delete_files($directory, 3, "私はガラスを食べられますfile");
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . '/私はガラスを食べられますscandir_basic';
-rmdir($directory);
 ?>
 --EXPECT--
 *** Testing scandir() : basic functionality ***

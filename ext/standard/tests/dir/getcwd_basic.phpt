@@ -9,17 +9,12 @@ Test getcwd() function : basic functionality
 echo "*** Testing getcwd() : basic functionality ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = __DIR__ . "/getcwd_basic";
+$directory = TestPath::directory('getcwd_basic')->path;
 mkdir($directory);
 
 var_dump(getcwd());
 chdir($directory);
 var_dump(getcwd());
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . "/getcwd_basic";
-rmdir($directory);
 ?>
 --EXPECTF--
 *** Testing getcwd() : basic functionality ***

@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_basic-win32-mb';
+$base_dir_path = TestPath::directory('opendir_basic-mb')->path;
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";
@@ -40,13 +40,6 @@ closedir($dh1);
 var_dump($dh1);
 closedir($dh2);
 var_dump($dh2);
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_basic-win32-mb';
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one/私はガラスを食べられますlevel_two");
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : basic functionality ***

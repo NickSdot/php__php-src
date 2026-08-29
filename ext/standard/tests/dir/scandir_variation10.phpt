@@ -17,7 +17,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = __DIR__ . '/scandir_variation10';
+$dir = TestPath::directory('scandir_variation10')->path;
 mkdir($dir);
 @create_files($dir, 2);
 
@@ -34,11 +34,6 @@ var_dump(in_array('file1.tmp', $files));
 var_dump(in_array('file2.tmp', $files));
 
 delete_files($dir, 2);
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/scandir_variation10';
-rmdir($dir);
 ?>
 --EXPECT--
 SCANDIR_SORT_ASCENDING: 0

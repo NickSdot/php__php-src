@@ -15,17 +15,12 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "*** Testing getcwd() : basic functionality ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = __DIR__ . "/私はガラスを食べられますgetcwd_basic";
+$directory = TestPath::directory('getcwd_basic-mb')->path;
 mkdir($directory);
 
 var_dump(getcwd());
 chdir($directory);
 var_dump(getcwd());
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . "/私はガラスを食べられますgetcwd_basic";
-rmdir($directory);
 ?>
 --EXPECTF--
 *** Testing getcwd() : basic functionality ***
