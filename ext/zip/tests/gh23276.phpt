@@ -25,7 +25,7 @@ function getEntryStream(ZipArchive $zip) {
     return $stream;
 }
 
-$filename = TestPath::file('gh23276.zip')->path;
+$filename = TestPath::file();
 
 $zip = new Holder;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);

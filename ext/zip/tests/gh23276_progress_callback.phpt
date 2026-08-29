@@ -10,7 +10,7 @@ if (!method_exists(ZipArchive::class, 'registerProgressCallback')) {
 ?>
 --FILE--
 <?php
-$filename = TestPath::file('gh23276_progress_callback.zip')->path;
+$filename = TestPath::file();
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);

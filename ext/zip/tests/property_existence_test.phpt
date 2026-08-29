@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$archive = new ZipArchive(TestPath::file('property_existence.zip')->path);
+$archive = new ZipArchive(TestPath::file());
 var_dump(array_column([$archive], 'lastId'));
 
 ?>

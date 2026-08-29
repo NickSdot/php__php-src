@@ -8,7 +8,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$name = __DIR__ . '/oo_close_empty.zip';
+$name = TestPath::file('oo_close_empty.zip')->path;
 
 function run($name, $keep) {
     copy(__DIR__ . '/test.zip', $name);
@@ -30,11 +30,6 @@ function run($name, $keep) {
  }
 run($name, false);
 run($name, true);
-?>
---CLEAN--
-<?php
-$name = __DIR__ . '/oo_close_empty.zip';
-@unlink($name);
 ?>
 --EXPECTF--
 Close and delete

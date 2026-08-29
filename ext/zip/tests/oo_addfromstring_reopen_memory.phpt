@@ -4,7 +4,7 @@ ZipArchive::addFromString() buffers are released when the archive is closed
 zip
 --FILE--
 <?php
-$filename = __DIR__ . '/oo_addfromstring_reopen_memory.zip';
+$filename = TestPath::file('oo_addfromstring_reopen_memory.zip')->path;
 $blob = str_repeat('q', 200000);
 
 $zip = new ZipArchive;
@@ -17,10 +17,6 @@ for ($i = 0; $i < 50; $i++) {
 }
 
 var_dump(memory_get_usage() - $start < 1000000);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/oo_addfromstring_reopen_memory.zip');
 ?>
 --EXPECT--
 bool(true)

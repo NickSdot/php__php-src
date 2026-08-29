@@ -8,7 +8,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$name = TestPath::file('torrent.zip')->path;
+$name = TestPath::file('torrent.zip');
 
 $zip = new ZipArchive();
 

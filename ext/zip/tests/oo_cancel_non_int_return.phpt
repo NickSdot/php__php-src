@@ -12,7 +12,7 @@ date.timezone=UTC
 --FILE--
 <?php
 $dirname = dirname(__FILE__) . '/';
-$file = TestPath::file('__tmp_oo_cancel_incorrect_return.zip')->path;
+$file = TestPath::file();
 
 $zip = new ZipArchive;
 if (!$zip->open($file, ZIPARCHIVE::CREATE)) {

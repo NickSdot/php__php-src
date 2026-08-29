@@ -4,7 +4,8 @@ GH-17787 (ZipArchive stream stops reading early when the archive is freed while 
 zip
 --FILE--
 <?php
-$name = __DIR__ . '/gh17787.zip';
+$writeArchive = TestPath::file('gh17787_write.zip');
+$name = TestPath::file('gh17787.zip')->path;
 $data = str_repeat("The quick brown fox jumps over the lazy dog.\n", 4000);
 
 $zip = new ZipArchive;
@@ -62,11 +63,6 @@ var_dump($zip->open($name, ZipArchive::RDONLY));
 var_dump($zip->numFiles);
 var_dump($zip->getFromName('second.txt'));
 $zip->close();
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh17787.zip');
-@unlink(__DIR__ . '/gh17787_write.zip');
 ?>
 --EXPECT--
 bool(true)
