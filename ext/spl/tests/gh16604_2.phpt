@@ -3,19 +3,16 @@ GH-16604 (Memory leaks in SPL constructors) - SplFileObject
 --FILE--
 <?php
 
-file_put_contents(__DIR__.'/gh16604_2.tmp', 'hello');
+$file = TestPath::file('gh16604_2.tmp')->path;
+file_put_contents($file, 'hello');
 
-$obj = new SplFileObject(__DIR__.'/gh16604_2.tmp');
+$obj = new SplFileObject($file);
 try {
-    $obj->__construct(__DIR__.'/gh16604_2.tmp');
+    $obj->__construct($file);
 } catch (Error $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__.'/gh16604_2.tmp');
 ?>
 --EXPECT--
 Error: Cannot call constructor twice

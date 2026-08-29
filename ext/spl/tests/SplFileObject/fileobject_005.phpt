@@ -6,8 +6,7 @@ Mark Ammann
 --FILE--
 <?php
 
-$path = __DIR__.DIRECTORY_SEPARATOR.'fileobject_005.txt';
-touch($path);
+$path = TestPath::touch('fileobject_005.txt')->path;
 
 $fo = new SplFileObject($path, 'w+', true);
 $fo->fwrite("blahlubba");
@@ -19,11 +18,6 @@ var_dump($fo->fgets());
 $fo->rewind();
 $fo->fwrite("blahlubba");
 
-?>
---CLEAN--
-<?php
-$path = __DIR__.DIRECTORY_SEPARATOR.'fileobject_005.txt';
-unlink($path);
 ?>
 --EXPECT--
 bool(true)

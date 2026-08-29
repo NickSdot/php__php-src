@@ -2,7 +2,7 @@
 GH-8563 (Different results for seek() on SplFileObject and SplTempFileObject)
 --FILE--
 <?php
-$path = __DIR__ . '/gh8563.txt';
+$path = TestPath::file('gh8563.txt')->path;
 $file_01 = new SplFileObject($path, 'w+');
 $file_02 = new SplTempFileObject();
 
@@ -19,10 +19,6 @@ $file_02->seek(10);
 
 echo 'SplFileObject: ' . $file_01->key() . "\n";
 echo 'SplTempFileObject: ' . $file_02->key() . "\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/gh8563.txt');
 ?>
 --EXPECT--
 SplFileObject: 5

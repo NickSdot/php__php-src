@@ -2,7 +2,8 @@
 SplFileObject::fgetcsv with alternative separator
 --FILE--
 <?php
-$fp = fopen('SplFileObject__fgetcsv2.csv', 'w+');
+$file = TestPath::file('SplFileObject__fgetcsv2.csv')->path;
+$fp = fopen($file, 'w+');
 fputcsv(
     $fp,
     [
@@ -16,13 +17,9 @@ fputcsv(
 );
 fclose($fp);
 
-$fo = new SplFileObject('SplFileObject__fgetcsv2.csv');
+$fo = new SplFileObject($file);
 $fo->setCsvControl(escape: '');
 var_dump($fo->fgetcsv('|'));
-?>
---CLEAN--
-<?php
-unlink('SplFileObject__fgetcsv2.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::setCsvControl() is deprecated since 8.6 in %s on line %d

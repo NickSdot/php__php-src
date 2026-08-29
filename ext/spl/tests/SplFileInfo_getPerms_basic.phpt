@@ -16,15 +16,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test not for Windows platforms
 <?php
 
 //file
-touch ('SplFileInfo_getPerms_basic.txt');
-chmod('SplFileInfo_getPerms_basic.txt', 0557);
-$fileInfo = new SplFileInfo('SplFileInfo_getPerms_basic.txt');
+$file = TestPath::touch('SplFileInfo_getPerms_basic.txt');
+chmod($file->path, 0557);
+$fileInfo = new SplFileInfo($file->path);
 var_dump($fileInfo->getPerms() == 0100557);
 
-?>
---CLEAN--
-<?php
-unlink('SplFileInfo_getPerms_basic.txt');
 ?>
 --EXPECT--
 bool(true)
