@@ -2,13 +2,11 @@
 libxml_set_external_entity_loader() variation: restore original handler; returning NULL
 --EXTENSIONS--
 dom
---CLEAN--
-<?php
-@unlink(__DIR__ . "/foobar.dtd");
-?>
 --FILE--
 <?php
-chdir(__DIR__);
+TestContext::useRelativeWorkspace();
+$file = TestPath::file('foobar.dtd');
+chdir($file->directory);
 $xml = <<<XML
 <!DOCTYPE foo PUBLIC "-//FOO/BAR" "foobar.dtd">
 <foo>bar</foo>
@@ -31,7 +29,7 @@ $r = $dd->loadXML($xml);
 var_dump($dd->validate());
 
 libxml_set_external_entity_loader(NULL);
-file_put_contents(__DIR__ . "/foobar.dtd", $dtd);
+file_put_contents($file, $dtd);
 var_dump($dd->validate());
 
 echo "Done.\n";
