@@ -4,7 +4,7 @@ openssl_x509_export_to_file() tests
 openssl
 --FILE--
 <?php
-$outfilename = __DIR__ . "/openssl_x509_export_to_file__outfilename.tmp";
+$outfilename = TestPath::file()->path;
 $cert_file = __DIR__ . "/cert.crt";
 
 $a = file_get_contents($cert_file);
@@ -24,13 +24,6 @@ try {
 }
 echo "---\n";
 var_dump($exists = file_exists($outfilename));
-?>
---CLEAN--
-<?php
-$outfilename = __DIR__ . "/openssl_x509_export_to_file__outfilename.tmp";
-if (file_exists($outfilename)) {
-    unlink($outfilename);
-}
 ?>
 --EXPECTF--
 bool(true)
