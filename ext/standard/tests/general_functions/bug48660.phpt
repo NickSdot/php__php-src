@@ -3,7 +3,7 @@ Bug #48660 (parse_ini_*(): dollar sign as last character of value fails)
 --FILE--
 <?php
 
-$ini_location = TestPath::file('bug48660.tmp');
+$ini_location = TestPath::file();
 
 // Build ini data
 $ini_data = '

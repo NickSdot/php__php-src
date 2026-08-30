@@ -30,7 +30,7 @@ var_dump(stream_get_contents($pipes[1]));
 proc_close($proc);
 
 echo "\nWith filename:\n";
-$fileName = TestPath::file('proc_open_redirect.txt');
+$fileName = TestPath::file();
 $proc = proc_open($cmd, [1 => ['file', $fileName, 'w'], 2 => ['redirect', 1]], $pipes);
 var_dump($pipes);
 proc_close($proc);

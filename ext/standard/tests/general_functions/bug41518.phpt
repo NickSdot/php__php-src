@@ -11,9 +11,9 @@ open_basedir=.
 --FILE--
 <?php
 
-$tmp_dir = TestPath::directory('bug41518');
+$tmp_dir = TestPath::directory();
 @mkdir($tmp_dir);
-$tmp_file = $tmp_dir->file('bug41418.tmp');
+$tmp_file = $tmp_dir->file();
 
 touch($tmp_file);
 var_dump(file_exists($tmp_file)); //exists

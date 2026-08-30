@@ -16,7 +16,7 @@ class A {
 
 $ob = new A();
 
-$file = TestPath::file('array_count_file');
+$file = TestPath::file();
 $fp = fopen($file, "w+");
 
 $arrays = array ("bobk" => "bobv", "val", 6 => "val6",  $fp, $ob);

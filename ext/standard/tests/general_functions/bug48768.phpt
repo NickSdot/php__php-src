@@ -3,7 +3,7 @@ Bug #48768 (parse_ini_*() crashes with INI_SCANNER_RAW)
 --FILE--
 <?php
 
-$ini_location = TestPath::file('bug48768.tmp');
+$ini_location = TestPath::file();
 
 // Build ini data
 $ini_data = <<< EOT

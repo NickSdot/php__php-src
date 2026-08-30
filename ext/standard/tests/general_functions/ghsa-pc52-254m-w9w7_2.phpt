@@ -12,7 +12,7 @@ $batch_file_content = <<<EOT
 @echo off
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file = TestPath::file('ghsa-54hq-v5wp-fqgv_2.cmd');
+$batch_file = TestPath::file('batch.cmd');
 $batch_file_path = $batch_file->path;
 
 file_put_contents($batch_file_path, $batch_file_content);

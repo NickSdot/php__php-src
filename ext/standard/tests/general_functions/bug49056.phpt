@@ -8,7 +8,7 @@ Cooking_furniture="KÃ¼chen MÃ¶bel (en)"
 KÃ¼chen_MÃ¶bel="Cooking furniture (en)"
 EOT;
 
-$filename = TestPath::file('bug49056.tmp');
+$filename = TestPath::file();
 
 file_put_contents( $filename, $string);
 
