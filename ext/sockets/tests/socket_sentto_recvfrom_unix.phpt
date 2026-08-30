@@ -19,7 +19,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
         die('Unable to set nonblocking mode for socket');
     }
     var_dump(socket_recvfrom($socket, $buf, 12, 0, $from, $port)); //false (EAGAIN, no warning)
-    $address = sprintf("/tmp/%s.sock", uniqid());
+    $socket_path = TestPath::file();
+    chdir($socket_path->directory);
+    $address = $socket_path->name;
     if (!socket_bind($socket, $address)) {
         die("Unable to bind to $address");
     }
@@ -28,10 +30,8 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
     $len = strlen($msg);
     $bytes_sent = socket_sendto($socket, $msg, $len, 0, $address);
     if ($bytes_sent == -1) {
-        @unlink($address);
         die('An error occurred while sending to the socket');
     } else if ($bytes_sent != $len) {
-        @unlink($address);
         die($bytes_sent . ' bytes have been sent instead of the ' . $len . ' bytes expected');
     }
 
@@ -39,16 +39,13 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
     var_dump(socket_recvfrom($socket, $buf, 0, 0, $from)); // expect false
     $bytes_received = socket_recvfrom($socket, $buf, 12, 0, $from);
     if ($bytes_received == -1) {
-        @unlink($address);
         die('An error occurred while receiving from the socket');
     } else if ($bytes_received != $len) {
-        @unlink($address);
         die($bytes_received . ' bytes have been received instead of the ' . $len . ' bytes expected');
     }
     echo "Received $buf";
 
     socket_close($socket);
-    @unlink($address);
 ?>
 --EXPECTF--
 Warning: socket_create(): Unable to create socket [%d]: Protocol not supported in %s on line %d
