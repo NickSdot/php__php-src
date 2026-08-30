@@ -64,8 +64,10 @@ exec_and_count(3, $db, sprintf('CREATE TABLE test_mysql_exec_load_data(id INT NO
 $stmt = $db->query("SHOW VARIABLES LIKE 'secure_file_priv'");
 if (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && ($row['value'] != '')) {
     $filename = $row['value'] . DIRECTORY_SEPARATOR  . "pdo_mysql_exec_load_data.csv";
+    $cleanup = true;
 } else {
-    $filename =  MySQLPDOTest::getTempDir() . DIRECTORY_SEPARATOR  . "pdo_mysql_exec_load_data.csv";
+    $filename = TestPath::file();
+    $cleanup = false;
 }
 
 $fp = fopen($filename, "w");
@@ -91,7 +93,9 @@ if (exec_and_count(4, $db, $sql, 2)) {
     }
 }
 
-unlink($filename);
+if ($cleanup) {
+    unlink($filename);
+}
 
 print "done!";
 ?>
