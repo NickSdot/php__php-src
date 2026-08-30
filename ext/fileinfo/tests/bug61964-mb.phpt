@@ -10,11 +10,11 @@ $magic_file = __DIR__ . DIRECTORY_SEPARATOR . 'magic私はガラスを食べら�
 $ret = @finfo_open(FILEINFO_NONE, $magic_file . ".non-exits私はガラスを食べられます");
 var_dump($ret);
 
-$dir = __DIR__ . "/bug61964-mb";
+$dir = TestPath::directory('bug61964-mb');
 @mkdir($dir);
 
-$magic_file_copy = $dir . "/magic私はガラスを食べられます.copy";
-$magic_file_copy2 = $magic_file_copy . "2";
+$magic_file_copy = $dir->file();
+$magic_file_copy2 = $dir->file();
 copy($magic_file, $magic_file_copy);
 copy($magic_file, $magic_file_copy2);
 
@@ -24,24 +24,19 @@ var_dump($ret);
 $ret = @finfo_open(FILEINFO_NONE, $dir);
 var_dump($ret);
 
-$ret = @finfo_open(FILEINFO_NONE, $dir. "/non-exits-dir私はガラスを食べられます");
+$ret = @finfo_open(FILEINFO_NONE, $dir->directory('non-exits-dir私はガラスを食べられます'));
 var_dump($ret);
 
 // write some test files to test folder
-file_put_contents($dir . "/test1.txt", "string\n> Core\n> Me");
-file_put_contents($dir . "/test2.txt", "a\nb\n");
-@mkdir($dir . "/test-inner-folder私はガラスを食べられます");
+$test1 = $dir->file();
+$test2 = $dir->file();
+file_put_contents($test1, "string\n> Core\n> Me");
+file_put_contents($test2, "a\nb\n");
+@mkdir($dir->directory());
 
 finfo_open(FILEINFO_NONE, $dir);
 echo "DONE: testing dir with files\n";
 
-rmdir($dir . "/test-inner-folder私はガラスを食べられます");
-unlink($dir . "/test1.txt");
-unlink($dir . "/test2.txt");
-
-unlink($magic_file_copy);
-unlink($magic_file_copy2);
-rmdir($dir);
 ?>
 --EXPECTF--
 bool(false)%A
