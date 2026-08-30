@@ -5,7 +5,7 @@ com_dotnet
 --SKIPIF--
 <?php
 $provider = "Microsoft.ACE.OLEDB.12.0";
-$filename = __DIR__ . "\\gh8750.mdb";
+$filename = str_replace("/", "\\", TestPath::file('database.mdb'));
 $catalog = new com("ADOX.Catalog");
 try {
     $catalog->Create("Provider=$provider;Data Source=$filename");
@@ -17,7 +17,7 @@ $catalog = null;
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . "\\gh8750.mdb";
+$filename = str_replace("/", "\\", TestPath::file('database.mdb'));
 
 $catalog = new com("ADOX.Catalog");
 $catalog->Create("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=$filename");
@@ -41,7 +41,3 @@ var_dump($i);
 ?>
 --EXPECT--
 int(1)
---CLEAN--
-<?php
-unlink(__DIR__ . "/gh8750.mdb");
-?>
