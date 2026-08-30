@@ -14,7 +14,7 @@ obscure_filename
 */
 
 echo "*** Test copy() function: destination file names containing whitespaces ***\n";
-$src_file_name = TestPath::file('copy_variation3.tmp');
+$src_file_name = TestPath::file();
 $file_handle = fopen($src_file_name, "w");
 fwrite( $file_handle, str_repeat("Hello2World...\n", 100) );
 fclose($file_handle);

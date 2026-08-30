@@ -3,7 +3,7 @@ file() with a range of integer flag values
 --FILE--
 <?php
 
-$filepath = TestPath::file('file_variation_6.tmp')->path;
+$filepath = TestPath::file()->path;
 $fd = fopen($filepath, "w+");
 fwrite($fd, "Line 1\nLine 2\nLine 3");
 fclose($fd);

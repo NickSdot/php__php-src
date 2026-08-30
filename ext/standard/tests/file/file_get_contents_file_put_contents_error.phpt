@@ -6,7 +6,7 @@ Test file-get_contents() and file_put_contents() functions : error conditions
 echo "*** Testing error conditions ***\n";
 
 $file_path = TestPath::directory();
-$file = TestPath::file('file_put_contents_error1.tmp');
+$file = TestPath::file();
 
 echo "\n-- Testing with  Non-existing file --\n";
 print( file_get_contents("/no/such/file/or/dir") );

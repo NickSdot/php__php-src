@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different unsigned format types with arrays ***\n";
 
 // create a file
-$filename = TestPath::file('fscanf_variation42.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

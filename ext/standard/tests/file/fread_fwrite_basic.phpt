@@ -9,7 +9,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
  * Function is implemented in ext/standard/file.c
  */
 
-$outputfile = TestPath::file('fread_fwrite_basic.tmp');
+$outputfile = TestPath::file();
 
 echo "--- testing rw moving about the file ---\n";
 $h = fopen($outputfile, 'wb+');

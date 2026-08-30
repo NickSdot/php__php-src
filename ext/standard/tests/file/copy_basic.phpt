@@ -7,8 +7,8 @@ echo "*** Testing copy() function: to copy file from source to destination --\n"
 var_dump( file_exists(__FILE__) );
 
 /* copying the file */
-$file_name1 = TestPath::file('copy_basic1.tmp');
-$file_name2 = TestPath::file('copy_basic2.tmp');
+$file_name1 = TestPath::file();
+$file_name2 = TestPath::file();
 var_dump( copy(__FILE__, $file_name1) );
 var_dump( copy($file_name1, $file_name2) );
 

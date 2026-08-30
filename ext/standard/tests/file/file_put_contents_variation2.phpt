@@ -17,7 +17,7 @@ set_error_handler('test_error_handler');
 
 // Initialise function arguments not being substituted (if any)
 
-$filename = TestPath::file('fwriteVar5.tmp');
+$filename = TestPath::file();
 
 
 
