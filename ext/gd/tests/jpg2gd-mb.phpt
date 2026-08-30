@@ -15,17 +15,17 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $gd1 = TestPath::file();
-    $gd2 = TestPath::file();
+    $gd1 = TestPath::file('test私はガラスを食べられます.gd1');
+    $gd2 = TestPath::file('test私はガラスを食べられます.gd2');
     $jpeg1 = TestPath::file();
     $jpeg2 = TestPath::file();
 
     echo "JPEG to GD1 conversion: ";
-    echo imagegd(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd1->path) ? 'ok' : 'failed';
+    echo imagegd(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd1) ? 'ok' : 'failed';
     echo "\n";
 
     echo "JPEG to GD2 conversion: ";
-    echo imagegd2(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd2->path) ? 'ok' : 'failed';
+    echo imagegd2(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd2) ? 'ok' : 'failed';
     echo "\n";
 
     echo "GD1 to JPEG conversion: ";
