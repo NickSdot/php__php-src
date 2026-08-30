@@ -10,7 +10,7 @@ if (!function_exists('libxml_set_external_entity_loader')) die('skip xinclude no
 ?>
 --FILE--
 <?php
-$included = __DIR__ . '/gh22624_included.xml';
+$included = TestPath::file('gh22624_included.xml');
 file_put_contents($included, '<?xml version="1.0"?><included/>');
 $href = 'file:///' . ltrim(str_replace('\\', '/', $included), '/');
 
@@ -30,10 +30,6 @@ $doc->xinclude(); // frees the xi:include element
 var_dump($ns->parentNode);
 var_dump($ns->parentElement);
 var_dump($ns->isConnected);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh22624_included.xml');
 ?>
 --EXPECT--
 NULL

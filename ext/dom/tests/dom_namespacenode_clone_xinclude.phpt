@@ -4,7 +4,7 @@ DOMNameSpaceNode clone after xinclude does not use a dangling parent
 dom
 --FILE--
 <?php
-$included = __DIR__ . '/dom_namespacenode_clone_xinclude_included.xml';
+$included = TestPath::file('dom_namespacenode_clone_xinclude_included.xml');
 file_put_contents($included, '<?xml version="1.0"?><included/>');
 $href = 'file:///' . ltrim(str_replace('\\', '/', $included), '/');
 
@@ -30,10 +30,6 @@ echo "after xinclude: ", $clone->nodeName, "\n";
 var_dump($clone->parentNode);
 var_dump($clone->parentElement);
 var_dump($clone->isConnected);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/dom_namespacenode_clone_xinclude_included.xml');
 ?>
 --EXPECT--
 live clone: xmlns:local
