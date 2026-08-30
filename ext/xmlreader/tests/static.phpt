@@ -4,7 +4,7 @@ Calling XMLReader::open() and ::XML() statically
 xmlreader
 --FILE--
 <?php
-$filename = __DIR__ . '/static.xml';
+$filename = TestPath::file();
 
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books></books>';
@@ -25,7 +25,3 @@ books
 books
 books
 books
---CLEAN--
-<?php
-unlink(__DIR__ . '/static.xml');
-?>

@@ -13,7 +13,7 @@ class CustomXMLReader extends XMLReader {
     }
 }
 
-$filename = __DIR__ . '/_fromUri_custom_constructor.xml';
+$filename = TestPath::file();
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books></books>';
 file_put_contents($filename, $xmlstring);
@@ -30,7 +30,3 @@ $reader->close();
 --EXPECT--
 books
 books
---CLEAN--
-<?php
-@unlink(__DIR__ . '/_fromUri_custom_constructor.xml');
-?>

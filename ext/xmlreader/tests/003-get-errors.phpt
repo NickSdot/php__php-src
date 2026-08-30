@@ -9,7 +9,7 @@ xmlreader
 // Set up test data in a new file
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books><book num="1" idx="2">book1</book></books>';
-$filename = __DIR__ . '/003-get-errors.xml';
+$filename = TestPath::file();
 file_put_contents($filename, $xmlstring);
 
 // Load test data into a new XML Reader
@@ -60,10 +60,6 @@ while ($reader->read()) {
 
 // clean up
 $reader->close();
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/003-get-errors.xml');
 ?>
 --EXPECT--
 book
