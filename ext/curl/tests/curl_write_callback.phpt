@@ -16,7 +16,7 @@ function curl_callback($curl_handle, $received_data)
     return strlen($received_data);
 }
 
-$log_file = tempnam(sys_get_temp_dir(), 'php-curl-test');
+$log_file = TestPath::file();
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");
@@ -26,9 +26,6 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, 'curl_callback');
 curl_setopt($ch, CURLOPT_URL, 'file://' . $log_file);
 curl_exec($ch);
-
-// cleanup
-unlink($log_file);
 
 ?>
 --EXPECT--

@@ -24,7 +24,7 @@ if(!empty($host)) {
 } else {
 
     // Create a temporary file for the test
-    $tempname = tempnam(sys_get_temp_dir(), 'CURL_HANDLE');
+    $tempname = TestPath::file();
     $url = 'file://'. $tempname;
 
     // add the test data to the file
@@ -32,7 +32,7 @@ if(!empty($host)) {
 }
 
 
-$tempfile	= tempnam(sys_get_temp_dir(), 'CURL_FILE_HANDLE');
+$tempfile	= TestPath::touch();
 $fp = fopen($tempfile, "r"); // Opening 'fubar' with the incorrect readonly flag
 
 $ch = curl_init($url);
@@ -50,8 +50,6 @@ foreach ([
 }
 
 curl_exec($ch);
-is_file($tempfile) and @unlink($tempfile);
-isset($tempname) and is_file($tempname) and @unlink($tempname);
 ?>
 --EXPECT--
 ValueError: curl_setopt(): The file handle provided for CURLOPT_FILE must be writable

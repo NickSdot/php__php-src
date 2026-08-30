@@ -14,7 +14,7 @@ $host = curl_cli_server_start();
 $url = $host . '/get.inc?test=post';
 
 // Create a temporary file to read the data from
-$tempname = tempnam(sys_get_temp_dir(), 'CURL_DATA');
+$tempname = TestPath::file();
 $datalen = file_put_contents($tempname, "hello=world&smurf=blue");
 
 ob_start();
@@ -32,8 +32,6 @@ if (false === $response = curl_exec($ch)) {
     echo $response;
 }
 
-// Clean the temporary file
-@unlink($tempname);
 ?>
 --EXPECT--
 array(2) {

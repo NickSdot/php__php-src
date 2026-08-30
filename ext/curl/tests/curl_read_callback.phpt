@@ -17,9 +17,8 @@ function custom_readfunction($oCurl, $hReadHandle, $iMaxOut)
   return $sData;
 }
 
-$sFileBase  = __DIR__.DIRECTORY_SEPARATOR.'curl_opt_CURLOPT_READFUNCTION';
-$sReadFile  = $sFileBase.'_in.tmp';
-$sWriteFile = $sFileBase.'_out.tmp';
+$sReadFile  = TestPath::file();
+$sWriteFile = TestPath::file();
 $sWriteUrl  = 'file://'.$sWriteFile;
 
 file_put_contents($sReadFile,'contents of tempfile');
@@ -36,14 +35,6 @@ fclose ($hReadHandle);
 
 $sOutput = file_get_contents($sWriteFile);
 var_dump($sOutput);
-?>
---CLEAN--
-<?php
-$sFileBase  = __DIR__.DIRECTORY_SEPARATOR.'curl_opt_CURLOPT_READFUNCTION';
-$sReadFile  = $sFileBase.'_in.tmp';
-$sWriteFile = $sFileBase.'_out.tmp';
-unlink($sReadFile);
-unlink($sWriteFile);
 ?>
 --EXPECT--
 string(27) "custom:contents of tempfile"

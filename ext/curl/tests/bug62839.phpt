@@ -6,7 +6,7 @@ curl
 <?php
 $curl = curl_init();
 
-$fd = tmpfile();
+$fd = fopen(TestPath::file(), 'w+');
 curl_setopt($curl, CURLOPT_FILE, $fd);
 
 curl_copy_handle($curl);

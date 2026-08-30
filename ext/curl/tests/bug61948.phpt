@@ -4,21 +4,16 @@ Bug #61948 (CURLOPT_COOKIEFILE '' raises open_basedir restriction)
 curl
 --FILE--
 <?php
-  $base_dir = __DIR__ . DIRECTORY_SEPARATOR . "bug61948";
-  mkdir($base_dir . DIRECTORY_SEPARATOR . "foo", 0755, true);
+  $base_dir = TestPath::directory('bug61948');
+  $foo_dir = $base_dir->directory('foo');
+  mkdir($foo_dir, 0755, true);
 
-  ini_set("open_basedir", $base_dir);
+  ini_set("open_basedir", $base_dir->path);
 
   $ch = curl_init();
   var_dump(curl_setopt($ch, CURLOPT_COOKIEFILE, ""));
-  var_dump(curl_setopt($ch, CURLOPT_COOKIEFILE, "$base_dir/foo"));
+  var_dump(curl_setopt($ch, CURLOPT_COOKIEFILE, $foo_dir));
   var_dump(curl_setopt($ch, CURLOPT_COOKIEFILE, "c:/xxx/bar"));
-?>
---CLEAN--
-<?php
-    $base_dir = __DIR__ . DIRECTORY_SEPARATOR . "bug61948";
-    rmdir("$base_dir/foo");
-    rmdir($base_dir);
 ?>
 --EXPECTF--
 %a
