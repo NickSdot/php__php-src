@@ -28,8 +28,8 @@ $directory = TestPath::directory();
 mkdir($directory);
 chdir($directory);
 
-$certFile = $directory->file('bug50293.crt');
-$keyFile = $directory->file('bug50293.pem');
+$certFile = $directory->file();
+$keyFile = $directory->file();
 
 $privkey = openssl_pkey_get_private('file://' . __DIR__ . '/private_ec.key');
 $csr = openssl_csr_new($dn, $privkey, $args);

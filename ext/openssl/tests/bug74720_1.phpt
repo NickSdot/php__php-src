@@ -57,12 +57,12 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 -----END PRIVATE KEY-----
 ";
 
-$tmpPath = tempnam(sys_get_temp_dir(), 'test');
+$tmpPath = TestPath::file();
 
 $content = "A simple \x1a test.";
 file_put_contents($tmpPath, $content);
 
-$outPath = tempnam(sys_get_temp_dir(), 'test');
+$outPath = TestPath::file();
 
 openssl_pkcs7_sign(
     $tmpPath,
@@ -74,9 +74,6 @@ openssl_pkcs7_sign(
 );
 
 var_dump(strpos(file_get_contents($outPath), $content) !== false);
-
-unlink($tmpPath);
-unlink($outPath);
 
 ?>
 --EXPECT--

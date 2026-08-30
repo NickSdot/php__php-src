@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'crypto_supplemental_read_timeout.pem.tmp';
+$certFile = TestPath::file();
 $peerName = 'crypto-supplemental-read-timeout';
 
 $serverCode = <<<'CODE'
@@ -80,10 +80,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'crypto_supplemental_read_timeout.pem.tmp');
 ?>
 --EXPECT--
 hello

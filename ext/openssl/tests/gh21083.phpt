@@ -9,7 +9,7 @@ OPENSSL_CONF=
 --FILE--
 <?php
 // Create a minimal openssl.cnf without default_bits (simulates OpenSSL 3.6 default config)
-$conf = tempnam(sys_get_temp_dir(), 'ossl');
+$conf = TestPath::file();
 file_put_contents($conf, "[req]\ndistinguished_name = req_dn\n[req_dn]\n");
 
 // EC key - size is determined by the curve, private_key_bits should not be required
@@ -48,7 +48,6 @@ if (defined('OPENSSL_KEYTYPE_ED25519')) {
     echo "bool(true)\nEd25519 OK\n";
 }
 
-unlink($conf);
 ?>
 --EXPECT--
 bool(true)

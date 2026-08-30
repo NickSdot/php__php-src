@@ -9,7 +9,7 @@ if (!defined('STREAM_CRYPTO_METHOD_TLSv1_3_SERVER')) die("skip TLS 1.3 not avail
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'tls_early_data_unsupported.pem.tmp';
+$certFile = TestPath::file();
 
 /* Server does NOT enable early data, so a resumed session must not carry a
  * 0-RTT limit and the client must fall back to a normal handshake. */
@@ -67,10 +67,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('tls_early_data_unsupported', $c
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tls_early_data_unsupported.pem.tmp');
 ?>
 --EXPECT--
 hello

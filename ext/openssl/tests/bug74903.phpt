@@ -59,8 +59,8 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 
 $envelopeData = "Test";
 
-$tmpFileIn = tempnam(sys_get_temp_dir(), 'test');
-$tmpFileOut = tempnam(sys_get_temp_dir(), 'test');
+$tmpFileIn = TestPath::file();
+$tmpFileOut = TestPath::file();
 file_put_contents($tmpFileIn, $envelopeData);
 
 openssl_pkcs7_encrypt($tmpFileIn, $tmpFileOut, [$cert], array(), PKCS7_BINARY, OPENSSL_CIPHER_AES_128_CBC);
@@ -68,9 +68,6 @@ openssl_pkcs7_encrypt($tmpFileIn, $tmpFileOut, [$cert], array(), PKCS7_BINARY, O
 $result = file_get_contents($tmpFileOut);
 var_dump(strpos($result, "\r\n") === false); // behaviour before 7.2
 var_dump(strlen($result) === 847);
-
-unlink($tmpFileIn);
-unlink($tmpFileOut);
 
 ?>
 --EXPECT--

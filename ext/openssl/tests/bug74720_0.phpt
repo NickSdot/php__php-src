@@ -59,8 +59,8 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 
 $originalEnvelopeData = "any string with \x1a is cut at this point.";
 
-$tmpFileIn = tempnam(sys_get_temp_dir(), 'test');
-$tmpFileOut = tempnam(sys_get_temp_dir(), 'test');
+$tmpFileIn = TestPath::file();
+$tmpFileOut = TestPath::file();
 file_put_contents($tmpFileIn, $originalEnvelopeData);
 
 
@@ -68,16 +68,12 @@ var_dump(filesize($tmpFileIn) === strlen($originalEnvelopeData));
 
 openssl_pkcs7_encrypt($tmpFileIn, $tmpFileOut, [$cert], array(), PKCS7_BINARY, OPENSSL_CIPHER_AES_128_CBC);
 
-$tmpFileOut2 = tempnam(sys_get_temp_dir(), 'test');
+$tmpFileOut2 = TestPath::file();
 openssl_pkcs7_decrypt($tmpFileOut, $tmpFileOut2, $cert, $pkey);
 
 $envelopeData = file_get_contents($tmpFileOut2);
 var_dump($originalEnvelopeData === $envelopeData); // need to be true
 var_dump(strlen($originalEnvelopeData), strlen($envelopeData), filesize($tmpFileOut2));
-
-unlink($tmpFileIn);
-unlink($tmpFileOut);
-unlink($tmpFileOut2);
 
 ?>
 --EXPECT--

@@ -14,8 +14,8 @@ $baseDir = TestPath::directory();
 mkdir($baseDir);
 $baseDirCertFile = $baseDir->file('cert.crt');
 $baseDirPkFile = $baseDir->file('private.key');
-$certFile = TestPath::file();
-$pkFile = TestPath::file();
+$certFile = TestPath::file('gh9310.crt');
+$pkFile = TestPath::file('gh9310.key');
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
@@ -25,12 +25,12 @@ copy($certFile, $baseDirCertFile);
 copy($pkFile, $baseDirPkFile);
 
 $sniCaFile = TestPath::file();
-$sniCsFile = TestPath::file();
-$sniUkCertFile = TestPath::file();
-$sniUkKeyFile = TestPath::file();
-$sniUsCertFile = TestPath::file();
-$sniUsKeyFile = TestPath::file();
-$baseDirSniUkCertFile = $baseDir->file('sni_uk_cert.pem');
+$sniCsFile = TestPath::file('gh9310_sni_cs.pem.tmp');
+$sniUkCertFile = TestPath::file('gh9310_sni_uk_cert.pem.tmp');
+$sniUkKeyFile = TestPath::file('gh9310_sni_uk_key.pem.tmp');
+$sniUsCertFile = TestPath::file('gh9310_sni_us_cert.pem.tmp');
+$sniUsKeyFile = TestPath::file('gh9310_sni_us_key.pem.tmp');
+$baseDirSniUkCertFile = $baseDir->file();
 
 $certificateGenerator->saveCaCert($sniCaFile);
 $certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $sniCsFile);

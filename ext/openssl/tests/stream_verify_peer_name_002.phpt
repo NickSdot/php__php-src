@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_verify_peer_name_002.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_verify_peer_name_002-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -48,11 +48,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($actualPeerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_verify_peer_name_002.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_verify_peer_name_002-ca.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)
