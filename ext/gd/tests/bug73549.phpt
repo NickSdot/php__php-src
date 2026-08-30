@@ -10,7 +10,7 @@ if (!(imagetypes() & IMG_PNG)) {
 ?>
 --FILE--
 <?php
-$stream = fopen(__DIR__ . DIRECTORY_SEPARATOR . 'bug73549.png', 'w');
+$stream = fopen(TestPath::file(), 'w');
 $im = imagecreatetruecolor(8, 8);
 var_dump(imagepng($im, $stream));
 var_dump($stream);
@@ -18,7 +18,3 @@ var_dump($stream);
 --EXPECTF--
 bool(true)
 resource(%d) of type (stream)
---CLEAN--
-<?php
-unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug73549.png');
-?>

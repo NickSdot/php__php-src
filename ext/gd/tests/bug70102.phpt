@@ -12,21 +12,17 @@ if (!function_exists('imagewebp') || !function_exists('imagecreatefromwebp'))
 ?>
 --FILE--
 <?php
-$filename = __DIR__ .  '/bug70102.webp';
+$filename = TestPath::file();
 
 $im = imagecreatetruecolor(8, 8);
 $white = imagecolorallocate($im, 255, 255, 255);
 var_dump($white & 0xffffff);
 imagefilledrectangle($im, 0, 0, 7, 7, $white);
-imagewebp($im, $filename);
+imagewebp($im, $filename->path);
 
 $im = imagecreatefromwebp($filename);
 $color = imagecolorat($im, 4, 4);
 var_dump($color & 0xffffff);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/bug70102.webp');
 ?>
 --EXPECT--
 int(16777215)

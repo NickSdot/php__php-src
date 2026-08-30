@@ -4,15 +4,12 @@ Bug #81739 (OOB read due to insufficient validation in imageloadfont())
 gd
 --FILE--
 <?php
-$s = fopen(__DIR__ . "/font.font", "w");
+$file = TestPath::file();
+$s = fopen($file, "w");
 // header without character data
 fwrite($s, "\x01\x00\x00\x00\x20\x00\x00\x00\x08\x00\x00\x00\x08\x00\x00\x00");
 fclose($s);
-var_dump(imageloadfont(__DIR__ . "/font.font"));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/font.font");
+var_dump(imageloadfont($file));
 ?>
 --EXPECTF--
 Warning: imageloadfont(): %croduct of memory allocation multiplication would exceed INT_MAX, failing operation gracefully

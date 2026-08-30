@@ -17,27 +17,27 @@ gd
     require_once __DIR__ . '/func.inc';
 
     $infile = __DIR__  . '/girl.avif';
-    $outfile = __DIR__  . '/test.avif';
+    $outfile = TestPath::file();
 
     echo 'Decoding AVIF image: ';
     $img = imagecreatefromavif($infile);
     echo_status($img);
 
     echo 'Default AVIF encoding: ';
-    echo_status(imageavif($img, $outfile));
+    echo_status(imageavif($img, $outfile->path));
 
     echo 'Encoding AVIF at quality 70: ';
-    echo_status(imageavif($img, $outfile, 70));
+    echo_status(imageavif($img, $outfile->path, 70));
 
     echo 'Encoding AVIF at quality 70 with speed 5: ';
-    echo_status(imageavif($img, $outfile, 70, 5));
+    echo_status(imageavif($img, $outfile->path, 70, 5));
 
     echo 'Encoding AVIF with default quality: ';
-    echo_status(imageavif($img, $outfile, -1));
+    echo_status(imageavif($img, $outfile->path, -1));
 
     echo 'Encoding AVIF with illegal quality: ';
     try {
-    	imageavif($img, $outfile, 1234);
+        imageavif($img, $outfile->path, 1234);
     } catch (\ValueError $e) {
         echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
@@ -45,13 +45,13 @@ gd
     echo 'Encoding AVIF with illegal speed: ';
 
     try {
-    	imageavif($img, $outfile, 70, 1234);
+        imageavif($img, $outfile->path, 70, 1234);
     } catch (\ValueError $e) {
         echo $e::class, ': ', $e->getMessage(), PHP_EOL;
     }
 
     echo 'Encoding AVIF losslessly... ';
-    echo_status(imageavif($img, $outfile, 100, 0));
+    echo_status(imageavif($img, $outfile->path, 100, 0));
 
     echo "Decoding the AVIF we just wrote...\n";
     $img_from_avif = imagecreatefromavif($outfile);
@@ -60,9 +60,6 @@ gd
     // With the current test image, we just didn't need to.
     echo 'What is the mean squared error of the two images? ',
         mse($img, $img_from_avif);
-
-    unlink($outfile);
-
 
     function echo_status($success) {
         echo $success ? "ok\n" : "failed\n";

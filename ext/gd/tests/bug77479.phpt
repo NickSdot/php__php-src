@@ -13,14 +13,11 @@ memory_limit=-1
 <?php
 $im = imagecreate(40000, 20000);
 imagecolorallocate($im, 0, 0, 0);
-imagewbmp($im, __DIR__ . '/77479.wbmp');
+$output = TestPath::file();
+imagewbmp($im, $output->path);
 ?>
 --EXPECTF--
 Warning: imagewbmp():%S %croduct of memory allocation multiplication would exceed INT_MAX, failing operation gracefully
  in %s on line %d
 
 Warning: imagewbmp(): Could not create WBMP%win %s on line %d
---CLEAN--
-<?php
-@unlink(__DIR__ . '/77479.wbmp');
-?>
