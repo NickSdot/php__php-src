@@ -18,8 +18,8 @@ $file_types = array("empty", "numeric", "text", "text_with_new_line", "alphanume
 $file_modes = array("w", "wb", "wt", "w+", "w+b","w+t",
                     "a", "ab", "at", "a+","a+b", "a+t");
 
-$file_name = "$file_path/fflush_variation3.tmp";
-$link_name = "$file_path/lnk_fflush_variation3.tmp";
+$file_name = TestPath::file('fflush_variation3.tmp');
+$link_name = TestPath::file('lnk_fflush_variation3.tmp');
 
 $count = 1;
 

@@ -3,7 +3,7 @@ fstat() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/fstat.dat";
+$filename = TestPath::file('fstat.dat');
 
 $fp = fopen($filename, "w");
 var_dump(fstat($fp));
@@ -14,7 +14,6 @@ try {
     echo $e->getMessage(), "\n";
 }
 
-@unlink($filename);
 echo "Done\n";
 ?>
 --EXPECTF--

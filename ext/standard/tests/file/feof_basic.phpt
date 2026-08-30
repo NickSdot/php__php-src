@@ -5,7 +5,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing feof() : basic functionality ***\n";
-$tmpFile1 = __FILE__.".tmp1";
+$tmpFile1 = TestPath::file('feof_basic.tmp1');
 $h = fopen($tmpFile1, 'wb');
 $count = 10;
 for ($i = 1; $i <= $count; $i++) {
@@ -28,7 +28,7 @@ echo $previousLine;
 var_dump($lastline); // this should be false
 fclose($h);
 
-$tmpFile2 = __FILE__.".tmp2";
+$tmpFile2 = TestPath::file('feof_basic.tmp2');
 $h = fopen($tmpFile2, 'wb+');
 $count = 10;
 echo "*** writing $count lines, testing feof ***\n";
@@ -63,8 +63,6 @@ try {
 } catch (TypeError $e) {
     echo $e->getMessage(), "\n";
 }
-unlink($tmpFile1);
-unlink($tmpFile2);
 
 echo "Done";
 ?>

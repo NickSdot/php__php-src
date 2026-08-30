@@ -10,8 +10,7 @@ second line of string
 third line of string
 EOD;
 
-$file_path = __DIR__;
-$filename = "$file_path/fflush_basic.tmp";
+$filename = TestPath::file('fflush_basic.tmp');
 
 // opening a file
 $file_handle = fopen($filename, "w");
@@ -32,12 +31,6 @@ $return_value = fflush($file_handle);
 var_dump( is_bool($return_value) );
 fclose($file_handle);
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fflush_basic.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Testing fflush(): writing to a file and reading the contents ***

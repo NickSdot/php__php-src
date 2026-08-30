@@ -3,7 +3,7 @@ ftruncate() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/ftruncate.dat";
+$filename = TestPath::file('ftruncate.dat');
 
 file_put_contents($filename, "some test data inside");
 
@@ -40,7 +40,6 @@ try {
 fclose($fp);
 var_dump(file_get_contents($filename));
 
-@unlink($filename);
 
 ?>
 --EXPECTF--

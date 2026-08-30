@@ -4,10 +4,10 @@ Test glob() function: basic functions
 <?php
 echo "*** Testing glob() : basic functions ***\n";
 
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 
 // temp dirname used here
-$dirname = "$file_path/glob_basic";
+$dirname = TestPath::directory('glob_basic');
 
 // temp dir created
 mkdir($dirname);
@@ -34,14 +34,6 @@ function sort_var_dump($results) {
    sort($results);
    var_dump($results);
 }
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/glob_basic/wonder12345");
-unlink("$file_path/glob_basic/wonder.txt");
-unlink("$file_path/glob_basic/file.text");
-rmdir("$file_path/glob_basic/");
 ?>
 --EXPECTF--
 *** Testing glob() : basic functions ***

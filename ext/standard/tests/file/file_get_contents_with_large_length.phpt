@@ -5,7 +5,7 @@ memory_limit=128M
 --FILE--
 <?php
 
-$file_path = __DIR__ . '/file_get_contents_with_large_length_content.txt';
+$file_path = TestPath::file('file_get_contents_with_large_length_content.txt');
 $file_content = str_repeat('a', 50000);
 file_put_contents($file_path, $file_content);
 
@@ -17,10 +17,6 @@ var_dump($result === $file_content);
 $result = file_get_contents($file_path, length: 40000);
 var_dump($result === str_repeat('a', 40000));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/file_get_contents_with_large_length_content.txt');
 ?>
 --EXPECT--
 bool(true)

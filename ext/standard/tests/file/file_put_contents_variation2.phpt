@@ -17,7 +17,7 @@ set_error_handler('test_error_handler');
 
 // Initialise function arguments not being substituted (if any)
 
-$filename = __DIR__ . '/fwriteVar5.tmp';
+$filename = TestPath::file('fwriteVar5.tmp');
 
 
 
@@ -101,11 +101,6 @@ foreach($inputs as $key =>$value) {
       readfile($filename);
 };
 
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . '/fwriteVar5.tmp';
-unlink($filename);
 ?>
 --EXPECT--
 *** Testing file_put_contents() : usage variation ***

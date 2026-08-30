@@ -4,7 +4,7 @@ Test ftruncate() function : error conditions
 <?php
 echo "*** Testing ftruncate() : error conditions ***\n";
 
-$filename = __DIR__."/ftruncate_error.tmp";
+$filename = TestPath::file('ftruncate_error.tmp');
 $file_handle = fopen($filename, "w" );
 fwrite($file_handle, "Testing ftruncate error conditions \n");
 fflush($file_handle);
@@ -24,11 +24,6 @@ try {
 var_dump( filesize($filename) );
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$filename = __DIR__."/ftruncate_error.tmp";
-unlink( $filename );
 ?>
 --EXPECT--
 *** Testing ftruncate() : error conditions ***

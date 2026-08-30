@@ -13,7 +13,7 @@ obscure_filename
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$dir = __DIR__ . '/file_put_contents_variation8';
+$dir = TestPath::directory('file_put_contents_variation8');
 mkdir($dir);
 chdir($dir);
 
@@ -50,12 +50,6 @@ for( $i=0; $i<count($names_arr); $i++ ) {
 }
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/file_put_contents_variation8';
-// TODO Cleanup temp files?
-rmdir($dir);
 ?>
 --EXPECTF--
 *** Testing file_put_contents() : usage variation ***

@@ -9,7 +9,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
  * Function is implemented in ext/standard/file.c
  */
 
-$outputfile = __FILE__.".tmp";
+$outputfile = TestPath::file('fread_fwrite_basic.tmp');
 
 echo "--- testing rw moving about the file ---\n";
 $h = fopen($outputfile, 'wb+');
@@ -43,7 +43,6 @@ fseek($h, -strlen($out) + 1, SEEK_CUR);
 echo "last bytes: ".fread($h, strlen($out))."\n";
 fclose($h);
 
-unlink($outputfile);
 
 echo "Done";
 ?>
