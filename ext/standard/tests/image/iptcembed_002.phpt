@@ -74,7 +74,7 @@ else { echo "error can't write $file2".PHP_EOL;exit(1); }
 
 
 #check jpeg properties for new image with iptc tags
-echo "new generated image with itpc tags : $file2".PHP_EOL;
+echo "new generated image with itpc tags : ".basename($file2).PHP_EOL;
 $ret = getimagesize($file2,$info);
 if ($ret===false) { echo "getimagesize error".PHP_EOL;exit(1); }
 list($width, $height, $type, $attr) = $ret;
