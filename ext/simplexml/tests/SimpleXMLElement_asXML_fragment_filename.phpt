@@ -13,15 +13,12 @@ $sxe = simplexml_load_string(<<<XML
     </container2>
 </container>
 XML);
-$sxe->container2->asXML(__DIR__."/SimpleXMLElement_asXML_fragment_filename_output.tmp");
+$file = TestPath::file();
+$sxe->container2->asXML($file);
 
 // Note: the strange indent is correct: the indent text node preceding container2 is not emitted.
-echo file_get_contents(__DIR__."/SimpleXMLElement_asXML_fragment_filename_output.tmp");
+echo file_get_contents($file);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/SimpleXMLElement_asXML_fragment_filename_output.tmp");
 ?>
 --EXPECT--
 <container2>
