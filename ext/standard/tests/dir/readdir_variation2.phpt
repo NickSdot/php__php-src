@@ -8,7 +8,8 @@ Test readdir() function : usage variations - empty directories
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = __DIR__ . '/readdir_variation2';
+$directory = TestPath::directory('readdir_variation2');
+$path = $directory->path;
 mkdir($path);
 $dir_handle = opendir($path);
 
@@ -27,11 +28,6 @@ usort($entries, "mysort");
 foreach($entries as $entry) {
     var_dump($entry);
 }
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/readdir_variation2';
-rmdir($path);
 ?>
 --EXPECT--
 *** Testing readdir() : usage variations ***

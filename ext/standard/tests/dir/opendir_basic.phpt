@@ -8,14 +8,17 @@ Test opendir() function : basic functionality
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_basic';
+$base_dir = TestPath::directory('opendir_basic');
+$base_dir_path = $base_dir->path;
 @mkdir($base_dir_path);
 
-$level_one_dir_name = "level_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one = $base_dir->directory('level_one');
+$level_one_dir_name = $level_one->name;
+$level_one_dir_path = $level_one->path;
 
-$level_two_dir_name = "level_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two = $level_one->directory('level_two');
+$level_two_dir_name = $level_two->name;
+$level_two_dir_path = $level_two->path;
 
 // create temporary directories - will remove in CLEAN section
 mkdir($level_one_dir_path);
@@ -34,13 +37,6 @@ closedir($dh1);
 var_dump($dh1);
 closedir($dh2);
 var_dump($dh2);
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_basic';
-rmdir("$base_dir_path/level_one/level_two");
-rmdir("$base_dir_path/level_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : basic functionality ***

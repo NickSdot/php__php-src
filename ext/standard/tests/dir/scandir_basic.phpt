@@ -12,7 +12,7 @@ echo "*** Testing scandir() : basic functionality ***\n";
 include (__DIR__ . '/../file/file.inc');
 
 // set up directory
-$directory = __DIR__ . '/scandir_basic';
+$directory = TestPath::directory('scandir_basic');
 mkdir($directory);
 create_files($directory, 3);
 
@@ -25,11 +25,6 @@ $context = stream_context_create();
 var_dump(scandir($directory, $sorting_order, $context));
 
 delete_files($directory, 3);
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . '/scandir_basic';
-rmdir($directory);
 ?>
 --EXPECT--
 *** Testing scandir() : basic functionality ***

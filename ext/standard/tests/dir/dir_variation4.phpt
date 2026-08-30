@@ -13,8 +13,8 @@ echo "*** Testing dir() : operate on previously opened directory ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/dir_variation4";
+$directory = TestPath::directory('dir_variation4');
+$dir_path = $directory->path;
 @mkdir($dir_path);
 
 // create files within the temporary directory
@@ -37,13 +37,6 @@ var_dump( $e->read() ); // with current handle
 // delete temporary files
 delete_files($dir_path, 3, "dir_variation4");
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_path = $file_path."/dir_variation4";
-
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing dir() : operate on previously opened directory ***

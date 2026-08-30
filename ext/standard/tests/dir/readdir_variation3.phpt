@@ -13,8 +13,10 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = __DIR__ . '/readdir_variation3';
-$path_sub = $path_top . '/sub_folder';
+$top = TestPath::directory('readdir_variation3');
+$path_top = $top->path;
+$sub = $top->directory('sub_folder');
+$path_sub = $sub->path;
 mkdir($path_top);
 mkdir($path_sub);
 
@@ -37,13 +39,6 @@ delete_files($path_top, 2);
 delete_files($path_sub, 2);
 
 closedir($dir_handle);
-?>
---CLEAN--
-<?php
-$path_top = __DIR__ . '/readdir_variation3';
-$path_sub = $path_top . '/sub_folder';
-rmdir($path_sub);
-rmdir($path_top);
 ?>
 --EXPECT--
 *** Testing readdir() : usage variations ***

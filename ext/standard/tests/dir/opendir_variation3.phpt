@@ -8,7 +8,7 @@ Test opendir() function : usage variations - open a directory twice
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$path = __DIR__ . "/opendir_variation3";
+$path = TestPath::directory('opendir_variation3');
 mkdir($path);
 
 echo "\n-- Open directory first time: --\n";
@@ -25,11 +25,6 @@ if ($dh1 !== $dh2) {
 
 closedir($dh1);
 closedir($dh2);
-?>
---CLEAN--
-<?php
-$path = __DIR__ . "/opendir_variation3";
-rmdir($path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variation ***

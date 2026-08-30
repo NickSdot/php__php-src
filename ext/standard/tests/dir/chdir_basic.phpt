@@ -7,13 +7,18 @@ Test chdir() function : basic functionality
  */
 
 echo "*** Testing chdir() : basic functionality ***\n";
-$base_dir_path = __DIR__;
+TestContext::useRelativeWorkspace();
+$base_dir = TestPath::directory('chdir_basic');
+$base_dir_path = $base_dir->path;
+mkdir($base_dir_path);
 
-$level1_one_dir_name = "level1_one";
-$level1_one_dir_path = "$base_dir_path/$level1_one_dir_name";
+$level1_one = $base_dir->directory('level1_one');
+$level1_one_dir_name = $level1_one->name;
+$level1_one_dir_path = $level1_one->path;
 
-$level1_two_dir_name = "level1_two";
-$level1_two_dir_path = "$base_dir_path/$level1_one_dir_name/$level1_two_dir_name";
+$level1_two = $level1_one->directory('level1_two');
+$level1_two_dir_name = $level1_two->name;
+$level1_two_dir_path = $level1_two->path;
 
 // create directories
 mkdir($level1_one_dir_path);
@@ -27,12 +32,6 @@ var_dump(getcwd());
 echo "\n-- Testing chdir() with relative paths: --\n";
 var_dump(chdir($level1_two_dir_name));
 var_dump(getcwd());
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/level1_one/level1_two");
-rmdir("$file_path/level1_one");
 ?>
 --EXPECTF--
 *** Testing chdir() : basic functionality ***

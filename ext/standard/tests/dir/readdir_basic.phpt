@@ -12,7 +12,8 @@ echo "*** Testing readdir() : basic functionality ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path = __DIR__ . '/readdir_basic';
+$directory = TestPath::directory('readdir_basic');
+$path = $directory->path;
 mkdir($path);
 create_files($path, 3);
 
@@ -40,11 +41,6 @@ foreach($a as $file) {
 
 delete_files($path, 3);
 closedir($dh);
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/readdir_basic';
-rmdir($path);
 ?>
 --EXPECTF--
 *** Testing readdir() : basic functionality ***

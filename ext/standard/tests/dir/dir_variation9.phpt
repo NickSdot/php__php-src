@@ -17,16 +17,22 @@ echo "*** Testing dir() : checking with valid and invalid paths ***\n";
 
 /* create the temporary directories */
 
-$file_path = __DIR__;
+TestContext::useRelativeWorkspace();
+$root = TestPath::directory();
+$file_path = $root->path;
+@mkdir($file_path);
 
 // directory dir_variation91 with one sub-directory sub_dir11 and sub-sub-directory sub_dir111
-$dir_path1 = $file_path."/dir_variation91";
-$sub_dir11 = $dir_path1."/sub_dir11";
-$sub_dir111 = $sub_dir11."/sub_dir111";
+$dir1 = $root->directory('dir_variation91');
+$dir_path1 = $dir1->path;
+$sub1 = $dir1->directory('sub_dir11');
+$sub_dir11 = $sub1->path;
+$sub_dir111 = $sub1->directory('sub_dir111')->path;
 
 // directory dir_variation92 with one sub-directory sub_dir21
-$dir_path2 = $file_path."/dir_variation92";
-$sub_dir21 = $dir_path2."/sub_dir21";
+$dir2 = $root->directory('dir_variation92');
+$dir_path2 = $dir2->path;
+$sub_dir21 = $dir2->directory('sub_dir21')->path;
 
 @mkdir($dir_path1);
 @mkdir($dir_path2);
@@ -49,22 +55,6 @@ var_dump( dir("$dir_path2/sub_dir21/../../dir_variation91/sub_dir12/..") );
 var_dump( dir("$dir_path1/sub_dir11/sub_dir111/../../dir_variation92/sub_dir21/..") );
 
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-
-$dir_path1 = $file_path."/dir_variation91";
-$sub_dir11 = $dir_path1."/sub_dir11";
-$sub_dir111 = $sub_dir11."/sub_dir111";
-$dir_path2 = $file_path."/dir_variation92";
-$sub_dir21 = $dir_path2."/sub_dir21";
-
-rmdir($sub_dir21);
-rmdir($sub_dir111);
-rmdir($sub_dir11);
-rmdir($dir_path1);
-rmdir($dir_path2);
 ?>
 --EXPECTF--
 *** Testing dir() : checking with valid and invalid paths ***

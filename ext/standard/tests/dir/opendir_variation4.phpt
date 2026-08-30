@@ -8,14 +8,18 @@ Test opendir() function : usage variations - different relative paths
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_variation4';
+TestContext::useRelativeWorkspace();
+$base_dir = TestPath::directory('opendir_variation4');
+$base_dir_path = $base_dir->path;
 @mkdir($base_dir_path);
 
-$level_one_dir_name = "level_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one = $base_dir->directory('level_one');
+$level_one_dir_name = $level_one->name;
+$level_one_dir_path = $level_one->path;
 
-$level_two_dir_name = "level_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two = $level_one->directory('level_two');
+$level_two_dir_name = $level_two->name;
+$level_two_dir_path = $level_two->path;
 
 // create directories
 mkdir($level_one_dir_path);
@@ -64,13 +68,6 @@ function clean_dh($dh){
     }
     unset($dh);
 }
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_variation4';
-rmdir("$base_dir_path/level_one/level_two");
-rmdir("$base_dir_path/level_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variation ***
