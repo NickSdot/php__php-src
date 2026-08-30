@@ -9,20 +9,18 @@ if (!function_exists("mb_send_mail") || !mb_language("neutral")) {
 }
 ?>
 --INI--
-sendmail_path={MAIL:{PWD}/bug52681.eml}
+sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
+$mail = TestPath::file('mail.eml');
+chdir($mail->directory);
 $to = 'example@example.com';
 $headers = 'MIME-Version: 2.0';
 
 mb_send_mail($to, mb_language(), "test", $headers);
 
-readfile(__DIR__ . "/bug52681.eml");
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug52681.eml");
+readfile($mail);
 ?>
 --EXPECTF--
 To: example@example.com

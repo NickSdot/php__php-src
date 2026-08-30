@@ -12,26 +12,24 @@ if (!@mb_internal_encoding('GB2312')) {
 }
 ?>
 --INI--
-sendmail_path={MAIL:{PWD}/mb_send_mail05.eml}
+sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
+$mail = TestPath::file("mail.eml");
+chdir($mail->directory);
 $to = 'example@example.com';
 
 /* default setting */
 mb_send_mail($to, mb_language(), "test");
-readfile(__DIR__ . "/mb_send_mail05.eml");
+readfile($mail);
 
 /* Simplified Chinese (HK-GB-2312) */
 if (mb_language("simplified chinese")) {
     mb_internal_encoding('GB2312');
     mb_send_mail($to, "Втбщ ".mb_language(), "Втбщ");
-    readfile(__DIR__ . "/mb_send_mail05.eml");
+    readfile($mail);
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/mb_send_mail05.eml");
 ?>
 --EXPECTF--
 To: example@example.com
