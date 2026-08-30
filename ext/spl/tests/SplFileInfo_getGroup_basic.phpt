@@ -10,17 +10,11 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$filename = __DIR__ . "/SplFileInfo_getGroup_basic";
-touch($filename);
+$filename = TestPath::touch();
 $fileInfo = new SplFileInfo($filename);
 $expected = filegroup($filename);
 $actual = $fileInfo->getGroup();
 var_dump($expected == $actual);
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . "/SplFileInfo_getGroup_basic";
-unlink($filename);
 ?>
 --EXPECT--
 bool(true)
