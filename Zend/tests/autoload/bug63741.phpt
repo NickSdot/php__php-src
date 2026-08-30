@@ -2,7 +2,8 @@
 Bug #63741 (Crash when autoloading from spl)
 --FILE--
 <?php
-file_put_contents(__DIR__."/bug63741.tmp.php",
+$file = TestPath::file();
+file_put_contents($file,
 <<<'EOT'
 <?php
 if (isset($autoloading))
@@ -41,10 +42,8 @@ else
 EOT
 );
 
-include __DIR__."/bug63741.tmp.php";
+include $file;
 ?>
---CLEAN--
-<?php unlink(__DIR__."/bug63741.tmp.php"); ?>
 --EXPECT--
 autoloading...
 OK!
