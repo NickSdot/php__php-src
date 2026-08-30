@@ -10,7 +10,7 @@ check_skip('db4');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'bug36436.db';
+$db_name = TestPath::file()->path;
 
 $db = set_up_db_ex('db4', $db_name, LockFlag::DbLock, persistent: true);
 
@@ -21,12 +21,6 @@ var_dump(dba_nextkey($db));
 
 dba_close($db);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'bug36436.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 object(Dba\Connection)#%d (%d) {

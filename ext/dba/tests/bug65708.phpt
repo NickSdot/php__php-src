@@ -10,7 +10,7 @@ check_skip_any();
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$name = 'bug65708.db';
+$name = TestPath::file()->path;
 
 $db = get_any_db($name);
 
@@ -27,12 +27,6 @@ echo gettype($copy)."\n";
 
 dba_close($db);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'bug65708.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 Using handler: "%s"

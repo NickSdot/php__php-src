@@ -12,6 +12,7 @@ die("info $HND handler used");
 --FILE--
 <?php
 require_once(__DIR__ .'/test.inc');
+$db_file = TestPath::file();
 echo "database handler: $handler\n";
 var_dump(dba_open($db_file, 'n'));
 
@@ -108,10 +109,6 @@ try {
 } catch (\ValueError $e) {
     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
-?>
---CLEAN--
-<?php
-require(__DIR__ .'/clean.inc');
 ?>
 --EXPECTF--
 database handler: flatfile

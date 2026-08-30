@@ -46,10 +46,6 @@ foreach ($h as $key => $val) {
 }
 
 ?>
---CLEAN--
-<?php
-require(__DIR__ .'/clean.inc');
-?>
 --EXPECT--
 database handler: flatfile
 Test 1

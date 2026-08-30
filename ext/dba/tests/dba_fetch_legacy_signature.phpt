@@ -10,7 +10,7 @@ check_skip_any();
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$name = 'legacy_fetch_signature.db';
+$name = TestPath::file()->path;
 
 $db = get_any_db($name);
 
@@ -28,12 +28,6 @@ try {
 }
 dba_close($db);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'legacy_fetch_signature.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 Using handler: "%s"

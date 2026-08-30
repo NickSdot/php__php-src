@@ -15,6 +15,7 @@ dba
 
 $handler = 'cdb';
 require_once(__DIR__ .'/test.inc');
+$db_filename = TestPath::file('test0.dbm');
 
 echo "Test 0\n";
 
@@ -64,10 +65,6 @@ else {
     echo "Failed to open DB\n";
 }
 
-?>
---CLEAN--
-<?php
-require(__DIR__ .'/clean.inc');
 ?>
 --EXPECTF--
 Test 0
