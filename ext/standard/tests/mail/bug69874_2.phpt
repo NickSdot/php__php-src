@@ -14,11 +14,9 @@ $message = 'A Message';
 
 $outFile = TestPath::file('mailBug69874_2.out');
 chdir($outFile->directory);
-@unlink($outFile);
 
 var_dump( mail($to, $subject, $message, '') );
 echo file_get_contents($outFile);
-unlink($outFile);
 
 ?>
 --EXPECTF--

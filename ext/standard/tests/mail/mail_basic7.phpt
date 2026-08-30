@@ -26,14 +26,12 @@ $additional_headers = array(
 );
 $outFile = TestPath::file('mailBasic7.out');
 chdir($outFile->directory);
-@unlink($outFile);
 
 echo "-- All Mail Content Parameters --\n";
 // Calling mail() with all additional headers
 
 var_dump(mail($to, $subject, $message, $additional_headers));
 echo file_get_contents($outFile);
-unlink($outFile);
 
 echo "\n\n************* TEST ******************\n";
 // Should fail all
@@ -146,8 +144,6 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-@unlink($outFile);
-
 try {
     mail($to, $subject, $message, ['*:foo1' => array('bar1')]);
 } catch (TypeError|ValueError $exception) {
@@ -198,7 +194,6 @@ try {
 
 var_dump(mail($to, $subject, $message, ["foo9" => '%&$#!']));
 echo file_get_contents($outFile);
-unlink($outFile);
 
 try {
     mail($to, $subject, $message, ["foo10" => "abc\0\tdef"]);

@@ -20,13 +20,11 @@ echo "-- All Mail Content Parameters --\n";
 // Calling mail() with all additional headers
 var_dump( mail($to, $subject, $message, $additional_headers) );
 echo file_get_contents($outFile);
-unlink($outFile);
 
 echo "\n-- Mandatory Parameters --\n";
 // Calling mail() with mandatory arguments
 var_dump( mail($to, $subject, $message) );
 echo file_get_contents($outFile);
-unlink($outFile);
 
 ?>
 --EXPECT--
