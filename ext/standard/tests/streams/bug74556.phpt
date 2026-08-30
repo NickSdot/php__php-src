@@ -7,7 +7,9 @@ if (!strncasecmp(PHP_OS, 'WIN', 3)) echo "skip Unix Only";
 --FILE--
 <?php
 
-$sock = tempnam(sys_get_temp_dir(), 'bug74556') . '.sock';
+$socket = TestPath::file();
+chdir($socket->directory);
+$sock = $socket->name;
 $s = stream_socket_server("unix://$sock");
 $c = stream_socket_client("unix://$sock");
 
@@ -15,7 +17,6 @@ var_dump(
     stream_socket_get_name($s, true),
     stream_socket_get_name($c, false)
 );
-unlink($sock);
 ?>
 --EXPECT--
 bool(false)
