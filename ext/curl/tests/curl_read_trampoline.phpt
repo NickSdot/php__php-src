@@ -14,7 +14,7 @@ class TrampolineTest {
 $o = new TrampolineTest();
 $callback = [$o, 'trampoline'];
 
-$sFileBase  = __DIR__.DIRECTORY_SEPARATOR.'curl_read_trampoline';
+$sFileBase  = TestPath::file('curl_read_trampoline')->path;
 $sReadFile  = $sFileBase.'_in.tmp';
 $sWriteFile = $sFileBase.'_out.tmp';
 $sWriteUrl  = 'file://'.$sWriteFile;
@@ -34,14 +34,6 @@ fclose ($hReadHandle);
 $sOutput = file_get_contents($sWriteFile);
 var_dump($sOutput);
 
-?>
---CLEAN--
-<?php
-$sFileBase  = __DIR__.DIRECTORY_SEPARATOR.'curl_read_trampoline';
-$sReadFile  = $sFileBase.'_in.tmp';
-$sWriteFile = $sFileBase.'_out.tmp';
-@unlink($sReadFile);
-@unlink($sWriteFile);
 ?>
 --EXPECT--
 Trampoline for trampoline

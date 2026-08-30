@@ -12,7 +12,7 @@ curl_setopt($ch1, CURLOPT_SAFE_UPLOAD, 1);
 curl_setopt($ch1, CURLOPT_URL, "{$host}/get.php?test=file");
 curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
 
-$filename = __DIR__ . '/curl_copy_handle_variation3_clone.txt';
+$filename = TestPath::file('curl_copy_handle_variation3_clone.txt')->path;
 file_put_contents($filename, "Test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);
@@ -28,7 +28,3 @@ var_dump(curl_exec($ch2));
 bool(true)
 string(%d) "curl_copy_handle_variation3_clone.txt|application/octet-stream|5"
 string(%d) "curl_copy_handle_variation3_clone.txt|application/octet-stream|5"
---CLEAN--
-<?php
-@unlink(__DIR__ . '/curl_copy_handle_variation3_clone.txt');
-?>

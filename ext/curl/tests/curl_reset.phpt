@@ -5,8 +5,8 @@ curl
 --FILE--
 <?php
 
-$test_file = tempnam(sys_get_temp_dir(), 'php-curl-test');
-$log_file = tempnam(sys_get_temp_dir(), 'php-curl-test');
+$test_file = TestPath::file('php-curl-test-output')->path;
+$log_file = TestPath::file('php-curl-test-log')->path;
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");
@@ -27,9 +27,6 @@ fclose($testfile_fp);
 
 echo file_get_contents($test_file);
 
-// cleanup
-unlink($test_file);
-unlink($log_file);
 ?>
 --EXPECT--
 testtest

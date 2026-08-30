@@ -6,7 +6,7 @@ curl
 <?php
 
 function checkForClosedFilePointer($host, $curl_option, $description) {
-    $fp = fopen(__DIR__ . '/bug54798.tmp', 'w+');
+    $fp = fopen(TestPath::file('bug54798.tmp')->path, 'w+');
 
     $ch = curl_init();
 
@@ -45,8 +45,6 @@ foreach($options_to_check as $option) {
 }
 
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/bug54798.tmp'); ?>
 --EXPECTF--
 %AOk for CURLOPT_STDERR
 

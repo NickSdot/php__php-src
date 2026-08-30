@@ -10,7 +10,7 @@ curl
 --FILE--
 <?php
 
-$log_file = tempnam(sys_get_temp_dir(), 'php-curl-test');
+$log_file = TestPath::file('php-curl-test')->path;
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");
@@ -20,9 +20,6 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_FILE, STDOUT);
 curl_setopt($ch, CURLOPT_URL, 'file://' . $log_file);
 curl_exec($ch);
-
-// cleanup
-unlink($log_file);
 
 ?>
 --EXPECT--

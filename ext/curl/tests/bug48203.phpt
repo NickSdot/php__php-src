@@ -5,7 +5,7 @@ curl
 --FILE--
 <?php
 include 'server.inc';
-$fp = fopen(__DIR__ . '/bug48203.tmp', 'w');
+$fp = fopen(TestPath::file('bug48203.tmp')->path, 'w');
 
 $ch = curl_init();
 
@@ -20,8 +20,6 @@ curl_exec($ch);
 echo "Ok\n";
 
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/bug48203.tmp'); ?>
 --EXPECTF--
 Warning: curl_exec(): CURLOPT_STDERR resource has gone away, resetting to stderr in %s on line %d
 %A

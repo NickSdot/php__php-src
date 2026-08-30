@@ -14,7 +14,7 @@ class TrampolineTest {
 $o = new TrampolineTest();
 $callback = [$o, 'trampoline'];
 
-$log_file = tempnam(sys_get_temp_dir(), 'php-curl-CURLOPT_WRITEFUNCTION-trampoline');
+$log_file = TestPath::file('php-curl-CURLOPT_WRITEFUNCTION-trampoline')->path;
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");
@@ -25,11 +25,6 @@ curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 curl_setopt($ch, CURLOPT_URL, 'file://' . $log_file);
 curl_exec($ch);
 
-?>
---CLEAN--
-<?php
-$log_file = tempnam(sys_get_temp_dir(), 'php-curl-CURLOPT_WRITEFUNCTION-trampoline');
-@unlink($log_file);
 ?>
 --EXPECT--
 Trampoline for trampoline
