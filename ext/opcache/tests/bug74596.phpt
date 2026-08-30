@@ -12,7 +12,9 @@ opcache
 --FILE--
 <?php
 
-file_put_contents(__DIR__ . "/bug74596_1.php", <<<CODE
+$file1 = TestPath::file();
+$file2 = TestPath::file();
+file_put_contents($file1, <<<CODE
 <?php
 class A {
     public function __construct() {
@@ -28,13 +30,15 @@ class A {
 CODE
 );
 
-file_put_contents(__DIR__ . "/bug74596_2.php", "ok\n");
+file_put_contents($file2, "ok\n");
 
 class ufilter extends php_user_filter
 {
+    public static $file1;
+
     function filter($in, $out, &$consumed, $closing): int
     {
-        include_once __DIR__ . "/bug74596_1.php";
+        include_once self::$file1;
         while ($bucket = stream_bucket_make_writeable($in)) {
             stream_bucket_append($out, $bucket);
         }
@@ -42,14 +46,10 @@ class ufilter extends php_user_filter
     }
 }
 
+ufilter::$file1 = $file1;
 stream_filter_register("ufilter", "ufilter");
 
-include "php://filter/read=ufilter/resource=" . __DIR__ . "/bug74596_2.php";
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/bug74596_1.php");
-unlink(__DIR__ . "/bug74596_2.php");
+include "php://filter/read=ufilter/resource=" . $file2;
 ?>
 --EXPECT--
 ok

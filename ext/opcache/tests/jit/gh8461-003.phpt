@@ -15,7 +15,9 @@ opcache.protect_memory=1
 // Checks that JITed code does not crash in --repeat 2 after the UniqueList
 // class is recompiled.
 
-require __DIR__ . '/gh8461-003.inc';
+$incfile = TestPath::file();
+file_put_contents($incfile, file_get_contents(__DIR__ . '/gh8461-003.inc'));
+require $incfile;
 
 class UniqueListLast extends UniqueList
 {
@@ -30,7 +32,7 @@ for ($i = 0; $i < 10; $i++) {
 }
 
 // mark the file as changed (important)
-touch(__DIR__ . '/gh8461-003.inc');
+touch($incfile);
 
 print "OK";
 ?>

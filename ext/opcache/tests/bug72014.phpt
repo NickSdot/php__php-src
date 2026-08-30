@@ -8,20 +8,17 @@ opcache.file_update_protection=0
 opcache
 --FILE--
 <?php
-file_put_contents(__DIR__ . "/bug72014.annon.php", <<<PHP
+$file = TestPath::file();
+file_put_contents($file, <<<PHP
 <?php
 \$a = new class() { public \$testvar = "Foo\n"; };
 echo \$a->testvar;
 PHP
 );
 
-include(__DIR__ . "/bug72014.annon.php");
-include(__DIR__ . "/bug72014.annon.php");
-include(__DIR__ . "/bug72014.annon.php");
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug72014.annon.php")
+include($file);
+include($file);
+include($file);
 ?>
 --EXPECT--
 Foo

@@ -11,7 +11,8 @@ opcache
 <?php if (getenv("SKIP_SLOW_TESTS")) die("skip slow tests excluded by request") ?>
 --FILE--
 <?php
-define("FILENAME", __DIR__ . "/issuer0140.inc.php");
+$file = TestPath::file();
+define("FILENAME", $file);
 file_put_contents(FILENAME, "1\n");
 
 var_dump(is_readable(FILENAME));

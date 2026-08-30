@@ -8,17 +8,13 @@ opcache.optimization_level=0x7FFFBFFF
 opcache
 --FILE--
 <?php
-$file = __DIR__ . "/bug71127.inc";
+$file = TestPath::file('bug71127.inc');
 
 file_put_contents($file, "<?php define('FOO', 'bad'); echo FOO;?>");
 
 define("FOO", "okey");
 
 include($file);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug71127.inc");
 ?>
 --EXPECTF--
 Warning: Constant FOO already defined, this will be an error in PHP 9 in %sbug71127.inc on line %d

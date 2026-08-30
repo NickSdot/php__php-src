@@ -12,15 +12,11 @@ opcache.protect_memory=1
 opcache
 --FILE--
 <?php
-$file = __DIR__ . "/bug74663.inc";
+$file = TestPath::file();
 file_put_contents($file, "");
 include $file;
 
 var_dump(is_file($file));
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/bug74663.inc");
 ?>
 --EXPECT--
 bool(true)

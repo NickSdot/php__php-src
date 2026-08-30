@@ -10,25 +10,29 @@ opcache.revalidate_freq=0
 --FILE--
 <?php
 
-file_put_contents(__DIR__ . '/gh8846-index.php', <<<'PHP'
+$index = TestPath::file('gh8846-index.php');
+$indexUrl = str_replace(__DIR__ . '/', '', $index->path);
+$script = <<<'PHP'
 <?php
 if (!@$_GET['skip']) {
-    include __DIR__ . '/gh8846-1.inc';
+    include '__FIXTURE_1__';
 }
-include __DIR__ . '/gh8846-2.inc';
-echo "Ok\n";
-PHP);
+include '__FIXTURE_2__';
+    echo "Ok\n";
+PHP;
+$script = str_replace(
+    ['__FIXTURE_1__', '__FIXTURE_2__'],
+    [__DIR__ . '/gh8846-1.inc', __DIR__ . '/gh8846-2.inc'],
+    $script,
+);
+file_put_contents($index, $script);
 
 include 'php_cli_server.inc';
 php_cli_server_start('-d opcache.enable=1 -d opcache.enable_cli=1');
 
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/gh8846-index.php');
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $indexUrl);
 echo "\n";
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/gh8846-index.php?skip=1');
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh8846-index.php');
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $indexUrl . '?skip=1');
 ?>
 --EXPECTF--
 bool(true)

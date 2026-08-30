@@ -12,10 +12,25 @@ opcache
 server
 --FILE--
 <?php
-$dir = __DIR__ . '/gh20469_child_variance_resolves_parent';
-@mkdir($dir . '/classes', 0777, true);
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('gh20469_child_variance_resolves_parent');
+mkdir($dir);
+$classes = $dir->directory('classes');
+mkdir($classes);
+$autoload = $dir->file('autoload.php');
+$test1 = $dir->file('test1.php');
+$test2 = $dir->file('test2.php');
+$test3 = $dir->file('test3.php');
+$root = $classes->file('RootForTraitReturn.php');
+$parent = $classes->file('ParentBeingLinked.php');
+$child = $classes->file('ChildOfParentBeingLinked.php');
+$base = $classes->file('BaseCovariantReturn.php');
+$requires = $classes->file('RequiresRootReturnTrait.php');
+$covariant = $classes->file('CovariantReturnWithTrait.php');
+$specific = $classes->file('MoreSpecificReturn.php');
+$dirUrl = str_replace(__DIR__ . '/', '', $dir->path);
 
-file_put_contents($dir . '/autoload.php', <<<'PHP'
+file_put_contents($autoload, <<<'PHP'
 <?php
 spl_autoload_register(function ($class) {
     $prefix = 'APP\\';
@@ -33,14 +48,14 @@ PHP);
  * dependency on ParentBeingLinked can resolve ParentBeingLinked before it
  * reaches its direct resolve_delayed_variance_obligations() call.
  */
-file_put_contents($dir . '/test1.php', <<<'PHP'
+file_put_contents($test1, <<<'PHP'
 <?php
 require __DIR__ . '/autoload.php';
 // Prime the inheritance cache with the full dependency cycle.
 echo \APP\ChildOfParentBeingLinked::SOME_CONSTANT;
 PHP);
 
-file_put_contents($dir . '/test2.php', <<<'PHP'
+file_put_contents($test2, <<<'PHP'
 <?php
 require __DIR__ . '/autoload.php';
 // Link ParentBeingLinked first. During load_delayed_classes(), loading the
@@ -50,7 +65,7 @@ $i = new \APP\ChildOfParentBeingLinked();
 var_dump($i->test());
 PHP);
 
-file_put_contents($dir . '/test3.php', <<<'PHP'
+file_put_contents($test3, <<<'PHP'
 <?php
 require __DIR__ . '/autoload.php';
 // Replay the cache state created by test2. If ParentBeingLinked was cached even
@@ -60,7 +75,7 @@ $i = new \APP\ChildOfParentBeingLinked();
 var_dump($i->test());
 PHP);
 
-file_put_contents($dir . '/classes/RootForTraitReturn.php', <<<'PHP'
+file_put_contents($root, <<<'PHP'
 <?php
 namespace APP;
 
@@ -74,7 +89,7 @@ class RootForTraitReturn
 }
 PHP);
 
-file_put_contents($dir . '/classes/ParentBeingLinked.php', <<<'PHP'
+file_put_contents($parent, <<<'PHP'
 <?php
 namespace APP;
 
@@ -90,7 +105,7 @@ class ParentBeingLinked extends RootForTraitReturn
 }
 PHP);
 
-file_put_contents($dir . '/classes/ChildOfParentBeingLinked.php', <<<'PHP'
+file_put_contents($child, <<<'PHP'
 <?php
 namespace APP;
 
@@ -104,7 +119,7 @@ class ChildOfParentBeingLinked extends ParentBeingLinked
 }
 PHP);
 
-file_put_contents($dir . '/classes/BaseCovariantReturn.php', <<<'PHP'
+file_put_contents($base, <<<'PHP'
 <?php
 namespace APP;
 
@@ -113,7 +128,7 @@ abstract class BaseCovariantReturn
 }
 PHP);
 
-file_put_contents($dir . '/classes/RequiresRootReturnTrait.php', <<<'PHP'
+file_put_contents($requires, <<<'PHP'
 <?php
 namespace APP;
 
@@ -123,7 +138,7 @@ trait RequiresRootReturnTrait
 }
 PHP);
 
-file_put_contents($dir . '/classes/CovariantReturnWithTrait.php', <<<'PHP'
+file_put_contents($covariant, <<<'PHP'
 <?php
 namespace APP;
 
@@ -139,7 +154,7 @@ class CovariantReturnWithTrait extends BaseCovariantReturn
 }
 PHP);
 
-file_put_contents($dir . '/classes/MoreSpecificReturn.php', <<<'PHP'
+file_put_contents($specific, <<<'PHP'
 <?php
 namespace APP;
 
@@ -153,27 +168,9 @@ $ini = trim((string) getenv('TEST_PHP_EXTRA_ARGS'));
 $ini .= ($ini !== '' ? ' ' : '') . '-d opcache.enable=1 -d opcache.enable_cli=1 -d opcache.file_update_protection=0';
 php_cli_server_start($ini);
 
-echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/gh20469_child_variance_resolves_parent/test1.php'), "\n"), "\n";
-echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/gh20469_child_variance_resolves_parent/test2.php'), "\n"), "\n";
-echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/gh20469_child_variance_resolves_parent/test3.php'), "\n"), "\n";
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/gh20469_child_variance_resolves_parent';
-if (is_dir($dir)) {
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::CHILD_FIRST
-    );
-    foreach ($iterator as $file) {
-        if ($file->isDir()) {
-            rmdir($file->getPathname());
-        } else {
-            unlink($file->getPathname());
-        }
-    }
-    rmdir($dir);
-}
+echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $dirUrl . '/test1.php'), "\n"), "\n";
+echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $dirUrl . '/test2.php'), "\n"), "\n";
+echo rtrim(file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $dirUrl . '/test3.php'), "\n"), "\n";
 ?>
 --EXPECT--
 3
