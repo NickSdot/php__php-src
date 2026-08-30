@@ -9,8 +9,7 @@ if (!function_exists("posix_access")) {
 --FILE--
 <?php
 
-$dir = __DIR__;
-$testfile = "$dir/testfile.txt";
+$testfile = TestPath::file();
 
 // Create a temporary file for valid access tests
 file_put_contents($testfile, "hello");
@@ -41,10 +40,6 @@ if (posix_access($testfile, POSIX_F_OK)) {
     echo "File exists OK\n";
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/testfile.txt');
 ?>
 --EXPECTF--
 ValueError: posix_access(): Argument #2 ($flags) must be a bitmask of POSIX_F_OK, POSIX_R_OK, POSIX_W_OK, and POSIX_X_OK
