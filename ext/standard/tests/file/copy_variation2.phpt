@@ -13,7 +13,7 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 
 echo "*** Test copy() function: destination file names containing special characters ***\n";
 $file_path = __DIR__;
-$src_file_name = $file_path."/copy_variation2.tmp";
+$src_file_name = TestPath::file()->path;
 $file_handle = fopen($src_file_name, "w");
 fwrite( $file_handle, str_repeat("Hello2World...\n", 100) );
 fclose($file_handle);
@@ -78,10 +78,6 @@ foreach($dest_files as $dest_file) {
 }
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/copy_variation2.tmp");
 ?>
 --EXPECTF--
 *** Test copy() function: destination file names containing special characters ***

@@ -8,7 +8,7 @@ Test copy() function: usage variations - non existing src/dest
 $file_path = __DIR__;
 
 echo "*** Test copy() function: Trying to create a copy of non-existing source in existing destination ***";
-$file = $file_path."/copy_variation14.tmp";
+$file = TestPath::file()->path;
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);
@@ -22,10 +22,6 @@ var_dump( file_exists($file_path."/nodir/copy_nosuchfile.tmp") );
 var_dump( filesize($file) );  //size of the source
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/copy_variation14.tmp");
 ?>
 --EXPECTF--
 *** Test copy() function: Trying to create a copy of non-existing source in existing destination ***

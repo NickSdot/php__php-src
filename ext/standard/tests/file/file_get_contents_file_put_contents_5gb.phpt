@@ -31,7 +31,7 @@ function get_system_memory(): int|float|false
 if (get_system_memory() < 10 * 1024 * 1024 * 1024) {
     die('skip Reason: Insufficient RAM (less than 10GB)');
 }
-$tmpfile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "file_get_contents_file_put_contents_5gb.bin";
+$tmpfile = TestPath::file()->path;
 $tmpfileh = fopen($tmpfile, "wb");
 if ($tmpfileh === false) {
     die('skip Reason: Unable to create temporary file');
@@ -71,10 +71,6 @@ clearstatcache(true, $tmpfile);
 if (file_exists($tmpfile)) {
     unlink($tmpfile);
 }
-?>
---CLEAN--
-<?php
-@unlink(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "file_get_contents_file_put_contents_5gb.bin");
 ?>
 --EXPECT--
 File written successfully.

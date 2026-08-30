@@ -4,17 +4,15 @@ Test copy() function: usage variations - stat after copy
 <?php
 /* Test copy(): checking stat of file before and after after copy operation */
 
-$file_path = __DIR__;
-
-require($file_path."/file.inc");
+require(__DIR__."/file.inc");
 
 echo "*** Test copy() function: stat of file before and after copy ***\n";
-$src_file_name = $file_path."/copy_variation18.tmp";
+$src_file_name = TestPath::file()->path;
 $file_handle =  fopen($src_file_name, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);
 
-$dest_file_name = $file_path."/copy_copy_variation18.tmp";
+$dest_file_name = TestPath::file()->path;
 
 clearstatcache();
 
@@ -36,11 +34,6 @@ echo "Comparing the stats of file before and after copy operation => ";
 var_dump( compare_stats($stat_before_copy, $stat_after_copy, $stat_keys_to_compare) );
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/copy_copy_variation18.tmp");
-unlink(__DIR__."/copy_variation18.tmp");
 ?>
 --EXPECT--
 *** Test copy() function: stat of file before and after copy ***

@@ -10,15 +10,13 @@ require __DIR__ . '/../skipif_root.inc';
 <?php
 /* Test copy(): Trying to copy source file to destination file with and without write permissions */
 
-$file_path = __DIR__;
-
 echo "*** Test copy() function: destination with/without write permissions ***\n";
-$src_file_name = $file_path."/copy_variation9.tmp";
+$src_file_name = TestPath::file()->path;
 $file_handle =  fopen($src_file_name, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);
 
-$dest_file_name =  $file_path."/copy_copy_variation9.tmp";
+$dest_file_name = TestPath::file()->path;
 
 
 echo "\n-- With write permissions --\n";
@@ -28,18 +26,13 @@ var_dump( file_exists($dest_file_name) );
 var_dump( filesize($dest_file_name) );
 
 echo "\n-- Without write permissions --\n";
-chmod($file_path."/copy_copy_variation9.tmp", 0555);  //No write permissions
+chmod($dest_file_name, 0555);  //No write permissions
 var_dump( file_exists($src_file_name) );
 var_dump( copy($src_file_name, $dest_file_name) );
 var_dump( file_exists($dest_file_name) );
 var_dump( filesize($dest_file_name) );
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/copy_copy_variation9.tmp");
-unlink(__DIR__."/copy_variation9.tmp");
 ?>
 --EXPECTF--
 *** Test copy() function: destination with/without write permissions ***

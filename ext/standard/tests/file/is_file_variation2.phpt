@@ -10,28 +10,23 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Creating soft and hard links to a file and applying is_file() on links */
 
-$file_path = __DIR__;
-fclose( fopen($file_path."/is_file_variation2.tmp", "w") );
+$file = TestPath::file()->path;
+$symlink = TestPath::file()->path;
+$hardlink = TestPath::file()->path;
+fclose( fopen($file, "w") );
 
 echo "*** Testing is_file() with links ***\n";
 /* With symlink */
-symlink($file_path."/is_file_variation2.tmp", $file_path."/is_file_variation2_symlink.tmp");
-var_dump( is_file($file_path."/is_file_variation2_symlink.tmp") ); //expected true
+symlink($file, $symlink);
+var_dump( is_file($symlink) ); //expected true
 clearstatcache();
 
 /* With hardlink */
-link($file_path."/is_file_variation2.tmp", $file_path."/is_file_variation2_link.tmp");
-var_dump( is_file($file_path."/is_file_variation2_link.tmp") );  // expected: true
+link($file, $hardlink);
+var_dump( is_file($hardlink) );  // expected: true
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/is_file_variation2_symlink.tmp");
-unlink($file_path."/is_file_variation2_link.tmp");
-unlink($file_path."/is_file_variation2.tmp");
 ?>
 --EXPECT--
 *** Testing is_file() with links ***

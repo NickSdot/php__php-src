@@ -4,15 +4,14 @@ Test file_get_contents() and file_put_contents() functions : usage variations - 
 <?php
 
 /* Testing variation using use_include_path argument */
-$file_path = __DIR__;
-include($file_path."/file.inc");
+include(__DIR__."/file.inc");
 
 echo "*** Testing with variation in use_include_path argument ***\n";
-$dir = "file_get_contents_variation2";
-mkdir($file_path."/".$dir);
-$filename = $file_path."/".$dir."/"."file_get_contents_variation2.tmp";
+$dir = TestPath::directory();
+mkdir($dir);
+$filename = $dir->file()->path;
 
-ini_set( 'include_path',$file_path."/".$dir );
+ini_set( 'include_path',$dir->path );
 
 $data_array = array( 1, "  Data1 in an array", 2, "  Data2 in an array" );
 fill_buffer( $buffer, "text", 100);
@@ -28,14 +27,6 @@ var_dump( file_get_contents($filename, 0, NULL, 5, 20) );
 var_dump( file_get_contents($filename, 1, NULL, 5, 20) );
 
 echo "--- Done ---";
-?>
---CLEAN--
-<?php
-//Deleting the temporary files and directory used in the testcase
-
-$file_path = __DIR__;
-unlink($file_path."/file_get_contents_variation2/file_get_contents_variation2.tmp");
-rmdir($file_path."/file_get_contents_variation2");
 ?>
 --EXPECT--
 *** Testing with variation in use_include_path argument ***
