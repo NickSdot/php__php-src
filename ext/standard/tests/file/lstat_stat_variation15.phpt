@@ -14,14 +14,16 @@ if (PHP_OS_FAMILY === 'Windows') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
+$link = TestPath::file();
 
 
-$filename = "$file_path/lstat_stat_variation15.tmp";
+$filename = $file->path;
 $fp = fopen($filename, "w");  // temp file
 fclose($fp);
 
 // temp link
-$linkname = "$file_path/lstat_stat_variation15_link.tmp";
+$linkname = $link->path;
 symlink($filename, $linkname);
 
 // checking lstat() and stat() on links
@@ -40,12 +42,6 @@ var_dump( compare_self_stat($new_stat) );
 var_dump( compare_stats($old_stat, $new_stat, $all_stat_keys, "==") );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation15_link.tmp");
-unlink("$file_path/lstat_stat_variation15.tmp");
 ?>
 --EXPECT--
 *** Testing lstat() on a link after changing its access permission ***

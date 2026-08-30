@@ -4,10 +4,11 @@ Test lstat() and stat() functions: usage variations - writing data into file
 <?php
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
 /* test the effects on stats with writing data into a  file */
 
-$file_name = "$file_path/lstat_stat_variation7.tmp";
+$file_name = $file->path;
 $fp = fopen($file_name, "w");  // temp file
 fclose($fp);
 
@@ -30,11 +31,6 @@ var_dump(compare_stats($old_stat, $new_stat, $comp_arr, "<"));
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation7.tmp");
 ?>
 --EXPECT--
 *** Testing stat() on file after data is written in it ***

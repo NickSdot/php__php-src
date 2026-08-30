@@ -14,19 +14,20 @@ if (PHP_OS_FAMILY === 'Windows') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
+$link = TestPath::file();
 
 
 /* create temp file, link */
-$filename = "$file_path/lstat_stat_variation12.tmp";
+$filename = $file->path;
 $fp = fopen($filename, "w");  // temp file
 fclose($fp);
 
-$linkname = "$file_path/lstat_stat_variation12_link.tmp";
+$linkname = $link->path;
 symlink($filename, $linkname); // temp link
 
 // is_link() on a link
 echo "*** Testing stat() on a link after using is_link() on it ***\n";
-$linkname = "$file_path/lstat_stat_variation12_link.tmp";
 $old_stat = lstat($linkname);
 // clear the stat
 clearstatcache();
@@ -42,12 +43,6 @@ var_dump( compare_stats($old_stat, $new_stat, $all_stat_keys) );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation12_link.tmp");
-unlink("$file_path/lstat_stat_variation12.tmp");
 ?>
 --EXPECT--
 *** Testing stat() on a link after using is_link() on it ***

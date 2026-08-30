@@ -22,15 +22,13 @@ blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah
 EOD;
 
-$name = tempnam(__DIR__, "php");
+$name = TestPath::file();
 $fp = fopen($name, "w");
 fwrite($fp, $data);
 fclose($fp);
 
 //readfile($name);
 echo file_get_contents($name);
-
-unlink($name);
 
 ?>
 --EXPECT--

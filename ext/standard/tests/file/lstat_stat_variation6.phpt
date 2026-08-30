@@ -21,15 +21,17 @@ if (PHP_OS_FAMILY === 'Windows') {
 /* test the effects of touch() on stats of link */
 
 $file_path = __DIR__;
+$file = TestPath::file();
+$link = TestPath::file();
 require "$file_path/file.inc";
 
 
 /* create temp file, link and directory */
 
-$file_name = "$file_path/lstat_stat_variation6.tmp";
+$file_name = $file->path;
 $fp = fopen($file_name, "w");  // temp file
 fclose($fp);
-$link_name = "$file_path/lstat_stat_variation_link6.tmp";
+$link_name = $link->path;
 symlink($file_name, $link_name);  // temp link
 
 // touch a link, check stat, there should be difference in atime
@@ -55,12 +57,6 @@ var_dump( compare_stats($old_stat, $new_stat, $affected_members, "<") );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation6.tmp");
-unlink("$file_path/lstat_stat_variation_link6.tmp");
 ?>
 --EXPECT--
 *** Testing lstat() for link after using touch() on the link ***

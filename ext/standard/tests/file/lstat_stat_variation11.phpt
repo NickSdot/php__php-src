@@ -8,11 +8,12 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 <?php
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
 /* test the effects of is_file() on stats of a file */
 
 /* create temp file */
-$filename = "$file_path/lstat_stat_variation11.tmp";
+$filename = $file->path;
 $fp = fopen($filename, "w");  // temp file
 fclose($fp);
 
@@ -33,11 +34,6 @@ var_dump( compare_stats($old_stat, $new_stat, $all_stat_keys) );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation11.tmp");
 ?>
 --EXPECT--
 *** Testing stat() on a file after using is_file() on it ***
