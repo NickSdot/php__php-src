@@ -9,7 +9,7 @@ in_array('compress.zlib', stream_get_wrappers()) || die('skip No zlib wrapper');
 --FILE--
 <?php declare(strict_types=1);
 
-$filename = tempnam(sys_get_temp_dir(), "php-zlib-test-wrapper-level-error");
+$filename = TestPath::file();
 $thisfile = file_get_contents(__FILE__);
 
 function write_at_level(mixed $level) {
@@ -22,8 +22,8 @@ function write_at_level(mixed $level) {
 		fwrite($fp, $thisfile);
 	}
 	fclose($fp);
-	$size = filesize($filename);
-	unlink($filename);
+	$size = filesize($filename->path);
+	unlink($filename->path);
 	return $size;
 }
 

@@ -24,7 +24,7 @@ blah blah blah blah blah blah blah
 
 EOD;
 
-$filename = tempnam(sys_get_temp_dir(), "phpt");
+$filename = TestPath::file();
 
 $fp = gzopen($filename, "wb");
 gzwrite($fp, $original);
@@ -36,8 +36,6 @@ readgzfile($filename);
 echo "\n";
 
 $lines = gzfile($filename);
-
-unlink($filename);
 
 foreach ($lines as $line) {
     echo $line;
