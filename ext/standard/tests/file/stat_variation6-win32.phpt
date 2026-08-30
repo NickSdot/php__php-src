@@ -12,15 +12,14 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 /* test the effects on the stats of dir/file for changing permissions of dir/file */
 
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-$dirname = "$file_path/stat_variation6";
+$dirname = TestPath::directory();
 mkdir($dirname);  // temp dir
 
-$filename = "$file_path/stat_variation6.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");  // temp file
 fclose($file_handle);
 
@@ -62,12 +61,6 @@ clearstatcache();  // clear statement cache
 
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_variation6.tmp");
-rmdir("$file_path/stat_variation6");
 ?>
 --EXPECT--
 *** Testing stat() on file with miscellaneous file permission and content ***

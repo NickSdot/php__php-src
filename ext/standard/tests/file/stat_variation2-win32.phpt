@@ -12,11 +12,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 /* test the effects of writing to a file on the stats of the file */
 
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+require __DIR__ . "/file.inc";
 
 
-$filename = "$file_path/stat_variation2.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");  // temp file
 fclose($file_handle);
 
@@ -42,11 +41,6 @@ var_dump(compare_stats($old_stat, $new_stat, $comp_arr, "<"));
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_variation2.tmp");
 ?>
 --EXPECT--
 *** Testing stat(): writing to a file ***

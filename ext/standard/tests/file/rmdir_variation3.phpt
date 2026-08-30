@@ -6,57 +6,55 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing rmdir() : variation ***\n";
 
-$workDir = "rmdirVar3.tmp";
+TestContext::useRelativeWorkspace();
+$workDir = TestPath::directory('rmdirVar3.tmp');
+$workDirName = $workDir->name;
 $subDir = "aSubDir";
+chdir(dirname($workDir->path));
 mkdir($workDir);
 $cwd = getcwd();
 
 $dirs = array(
              // relative
-             $workDir.'/'.$subDir,
-             './'.$workDir.'/'.$subDir,
-             $workDir.'/../'.$workDir.'/'.$subDir,
+             $workDirName.'/'.$subDir,
+             './'.$workDirName.'/'.$subDir,
+             $workDirName.'/../'.$workDirName.'/'.$subDir,
 
              // relative bad path
-             $workDir.'/../BADDIR/'.$subDir,
+             $workDirName.'/../BADDIR/'.$subDir,
              'BADDIR/'.$subDir,
 
              //absolute
-             $cwd.'/'.$workDir.'/'.$subDir,
-             $cwd.'/./'.$workDir.'/'.$subDir,
-             $cwd.'/'.$workDir.'/../'.$workDir.'/'.$subDir,
+             $cwd.'/'.$workDirName.'/'.$subDir,
+             $cwd.'/./'.$workDirName.'/'.$subDir,
+             $cwd.'/'.$workDirName.'/../'.$workDirName.'/'.$subDir,
 
              //absolute bad path
              $cwd.'/BADDIR/'.$subDir,
 
              //trailing separators
-             $workDir.'/'.$subDir.'/',
-             $cwd.'/'.$workDir.'/'.$subDir.'/',
+             $workDirName.'/'.$subDir.'/',
+             $cwd.'/'.$workDirName.'/'.$subDir.'/',
 
              // multiple separators
-             $workDir.'//'.$subDir,
-             $cwd.'//'.$workDir.'//'.$subDir,
+             $workDirName.'//'.$subDir,
+             $cwd.'//'.$workDirName.'//'.$subDir,
 
              );
 
 
 foreach($dirs as $dir) {
-   mkdir($workDir.'/'.$subDir);
+   mkdir($workDir . '/' . $subDir);
    echo "-- removing $dir --\n";
    $res = rmdir($dir);
    if ($res === true) {
       echo "Directory removed\n";
    }
    else {
-      rmdir($workDir.'/'.$subDir);
+      rmdir($workDir . '/' . $subDir);
    }
 }
 
-?>
---CLEAN--
-<?php
-@rmdir("rmdirVar3.tmp/aSubDir");
-@rmdir("rmdirVar3.tmp");
 ?>
 --EXPECTF--
 *** Testing rmdir() : variation ***

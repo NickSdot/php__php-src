@@ -11,9 +11,12 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__.'/file.inc';
 
 echo "*** Testing realpath(): usage variations ***\n";
-$name_prefix = __DIR__;
-$filename = "$name_prefix/realpath_variation/home/tests/realpath_variation.tmp";
-mkdir("$name_prefix/realpath_variation/home/tests/", 0777, true);
+$name_prefix = TestPath::directory();
+$root = $name_prefix->directory('realpath_variation');
+$home = $root->directory('home');
+$tests = $home->directory('tests');
+mkdir($tests, 0777, true);
+$filename = $tests->file('realpath_variation.tmp');
 
 echo "\n*** Testing realpath() with filename stored inside a object ***\n";
 // create a temp file
@@ -60,14 +63,6 @@ for($loop_counter = 0; $loop_counter < count($file_string); $loop_counter++) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$name_prefix = __DIR__."/realpath_variation";
-unlink("$name_prefix/home/tests/realpath_variation.tmp");
-rmdir("$name_prefix/home/tests/");
-rmdir("$name_prefix/home/");
-rmdir("$name_prefix/");
 ?>
 --EXPECTF--
 *** Testing realpath(): usage variations ***
