@@ -8,13 +8,15 @@ if (substr(PHP_OS, 0, 3) == 'SUN') {
 ?>
 --FILE--
 <?php
+$file = TestPath::file();
+$link = TestPath::file();
 // create temp $filename and create link $linkname to it
-$filename = __DIR__."/symlink_link_linkinfo_is_link_error1.tmp";
+$filename = $file;
 $fp = fopen($filename, "w");  // create temp file
 fclose($fp);
 
 // linkname used to create soft/hard link
-$linkname = __DIR__."/symlink_link_linkinfo_is_link_link_error1.tmp";
+$linkname = $link;
 
 echo "*** Testing symlink() for error conditions ***\n";
 
@@ -34,11 +36,6 @@ try {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/symlink_link_linkinfo_is_link_error1.tmp");
-@unlink(__DIR__."/symlink_link_linkinfo_is_link_link_error1.tmp");
 ?>
 --EXPECTF--
 *** Testing symlink() for error conditions ***

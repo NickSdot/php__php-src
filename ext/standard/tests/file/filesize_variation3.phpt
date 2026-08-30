@@ -2,10 +2,10 @@
 Test filesize() function: usage variations - file size after truncate
 --FILE--
 <?php
-$file_path = __DIR__;
+$file = TestPath::file();
 
 echo "*** Testing filesize(): usage variations ***\n";
-$filename =  $file_path."/filesize_variation3.tmp";
+$filename = $file->path;
 $file_handle = fopen($filename, "w");
 fwrite($file_handle, str_repeat("Hello,World ", 1000) ); // create file of size 12000 bytes
 fclose($file_handle);
@@ -26,11 +26,6 @@ for($size = filesize($filename); $size>=-1200; $size-=1200) {
     clearstatcache();
 }
 
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/filesize_variation3.tmp");
 ?>
 --EXPECT--
 *** Testing filesize(): usage variations ***

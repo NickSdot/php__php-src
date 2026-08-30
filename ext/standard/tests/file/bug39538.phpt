@@ -2,8 +2,7 @@
 Bug #39538 (fgetcsv can't handle starting newlines and trailing odd number of backslashes)
 --FILE--
 <?php
-
-$file = __DIR__ . "/bug39538.csv";
+$file = TestPath::file();
 
 $line = "\"\nthis is a test\", \"next data\", \"p\narsed\"";
 $expectation = [
@@ -42,11 +41,6 @@ file_put_contents($file, $line);
 $parsed_content = fgetcsv(fopen($file, "r"), filesize($file), escape: "\\");
 var_dump($parsed_content === $expectation);
 
-?>
---CLEAN--
-<?php
-$file = __DIR__ . "/bug39538.csv";
-@unlink($file);
 ?>
 --EXPECT--
 bool(true)

@@ -2,20 +2,16 @@
 Bug #46347 (parse_ini_file() doesn't support * in keys)
 --FILE--
 <?php
+$file = TestPath::file();
 
 $str = <<< EOF
 [section]
 part1.*.part2 = 1
 EOF;
 
-$file = __DIR__ . '/bug46347.ini';
 file_put_contents($file, $str);
 
 var_dump(parse_ini_file($file));
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/bug46347.ini');
 ?>
 --EXPECT--
 array(1) {
