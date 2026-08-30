@@ -7,7 +7,7 @@ phar.readonly=0
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('archive.phar')->path;
 $phar = new Phar($fname);
 $phar->addFromString('index.php', '<?php echo "ok"; ?>');
 unset($phar);
@@ -30,8 +30,6 @@ try {
 }
 echo "no crash\n";
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECT--
 BadMethodCallException: Entry .phar/stub.php does not exist
 BadMethodCallException: Entry .phar/alias.txt does not exist

@@ -8,8 +8,15 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '2.phar.gz';
+$archive = TestPath::file('phar_decompress.phar.php');
+$fname = $archive->path;
+$copy = TestPath::file('phar_decompress2.phar.gz');
+$fname2 = $copy->path;
+TestPath::file('phar_decompress.zip');
+TestPath::file('phar_decompress.hooba.phar');
+TestPath::file('phar_decompress.phar');
+TestPath::file('phar_decompress.phar.gz');
+TestPath::file('phar_decompress2.phar');
 $pname = 'phar://' . $fname;
 $file = '<?php __HALT_COMPILER(); ?>';
 
@@ -44,16 +51,6 @@ try {
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.hooba.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.gz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar.gz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar');
 ?>
 --EXPECTF--
 int(4096)

@@ -8,7 +8,9 @@ bz2
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$archive = TestPath::file('pharfileinfo_compression.phar');
+$fname = $archive->path;
+TestPath::file('pharfileinfo_compression.tar');
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);
@@ -70,9 +72,6 @@ var_dump($b->decompress());
 var_dump($b->decompress());
 
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar'); ?>
 --EXPECT--
 BadMethodCallException: Unknown compression type specified
 BadMethodCallException: Unknown compression type specified

@@ -7,7 +7,8 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.zip';
+$archive = TestPath::file('bug48377.2.zip');
+$fname = $archive->path;
 
 $phar = new PharData($fname);
 $phar['x'] = 'hi';
@@ -17,7 +18,5 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');?>
 --EXPECTF--
 BadMethodCallException: data phar "%sbug48377.2.phar.zip" has invalid extension phar.zip

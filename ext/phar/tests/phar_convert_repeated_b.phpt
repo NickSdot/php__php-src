@@ -8,7 +8,11 @@ phar.readonly=1
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.zip';
+$archive = TestPath::file('phar_convert_repeated_b.zip');
+$fname = $archive->path;
+TestPath::file('phar_convert_repeated_b.tar');
+TestPath::file('phar_convert_repeated_b.1.2.tar');
+TestPath::file('phar_convert_repeated_b.1.zip');
 
 echo "=================== new PharData() ==================\n";
 $phar = new PharData($fname);
@@ -74,13 +78,6 @@ try {
 } catch(Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.1.2.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.1.zip');
 ?>
 --EXPECT--
 =================== new PharData() ==================

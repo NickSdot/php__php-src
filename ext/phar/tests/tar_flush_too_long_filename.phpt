@@ -11,7 +11,7 @@ if (function_exists('openssl_sign')) die('skip requires openssl disabled for moc
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
+$fname = TestPath::file('archive.tar')->path;
 
 // Mock sign to fail at second invocation, tricks failure in phar_create_signature()
 function openssl_sign() {
@@ -32,10 +32,6 @@ try {
     echo $e->getMessage();
 }
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
 ?>
 --EXPECTF--
 tar-based phar "%s" cannot be created, filename "%s" is too long for tar file format

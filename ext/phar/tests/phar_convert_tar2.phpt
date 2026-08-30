@@ -9,10 +9,13 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('phar_convert_tar2.phar.php');
+$fname = $archive->path;
 $pname = 'phar://' . $fname;
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar.gz';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.tar';
+$converted = TestPath::file('phar_convert_tar2.phar.tar.gz');
+$fname2 = $converted->path;
+$copy = TestPath::file('phar_convert_tar2.2.phar.tar');
+$fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;
 
@@ -40,12 +43,6 @@ var_dump($phar->isFileFormat(Phar::TAR));
 var_dump($phar->isCompressed() == Phar::GZ);
 var_dump($phar->getStub());
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar.gz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php');
 ?>
 --EXPECT--
 bool(false)

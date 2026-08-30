@@ -8,7 +8,8 @@ phar.require_hash=1
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('phar_offset_get_error.phar.php');
+$fname = $archive->path;
 $pname = 'phar://'.$fname;
 $iname = '/file.txt';
 $ename = '/error/..';
@@ -39,8 +40,6 @@ $a = $p['.phar/stub.php'];
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECT--
 BadMethodCallException: Entry /error/.. does not exist and cannot be created: phar error: invalid path "/error/.." contains upper directory reference
 foobar
