@@ -14,7 +14,7 @@ if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
+$fname = TestPath::file('033a.phar.zip');
 $alias = 'phar://hio';
 
 $phar = new Phar($fname);
@@ -39,10 +39,6 @@ try {
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
 ?>
 --EXPECTF--
 bool(false)

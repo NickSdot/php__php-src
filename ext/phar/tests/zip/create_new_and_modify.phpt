@@ -8,10 +8,8 @@ opcache.validate_timestamps=1
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip.php';
+$fname = TestPath::file('archive.phar.zip.php');
 $pname = 'phar://' . $fname;
-
-@unlink($fname);
 
 file_put_contents($pname . '/a.php', "brand new!\n");
 
@@ -43,8 +41,6 @@ include $pname . '/a.php';
 include $pname . '/b.php';
 
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip.php'); ?>
 --EXPECT--
 bool(true)
 brand new!

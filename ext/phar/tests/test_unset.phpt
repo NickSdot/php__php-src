@@ -6,11 +6,8 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.php';
-
-if (file_exists($fname)) unlink($fname);
-if (file_exists($fname2)) unlink($fname2);
+$fname = TestPath::file('test_unset.phar.php');
+$fname2 = TestPath::file('test_unset.2.phar.php');
 
 $phar = new Phar($fname); // no entries, never flushed
 $phar->setAlias('first');
@@ -31,8 +28,6 @@ var_dump($phar->getAlias());
 var_dump(file_exists($fname));
 
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.php'); ?>
 --EXPECTF--
 NULL
 string(%d) "%stest_unset.phar.php"

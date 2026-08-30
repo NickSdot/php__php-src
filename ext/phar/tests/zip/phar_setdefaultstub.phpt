@@ -7,7 +7,7 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
+$fname = TestPath::file('archive.phar.zip');
 
 $phar = new Phar($fname);
 $phar['a.php'] = '<php echo "this is a\n"; ?>';
@@ -62,10 +62,6 @@ try {
 
 var_dump($phar->getStub());
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
 ?>
 --EXPECT--
 string(51) "<?php echo "Hello World\n"; __HALT_COMPILER(); ?>
