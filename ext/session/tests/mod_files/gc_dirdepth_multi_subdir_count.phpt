@@ -10,19 +10,23 @@ session.gc_maxlifetime=10
 session.use_strict_mode=0
 --FILE--
 <?php
-$base = __DIR__ . '/gc_multi_subdir_test';
-@mkdir($base);
-@mkdir("$base/a");
-@mkdir("$base/b");
-@mkdir("$base/c");
-@mkdir("$base/d");   // empty subdir
+$base = TestPath::directory();
+mkdir($base);
+$a = $base->directory('a');
+$b = $base->directory('b');
+$c = $base->directory('c');
+$d = $base->directory('d');   // empty subdir
+mkdir($a);
+mkdir($b);
+mkdir($c);
+mkdir($d);
 
 session_save_path("1;$base");
 
 $files = [
-    "$base/a/sess_aexpired0000000000000000",
-    "$base/b/sess_bexpired0000000000000000",
-    "$base/c/sess_cexpired0000000000000000",
+    $a->file('sess_aexpired0000000000000000'),
+    $b->file('sess_bexpired0000000000000000'),
+    $c->file('sess_cexpired0000000000000000'),
 ];
 foreach ($files as $f) {
     file_put_contents($f, 'user|s:5:"alice";');
@@ -39,16 +43,6 @@ var_dump($result);
 
 echo "all expired files removed: ";
 var_dump(!file_exists($files[0]) && !file_exists($files[1]) && !file_exists($files[2]));
-?>
---CLEAN--
-<?php
-$base = __DIR__ . '/gc_multi_subdir_test';
-@unlink("$base/a/sess_a0000000000000000000000000");
-@rmdir("$base/a");
-@rmdir("$base/b");
-@rmdir("$base/c");
-@rmdir("$base/d");
-@rmdir($base);
 ?>
 --EXPECT--
 session_gc() return value: int(3)

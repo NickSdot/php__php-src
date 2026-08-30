@@ -16,9 +16,6 @@ class MySession2 extends SessionHandler {
     public $path;
 
     public function open($path, $name): bool {
-        if (!$path) {
-            $path = sys_get_temp_dir();
-        }
         $this->path = $path . '/u_sess_' . $name;
         return true;
     }
@@ -53,6 +50,9 @@ class MySession2 extends SessionHandler {
     }
 }
 
+$save_path = TestPath::directory();
+mkdir($save_path);
+session_save_path($save_path);
 $handler = new MySession2;
 session_set_save_handler($handler);
 session_start();

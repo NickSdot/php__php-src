@@ -22,9 +22,6 @@ class MySession2 implements MySessionHandlerInterface {
     public $path;
 
     public function open($path, $name): bool {
-        if (!$path) {
-            $path = sys_get_temp_dir();
-        }
         $this->path = $path . '/u_sess_' . $name;
         return true;
     }
@@ -64,6 +61,9 @@ function good_write($id, $data) {
     return file_put_contents($handler->path . $id, $data);
 }
 
+$save_path = TestPath::directory();
+mkdir($save_path);
+session_save_path($save_path);
 $handler = new MySession2;
 
 $ret = session_set_save_handler(array($handler, 'open'), array($handler, 'close'),
