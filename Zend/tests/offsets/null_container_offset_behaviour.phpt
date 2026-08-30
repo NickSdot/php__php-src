@@ -442,7 +442,7 @@ foreach ($offsets as $dimension) {
         && !preg_match($EXPECTED_OUTPUT_NULL_OFFSETS_REGEX, $varOutput)
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_null_container_{$failuresNb}.txt", $varOutput);
+        file_put_contents(TestPath::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }
@@ -471,7 +471,7 @@ foreach ($offsets as $offset) {
         && !preg_match($EXPECTED_OUTPUT_NULL_OFFSETS_REGEX, $varOutput)
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_null_container_{$failuresNb}.txt", $varOutput);
+        file_put_contents(TestPath::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }

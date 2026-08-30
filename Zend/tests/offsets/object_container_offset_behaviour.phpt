@@ -56,7 +56,7 @@ foreach ($offsets as $dimension) {
     );
 
     if ($varOutput !== EXPECTED_OUTPUT) {
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_object_container_{$failuresNb}.txt", $varOutput);
+        file_put_contents(TestPath::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }
@@ -78,7 +78,7 @@ foreach ($offsets as $offset) {
     );
 
     if ($varOutput !== EXPECTED_OUTPUT) {
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_object_container_{$failuresNb}.txt", $varOutput);
+        file_put_contents(TestPath::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }
