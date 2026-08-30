@@ -10,10 +10,10 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 --FILE--
 <?php
 echo "*** Testing file_get_contents() : variation ***\n";
-$filename = __DIR__.'/fileGetContentsVar9.tmp';
-$softlink = __DIR__.'/fileGetContentsVar9.SoftLink';
-$hardlink = __DIR__.'/fileGetContentsVar9.HardLink';
-$chainlink = __DIR__.'/fileGetContentsVar9.ChainLink';
+$filename = TestPath::file();
+$softlink = TestPath::file();
+$hardlink = TestPath::file();
+$chainlink = TestPath::file();
 
 // create file
 $h = fopen($filename,"w");
@@ -34,17 +34,6 @@ var_dump(file_get_contents($softlink));
 var_dump(file_get_contents($hardlink));
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$filename = __DIR__.'/fileGetContentsVar9.tmp';
-$softlink = __DIR__.'/fileGetContentsVar9.SoftLink';
-$hardlink = __DIR__.'/fileGetContentsVar9.HardLink';
-$chainlink = __DIR__.'/fileGetContentsVar9.ChainLink';
-unlink($chainlink);
-unlink($softlink);
-unlink($hardlink);
-unlink($filename);
 ?>
 --EXPECT--
 *** Testing file_get_contents() : variation ***

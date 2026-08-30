@@ -4,7 +4,7 @@ file() on a file with blank lines
 --FILE--
 <?php
 
-$filepath = __DIR__ . '/file_variation_7.tmp';
+$filepath = TestPath::file();
 $fd = fopen($filepath, "w+");
 fwrite($fd, "Line 1\n\n \n  \n\Line 3");
 fclose($fd);
@@ -22,11 +22,6 @@ echo "\nfile() with FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES:\n";
 var_dump(file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 
 
-?>
---CLEAN--
-<?php
-$filepath = __DIR__ . '/file_variation_7.tmp';
-unlink($filepath);
 ?>
 --EXPECT--
 file():

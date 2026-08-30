@@ -7,56 +7,49 @@ require(__DIR__ . '/file.inc');
 $data_array = array( "Garbage data", "Gar\nba\nge d\nata", "Gar\n\nbage \n\n data" );
 echo "*** Using various flags values with different data in a file\n";
 $count=1;
-$file_path = __DIR__;
+$file = TestPath::file();
+$file1Directory = TestPath::directory();
+mkdir($file1Directory);
+$file1 = $file1Directory->file();
+$file2 = TestPath::file();
+$file3 = TestPath::file();
 foreach( $data_array as $data ) {
    echo "--Iteration $count --\n";
-   $fh  = fopen($file_path."/file_variation.tmp", "w");
+   $fh  = fopen($file, "w");
    fwrite($fh, $data);
-   var_dump( file($file_path."/file_variation.tmp", FILE_IGNORE_NEW_LINES) );
-   var_dump( file($file_path."/file_variation.tmp", FILE_SKIP_EMPTY_LINES) );
+   var_dump( file($file, FILE_IGNORE_NEW_LINES) );
+   var_dump( file($file, FILE_SKIP_EMPTY_LINES) );
    $count++;
    fclose($fh);
 }
 
 echo "*** Testing with variation in use_include_path argument ***\n";
-$file_path1 = __DIR__."/file_variation";
-mkdir($file_path1);
-ini_set( 'include_path',$file_path.'/file_variation' );
+ini_set( 'include_path', $file1Directory->path );
 
-file_put_contents( $file_path1."/file1_variation.tmp", "aaaaaaaaaaaaaaabbbbbbbbbbb111111111222222222" );
-var_dump( file("file1_variation.tmp", FILE_USE_INCLUDE_PATH) );
-var_dump( file($file_path1."/file1_variation.tmp", 1) );
+file_put_contents( $file1, "aaaaaaaaaaaaaaabbbbbbbbbbb111111111222222222" );
+var_dump( file($file1->name, FILE_USE_INCLUDE_PATH) );
+var_dump( file($file1, 1) );
 
 echo "*** Using file function to remove line containing a key string ***\n";
-$file_handle = fopen($file_path."/file2_variation.tmp", "w");
+$file_handle = fopen($file2, "w");
 $key = "SEARCH_KEY";
 fwrite( $file_handle,"The key string to be searched is SEARCH_KEY\nLine without key string\nThe key string to be searched is SEARCH_KEY" );
-$out_array = file($file_path."/file2_variation.tmp");
+$out_array = file($file2);
 
 echo "File contents in array form Before replacement of the key\n";
 var_dump( $out_array );
-$file_handle2 = fopen($file_path."/file3_variation.tmp", "w");
+$file_handle2 = fopen($file3, "w");
 // Loop through file content array
 foreach($out_array as $line) {
   if( !strstr( $line, $key ) )
     fputs($file_handle2,$line);
 }
 echo "File contents in array form After replacement of the key\n";
-var_dump( file($file_path."/file3_variation.tmp" ));
+var_dump( file($file3) );
 fclose($file_handle);
 fclose($file_handle2);
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/file_variation.tmp");
-unlink($file_path."/file_variation/file1_variation.tmp");
-unlink($file_path."/file2_variation.tmp");
-unlink($file_path."/file3_variation.tmp");
-rmdir($file_path."/file_variation");
-
 ?>
 --EXPECT--
 *** Using various flags values with different data in a file

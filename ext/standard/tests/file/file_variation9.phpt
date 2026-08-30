@@ -5,7 +5,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing file() : variation ***\n";
-$testfile = __DIR__."/fileVar9.txt";
+$testfile = TestPath::file();
 
 $contents = array(
    "File ends on a single character\na",
@@ -24,11 +24,6 @@ foreach ($contents as $content) {
 }
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$testfile = __DIR__."/fileVar9.txt";
-@unlink($testfile);
 ?>
 --EXPECT--
 *** Testing file() : variation ***
