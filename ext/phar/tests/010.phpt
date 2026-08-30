@@ -15,15 +15,14 @@ __HALT_COMPILER(); ?>";
 $manifest = pack('V', 1) . 'a' . pack('VVVVVV', 0, time(), 0, crc32(''), 0x00000000, 0);
 $file .= pack('VVnVV', strlen($manifest), 1, 0x1000, 0x00000000, 3) . 'hio' . pack('V', 0) . $manifest;
 
-file_put_contents(__DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php', $file);
+$archive = TestPath::file('archive.phar.php');
+file_put_contents($archive, $file);
 try {
-include __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+include $archive;
 echo file_get_contents('phar://hio/a');
 } catch (Exception $e) {
 echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 PharException: internal corruption of phar "%s" (too many manifest entries for size of manifest)

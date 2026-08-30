@@ -7,18 +7,16 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$p=new Phar('bug53872-phar.phar');
+$archive = TestPath::file('bug53872-phar.phar');
+$p=new Phar($archive);
 $p->buildFromDirectory(__DIR__ . "/bug53872/");
 $p->setStub('<?php __HALT_COMPILER();?\>');
 $p->compressFiles(Phar::GZ);
 
-print(file_get_contents('phar://bug53872-phar.phar/first.txt'));
-print(file_get_contents('phar://bug53872-phar.phar/second.txt'));
-print(file_get_contents('phar://bug53872-phar.phar/third.txt'));
-?>
---CLEAN--
-<?php
-unlink("bug53872-phar.phar");
+$uri = "phar://$archive";
+print(file_get_contents($uri . '/first.txt'));
+print(file_get_contents($uri . '/second.txt'));
+print(file_get_contents($uri . '/third.txt'));
 ?>
 --EXPECT--
 content of first.txt

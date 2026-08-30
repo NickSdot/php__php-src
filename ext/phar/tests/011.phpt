@@ -6,7 +6,8 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('archive.phar.php');
+$fname = $archive->path;
 $pname = 'phar://' . $fname;
 $file = "<?php
 Phar::mapPhar('hio');
@@ -24,7 +25,5 @@ echo file_get_contents('phar://hio/a');
 echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 PharException: internal corruption of phar "%s" (compressed and uncompressed size does not match for uncompressed entry)

@@ -8,8 +8,10 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.tar';
+$archive = TestPath::file('archive.tar');
+$archive2 = TestPath::file('archive-copy.tar');
+$fname = $archive->path;
+$fname2 = $archive2->path;
 
 $phar = new PharData($fname);
 $phar->addEmptyDir('blah/');
@@ -19,12 +21,6 @@ copy($fname, $fname2);
 $phar = new PharData($fname2);
 
 var_dump($phar['blah']->isDir(), $phar['test']->isDir());
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.tar');
-__HALT_COMPILER();
 ?>
 --EXPECT--
 bool(true)

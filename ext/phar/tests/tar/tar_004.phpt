@@ -10,7 +10,8 @@ opcache.validate_timestamps=1
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';
 
-$fname = __DIR__ . '/tar_004.phar.tar';
+$archive = TestPath::file('tar_004.phar.tar');
+$fname = $archive->path;
 $alias = 'phar://' . $fname;
 
 $tar = new tarmaker($fname, 'none');
@@ -27,10 +28,6 @@ include "phar://" . __FILE__ . "/tar_004.php";
 $tar->close();
 
 include $fname;
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/tar_004.phar.tar');
 ?>
 --EXPECTF--
 string(9) "it worked"

@@ -7,15 +7,17 @@ phar.readonly = 0
 --FILE--
 <?php
 // put our test fixtures into a far
-$base  = __DIR__.DIRECTORY_SEPARATOR.'bug54289'.DIRECTORY_SEPARATOR;
-$inDir = $base.'in';
-$phar  = $base.'test.phar';
+$inDir = __DIR__.DIRECTORY_SEPARATOR.'bug54289'.DIRECTORY_SEPARATOR.'in';
+$archive = TestPath::file('archive.phar');
+$phar  = $archive->path;
 $pharA = new Phar($phar);
 $pharA->buildFromDirectory($inDir);
 
 // we should be able to pull out a directory that's there, but none that share
 // the same prefix
-$outDir = $base.'out';
+$output = TestPath::directory();
+$outDir = $output->path;
+mkdir($outDir);
 $pharB = new Phar($phar);
 $pharB->extractTo($outDir, 'dirA/', true);
 var_dump(file_exists($outDir.DIRECTORY_SEPARATOR.'dirA'.DIRECTORY_SEPARATOR.'fileA'));
@@ -49,19 +51,6 @@ try {
 }
 
 echo 'done';
-?>
---CLEAN--
-<?php
-$base   = __DIR__.DIRECTORY_SEPARATOR.'bug54289'.DIRECTORY_SEPARATOR;
-$phar   = $base.'test.phar';
-$outDir = $base.'out';
-unlink($phar);
-$iter = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
-  $outDir, \FilesystemIterator::SKIP_DOTS|\FilesystemIterator::UNIX_PATHS),
-  \RecursiveIteratorIterator::CHILD_FIRST);
-foreach ($iter as $value) {
-    $value->isFile() ? unlink($value) : rmdir($value);
-}
 ?>
 --EXPECT--
 bool(true)
