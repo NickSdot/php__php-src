@@ -4,14 +4,10 @@ openssl_cms_verify() tests
 openssl
 --FILE--
 <?php
-$outfile = tempnam(sys_get_temp_dir(), "cms_v_basic");
-if ($outfile === false) {
-    die("failed to get a temporary filename!");
-}
+$outfile = TestPath::file()->path;
+$contentfile = TestPath::file()->path;
 
-$contentfile = $outfile . ".out";
-
-$pkcsfile = __DIR__ . "/openssl_cms_verify__pkcsfile.tmp";
+$pkcsfile = TestPath::file()->path;
 $eml = __DIR__ . "/signed.eml";
 $wrong = "wrong";
 $empty = "";
@@ -28,17 +24,11 @@ var_dump(file_get_contents($pkcsfile));
 
 if (file_exists($outfile)) {
     echo "true\n";
-    unlink($outfile);
 }
 
 if (file_exists($contentfile)) {
     echo "true\n";
-    unlink($contentfile);
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . DIRECTORY_SEPARATOR . '/openssl_cms_verify__pkcsfile.tmp');
 ?>
 --EXPECT--
 bool(false)
