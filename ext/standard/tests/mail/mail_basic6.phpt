@@ -18,7 +18,8 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 $additional_headers = "HEAD1: a\r\nHEAD2: b\r\n";
-$outFile = "mailBasic6.out";
+$outFile = TestPath::file('mailBasic6.out');
+chdir($outFile->directory);
 @unlink($outFile);
 
 echo "-- Valid Header --\n";

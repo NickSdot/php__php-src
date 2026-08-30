@@ -11,7 +11,7 @@ $payload = "FORM" . "\x00\x00\x00\x00" . "ILBM" . "ABCD" . "\x7f\xff\xff\xff";
 var_dump(getimagesizefromstring($payload));
 
 // getimagesize() shares the same IFF parser through the file path.
-$file = TestPath::file('getimagesizefromstring_iff_overflow.iff');
+$file = TestPath::file();
 file_put_contents($file, $payload);
 var_dump(getimagesize($file));
 ?>

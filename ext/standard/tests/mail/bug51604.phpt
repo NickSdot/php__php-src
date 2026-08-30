@@ -10,7 +10,8 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 $additional_headers = "KHeaders\n\n\n\n\n";
-$outFile = "mail_bug51604.out";
+$outFile = TestPath::file('mail_bug51604.out');
+chdir($outFile->directory);
 @unlink($outFile);
 
 // Calling mail() with all additional headers

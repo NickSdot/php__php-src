@@ -7,15 +7,17 @@ Test sha1_file() function with ASCII output and raw binary output. Based on ext/
 echo "*** Testing sha1_file() : basic functionality ***\n";
 
 /* Creating an empty file */
-if (($handle = fopen( "EmptyFileSHA1.txt", "w+")) == FALSE)
+$empty_file = TestPath::file();
+if (($handle = fopen($empty_file, "w+")) == FALSE)
 return false;
 
 /* Creating a data file */
-if (($handle2 = fopen( "DataFileSHA1.txt", "w+")) == FALSE)
+$data_file = TestPath::file();
+if (($handle2 = fopen($data_file, "w+")) == FALSE)
 return false;
 
 /* Writing into file */
-$filename = "DataFileSHA1.txt";
+$filename = $data_file;
 $content = "Add this to the file\n";
 if (is_writable($filename)) {
   if (fwrite($handle2, $content) === FALSE) {
@@ -52,20 +54,17 @@ try {
 }
 
 echo "\n-- Hexadecimal Output for Empty file as Argument --\n";
-var_dump( sha1_file("EmptyFileSHA1.txt") );
+var_dump( sha1_file($empty_file) );
 
 echo "\n-- Raw Binary Output for Empty file as Argument --\n";
-var_dump( bin2hex(sha1_file("EmptyFileSHA1.txt", true)));
+var_dump( bin2hex(sha1_file($empty_file, true)));
 
 echo "\n-- Hexadecimal Output for a valid file with some contents --\n";
-var_dump( sha1_file("DataFileSHA1.txt") );
+var_dump( sha1_file($data_file) );
 
 echo "\n-- Raw Binary Output for a valid file with some contents --\n";
-var_dump ( bin2hex(sha1_file("DataFileSHA1.txt", true)));
+var_dump ( bin2hex(sha1_file($data_file, true)));
 
-// remove temp files
-unlink("DataFileSHA1.txt");
-unlink("EmptyFileSHA1.txt");
 
 ?>
 --EXPECTF--

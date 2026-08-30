@@ -7,7 +7,7 @@ precision=14
 --FILE--
 <?php
 // Open handle
-$file = TestPath::file('vfprintf_error3.txt');
+$file = TestPath::file();
 $fp = fopen( $file, "a+" );
 
 echo "\n-- Testing vfprintf() function with wrong variable types as argument --\n";

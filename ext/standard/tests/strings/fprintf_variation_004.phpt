@@ -6,7 +6,7 @@ Test fprintf() function (variation - 4)
 $char_variation = array( 'a', "a", 67, -67, 99 );
 
 /* creating dumping file */
-$data_file = TestPath::file('fprintf_variation_004.txt');
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 

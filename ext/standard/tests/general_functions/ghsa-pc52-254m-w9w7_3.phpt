@@ -13,12 +13,11 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%1%'"
 EOT;
 $batch_file = TestPath::file('batch.bat');
-$batch_file_path = $batch_file->path;
 
-file_put_contents($batch_file_path, $batch_file_content);
+file_put_contents($batch_file, $batch_file_content);
 
 $descriptorspec = [STDIN, STDOUT, STDOUT];
-$proc = proc_open(["cmd.exe", "/c", $batch_file_path, "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open(["cmd.exe", "/c", $batch_file, "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
 
 ?>

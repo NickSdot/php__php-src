@@ -8,7 +8,7 @@ if (!function_exists('imagejpeg')) die('skip imagejpeg not available');
 ?>
 --FILE--
 <?php
-$filename = TestPath::file('bug70096.jpg')->path;
+$filename = TestPath::file()->path;
 $im = imagecreatetruecolor(10, 10);
 imagejpeg($im, $filename);
 $data = "\x1C\x02x\x00\x0ATest image"

@@ -24,7 +24,8 @@ $additional_headers = array(
         "bar\r\n\t fuga",
     ),
 );
-$outFile = "mailBasic7.out";
+$outFile = TestPath::file('mailBasic7.out');
+chdir($outFile->directory);
 @unlink($outFile);
 
 echo "-- All Mail Content Parameters --\n";
@@ -145,7 +146,6 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-$outFile = "mailBasic7.out";
 @unlink($outFile);
 
 try {

@@ -13,8 +13,8 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 $additional_headers = 'KHeaders';
-$outFile = "mailBasic.out";
-@unlink($outFile);
+$outFile = TestPath::file('mailBasic.out');
+chdir($outFile->directory);
 
 echo "-- All Mail Content Parameters --\n";
 // Calling mail() with all additional headers

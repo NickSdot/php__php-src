@@ -12,7 +12,8 @@ $to = 'user@company.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-$outFile = "mailBug66535.out";
+$outFile = TestPath::file('mailBug66535.out');
+chdir($outFile->directory);
 @unlink($outFile);
 
 var_dump( mail($to, $subject, $message) );

@@ -6,7 +6,7 @@ Test fprintf() function (variation - 5)
 $int_numbers = array( 0, 1, -1, 2.7, -2.7, 23333333, -23333333, "1234" );
 
 /* creating dumping file */
-$data_file = TestPath::file('fprintf_variation_005.txt');
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
