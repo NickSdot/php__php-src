@@ -16,8 +16,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test not for Windows platforms
 <?php
 
 //file
-$file = TestPath::touch();
-chmod($file->path, 0557);
+$file = TestPath::touch(permissions: 0557);
 $fileInfo = new SplFileInfo($file->path);
 var_dump($fileInfo->getPerms() == 0100557);
 
