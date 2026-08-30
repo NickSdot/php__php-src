@@ -18,7 +18,7 @@ echo "*** Testing scandir() : basic functionality ***\n";
 include (__DIR__ . '/../file/file.inc');
 
 // set up directory
-$directory = TestPath::directory()->create();
+$directory = TestPath::directory('私はガラスを食べられますscandir_basic')->create();
 create_files($directory, 3, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 
 echo "\n-- scandir() with mandatory arguments --\n";

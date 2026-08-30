@@ -23,7 +23,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = TestPath::directory()->create();
+$dir = TestPath::directory('私はガラスを食べられますscandir_variation10')->create();
 @create_files($dir, 2, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 
 // Deterministic tests.

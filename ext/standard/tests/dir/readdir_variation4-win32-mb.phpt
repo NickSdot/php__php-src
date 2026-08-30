@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$dir_path = TestPath::directory()->create();
+$dir_path = TestPath::directory('私はガラスを食べられますreaddir_variation4')->create();
 
 // heredoc string
 $heredoc = <<<EOT

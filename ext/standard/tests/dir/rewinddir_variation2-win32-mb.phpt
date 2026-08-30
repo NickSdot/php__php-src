@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing rewinddir() : usage variations ***\n";
 
-$dir_path = TestPath::directory()->create();
+$dir_path = TestPath::directory('私はガラスを食べられますrewinddir_variation2')->create();
 
 echo "\n-- Create the directory handle, read and close the directory --\n";
 var_dump($dir_handle = opendir($dir_path));

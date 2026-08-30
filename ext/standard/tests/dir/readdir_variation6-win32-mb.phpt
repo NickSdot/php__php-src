@@ -19,7 +19,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory()->create();
+$dir_path = TestPath::directory('私はガラスを食べられますreaddir_variation6')->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "私はガラスを食べられますreaddir_variation6");
