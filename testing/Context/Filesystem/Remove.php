@@ -47,13 +47,24 @@ final class Remove
             if (is_dir($child) && !is_link($child)) {
                 self::removeDirectory($child, $path);
             } elseif (!@unlink($child)) {
+
+                $isLink = is_link($child);
+
+                if (PHP_OS_FAMILY === 'Windows' && $isLink && @rmdir($child)) {
+                    continue;
+                }
+
                 @chmod($path, 0777);
 
-                if (!is_link($child)) {
+                if (!$isLink) {
                     @chmod($child, 0666);
                 }
 
-                if (!@unlink($child)) {
+                if (!@unlink($child)
+                      && !(PHP_OS_FAMILY === 'Windows'
+                      && $isLink
+                      && @rmdir($child))
+                ) {
                     throw new RuntimeException("Cannot remove file: $child");
                 }
             }
