@@ -8,7 +8,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('archive.phar.php')->path;
 $pname = 'phar://' . $fname;
 $file = '<?php __HALT_COMPILER(); ?>';
 
@@ -57,10 +57,6 @@ fclose($fp);
 var_dump(file_get_contents($pname . '/b'));
 var_dump($phar['b']->isCompressed());
 var_dump($phar['b']->getMetaData());
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php');
 ?>
 --EXPECT--
 string(1) "a"

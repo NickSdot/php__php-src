@@ -4,7 +4,7 @@ Phar: tar with bad checksum
 phar
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
+$fname = TestPath::file('badchecksum.tar')->path;
 $pname = 'phar://' . $fname;
 
 include __DIR__ . '/files/corrupt_tarmaker.php.inc';
@@ -19,10 +19,6 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
 ?>
 --EXPECTF--
 UnexpectedValueException: phar error: "%sbadchecksum.tar" is a corrupted tar file (checksum mismatch of file "hithere")

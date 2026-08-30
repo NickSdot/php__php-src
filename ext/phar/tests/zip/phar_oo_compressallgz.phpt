@@ -7,7 +7,7 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip.php';
+$fname = TestPath::file('archive.phar.zip.php')->path;
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);
@@ -33,10 +33,6 @@ var_dump(file_get_contents($pname . '/c'));
 var_dump($phar['b']->isCompressed(Phar::BZ2));
 var_dump($phar['c']->isCompressed(Phar::GZ));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip.php');
 ?>
 --EXPECT--
 string(1) "a"

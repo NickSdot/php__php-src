@@ -9,7 +9,8 @@ phar.require_hash=0
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';
 
-$fname = __DIR__ . '/tar_003.phar.tar';
+$archive = TestPath::file('archive.phar.tar');
+$fname = $archive->path;
 $alias = 'phar://' . $fname;
 
 $tar = new tarmaker($fname, 'none');
@@ -46,10 +47,6 @@ while (false !== ($v = readdir($tar))) {
 }
 closedir($tar);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/tar_003.phar.tar');
 ?>
 --EXPECT--
 hi there!

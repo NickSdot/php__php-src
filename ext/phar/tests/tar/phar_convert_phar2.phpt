@@ -9,8 +9,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '2.phar';
+$archive = TestPath::file('phar_convert_phar2.phar');
+$archiveTar = TestPath::file('phar_convert_phar2.phar.tar');
+$compressed = TestPath::file('phar_convert_phar2.phar.gz');
+$archive2 = TestPath::file('phar_convert_phar22.phar');
+$fname = $archive->path;
+$fname2 = $archive2->path;
 
 $phar = new Phar($fname);
 $phar['a.txt'] = 'some text';
@@ -36,14 +40,6 @@ var_dump($phar->isFileFormat(Phar::PHAR));
 var_dump($phar->isCompressed() == Phar::GZ);
 var_dump(strlen($phar->getStub()));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.gz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar');
-__HALT_COMPILER();
 ?>
 --EXPECT--
 bool(false)
