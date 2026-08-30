@@ -5,14 +5,11 @@ phar
 --FILE--
 <?php
 // duplicate since the tar will change
-copy(__DIR__."/bug71391.tar", __DIR__."/bug71391.test.tar");
-$p = new PharData(__DIR__."/bug71391.test.tar");
+$archive = TestPath::file('bug71391.test.tar');
+copy(__DIR__."/bug71391.tar", $archive);
+$p = new PharData($archive->path);
 $p->delMetaData();
 ?>
 DONE
---CLEAN--
-<?php
-unlink(__DIR__."/bug71391.test.tar");
-?>
 --EXPECT--
 DONE

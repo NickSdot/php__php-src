@@ -32,7 +32,7 @@ function normalize_output(string $output, string $filename): string {
     return $output;
 }
 
-$const_dim_filename = __DIR__ . DIRECTORY_SEPARATOR . 'compare_binary_offsets_temp.php';
+$const_dim_filename = TestPath::file();
 
 ob_start();
 foreach ($containers as $container_orig) {
@@ -56,9 +56,9 @@ foreach ($containers as $container_orig) {
         $varOutput = normalize_output($varOutput, $var_dim_filename);
 
         if ($constOutput !== $varOutput) {
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_{$failuresNb}_const.txt", $constOutput);
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_{$failuresNb}_var.txt", $varOutput);
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_{$failuresNb}_test_case.txt", makeTestFile($container_orig, $offset));
+            file_put_contents(TestPath::file(), $constOutput);
+            file_put_contents(TestPath::file(), $varOutput);
+            file_put_contents(TestPath::file(), makeTestFile($container_orig, $offset));
             ++$failuresNb;
             $failures[] = $error;
         }
@@ -72,11 +72,6 @@ if ($failures !== []) {
     echo "Failures:\n" . implode($failures);
 }
 
-?>
---CLEAN--
-<?php
-$fl = __DIR__ . DIRECTORY_SEPARATOR . 'compare_binary_offsets_temp.php';
-@unlink($fl);
 ?>
 --EXPECT--
 Executed tests

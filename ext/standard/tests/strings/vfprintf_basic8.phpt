@@ -14,7 +14,7 @@ $arg2 = array(021,0347);
 $arg3 = array(021,0347,0567);
 
 /* creating dumping file */
-$data_file = __DIR__ . '/vfprintf_basic8.txt';
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
@@ -30,7 +30,6 @@ fprintf($fp, "\n");
 fclose($fp);
 print_r(file_get_contents($data_file));
 
-unlink($data_file);
 ?>
 --EXPECT--
 *** Testing vfprintf() : basic functionality - using octal format ***

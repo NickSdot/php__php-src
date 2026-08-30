@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_unserialize_repeat.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverCtx = stream_context_create(['ssl' => [
@@ -73,10 +73,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session-unserialize-repeat', $c
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_unserialize_repeat.pem.tmp');
 ?>
 --EXPECTF--
 first: Openssl\Session

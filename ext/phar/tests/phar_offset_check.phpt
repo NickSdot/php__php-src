@@ -8,7 +8,7 @@ phar.require_hash=1
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('phar_offset_check.phar.php')->path;
 $pname = 'phar://'.$fname;
 
 $phar = new Phar($fname);
@@ -62,8 +62,6 @@ try {
 var_dump($phar->getAlias());
 
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 BadMethodCallException: Entry .phar/stub.php does not exist
 BadMethodCallException: Entry .phar/alias.txt does not exist

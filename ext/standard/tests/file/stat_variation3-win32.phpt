@@ -11,23 +11,24 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 /* test the effects of creating & deleting of subdir/file  on the stats of dir/file */
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+$dirname = TestPath::directory();
+require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-mkdir("$file_path/stat_variation3/");  // temp dir
+mkdir($dirname);  // temp dir
 
 echo "*** Testing stat(): with creating & deleting subdir/file ***\n";
 
 // creating and deleting subdir and files in the dir
 echo "-- Testing stat() on dir after subdir and file is created in it --\n";
-$dirname = "$file_path/stat_variation3";
 $old_stat = stat($dirname);
 clearstatcache();
 sleep(1);
-mkdir("$dirname/stat_variation3_subdir");
-$file_handle = fopen("$dirname/stat_variation3a.tmp", "w");
+$subdir = $dirname->directory();
+mkdir($subdir);
+$filename = $dirname->file();
+$file_handle = fopen($filename, "w");
 fclose($file_handle);
 $new_stat = stat($dirname);
 
@@ -39,8 +40,8 @@ $affected_members = array( 9, 'mtime');
 clearstatcache();
 sleep(2);
 var_dump(compare_stats($old_stat, $new_stat, $affected_members, "<"));
-unlink("$dirname/stat_variation3a.tmp");
-rmdir("$dirname/stat_variation3_subdir");
+unlink($filename);
+rmdir($subdir);
 clearstatcache();
 
 // comparing stats after the deletion of subdir and file
@@ -53,11 +54,6 @@ var_dump(compare_stats($new_stat, $new_stat1, $affected_members, "<"));
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/stat_variation3");
 ?>
 --EXPECT--
 *** Testing stat(): with creating & deleting subdir/file ***

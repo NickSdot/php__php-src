@@ -24,27 +24,25 @@ $args = array(
     "config" => $config
 );
 
-mkdir(__DIR__ . "/bug50293");
-chdir(__DIR__ . "/bug50293");
+$directory = TestPath::directory();
+mkdir($directory);
+chdir($directory);
+
+$certFile = $directory->file();
+$keyFile = $directory->file();
 
 $privkey = openssl_pkey_get_private('file://' . __DIR__ . '/private_ec.key');
 $csr = openssl_csr_new($dn, $privkey, $args);
 $sscert = openssl_csr_sign($csr, null, $privkey, 365, $args);
 openssl_csr_export($csr, $csrout);;
 openssl_x509_export($sscert, $certout);
-openssl_x509_export_to_file($sscert , "bug50293.crt", false);
-openssl_pkey_export_to_file($privkey, "bug50293.pem", null, $args);
+openssl_x509_export_to_file($sscert, $certFile->name, false);
+openssl_pkey_export_to_file($privkey, $keyFile->name, null, $args);
 
 var_dump(
-    file_exists("bug50293.crt"),
-    file_exists("bug50293.pem")
+    file_exists($certFile->name),
+    file_exists($keyFile->name)
 );
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug50293/bug50293.crt");
-@unlink(__DIR__ . "/bug50293/bug50293.pem");
-@rmdir(__DIR__ . "/bug50293");
 ?>
 --EXPECT--
 bool(true)

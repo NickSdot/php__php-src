@@ -14,7 +14,7 @@ if (!function_exists('imagewebp') || !function_exists('imagecreatefromwebp'))
 <?php
 require_once __DIR__ . '/func.inc';
 
-$filename = __DIR__ . '/webp_basic.webp';
+$filename = TestPath::file();
 
 $im1 = imagecreatetruecolor(75, 75);
 $white = imagecolorallocate($im1, 255, 255, 255);
@@ -25,28 +25,24 @@ imagefilledrectangle($im1, 0, 0, 74, 74, $white);
 imageline($im1, 3, 3, 71, 71, $red);
 imageellipse($im1, 18, 54, 36, 36, $green);
 imagerectangle($im1, 41, 3, 71, 33, $blue);
-imagewebp($im1, $filename);
+imagewebp($im1, $filename->path);
 
 $im2 = imagecreatefromwebp($filename);
-imagewebp($im2, $filename);
+imagewebp($im2, $filename->path);
 echo 'Is lossy conversion close enough? ';
 var_dump(mse($im1, $im2) < 500);
 
-imagewebp($im1, $filename, IMG_WEBP_LOSSLESS);
+imagewebp($im1, $filename->path, IMG_WEBP_LOSSLESS);
 $im_lossless = imagecreatefromwebp($filename);
 echo 'Does lossless conversion work? ';
 var_dump(mse($im1, $im_lossless) == 0);
 
 try {
-	imagewebp($im1, $filename, -10);
+	imagewebp($im1, $filename->path, -10);
 } catch (\ValueError $e) {
 	echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/webp_basic.webp');
 ?>
 --EXPECT--
 Is lossy conversion close enough? bool(true)

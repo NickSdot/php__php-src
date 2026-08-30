@@ -13,8 +13,7 @@ $ftp = ftp_connect('127.0.0.1', $port);
 ftp_login($ftp, 'user', 'pass');
 if (!$ftp) die("Couldn't connect to the server");
 
-$local_file = __DIR__ . DIRECTORY_SEPARATOR . $file;
-touch($local_file);
+$local_file = TestPath::touch();
 
 $r = ftp_nb_get($ftp, $local_file, $file, FTP_BINARY);
 while ($r == FTP_MOREDATA) {
@@ -23,10 +22,6 @@ while ($r == FTP_MOREDATA) {
 ftp_close($ftp);
 
 echo file_get_contents($local_file);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "mediumfile.txt");
 ?>
 --EXPECT--
 This is line 0 of the test data.

@@ -2,11 +2,11 @@
 Test file() function : error conditions
 --FILE--
 <?php
-$file_path = __DIR__;
+$file = TestPath::file();
 echo "\n*** Testing error conditions ***\n";
-$file_handle = fopen($file_path."/file.tmp", "w");
+$file_handle = fopen($file, "w");
 
-$filename = $file_path."/file.tmp";
+$filename = $file;
 try {
     var_dump( file($filename, 10, NULL) );  //  Incorrect flag
 } catch(ValueError $e) {
@@ -21,11 +21,6 @@ var_dump( file("temp.tmp") );  // non existing filename
 fclose($file_handle);
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/file.tmp");
 ?>
 --EXPECTF--
 *** Testing error conditions ***

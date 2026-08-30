@@ -9,7 +9,7 @@ if (!defined('STREAM_CRYPTO_METHOD_TLSv1_3_SERVER')) die("skip TLS 1.3 not avail
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'tls_early_data_invalid.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $ctx = stream_context_create(['ssl' => ['local_cert' => '%s']]);
@@ -41,10 +41,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('tls_early_data_invalid', $certF
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tls_early_data_invalid.pem.tmp');
 ?>
 --EXPECT--
 caught: early_data must be a string

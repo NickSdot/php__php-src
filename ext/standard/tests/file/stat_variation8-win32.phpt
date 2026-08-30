@@ -12,13 +12,12 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 /* test the effects of truncate() on stats of file */
 
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
 
-$filename = "$file_path/stat_variation8.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");  // temp file
 fclose($file_handle);
 
@@ -54,11 +53,6 @@ var_dump( compare_stats($old_stat, $new_stat, $affected_members, '!=') );
 clearstatcache(true, $filename);  // clear previous size value in cache
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_variation8.tmp");
 ?>
 --EXPECT--
 *** Testing stat(): on file by truncating it to given size ***

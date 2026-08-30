@@ -10,10 +10,7 @@ zip
 <?php
 
 include __DIR__ . '/utils.inc';
-$dirname = __DIR__ . '/oo_add_encoding_dir/';
-$file = $dirname . 'tmp.zip';
-
-@mkdir($dirname);
+$file = TestPath::file();
 $zip = new ZipArchive;
 if (!$zip->open($file, ZipArchive::CREATE)) {
     exit('failed');
@@ -33,12 +30,6 @@ if ($zip->status == ZIPARCHIVE::ER_OK) {
 } else {
     echo "failed\n";
 }
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_add_encoding_dir/';
-unlink($dirname . 'tmp.zip');
-rmdir($dirname);
 ?>
 --EXPECT--
 0 foo/

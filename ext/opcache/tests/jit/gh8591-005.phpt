@@ -15,7 +15,9 @@ opcache.protect_memory=1
 // Checks that JITed code does not crash in --repeat 2 after the AbstractModel
 // class is recompiled and Model is re-linked.
 
-require __DIR__ . '/gh8591-005.inc';
+$incfile = TestPath::file();
+file_put_contents($incfile, file_get_contents(__DIR__ . '/gh8591-005.inc'));
+require $incfile;
 
 class Model extends AbstractModel
 {
@@ -30,7 +32,7 @@ class Model extends AbstractModel
 new Model();
 
 // mark the file as changed (important)
-touch(__DIR__ . '/gh8591-005.inc');
+touch($incfile);
 
 var_dump($x);
 

@@ -9,10 +9,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$base = sys_get_temp_dir() . "/" . md5(uniqid());
-while (strlen($base) < 260) {
-    $base = "$base/" . md5(uniqid());
-}
+$workspace = TestPath::directory();
+mkdir($workspace);
+chdir($workspace);
+$base = TestPath::directory(str_repeat('x', max(1, 261 - strlen($workspace))));
 
 $f0 = "$base/_test/documents/projects/myproject/vendor/name/library/classpath";
 $f1 = "$f0/../../../../../../../../_test/documents/projects/myproject/vendor/name/library/../../../../../../../_test/documents/projects/myproject/vendor/name/library/classpath";
@@ -32,12 +32,6 @@ var_dump(
     realpath($f1),
     dirname($f1)
 );
-
-$tmp = $f0;
-while ($tmp > $base) {
-    rmdir($tmp);
-    $tmp = dirname($tmp);
-}
 
 ?>
 --EXPECTF--

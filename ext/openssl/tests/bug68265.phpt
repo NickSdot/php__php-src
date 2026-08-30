@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug68265.pem.tmp';
+$certFile = TestPath::file();
 $san = 'DNS:debs.ak-online.be., DNS:debs.ak-online.net.';
 
 $serverCode = <<<'CODE'
@@ -43,10 +43,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('test.com', $certFile, null, $sa
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug68265.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

@@ -3,10 +3,11 @@ SPL: DirectoryIterator and clone
 --FILE--
 <?php
 
-@mkdir($dir = __DIR__ . '/dit_004');
-touch($dir . '/file1');
-touch($dir . '/file2');
-touch($dir . '/file3');
+$dir = TestPath::directory('dit_004');
+@mkdir($dir->path);
+touch($dir->file('file1')->path);
+touch($dir->file('file2')->path);
+touch($dir->file('file3')->path);
 
 $a = new DirectoryIterator($dir);
 $b = clone $a;
@@ -18,14 +19,6 @@ $a->next();
 $c = clone $a;
 var_dump((string)$c == (string)$a);
 var_dump($a->key(), $c->key());
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/dit_004';
-unlink($dir . '/file1');
-unlink($dir . '/file2');
-unlink($dir . '/file3');
-rmdir($dir);
 ?>
 --EXPECT--
 bool(true)

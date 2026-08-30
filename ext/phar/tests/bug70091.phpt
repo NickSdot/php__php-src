@@ -5,12 +5,13 @@ phar
 zlib
 --FILE--
 <?php
-$phar = new PharData(__DIR__ . '/bug70091.zip');
+$archive = TestPath::file('bug70091.zip');
+$phar = new PharData($archive->path);
 $phar->addFromString('föö', '');
 $phar->addFromString('foo', '');
 unset($phar);
 
-$stream = fopen(__DIR__ . '/bug70091.zip', 'r');
+$stream = fopen($archive->path, 'r');
 
 $data = fread($stream, 8);
 var_dump(unpack('H8sig/@6/nflags', $data));
@@ -52,7 +53,3 @@ array(2) {
   ["flags"]=>
   int(8)
 }
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bug70091.zip');
-?>

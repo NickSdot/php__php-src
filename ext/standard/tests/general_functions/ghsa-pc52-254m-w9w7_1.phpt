@@ -12,18 +12,14 @@ $batch_file_content = <<<EOT
 @echo off
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file_path = __DIR__ . '/ghsa-54hq-v5wp-fqgv_1.bat';
+$batch_file = TestPath::file('batch.bat');
 
-file_put_contents($batch_file_path, $batch_file_content);
+file_put_contents($batch_file, $batch_file_content);
 
 $descriptorspec = [STDIN, STDOUT, STDOUT];
-$proc = proc_open([$batch_file_path, "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file, "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
 
 ?>
 --EXPECT--
 "&notepad.exe
---CLEAN--
-<?php
-@unlink(__DIR__ . '/ghsa-54hq-v5wp-fqgv_1.bat');
-?>

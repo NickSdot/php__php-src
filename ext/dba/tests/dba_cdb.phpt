@@ -10,16 +10,10 @@ check_skip('cdb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_cdb.db';
+$db_name = TestPath::file()->path;
 
 set_up_cdb_db_and_run($db_name);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_cdb.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECT--
 Key 1 exists? Y

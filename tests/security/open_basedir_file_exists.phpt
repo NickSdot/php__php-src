@@ -7,11 +7,6 @@ open_basedir=.
 require_once "open_basedir.inc";
 test_open_basedir("file_exists");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [file_exists] ***
 bool(true)

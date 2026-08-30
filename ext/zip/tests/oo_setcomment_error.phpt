@@ -4,7 +4,7 @@ setComment error behavior
 zip
 --FILE--
 <?php
-$file = __DIR__ . '/__tmp_oo_set_comment_error.zip';
+$file = TestPath::file();
 
 @unlink($file);
 
@@ -40,7 +40,3 @@ $zip->close();
 ValueError: ZipArchive::setArchiveComment(): Argument #1 ($comment) must be less than 65535 bytes
 ValueError: ZipArchive::setCommentName(): Argument #2 ($comment) must be less than 65535 bytes
 ValueError: ZipArchive::setCommentIndex(): Argument #2 ($comment) must be less than 65535 bytes
---CLEAN--
-<?php
-@unlink(__DIR__ . '/__tmp_oo_set_comment_error.zip');
-?>

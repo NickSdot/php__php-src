@@ -9,7 +9,9 @@ if (PHP_OS != "Linux") die("skip Only for Linux systems");
 error_reporting(E_ALL | E_NOTICE);
 
 /* This figures out the max length for normal sockets */
-$socket_file = "/tmp/" . str_repeat("a", 512);
+$socket = TestPath::file();
+chdir($socket->directory);
+$socket_file = $socket->name . str_repeat("a", 512);
 function get_truncated_socket_filename($errno, $errmsg, $file, $line) {
     global $socket_file, $max_normal_length;
     echo $errmsg, "\n";
@@ -20,8 +22,6 @@ function get_truncated_socket_filename($errno, $errmsg, $file, $line) {
 set_error_handler("get_truncated_socket_filename", E_NOTICE);
 
 stream_socket_server("unix://" . $socket_file);
-unlink($socket_file);
-
 /* No we create an abstract one, prefixed with \0 so this should now work */
 $abstract_socket = "\0" . $socket_file;
 stream_socket_server("unix://" . $abstract_socket);

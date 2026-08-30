@@ -10,23 +10,26 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 
 /* creating directory */
-$file_path = __DIR__;
+$file_path = TestPath::directory();
+$source_dir = $file_path->directory();
+$dest_dir = $file_path->directory();
+$new_dir = $dest_dir->directory();
 
 // rename dirs across directories
 echo "\n*** Testing rename() : renaming directory across directories ***\n";
 $src_dirs = array (
   /* Testing simple directory tree */
-  "$file_path/rename_variation1/",
+  "$file_path/{$source_dir->name}/",
 
   /* Testing a dir with trailing slash */
-  "$file_path/rename_variation1/",
+  "$file_path/{$source_dir->name}/",
 
   /* Testing dir with double trailing slashes */
-  "$file_path//rename_variation1//",
+  "$file_path//{$source_dir->name}//",
 );
 
-$dest_dir = "$file_path/rename_variation1_dir";
 // create the $dest_dir
+mkdir($file_path);
 mkdir($dest_dir);
 
 $counter = 1;
@@ -35,24 +38,19 @@ foreach($src_dirs as $src_dir) {
   echo "-- Iteration $counter --\n";
 
   // create the src dir
-  mkdir("$file_path/rename_variation1/");
+  mkdir($source_dir);
   // rename the src dir to a new dir in dest dir
-  var_dump( rename($src_dir, $dest_dir."/new_dir") );
+  var_dump( rename($src_dir, $new_dir) );
   // ensure that dir was renamed
   var_dump( file_exists($src_dir) );  // expecting false
-  var_dump( file_exists($dest_dir."/new_dir") ); // expecting true
+  var_dump( file_exists($new_dir) ); // expecting true
 
   // remove the new dir
-  rmdir($dest_dir."/new_dir");
+  rmdir($new_dir);
   $counter++;
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir($file_path."/rename_variation1_dir");
 ?>
 --EXPECT--
 *** Testing rename() : renaming directory across directories ***

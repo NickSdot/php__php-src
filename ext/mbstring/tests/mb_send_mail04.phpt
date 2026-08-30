@@ -9,26 +9,24 @@ if (!function_exists("mb_send_mail") || !mb_language("german")) {
 }
 ?>
 --INI--
-sendmail_path={MAIL:{PWD}/mb_send_mail04.eml}
+sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
+$mail = TestPath::file("mail.eml");
+chdir($mail->directory);
 $to = 'example@example.com';
 
 /* default setting */
 mb_send_mail($to, mb_language(), "test");
-readfile(__DIR__ . "/mb_send_mail04.eml");
+readfile($mail);
 
 /* German (iso-8859-15) */
 if (mb_language("german")) {
     mb_internal_encoding("ISO-8859-15");
     mb_send_mail($to, "Pr"."\xfc"."fung ".mb_language(), "Pr"."\xfc"."fung");
-    readfile(__DIR__ . "/mb_send_mail04.eml");
+    readfile($mail);
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/mb_send_mail04.eml");
 ?>
 --EXPECTF--
 To: example@example.com

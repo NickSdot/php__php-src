@@ -11,14 +11,15 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__.'/file.inc';
 
 /* creating directory */
-$file_path = __DIR__;
-$dirname = "$file_path/rename_variation3_dir";
+$file_path = TestPath::directory();
+$dirname = $file_path->directory();
+$filename = $file_path->file();
+mkdir($file_path);
 mkdir($dirname);
 
 /* test rename() by trying to rename an existing file/dir to the same name
   and one another */
 
-$filename = "$file_path/rename_variation3.tmp";
 $fp = fopen($filename, "w");
 if (!$fp) {
     die("Cannot create $filename\n");
@@ -47,11 +48,6 @@ var_dump( file_exists($filename) );
 var_dump( file_exists($dirname) );
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir($file_path."/rename_variation3.tmp");
 ?>
 --EXPECTF--
 -- Renaming file to same file name --

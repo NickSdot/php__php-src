@@ -17,8 +17,7 @@ session.serialize_handler=php
 session.save_handler=files
 --FILE--
 <?php
-$sessdir = __DIR__.'/bug42596/';
-@rmdir($sessdir);
+$sessdir = TestPath::directory();
 mkdir($sessdir);
 $save_path = '0;0777;'.$sessdir;
 umask(0);
@@ -27,11 +26,9 @@ session_start();
 echo "hello world\n";
 session_write_close();
 
-foreach (glob($sessdir. "*") as $sessfile) {
+foreach (glob($sessdir . DIRECTORY_SEPARATOR . "*") as $sessfile) {
   var_dump(decoct(fileperms($sessfile)));
-  unlink($sessfile);
 }
-rmdir($sessdir);
 ?>
 --EXPECT--
 Deprecated: PHP Startup: Enabling session.use_trans_sid INI setting is deprecated in Unknown on line 0

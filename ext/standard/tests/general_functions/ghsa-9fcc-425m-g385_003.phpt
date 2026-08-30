@@ -13,16 +13,16 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%0%'"
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file_path = __DIR__ . '/ghsa-9fcc-425m-g385_003.bat';
+$batch_file = TestPath::file('batch.bat');
 
-file_put_contents($batch_file_path, $batch_file_content);
+file_put_contents($batch_file, $batch_file_content);
 
 $descriptorspec = [STDIN, STDOUT, STDOUT];
 
 for ($i = 1; $i <= 255; $i++) {
   echo "Testing $i\n";
   try {
-    $proc = @proc_open([$batch_file_path . chr($i), "\"&notepad.exe"], $descriptorspec, $pipes, null, null, array("bypass_shell" => true));
+    $proc = @proc_open([$batch_file . chr($i), "\"&notepad.exe"], $descriptorspec, $pipes, null, null, array("bypass_shell" => true));
     var_dump($proc);
     proc_close($proc);
   } catch (Error) {}
@@ -544,7 +544,3 @@ Testing 254
 bool(false)
 Testing 255
 bool(false)
---CLEAN--
-<?php
-@unlink(__DIR__ . '/ghsa-9fcc-425m-g385_003.bat');
-?>

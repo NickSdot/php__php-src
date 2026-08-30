@@ -10,18 +10,18 @@ if (!(imagetypes() & IMG_PNG)) {
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'imageresolution_png.png';
+$filename = TestPath::file();
 
 $exp = imagecreate(100, 100);
 imagecolorallocate($exp, 255, 0, 0);
 
 imageresolution($exp, 71);
-imagepng($exp, $filename);
+imagepng($exp, $filename->path);
 $act = imagecreatefrompng($filename);
 var_dump(imageresolution($act));
 
 imageresolution($exp, 71, 299);
-imagepng($exp, $filename);
+imagepng($exp, $filename->path);
 $act = imagecreatefrompng($filename);
 var_dump(imageresolution($act));
 ?>
@@ -38,7 +38,3 @@ array(2) {
   [1]=>
   int(299)
 }
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'imageresolution_png.png');
-?>

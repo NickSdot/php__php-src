@@ -53,7 +53,7 @@ function dump_openssl_errors($name) {
 }
 
 // common output file
-$output_file =  __DIR__ . "/openssl_error_string_basic_output.tmp";
+$output_file = TestPath::file();
 // invalid file for read is something that does not exist in current directory
 $invalid_file_for_read = __DIR__ . "/invalid_file_for_read_operation.txt";
 // invalid file for is the test dir as writing file to existing dir should always fail
@@ -153,13 +153,6 @@ expect_openssl_errors('openssl_csr_get_subjec pem', [$err_pem_no_start_line]);
 // - ASN1_STRING_to_UTF8 fails in add_assoc_name_entry
 // - invalid php_x509_request field (NULL) would cause error with CONF_get_string
 
-?>
---CLEAN--
-<?php
-$output_file =  __DIR__ . "/openssl_error_string_basic_output.tmp";
-if (is_file($output_file)) {
-    unlink($output_file);
-}
 ?>
 --EXPECT--
 PKEY errors

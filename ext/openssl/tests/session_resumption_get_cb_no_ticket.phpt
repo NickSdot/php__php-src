@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_no_ticket.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -70,10 +70,5 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_no_ticket_test', $certF
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 ?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_no_ticket.pem.tmp');
-?>
 --EXPECT--
 SERVER_EXCEPTION: Session tickets cannot be enabled when session_get_cb is setConnection failed as expected
-

@@ -13,7 +13,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('phar_setsignaturealgo2.phar')->path;
 $p = new Phar($fname);
 $p['file1.txt'] = 'hi';
 
@@ -57,10 +57,6 @@ try {
     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
 ?>
 --EXPECTF--
 Default:

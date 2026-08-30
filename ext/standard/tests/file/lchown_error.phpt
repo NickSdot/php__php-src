@@ -11,7 +11,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing lchown() : error functionality ***\n";
 
 // Set up
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'lchown.txt';
+$filename = TestPath::file()->path;
 touch( $filename );
 $uid = posix_getuid();
 
@@ -20,13 +20,6 @@ var_dump( lchown( 'foobar_lchown.txt', $uid ) );
 
 // Bad user
 var_dump( lchown( $filename, -5 ) );
-
-?>
---CLEAN--
-<?php
-
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'lchown.txt';
-unlink($filename);
 
 ?>
 --EXPECTF--

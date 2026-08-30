@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug54992.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug54992-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -49,11 +49,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug54992.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug54992-ca.pem.tmp');
 ?>
 --EXPECTF--
 Warning: stream_socket_client(): Peer certificate CN=`bug54992_actual_peer_name' did not match expected CN=`bug54992_expected_peer_name' in %s on line %d

@@ -44,15 +44,6 @@ if (strlen($row['Value']) < 100) {
     die(sprintf("skip Server misconfiguration? RSA pub key is suspicious, [%d] %s\n", $link->errno, $link->error));
 }
 
-/* date changes may give false positive */
-$file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-if ((file_exists($file) && !unlink($file)) || !($fp = @fopen($file, "w"))) {
-    die(sprintf("skip Cannot create RSA pub key file '%s'", $file));
-}
-if (strlen($row['Value']) != fwrite($fp, $row['Value'])) {
-    die(sprintf("skip Failed to create pub key file"));
-}
-
 // Ignore errors because this variable exists only in MySQL 5.6 and 5.7
 $link->query("SET @@session.old_passwords=2");
 
@@ -121,44 +112,47 @@ echo "nocache";
         return true;
     }
 
-    $file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-    if (file_exists($file) && is_readable($file)) {
+    $public_key_link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
+    $public_key_result = $public_key_link->query("SHOW STATUS LIKE 'Rsa_public_key'");
+    $public_key = $public_key_result->fetch_assoc()['Value'];
+    $public_key_result->free();
+    $public_key_link->close();
 
-        /* valid key */
-        sha_connect(100, $host, $db, $port, $socket, $file);
+    $file = TestPath::file();
+    $fp = fopen($file, "w");
+    fwrite($fp, $public_key);
+    fclose($fp);
 
-        /* invalid key */
-        $file_wrong = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_wrong" , @date("Ymd"));
+    /* valid key */
+    sha_connect(100, $host, $db, $port, $socket, $file);
 
-        $key = file_get_contents($file);
-        $key = str_replace("A", "a", $key);
-        $key = str_replace("M", "m", $key);
-        @unlink($file_wrong);
-        if (!($fp = fopen($file_wrong, "w"))) {
-            printf("[002] Can't write public key file.");
-        } else {
-            fwrite($fp, $key);
-            fclose($fp);
-            sha_connect(200, $host, $db, $port, $socket, $file_wrong);
-        }
+    /* invalid key */
+    $file_wrong = TestPath::file();
 
-        /* empty file */
-        @unlink($file_wrong);
-        if (!($fp = fopen($file_wrong, "w"))) {
-            printf("[003] Can't write public key file.");
-        } else {
-            fwrite($fp, "");
-            fclose($fp);
-            sha_connect(300, $host, $db, $port, $socket, $file_wrong);
-        }
-
-        /* file does not exist */
-        @unlink($file_wrong);
-        sha_connect(400, $host, $db, $port, $socket, $file_wrong);
-
+    $key = file_get_contents($file);
+    $key = str_replace("A", "a", $key);
+    $key = str_replace("M", "m", $key);
+    if (!($fp = fopen($file_wrong, "w"))) {
+        printf("[002] Can't write public key file.");
     } else {
-        printf("[001] Cannot read public key file.");
+        fwrite($fp, $key);
+        fclose($fp);
+        sha_connect(200, $host, $db, $port, $socket, $file_wrong);
     }
+
+    /* empty file */
+    $file_wrong = TestPath::file();
+    if (!($fp = fopen($file_wrong, "w"))) {
+        printf("[003] Can't write public key file.");
+    } else {
+        fwrite($fp, "");
+        fclose($fp);
+        sha_connect(300, $host, $db, $port, $socket, $file_wrong);
+    }
+
+    /* file does not exist */
+    $file_wrong = TestPath::file();
+    sha_connect(400, $host, $db, $port, $socket, $file_wrong);
 
     print "done!";
 ?>
@@ -167,10 +161,6 @@ echo "nocache";
     require_once 'clean_table.inc';
     $link->query('DROP USER shatest');
     $link->query('DROP USER shatest@localhost');
-    $file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-    @unlink($file);
-    $file_wrong = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_wrong" , @date("Ymd"));
-    @unlink($file_wrong);
 ?>
 --EXPECTF--
 Warning: mysqli::real_connect(): (HY000/1045): %s in %s on line %d

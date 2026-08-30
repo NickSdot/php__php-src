@@ -14,8 +14,10 @@ Phar::unlinkArchive("");
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$pdname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
+$archive = TestPath::file('phar_unlinkarchive.phar');
+$fname = $archive->path;
+$invalid = TestPath::file('phar_unlinkarchive.phar.tar');
+$pdname = $invalid->path;
 
 try {
 Phar::unlinkArchive($fname);
@@ -35,8 +37,10 @@ try {
 }
 
 $pname = 'phar://' . $fname;
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.zip';
+$converted = TestPath::file('phar_unlinkarchive.phar.zip');
+$fname2 = $converted->path;
+$copy = TestPath::file('phar_unlinkarchive.2.phar.zip');
+$fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;
 
@@ -79,14 +83,6 @@ include Phar::running(true) . "/another.php";
 $phar['another.php'] = "hi\n";
 unset($phar);
 include $pname . '/evil.php';
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
-__HALT_COMPILER();
 ?>
 --EXPECTF--
 PharException: Unknown phar archive ""

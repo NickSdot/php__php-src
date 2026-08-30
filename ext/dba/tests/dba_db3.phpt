@@ -10,17 +10,11 @@ check_skip('db3');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_db3.db';
+$db_name = TestPath::file()->path;
 
 $handler = 'db3';
 run_standard_tests($handler, $db_name);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_db3.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECT--
 === RUNNING WITH FILE LOCK ===

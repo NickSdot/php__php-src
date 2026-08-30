@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = __DIR__ . '/私はガラスを食べられますreaddir_variation2';
+$path = TestPath::directory();
 mkdir($path);
 $dir_handle = opendir($path);
 
@@ -33,11 +33,6 @@ usort($entries, "mysort");
 foreach($entries as $entry) {
     var_dump($entry);
 }
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/私はガラスを食べられますreaddir_variation2';
-rmdir($path);
 ?>
 --EXPECT--
 *** Testing readdir() : usage variations ***

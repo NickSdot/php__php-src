@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'openssl_peer_fingerprint_basic.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'openssl_peer_fingerprint_basic-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -62,11 +62,6 @@ $clientCode = sprintf($clientCode, $cacertFile, $peerName, $brokenMd5, $actualSh
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'openssl_peer_fingerprint_basic.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'openssl_peer_fingerprint_basic-ca.pem.tmp');
 ?>
 --EXPECTF--
 Warning: stream_socket_client(): peer_fingerprint match failure in %s on line %d

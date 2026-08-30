@@ -7,8 +7,7 @@ Test readfile() function: usage variation - include path
 // include file.inc
 require("file.inc");
 
-$file_path = __DIR__;
-$dirname = "$file_path/readfile_variation3";
+$dirname = TestPath::directory('readfile_variation3');
 
 echo "*** Testing readfile(): checking second argument, include path ***\n";
 // temp dir created
@@ -21,7 +20,7 @@ fill_file($fp, "text_with_new_line", 50);
 fclose($fp);
 
 // including $dirname in 'include_path'
-ini_set('include_path',$dirname);
+ini_set('include_path', (string) $dirname);
 // 'include_path' set to true
 $count = readfile("readfile_variation3.tmp", true);
 echo "\n";
@@ -34,11 +33,6 @@ echo "\n";
 var_dump($count);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/readfile_variation3/readfile_variation3.tmp");
-rmdir(__DIR__."/readfile_variation3");
 ?>
 --EXPECT--
 *** Testing readfile(): checking second argument, include path ***

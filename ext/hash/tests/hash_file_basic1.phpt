@@ -5,7 +5,7 @@ Hash: hash_file() function : basic functionality
 
 echo "*** Testing hash_file() : basic functionality ***\n";
 
-$file = __DIR__ . "hash_file.txt";
+$file = TestPath::file();
 /* Creating a temporary file file */
 if (($fp = fopen( $file, "w+")) == FALSE) {
     echo "Cannot create file ($file)";
@@ -52,8 +52,6 @@ echo "murmur3f: " . hash_file('murmur3f', $file, false, ['seed' => 1234]). "\n";
 echo "adler32(raw): " . bin2hex(hash_file('adler32', $file, TRUE)) . "\n";
 echo "md5(raw): " . bin2hex(hash_file('md5', $file, TRUE)). "\n";
 echo "sha256(raw): " . bin2hex(hash_file('sha256', $file, TRUE)). "\n";
-
-unlink($file);
 
 ?>
 --EXPECT--

@@ -34,22 +34,19 @@ class CustomStream {
     }
 }
 
-file_put_contents(__DIR__ . "/gh13071.tmp", str_repeat("a", 1024 * 1024 * 8));
+$source = TestPath::file();
+$output = TestPath::file();
+file_put_contents($source, str_repeat("a", 1024 * 1024 * 8));
 
 stream_wrapper_register("up", CustomStream::class, STREAM_IS_URL);
 
 $old_limit = ini_get("memory_limit");
 ini_set("memory_limit", memory_get_usage(true) + 5 * 1024 * 1024);
-copy(__DIR__ . "/gh13071.tmp", "up://" . __DIR__ . "/gh13071.out.tmp");
+copy($source, "up://" . $output);
 ini_set("memory_limit", $old_limit);
 
 echo "Done ", CustomStream::$writes, " writes\n";
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/gh13071.tmp");
-@unlink(__DIR__ . "/gh13071.out.tmp");
 ?>
 --EXPECT--
 Done 1024 writes

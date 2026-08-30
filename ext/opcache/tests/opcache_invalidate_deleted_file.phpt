@@ -9,7 +9,7 @@ opcache.validate_timestamps=0
 --FILE--
 <?php
 
-$file = __DIR__ . DIRECTORY_SEPARATOR . pathinfo(__FILE__, PATHINFO_FILENAME) . '.inc';
+$file = TestPath::file();
 file_put_contents($file, <<<PHP
 <?php
 return 42;

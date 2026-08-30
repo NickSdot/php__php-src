@@ -5,12 +5,8 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = tempnam(sys_get_temp_dir(), "ssl");
-$vout= $outfile . ".vout";
-
-if ($outfile === false) {
-    die("failed to get a temporary filename!");
-}
+$outfile = TestPath::file();
+$vout = TestPath::file();
 
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $single_cert = "file://" . __DIR__ . "/cert.crt";
@@ -64,11 +60,9 @@ readfile($vout);
 // extreme measures to avoid stupid temporary errors for failure to unlink a file.
 if (file_exists($outfile)) {
     echo "true\n";
-    unlink($outfile);
 }
 if (file_exists($vout)) {
     echo "true\n";
-    unlink($vout);
 }
 
 ?>

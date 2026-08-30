@@ -6,10 +6,7 @@ xsl
 <?php
 include("prepare.inc");
 
-$outputfile = __DIR__."/bug54446test_with_ini.txt";
-if (file_exists($outputfile)) {
-    unlink($outputfile);
-}
+$outputfile = TestPath::file('bug54446test_with_ini.txt');
 
 $sXsl = <<<EOT
 <xsl:stylesheet version="1.0"

@@ -12,11 +12,18 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 echo "*** Testing readlink() and realpath() : usage variations ***\n";
-$name_prefix = __DIR__;
 // create temp dir
-mkdir("$name_prefix/readlink_realpath_variation2/home/tests/link/", 0777, true);
+$name_prefix = TestPath::directory();
+$root = $name_prefix->directory('readlink_realpath_variation2');
+$home = $root->directory('home');
+$tests = $home->directory('tests');
+$link_dir = $tests->directory('link');
+mkdir($link_dir, 0777, true);
 // create the file
-$filename = "$name_prefix/readlink_realpath_variation2/home/tests/link/readlink_realpath_variation2.tmp";
+$filename = $link_dir->file('readlink_realpath_variation2.tmp');
+$link1 = $link_dir->file('readlink_realpath_variation2_link.tmp');
+$outside_home = $name_prefix->directory('home');
+$link2 = $outside_home->file('readlink_realpath_variation2_link.tmp');
 $fp = fopen($filename, "w");
 fclose($fp);
 
@@ -53,15 +60,6 @@ unlink($link_arr[0]);
 unlink($link_arr[1]);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$name_prefix = __DIR__."/readlink_realpath_variation2";
-unlink("$name_prefix/home/tests/link/readlink_realpath_variation2.tmp");
-rmdir("$name_prefix/home/tests/link/");
-rmdir("$name_prefix/home/tests/");
-rmdir("$name_prefix/home/");
-rmdir("$name_prefix/");
 ?>
 --EXPECTF--
 *** Testing readlink() and realpath() : usage variations ***

@@ -8,9 +8,9 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$caCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug69215-ca.pem.tmp';
-$clientCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug69215-client.pem.tmp';
-$serverCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug69215-server.pem.tmp';
+$caCertFile = TestPath::file();
+$clientCertFile = TestPath::file();
+$serverCertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -53,12 +53,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('bug69215-server', $serverCertFi
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug69215-ca.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug69215-client.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug69215-server.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

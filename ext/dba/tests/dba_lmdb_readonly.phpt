@@ -10,7 +10,7 @@ dba
 --FILE--
 <?php
 $handler = 'lmdb';
-$db_filename = __DIR__ . "/lmdb-readonly.dbm";
+$db_filename = TestPath::file();
 
 // Create DB
 $db_file = dba_open($db_filename, "c", $handler);
@@ -25,13 +25,6 @@ assert($db_file !== false);
 // Try inserting
 dba_insert("key1", "This is a test insert", $db_file);
 dba_close($db_file);
-?>
---CLEAN--
-<?php
-$db_filename = __DIR__ . "/lmdb-readonly.dbm";
-@unlink($db_filename);
-@unlink($db_filename.'.lck');
-@unlink($db_filename.'-lock');
 ?>
 --EXPECTF--
 Warning: dba_insert(): Cannot perform a modification on a readonly database in %s on line %d

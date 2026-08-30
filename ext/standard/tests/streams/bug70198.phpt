@@ -16,7 +16,7 @@ server
 */
 
 $srv_addr = "tcp://127.0.0.1:8964";
-$srv_fl = __DIR__ . "/bug70198_svr_" . md5(uniqid()) . ".php";
+$srv_fl = TestPath::file();
 $srv_fl_escaped = escapeshellarg($srv_fl);
 $srv_fl_cont = <<<SRV
 <?php
@@ -55,7 +55,6 @@ if (!$fp) {
 }
 
 proc_close($srv_proc);
-unlink($srv_fl);
 ?>
 --EXPECT--
 int(0)

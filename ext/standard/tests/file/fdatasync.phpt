@@ -10,8 +10,7 @@ second line of string
 third line of string
 EOD;
 
-$file_path = __DIR__;
-$filename = "$file_path/fdatasync_basic.tmp";
+$filename = TestPath::file();
 
 // opening a file
 $file_handle = fopen($filename, "w");
@@ -49,12 +48,6 @@ var_dump( ($return_value) );
 fclose($file_handle);
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fdatasync_basic.tmp";
-unlink($filename);
 ?>
 --EXPECTF--
 *** Testing fdatasync(): writing to a file and reading the contents ***

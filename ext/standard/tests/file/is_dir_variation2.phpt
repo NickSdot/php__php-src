@@ -11,65 +11,46 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 /* Testing is_dir() with dir, soft & hard link to dir,
      and with file, soft & hard link to file */
 
-$file_path = __DIR__;
+$dirname = TestPath::directory();
+$dir_symlink = TestPath::file();
+$dir_hardlink = TestPath::file();
+$filename = TestPath::file();
+$file_symlink = TestPath::file();
+$file_hardlink = TestPath::file();
 
 echo "*** Testing is_dir() with dir and links to dir ***\n";
 echo "-- With dir --\n";
-$dirname = $file_path."/is_dir_variation2";
 mkdir($dirname);
 var_dump( is_dir($dirname) );
 clearstatcache();
 
 echo "-- With symlink --\n";
-symlink($file_path."/is_dir_variation2", $file_path."/is_dir_variation2_symlink");
-var_dump( is_dir($file_path."/is_dir_variation2_symlink") );  //is_dir() resolves symlinks
+symlink($dirname, $dir_symlink);
+var_dump( is_dir($dir_symlink) );  //is_dir() resolves symlinks
 clearstatcache();
 
 echo "-- With hardlink --";
-link($file_path."/is_dir_variation2", $file_path."/is_dir_variation2_link"); //Not permitted to create hard-link to a dir
-var_dump( is_dir($file_path."/is_dir_variation2_link") );
+link($dirname, $dir_hardlink); //Not permitted to create hard-link to a dir
+var_dump( is_dir($dir_hardlink) );
 clearstatcache();
 
 echo "\n*** Testing is_dir() with file and links to a file ***\n";
 echo "-- With file --\n";
-$filename = $file_path."/is_dir_variation2.tmp";
 fclose( fopen($filename, "w") );
 var_dump( is_dir($filename) );
 clearstatcache();
 
 echo "-- With symlink --\n";
-symlink($file_path."/is_dir_variation2.tmp", $file_path."/is_dir_variation2_symlink.tmp");
-var_dump( is_dir($file_path."/is_dir_variation2_symlink.tmp") );
+symlink($filename, $file_symlink);
+var_dump( is_dir($file_symlink) );
 clearstatcache();
 
 echo "-- With hardlink --\n";
-link($file_path."/is_dir_variation2.tmp", $file_path."/is_dir_variation2_link.tmp");
-var_dump( is_dir($file_path."/is_dir_variation2_link.tmp") );
+link($filename, $file_hardlink);
+var_dump( is_dir($file_hardlink) );
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-if(file_exists($file_path."/is_dir_variation2_symlink")) {
-  unlink($file_path."/is_dir_variation2_symlink");
-}
-if(file_exists($file_path."/is_dir_variation2_symlink")) {
-  unlink($file_path."/is_dir_variation2_symlink");
-}
-if(file_exists($file_path."/is_dir_variation2_symlink.tmp")) {
-  unlink($file_path."/is_dir_variation2_symlink.tmp");
-}
-if(file_exists($file_path."/is_dir_variation2_link.tmp")) {
-  unlink($file_path."/is_dir_variation2_link.tmp");
-}
-if(file_exists($file_path."/is_dir_variation2.tmp")) {
-  unlink($file_path."/is_dir_variation2.tmp");
-}
-if(file_exists($file_path."/is_dir_variation2")) {
-  rmdir($file_path."/is_dir_variation2");
-}
 ?>
 --EXPECTF--
 *** Testing is_dir() with dir and links to dir ***

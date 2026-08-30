@@ -3,7 +3,7 @@ sha1() with ASCII output
 --FILE--
 <?php
 
-$filename = __DIR__."/sha1.dat";
+$filename = TestPath::file();
 $a = array(
     "abc",
     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
@@ -23,7 +23,6 @@ var_dump(sha1($str, true));
 var_dump(sha1_file($filename, true));
 
 @unlink($filename);
-
 sha1_file($filename);
 
 echo "Done\n";

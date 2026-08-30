@@ -13,7 +13,7 @@ if(substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_server_reneg_limit.pem.tmp';
+$certFile = TestPath::file();
 
 /**
  * This test uses the openssl binary directly to initiate renegotiation. At this time it's not
@@ -100,10 +100,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('stream_security_level', $certFi
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($serverCode, $clientCode, false);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_server_reneg_limit.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

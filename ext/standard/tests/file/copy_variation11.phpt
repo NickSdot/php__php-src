@@ -4,15 +4,14 @@ Test copy() function: usage variations - existing dir as destination
 <?php
 /* Test copy(): Trying to copy the file to a destination, where destination is an existing dir */
 
-$file_path = __DIR__;
+$file = TestPath::file()->path;
 
 echo "*** Test copy() function: Trying to create a copy of source file as a dir ***\n";
-$file = $file_path."/copy_variation11.tmp";
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello, world...", 20));
 fclose($file_handle);
 
-$dir = $file_path."/copy_variation11";
+$dir = TestPath::directory()->path;
 mkdir($dir);
 
 echo "Size of source before copy operation => ";
@@ -38,11 +37,6 @@ var_dump( filesize($file) );   //size of source after copy
 var_dump( filesize($dir) );   //size of destination after copy
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/copy_variation11.tmp");
-rmdir(__DIR__."/copy_variation11");
 ?>
 --EXPECTF--
 *** Test copy() function: Trying to create a copy of source file as a dir ***

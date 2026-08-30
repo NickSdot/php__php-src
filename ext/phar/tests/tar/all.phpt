@@ -7,9 +7,9 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar.php';
+$fname = TestPath::file('archive.phar.tar.php');
 $pname = 'phar://' . $fname;
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.tar.php';
+$fname2 = TestPath::file('archive.2.phar.tar.php');
 $pname2 = 'phar://' . $fname2;
 
 $phar = new Phar($fname);
@@ -35,8 +35,6 @@ var_dump($phar->getAlias());
 var_dump($phar->getMetadata());
 var_dump($phar['a']->getMetadata());
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.tar.php'); ?>
 --EXPECT--
 bool(false)
 bool(false)

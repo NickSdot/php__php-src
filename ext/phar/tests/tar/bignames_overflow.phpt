@@ -6,8 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
-$pname = 'phar://' . $fname;
+$fname = TestPath::file('archive.tar');
 
 include __DIR__ . '/files/make.dangerous.tar.php.inc';
 
@@ -24,10 +23,6 @@ foreach ($p1 as $file) {
 echo $p1['a/' . str_repeat('a', 100)]->getContent() . "\n";
 echo $p1[str_repeat('a', 155) . '/' . str_repeat('a', 100)]->getContent() . "\n";
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
 ?>
 --EXPECT--
 a

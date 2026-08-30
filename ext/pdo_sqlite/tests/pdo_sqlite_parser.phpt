@@ -5,7 +5,7 @@ pdo_sqlite
 --FILE--
 <?php
 
-$filename = __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite_parser.db";
+$filename = TestPath::file();
 
 // Default open flag is read-write|create
 $db = new PDO('sqlite:' . $filename, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -58,13 +58,6 @@ if ($dqs) {
     var_dump(true);
 }
 
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite_parser.db";
-if (file_exists($filename)) {
-    unlink($filename);
-}
 ?>
 --EXPECT--
 bool(true)

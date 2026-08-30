@@ -26,7 +26,7 @@ require __DIR__.'/../../../sapi/cgi/tests/include.inc';
 $php = get_cgi_path();
 reset_env_vars();
 
-$file = __DIR__."/session_regenerate_id_cookie.test.php";
+$file = TestPath::file('session_regenerate_id_cookie.test.php');
 
 file_put_contents($file, '<?php
 ob_start();
@@ -58,8 +58,6 @@ ob_end_flush();
 
 $extra_arguments = getenv('TEST_PHP_EXTRA_ARGS');
 var_dump(shell_exec("$php $extra_arguments -d session.name=PHPSESSID $file"));
-
-unlink($file);
 
 echo "Done";
 ?>

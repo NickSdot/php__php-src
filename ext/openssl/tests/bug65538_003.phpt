@@ -11,10 +11,10 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 phar.readonly=0
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug65538_003.pem.tmp';
+$certFile = TestPath::file();
 
-$cacertFile = 'bug65538_003-ca.pem';
-$cacertPhar = __DIR__ . DIRECTORY_SEPARATOR . 'bug65538_003-ca.phar.tmp';
+$cacertFile = 'ca.pem';
+$cacertPhar = TestPath::file('ca.phar');
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -67,11 +67,6 @@ $phar->addFromString($cacertFile, $certificateGenerator->getCaCert());
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug65538_003.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug65538_003-ca.phar.tmp');
 ?>
 --EXPECT--
 string(12) "Hello World!"

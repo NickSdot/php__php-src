@@ -9,18 +9,16 @@ if (!defined('GLOB_BRACE')) {
 --FILE--
 <?php
 
-$file_path = __DIR__;
-
-// temp dirname used here
-$dirname = "$file_path/bug69628";
+$directory = TestPath::directory('bug69628');
+$dirname = $directory->path;
 
 // temp dir created
 mkdir($dirname);
 
 // temp files created
-file_put_contents("$dirname/image.jPg", '');
-file_put_contents("$dirname/image.gIf", '');
-file_put_contents("$dirname/image.png", '');
+file_put_contents($directory->file('image.jPg'), '');
+file_put_contents($directory->file('image.gIf'), '');
+file_put_contents($directory->file('image.png'), '');
 
 sort_var_dump(glob("$dirname/*.{[jJ][pP][gG],[gG][iI][fF]}", GLOB_BRACE));
 
@@ -28,16 +26,6 @@ function sort_var_dump($results) {
    sort($results);
    var_dump($results);
 }
-
-?>
---CLEAN--
-<?php
-
-$file_path = __DIR__;
-unlink("$file_path/bug69628/image.jPg");
-unlink("$file_path/bug69628/image.gIf");
-unlink("$file_path/bug69628/image.png");
-rmdir("$file_path/bug69628/");
 
 ?>
 --EXPECTF--

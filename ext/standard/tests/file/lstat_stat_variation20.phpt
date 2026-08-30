@@ -14,11 +14,13 @@ if (PHP_OS_FAMILY === 'Windows') {
 $file_path = __DIR__;
 require "$file_path/file.inc";
 
-$fp = fopen("$file_path/lstat_stat_variation20.tmp", "w");  // temp file
+$tmp_file = TestPath::file('lstat_stat_variation20.tmp');
+$tmp_link = TestPath::file('lstat_stat_variation20_link.tmp');
+$fp = fopen($tmp_file, "w");  // temp file
 fclose($fp);
 
 // temp link
-symlink("$file_path/lstat_stat_variation20.tmp", "$file_path/lstat_stat_variation20_link.tmp");
+symlink($tmp_file, $tmp_link);
 
 echo "*** Testing lstat() with linkname stored inside an object/array ***\n";
 class names {
@@ -29,14 +31,14 @@ class names {
 }
 
 // link name stored in an object
-$link_object = new names("$file_path/lstat_stat_variation20_link.tmp");
+$link_object = new names($tmp_link);
 
 // link name stored in side an array
 // with default numeric key
-$link_array = array("$file_path/lstat_stat_variation20_link.tmp");
+$link_array = array($tmp_link);
 
 // with string key index
-$link_array_with_key = array("linkname" => "$file_path/lstat_stat_variation20_link.tmp");
+$link_array_with_key = array("linkname" => $tmp_link);
 
 echo "\n-- Testing lstat() on link name stored inside an object --\n";
 var_dump( lstat($link_object->var_name) );
@@ -47,12 +49,6 @@ var_dump( stat($link_array_with_key["linkname"]) ); // with string key
 var_dump( stat($link_array_with_key['linkname']) );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation20_link.tmp");
-unlink("$file_path/lstat_stat_variation20.tmp");
 ?>
 --EXPECTF--
 *** Testing lstat() with linkname stored inside an object/array ***

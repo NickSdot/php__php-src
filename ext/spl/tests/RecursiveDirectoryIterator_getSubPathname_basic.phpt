@@ -5,15 +5,18 @@ Pawel Krynicki <pawel [dot] krynicki [at] xsolve [dot] pl>
 #testfest AmsterdamPHP 2012-06-23
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 $depth0 = "depth02";
 $depth1 = "depth1";
 $depth2 = "depth2";
-$targetDir = __DIR__ . DIRECTORY_SEPARATOR . $depth0 . DIRECTORY_SEPARATOR . $depth1 . DIRECTORY_SEPARATOR . $depth2;
-mkdir($targetDir, 0777, true);
-touch($targetDir . DIRECTORY_SEPARATOR . 'getSubPathname_test_2.tmp');
-touch(__DIR__ . DIRECTORY_SEPARATOR . $depth0 . DIRECTORY_SEPARATOR . $depth1 . DIRECTORY_SEPARATOR . 'getSubPathname_test_3.tmp');
-touch(__DIR__ . DIRECTORY_SEPARATOR . $depth0 . DIRECTORY_SEPARATOR . 'getSubPathname_test_1.tmp');
-$iterator = new RecursiveDirectoryIterator(__DIR__ . DIRECTORY_SEPARATOR . $depth0);
+$root = TestPath::directory($depth0);
+$level1 = $root->directory($depth1);
+$targetDir = $level1->directory($depth2);
+mkdir($targetDir->path, 0777, true);
+touch($targetDir->file('getSubPathname_test_2.tmp')->path);
+touch($level1->file('getSubPathname_test_3.tmp')->path);
+touch($root->file('getSubPathname_test_1.tmp')->path);
+$iterator = new RecursiveDirectoryIterator($root);
 $it = new RecursiveIteratorIterator($iterator);
 
 $list = [];
@@ -26,23 +29,6 @@ asort($list);
 foreach ($list as $item) {
     echo $item . "\n";
 }
-?>
---CLEAN--
-<?php
-function rrmdir($dir) {
-	foreach(glob($dir . '/*') as $file) {
-	  if(is_dir($file)) {
-		rrmdir($file);
-	  } else {
-		unlink($file);
-	  }
-	}
-
-	rmdir($dir);
-}
-
-$targetDir = __DIR__ . DIRECTORY_SEPARATOR . "depth02";
-rrmdir($targetDir);
 ?>
 --EXPECTF--
 .

@@ -4,8 +4,7 @@ Bug #60120 proc_open hangs with stdin/out with >2048 bytes
 <?php
 error_reporting(E_ALL);
 
-$file = preg_replace(
-    "~\.phpt?$~", ".io.php", __FILE__);
+$file = TestPath::file();
 
 file_put_contents($file, <<<TMPFILE
 <?php
@@ -88,11 +87,6 @@ var_dump(
 
 fclose($pipes[1]);
 fclose($pipes[2]);
-?>
---CLEAN--
-<?php
-$file = preg_replace("~\.clean\.php$~", ".io.php", __FILE__);
-unlink($file);
 ?>
 --EXPECTF--
 string(10000) "%s"

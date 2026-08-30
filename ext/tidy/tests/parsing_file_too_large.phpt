@@ -17,7 +17,7 @@ memory_limit="5G"
 --FILE--
 <?php
 
-$path = __DIR__ . '/too_large_test.html';
+$path = TestPath::file();
 $file = fopen($path, 'w+');
 
 // Write over 4GB
@@ -54,11 +54,6 @@ try {
 } catch (\Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/too_large_test.html';
-unlink($path);
 ?>
 --EXPECT--
 int(0)

@@ -48,7 +48,7 @@ class RotateFilter extends php_user_filter
 
 stream_filter_register('test.rotate', 'RotateFilter');
 
-$file = __DIR__ . '/user_filter_seek_001.txt';
+$file = TestPath::file();
 $text = 'Hello World';
 
 file_put_contents($file, $text);
@@ -72,7 +72,6 @@ $from_middle = fread($fp, 5);
 echo "Read from middle: $from_middle\n";
 
 fclose($fp);
-unlink($file);
 
 ?>
 --EXPECT--

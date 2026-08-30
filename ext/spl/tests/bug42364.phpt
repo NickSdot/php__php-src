@@ -2,9 +2,11 @@
 Bug #42364 (Crash when using getRealPath with DirectoryIterator)
 --FILE--
 <?php
-$dir = __DIR__ . '/bug42364';
-@mkdir($dir);
-touch($dir . '/test');
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('bug42364');
+@mkdir($dir->path);
+$file = $dir->file('test');
+touch($file->path);
 
 $count = 0;
 $it = new DirectoryIterator($dir);
@@ -19,11 +21,6 @@ foreach ($it as $e) {
 if ($count > 0) {
     echo "Found $count entries!\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/bug42364/test');
-rmdir(__DIR__ . '/bug42364');
 ?>
 --EXPECTF--
 Found %i entries!

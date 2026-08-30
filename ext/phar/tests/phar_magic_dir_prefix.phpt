@@ -7,7 +7,7 @@ phar.readonly=0
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('archive.phar.php')->path;
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);
@@ -51,10 +51,6 @@ try {
 } catch (Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php');
 ?>
 --EXPECT--
 bool(true)

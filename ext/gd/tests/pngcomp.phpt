@@ -11,30 +11,30 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $output = TestPath::file();
 
 
         $im = imagecreatetruecolor(20,20);
         imagefilledrectangle($im, 5,5, 10,10, 0xffffff);
 	try {
-		imagepng($im, $cwd . '/test_pngcomp.png', -2);
+		imagepng($im, $output->path, -2);
 	} catch (\ValueError $e) {
 		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
 	try {
-		imagepng($im, $cwd . '/test_pngcomp.png', 10);
+		imagepng($im, $output->path, 10);
 	} catch (\ValueError $e) {
 		echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 	}
     	echo "PNG compression test: ";
-        imagepng($im, $cwd . '/test_pngcomp.png', 9);
+        imagepng($im, $output->path, 9);
 
-        $im2 = imagecreatefrompng($cwd . '/test_pngcomp.png');
+        $im2 = imagecreatefrompng($output);
         $col = imagecolorat($im2, 8,8);
         if ($col == 0xffffff) {
                 echo "ok\n";
         }
 
-    @unlink($cwd . "/test_pngcomp.png");
 ?>
 --EXPECT--
 ValueError: imagepng(): Argument #3 ($quality) must be between -1 and 9

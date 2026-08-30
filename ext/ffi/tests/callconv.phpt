@@ -14,7 +14,7 @@ void __cdecl cdecl_func(int arg1, double arg2, char arg3);
 void __stdcall stdcall_func(int arg1, double arg2, char arg3);
 void __fastcall fastcall_func(int arg1, double arg2, char arg3);
 HEADER;
-$headername = __DIR__ . '/callconv.h';
+$headername = TestPath::file('callconv.h');
 $dllname = __DIR__ . "/callconv_x86.dll";
 
 $ffi1 = FFI::cdef($header, $dllname);
@@ -36,7 +36,3 @@ fastcall: 7, 8.900000, c
 cdecl: 2, 3.400000, a
 stdcall: 5, 6.700000, b
 fastcall: 8, 9.100000, c
---CLEAN--
-<?php
-unlink(__DIR__ . '/callconv.h');
-?>

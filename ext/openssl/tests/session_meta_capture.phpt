@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_meta_capture.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_meta_capture-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -61,11 +61,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_meta_capture.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_meta_capture-ca.pem.tmp');
 ?>
 --EXPECT--
 string(5) "TLSv1"

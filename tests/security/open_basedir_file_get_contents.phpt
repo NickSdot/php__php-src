@@ -16,11 +16,6 @@ var_dump(file_get_contents($initdir."/test/ok/../ok/ok.txt"));
 
 test_open_basedir_after("file_get_contents");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [file_get_contents] ***
 bool(true)

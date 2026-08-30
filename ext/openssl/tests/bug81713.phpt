@@ -19,7 +19,7 @@ $csr_file = "file://$csr";
 $csr_file_null = "$csr_file\x00foo";
 $infile = __DIR__ . '/plain.txt';
 $infile_null = "$infile\x00acd";;
-$outfile = __DIR__ . '/bug81713.out';
+$outfile = TestPath::file();
 $outfile_null = "$outfile\x00acd";
 $eml = __DIR__ . "/signed.eml";
 $eml_null = "$eml\x00foo";
@@ -133,11 +133,6 @@ foreach ($tests as $test) {
         echo $e->getMessage() . PHP_EOL;
     }
 }
-?>
---CLEAN--
-<?php
-$outfile = __DIR__ . '/bug81713.out';
-@unlink($outfile);
 ?>
 --EXPECTF--
 object(OpenSSLAsymmetricKey)#1 (0) {

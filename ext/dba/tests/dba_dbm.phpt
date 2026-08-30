@@ -10,18 +10,12 @@ check_skip('dbm');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_dbm.db';
+$db_name = TestPath::file()->path;
 
 $handler = 'dbm';
 set_up_db($handler, $db_name, false /* Locking done by the library */);
 run_standard_tests($handler, $db_name, false /* Locking done by the library */);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_dbm.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECT--
 key4: Another Content String

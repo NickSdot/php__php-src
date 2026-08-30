@@ -14,12 +14,12 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $output = TestPath::file();
 
     echo "XPM to PNG conversion: ";
-    echo imagepng(imagecreatefromxpm($cwd . "/conv_test.xpm"), $cwd . "/test_xpm.png") ? 'ok' : 'failed';
+    echo imagepng(imagecreatefromxpm($cwd . "/conv_test.xpm"), $output->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_xpm.png");
 ?>
 --EXPECT--
 XPM to PNG conversion: ok

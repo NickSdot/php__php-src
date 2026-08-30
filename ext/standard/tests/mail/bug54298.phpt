@@ -9,8 +9,10 @@ if (PHP_OS_FAMILY === 'Windows') die("skip Won't run on Windows");
 ?>
 --FILE--
 <?php
+$outFile = TestPath::file('bug54298.eml');
+chdir($outFile->directory);
 var_dump(mail('someuser@example.com', 'testsubj', 'Body part', ''));
-echo file_get_contents('bug54298.eml');
+echo file_get_contents($outFile);
 ?>
 --EXPECT--
 bool(true)
@@ -18,7 +20,3 @@ To: someuser@example.com
 Subject: testsubj
 
 Body part
---CLEAN--
-<?php
-unlink('bug54298.eml');
-?>

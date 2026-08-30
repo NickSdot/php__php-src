@@ -16,7 +16,7 @@ $proc = proc_open(
 var_dump(is_resource($proc));
 
 $source = $pipes[1];
-$tmp = tmpfile();
+$tmp = fopen(TestPath::file(), 'w+b');
 
 $copied = stream_copy_to_stream($source, $tmp);
 var_dump($copied);

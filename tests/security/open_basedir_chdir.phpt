@@ -16,11 +16,6 @@ var_dump(chdir("./../."));
 
 test_open_basedir_after("chdir");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [chdir] ***
 bool(true)

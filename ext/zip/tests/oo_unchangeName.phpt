@@ -7,7 +7,7 @@ zip
 --FILE--
 <?php
 $dirname = __DIR__ . '/';
-$file = $dirname . 'oo_unchangeName.zip';
+$file = TestPath::file();
 copy($dirname.'test.zip', $file);
 
 var_dump(md5_file($file));
@@ -31,10 +31,6 @@ var_dump($zip->getCommentIndex(0));
 $zip->close();
 
 var_dump(md5_file($file));
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/oo_unchangeName.zip');
 ?>
 --EXPECT--
 string(32) "cb753d0a812b2edb386bdcbc4cd7d131"

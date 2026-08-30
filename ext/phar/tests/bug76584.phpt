@@ -7,16 +7,19 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$phar = new Phar(__DIR__ . '/76584.phar');
+$archive = TestPath::file('archive.phar');
+$phar = new Phar($archive->path);
 $phar->addFromString('76584.txt', 'This is a test file.');
 $file = $phar['76584.txt'];
 var_dump($file->compress(Phar::GZ));
 var_dump($file->isCompressed());
 var_dump($file->decompress());
 var_dump($file->isCompressed());
-mkdir(__DIR__ . '/76584');
-var_dump($phar->extractTo(__DIR__ . '/76584'));
-echo file_get_contents(__DIR__ . '/76584/76584.txt');
+$output = TestPath::directory();
+mkdir($output->path);
+$outputFile = $output->file('76584.txt');
+var_dump($phar->extractTo($output->path));
+echo file_get_contents($outputFile);
 ?>
 --EXPECT--
 bool(true)
@@ -25,9 +28,3 @@ bool(true)
 bool(false)
 bool(true)
 This is a test file.
---CLEAN--
-<?php
-unlink(__DIR__ . '/76584/76584.txt');
-rmdir(__DIR__ . '/76584');
-unlink(__DIR__ . '/76584.phar');
-?>

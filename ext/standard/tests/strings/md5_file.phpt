@@ -4,15 +4,17 @@ Test md5_file() function with ASCII output and raw binary output
 <?php
 
 /* Creating an empty file */
-if (($handle = fopen( "EmptyFileMD5.txt", "w+")) == FALSE)
+$emptyFile = TestPath::file();
+if (($handle = fopen($emptyFile, "w+")) == FALSE)
 return false;
 
 /* Creating a data file */
-if (($handle2 = fopen( "DataFileMD5.txt", "w+")) == FALSE)
+$dataFile = TestPath::file();
+if (($handle2 = fopen($dataFile, "w+")) == FALSE)
 return false;
 
 /* Writing into file */
-$filename = "DataFileMD5.txt";
+$filename = $dataFile;
 $content = "Add this to the file\n";
 if (is_writable($filename)) {
   if (fwrite($handle2, $content) === FALSE) {
@@ -42,23 +44,20 @@ var_dump( md5_file(12) );
 
 /* Hexadecimal Output for Empty file as input */
 echo "\n*** Hexadecimal Output for Empty file as Argument ***\n";
-var_dump( md5_file("EmptyFileMD5.txt") );
+var_dump( md5_file($emptyFile) );
 
 /* Raw Binary Output for Empty file as input */
 echo "\n*** Raw Binary Output for Empty file as Argument ***\n";
-var_dump( md5_file("EmptyFileMD5.txt", true) );
+var_dump( md5_file($emptyFile, true) );
 
 /* Normal operation with hexadecimal output */
 echo "\n*** Hexadecimal Output for a valid file with some contents ***\n";
-var_dump( md5_file("DataFileMD5.txt") );
+var_dump( md5_file($dataFile) );
 
 /* Normal operation with raw binary output */
 echo "\n*** Raw Binary Output for a valid file with some contents ***\n";
-var_dump ( md5_file("DataFileMD5.txt", true) );
+var_dump ( md5_file($dataFile, true) );
 
-// remove temp files
-unlink("DataFileMD5.txt");
-unlink("EmptyFileMD5.txt");
 
 echo "\nDone";
 ?>

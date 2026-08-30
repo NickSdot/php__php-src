@@ -4,12 +4,9 @@ Bug #61139 (gzopen leaks when specifying invalid mode)
 zlib
 --FILE--
 <?php
+$file = TestPath::file('someFile');
 
-gzopen('someFile', 'c');
-?>
---CLEAN--
-<?php
-unlink('someFile');
+gzopen($file, 'c');
 ?>
 --EXPECTF--
 Warning: gzopen(): gzopen failed in %s on line %d

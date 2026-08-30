@@ -14,8 +14,8 @@ $securityLevel = 2;
 // Security level 2 refuses certs signed by keys with length of less than 2048 bits
 $keyLength = 1024;
 
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_security_level.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_security_level-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -57,11 +57,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('stream_security_level', $certFi
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_security_level.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_security_level-ca.pem.tmp');
 ?>
 --EXPECTF--
 Warning: stream_socket_client(): SSL operation failed with code 1. OpenSSL Error messages:

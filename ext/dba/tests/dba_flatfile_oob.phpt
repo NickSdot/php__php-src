@@ -9,7 +9,7 @@ check_skip('flatfile');
 ?>
 --FILE--
 <?php
-$db_file = __DIR__ . '/dba_flatfile_oob.db';
+$db_file = TestPath::file();
 // A negative length narrows to a huge size_t and previously overran the read buffer.
 file_put_contents($db_file, "-1\n" . str_repeat('A', 200000));
 
@@ -19,10 +19,6 @@ var_dump(dba_exists("AAAA", $db));
 var_dump(dba_fetch("AAAA", $db));
 dba_close($db);
 echo "done\n";
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/dba_flatfile_oob.db');
 ?>
 --EXPECT--
 bool(false)

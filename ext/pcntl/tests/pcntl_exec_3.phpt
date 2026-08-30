@@ -4,9 +4,8 @@ pcntl_exec() 3
 pcntl
 --FILE--
 <?php
-$file = tempnam(sys_get_temp_dir(),"php");
+$file = TestPath::touch();
 var_dump(pcntl_exec($file, array("foo","bar"), array("foo" => "bar")));
-unlink($file);
 ?>
 --EXPECTF--
 Warning: pcntl_exec(): Error has occurred: (errno %d) %s

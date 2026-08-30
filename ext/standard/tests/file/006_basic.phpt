@@ -9,27 +9,24 @@ require __DIR__ . '/../skipif_root.inc';
 ?>
 --FILE--
 <?php
+$file = TestPath::file();
+$directory = TestPath::directory();
 $path = __DIR__;
 
 echo "*** Testing fileperms(), chmod() with files and dirs ***\n";
-fopen($path."/perm.tmp", "w");
-var_dump( chmod($path."/perm.tmp", 0755 ) );
-printf("%o", fileperms($path."/perm.tmp") );
+fopen($file->path, "w");
+var_dump( chmod($file, 0755 ) );
+printf("%o", fileperms($file->path) );
 echo "\n";
 clearstatcache();
 
-mkdir($path."/perm");
-var_dump( chmod( $path."/perm", 0777 ) );
-printf("%o", fileperms($path."/perm") );
+mkdir($directory);
+var_dump( chmod( $directory, 0777 ) );
+printf("%o", fileperms($directory->path) );
 echo "\n";
 clearstatcache();
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/perm.tmp");
-rmdir(__DIR__."/perm");
 ?>
 --EXPECT--
 *** Testing fileperms(), chmod() with files and dirs ***

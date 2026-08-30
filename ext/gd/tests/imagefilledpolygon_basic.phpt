@@ -14,7 +14,7 @@ gd
 
 echo "Simple test of imagefilledpolygon() function\n";
 
-$dest = dirname(realpath(__FILE__)) . '/imagefilledpolygon.png';
+$dest = TestPath::file();
 
 $points = array(
             40,  50,
@@ -38,7 +38,7 @@ $col_poly = imagecolorallocate($image, 0, 255, 0);
 imagefilledpolygon($image, $points, $col_poly);
 
 // output the picture to a file
-imagepng($image, $dest);
+imagepng($image, $dest->path);
 
 // get it back
 $image_in = imagecreatefrompng($dest);
@@ -56,11 +56,6 @@ $color3 = imagecolorsforindex($image_in, $col3);
 var_dump($color1, $color2, $color3);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-    $dest = dirname(realpath(__FILE__)) . '/imagefilledpolygon.png';
-    @unlink($dest);
 ?>
 --EXPECT--
 Simple test of imagefilledpolygon() function

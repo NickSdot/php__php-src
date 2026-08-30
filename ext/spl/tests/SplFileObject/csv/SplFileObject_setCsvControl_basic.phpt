@@ -4,25 +4,22 @@ SPL: SplFileObject::setCsvControl basic
 Erwin Poeze <erwin.poeze at gmail.com>
 --FILE--
 <?php
+$file = TestPath::file('csv_control_data_basic.csv')->path;
 file_put_contents(
-    'csv_control_data_basic.csv',
+    $file,
     <<<CDATA
     'groene appelen'|10
     'gele bananen'|20
     'rode kersen'|30
     CDATA
 );
-$s = new SplFileObject('csv_control_data_basic.csv');
+$s = new SplFileObject($file);
 $s->setFlags(SplFileObject::READ_CSV);
 $s->setCsvControl('|', '\'', '');
 foreach ($s as $row) {
     list($fruit, $quantity) = $row;
     echo "$fruit : $quantity\n";
 }
-?>
---CLEAN--
-<?php
-unlink('csv_control_data_basic.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::setCsvControl() is deprecated since 8.6 in %s on line %d

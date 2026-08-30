@@ -12,12 +12,11 @@ $to = 'user@company.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-$outFile = "mailBug69874.out";
-@unlink($outFile);
+$outFile = TestPath::file('mailBug69874.out');
+chdir($outFile->directory);
 
 var_dump( mail($to, $subject, $message) );
 echo file_get_contents($outFile);
-unlink($outFile);
 
 ?>
 --EXPECT--

@@ -9,7 +9,7 @@ if (PHP_OS_FAMILY === 'Solaris') {
 --FILE--
 <?php
 
-$file = __DIR__."/flock_bug65272.dat";
+$file = TestPath::file()->path;
 
 $fp1 = fopen($file, "w");
 var_dump(flock($fp1, LOCK_SH));
@@ -19,11 +19,6 @@ var_dump(flock($fp2, LOCK_EX|LOCK_NB, $wouldblock));
 var_dump($wouldblock);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file = __DIR__."/flock_bug65272.dat";
-unlink($file);
 ?>
 --EXPECT--
 bool(true)

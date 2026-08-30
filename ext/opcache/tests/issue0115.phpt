@@ -15,7 +15,12 @@ $stub = '<?php
 Phar::interceptFileFuncs();
 require "phar://this/index.php";
 __HALT_COMPILER(); ?>';
-$p = new Phar(__DIR__ . '/issue0115_1.phar.php', 0, 'this');
+TestContext::useRelativeWorkspace();
+$archive1 = TestPath::file('archive1.phar.php');
+$archive2 = TestPath::file('archive2.phar.php');
+$archive1Url = str_replace(__DIR__ . '/', '', $archive1->path);
+$archive2Url = str_replace(__DIR__ . '/', '', $archive2->path);
+$p = new Phar($archive1, 0, 'this');
 $p['index.php'] = '<?php
   echo "Hello from Index 1.\n";
   require_once "phar://this/hello.php";
@@ -23,7 +28,7 @@ $p['index.php'] = '<?php
 $p['hello.php'] = "Hello World 1!\n";
 $p->setStub($stub);
 unset($p);
-$p = new Phar(__DIR__ . '/issue0115_2.phar.php', 0, 'this');
+$p = new Phar($archive2, 0, 'this');
 $p['index.php'] = '<?php
   echo "Hello from Index 2.\n";
   require_once "phar://this/hello.php";
@@ -40,13 +45,8 @@ if (file_exists(ini_get('extension_dir').'/phar.'.PHP_SHLIB_SUFFIX)) {
 }
 php_cli_server_start($ini);
 
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/issue0115_1.phar.php');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/issue0115_2.phar.php');
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/issue0115_1.phar.php');
-@unlink(__DIR__ . '/issue0115_2.phar.php');
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $archive1Url);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $archive2Url);
 ?>
 --EXPECT--
 Hello from Index 1.

@@ -12,9 +12,9 @@ if (!str_contains(PHP_OS, 'FreeBSD')) {
 --FILE--
 <?php
 include __DIR__."/mcast_helpers.php.inc";
-$path = __DIR__ . "/socket_cmsg_credentials_fbsd.sock";
-
-@unlink($path);
+$socket_path = TestPath::file();
+chdir($socket_path->directory);
+$path = $socket_path->name;
 
 echo "creating send socket\n";
 $sends1 = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");
@@ -44,11 +44,6 @@ print_r($data);
 
 $pid = getmypid();
 var_dump($data['control'][0]['data']['pid'] === $pid);
-?>
---CLEAN--
-<?php
-$path = __DIR__ . "/socket_cmsg_credentials_fbsd.sock";
-@unlink($path);
 ?>
 --EXPECTF--
 creating send socket

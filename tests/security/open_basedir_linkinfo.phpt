@@ -11,6 +11,7 @@ BUG: open_basedir cannot delete symlink to prohibited file. See also
 bugs 48111 and 52176.
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 chdir(__DIR__);
 ini_set("open_basedir", ".");
 require_once "open_basedir.inc";
@@ -38,12 +39,6 @@ var_dump(linkinfo($symlink));
 var_dump(unlink($symlink));
 
 test_open_basedir_after("linkinfo");
-?>
---CLEAN--
-<?php
-chdir(__DIR__);
-require_once "open_basedir.inc";
-delete_directories();
 ?>
 --EXPECTF--
 *** Testing open_basedir configuration [linkinfo] ***

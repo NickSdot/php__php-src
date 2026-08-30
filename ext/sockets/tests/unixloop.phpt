@@ -11,7 +11,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-    $sock_path = sprintf("/tmp/%s.sock", uniqid());
+    $socket_path = TestPath::file();
+    chdir($socket_path->directory);
+    $sock_path = $socket_path->name;
 
     if (file_exists($sock_path))
         die('Temporary socket already exists.');
@@ -51,7 +53,6 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
     socket_close($client);
     socket_close($socket);
     socket_close($server);
-    @unlink($sock_path);
 ?>
 --EXPECT--
 string(10) "ABCdef123

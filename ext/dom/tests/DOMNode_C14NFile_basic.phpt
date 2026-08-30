@@ -18,7 +18,7 @@ $xml = <<< XML
 </books>
 XML;
 
-$output = __DIR__.'/DOMNode_C14NFile_basic.tmp';
+$output = TestPath::file();
 $doc = new DOMDocument();
 $doc->loadXML($xml);
 $node = $doc->getElementsByTagName('title')->item(0);
@@ -35,11 +35,6 @@ try {
 } catch (\Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-$output = __DIR__.'/DOMNode_C14NFile_basic.tmp';
-unlink($output);
 ?>
 --EXPECT--
 int(34)

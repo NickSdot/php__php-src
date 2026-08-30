@@ -3,7 +3,7 @@ get_meta_tags() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/get_meta_tags.html";
+$filename = TestPath::file();
 
 $data = <<<DATA
 <meta name="author" content="name">
@@ -50,8 +50,6 @@ foreach ($array as $html) {
     file_put_contents($filename, $html);
     var_dump(get_meta_tags($filename));
 }
-
-@unlink($filename);
 
 echo "Done\n";
 ?>

@@ -2,8 +2,7 @@
 GH-17345 (Bug #35916 was not completely fixed)
 --FILE--
 <?php
-$file = __DIR__ . "/gh17345.txt";
-@unlink($file);
+$file = TestPath::file();
 
 class strtoupper_filter extends php_user_filter
 {
@@ -39,7 +38,6 @@ fread($fp, 1024);
 fwrite($fp, "Thank you\n");
 fclose($fp);
 readfile($file);
-unlink($file);
 ?>
 --EXPECTF--
 fffffffffff

@@ -24,10 +24,6 @@ for ($i = 0; $i < 100 && !str_contains($output, 'Invalid request'); $i++) {
 
 var_dump(str_contains($output, 'Invalid request'), str_contains($output, 'Unexpected EOF'));
 ?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/php_cli_server_expect_100_continue_iua.log')
-?>
 --EXPECT--
 bool(true)
 bool(false)

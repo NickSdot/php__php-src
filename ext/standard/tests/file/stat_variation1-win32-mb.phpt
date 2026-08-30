@@ -11,14 +11,15 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 /* test the effects of rename() on stats of dir/file */
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-mkdir("$file_path/stat_variation1_私はガラスを食べられます/");  // temp dir
+$old_dirname = TestPath::directory();
+mkdir($old_dirname);  // temp dir
 
-$file_handle = fopen("$file_path/stat_variation1_私はガラスを食べられます.tmp", "w");  // temp file
+$old_filename = TestPath::file();
+$file_handle = fopen($old_filename, "w");  // temp file
 fclose($file_handle);
 
 
@@ -26,8 +27,7 @@ echo "*** Testing stat(): on file and directory ater renaming them ***\n";
 
 // renaming a file
 echo "-- Testing stat() for files after being renamed --\n";
-$old_filename = "$file_path/stat_variation1_私はガラスを食べられます.tmp";
-$new_filename = "$file_path/stat_variation1a_私はガラスを食べられます.tmp";
+$new_filename = TestPath::file();
 $old_stat = stat($old_filename);
 clearstatcache();
 sleep(1);
@@ -45,8 +45,7 @@ clearstatcache();
 
 // renaming a directory
 echo "-- Testing stat() for directory after being renamed --\n";
-$old_dirname = "$file_path/stat_variation1_私はガラスを食べられます";
-$new_dirname = "$file_path/stat_variation1a_私はガラスを食べられます";
+$new_dirname = TestPath::directory();
 $old_stat = stat($old_dirname);
 clearstatcache();
 sleep(2);
@@ -64,12 +63,6 @@ clearstatcache();
 
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_variation1a_私はガラスを食べられます.tmp");
-rmdir("$file_path/stat_variation1a_私はガラスを食べられます");
 ?>
 --EXPECT--
 *** Testing stat(): on file and directory ater renaming them ***

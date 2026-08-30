@@ -11,12 +11,15 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "\n*** Testing basic functions of realpath() with files ***\n";
 
 /* creating directories and files */
-$file_path = __DIR__;
-mkdir("$file_path/realpath_basic/home/test/", 0777, true);
+$file_path = TestPath::directory();
+$root = $file_path->directory('realpath_basic');
+$home = $root->directory('home');
+$test = $home->directory('test');
+mkdir($test, 0777, true);
 
-$file_handle1 = fopen("$file_path/realpath_basic/home/test/realpath_basic.tmp", "w");
-$file_handle2 = fopen("$file_path/realpath_basic/home/realpath_basic.tmp", "w");
-$file_handle3 = fopen("$file_path/realpath_basic/realpath_basic.tmp", "w");
+$file_handle1 = fopen($test->file('realpath_basic.tmp'), "w");
+$file_handle2 = fopen($home->file('realpath_basic.tmp'), "w");
+$file_handle3 = fopen($root->file('realpath_basic.tmp'), "w");
 fclose($file_handle1);
 fclose($file_handle2);
 fclose($file_handle3);
@@ -46,16 +49,6 @@ foreach($filenames as $file) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$name_prefix = __DIR__."/realpath_basic";
-unlink("$name_prefix/home/test/realpath_basic.tmp");
-unlink("$name_prefix/home/realpath_basic.tmp");
-unlink("$name_prefix/realpath_basic.tmp");
-rmdir("$name_prefix/home/test/");
-rmdir("$name_prefix/home/");
-rmdir("$name_prefix/");
 ?>
 --EXPECTF--
 *** Testing basic functions of realpath() with files ***

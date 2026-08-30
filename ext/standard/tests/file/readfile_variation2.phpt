@@ -17,10 +17,10 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 // include file.inc
 require("file.inc");
 
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 
 // temp file used here
-$filename = "$file_path/readfile_variation2.tmp";
+$filename = TestPath::file('readfile_variation2.tmp');
 
 // create temp file and insert data into it
 $fp = fopen($filename, "w");
@@ -28,7 +28,7 @@ fill_file($fp, "text_with_new_line", 50);
 fclose($fp);
 
 // temp link name used
-$linkname = "$file_path/readfile_variation2_link.tmp";
+$linkname = TestPath::file('readfile_variation2_link.tmp');
 
 /* Checking readfile() operation on soft link */
 echo "*** Testing readfile() on soft link ***\n";
@@ -54,11 +54,6 @@ var_dump($count);
 unlink($linkname);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/readfile_variation2.tmp");
 ?>
 --EXPECT--
 *** Testing readfile() on soft link ***

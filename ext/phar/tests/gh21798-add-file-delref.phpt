@@ -9,7 +9,7 @@ phar.require_hash=0
 <?php
 // Regression baseline: verify addFile and addFromString succeed and
 // phar_entry_delref is not skipped on the happy path.
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('archive.phar')->path;
 
 $phar = new Phar($fname);
 $phar->addFromString('hello.txt', 'hello world');
@@ -21,8 +21,6 @@ echo $phar['hello.txt']->getContent() . "\n";
 echo ($phar->offsetExists('empty.txt') ? 'empty exists' : 'missing') . "\n";
 echo "no crash\n";
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECT--
 hello world
 empty exists

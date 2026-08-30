@@ -16,9 +16,6 @@ class MySession2 extends SessionHandler {
     public $path;
 
     public function open($path, $name): bool {
-        if (!$path) {
-            $path = sys_get_temp_dir();
-        }
         $this->path = $path . '/u_sess_' . $name;
         return true;
     }
@@ -57,6 +54,9 @@ class MySession2 extends SessionHandler {
     }
 }
 
+$save_path = TestPath::directory();
+mkdir($save_path);
+session_save_path($save_path);
 $handler = new MySession2;
 session_set_save_handler($handler);
 session_start();
@@ -70,10 +70,6 @@ session_unset();
 
 session_start();
 var_dump($_SESSION);
-?>
---CLEAN--
-<?php
-@unlink(session_save_path().'/u_sess_PHPSESSIDsession_set_save_handler_class_018');
 ?>
 --EXPECT--
 *** Testing session_set_save_handler() function: class with validate_sid ***

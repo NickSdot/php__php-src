@@ -7,16 +7,13 @@ Erwin Poeze <erwin.poeze@gmail.com>
 --FILE--
 <?php
 
-file_put_contents('SplFileObject_getflags_basic.csv', 'eerste;tweede;derde');
+$file = TestPath::file('SplFileObject_getflags_basic.csv')->path;
+file_put_contents($file, 'eerste;tweede;derde');
 
-$fo = new SplFileObject('SplFileObject_getflags_basic.csv');
+$fo = new SplFileObject($file);
 
 $fo->setFlags(SplFileObject::DROP_NEW_LINE);
 var_dump($fo->getFlags());
-?>
---CLEAN--
-<?php
-unlink('SplFileObject_getflags_basic.csv');
 ?>
 --EXPECT--
 int(1)

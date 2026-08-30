@@ -7,7 +7,7 @@ if (!function_exists("posix_getgid")) die("skip no posix_getgid()");
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . '/bug72666_variation2.txt';
+$filename = TestPath::file()->path;
 
 $gid = posix_getgid();
 
@@ -25,7 +25,6 @@ var_dump($ctime3 > $ctime2);
 ?>
 --CLEAN--
 <?php
-unlink(__DIR__ . '/bug72666_variation2.txt');
 ?>
 --EXPECT--
 bool(true)

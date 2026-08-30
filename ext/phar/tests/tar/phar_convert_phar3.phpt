@@ -9,8 +9,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '2.phar';
+$archive = TestPath::file('archive.phar');
+$archiveTar = TestPath::file('archive.phar.tar');
+$compressed = TestPath::file('archive.phar.bz2');
+$archive2 = TestPath::file('archive-copy.phar');
+$fname = $archive->path;
+$fname2 = $archive2->path;
 
 $phar = new Phar($fname);
 $phar['a.txt'] = 'some text';
@@ -36,13 +40,6 @@ var_dump($phar->isFileFormat(Phar::PHAR));
 var_dump($phar->isCompressed() == Phar::BZ2);
 var_dump(strlen($phar->getStub()));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.bz2');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar');
 ?>
 --EXPECT--
 bool(false)

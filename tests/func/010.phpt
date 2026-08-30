@@ -53,18 +53,14 @@ for($i=0; $i< $limit; ++$i) {
 
 $str .= ");\n";
 
-$filename = __DIR__.'/010-file.php';
-file_put_contents(__DIR__.'/010-file.php', $str);
+$filename = TestPath::file();
+file_put_contents($filename, $str);
 unset($str);
 
 include($filename);
 
 echo "Done\n";
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__.'/010-file.php');
 ?>
 --EXPECT--
 bool(true)

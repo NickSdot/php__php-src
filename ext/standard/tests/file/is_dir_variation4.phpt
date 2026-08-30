@@ -4,11 +4,11 @@ Test is_dir() function: usage variations - diff. path notations
 <?php
 /* Passing dir names with different notations, using slashes, wild-card chars */
 
-$file_path = __DIR__;
-
 echo "*** Testing is_dir() with different notations of dir names ***";
-$dir_name = "/is_dir_variation4";
-mkdir($file_path.$dir_name);
+$directory = TestPath::directory('is_dir_variation4');
+mkdir($directory);
+$file_path = dirname($directory->path);
+$dir_name = "/" . $directory->name;
 
 $dirs_arr = array(
   "is_dir_variation4",
@@ -38,12 +38,6 @@ foreach($dirs_arr as $dir) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_name = $file_path."/is_dir_variation4";
-rmdir($dir_name);
 ?>
 --EXPECT--
 *** Testing is_dir() with different notations of dir names ***

@@ -8,8 +8,8 @@ if (!function_exists("posix_getuid")) die("skip no posix_getuid()");
 --FILE--
 <?php
 echo "*** Testing lchown() : basic functionality ***\n";
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'lchown_basic.txt';
-$symlink = __DIR__ . DIRECTORY_SEPARATOR . 'lchown_basic_symlink.txt';
+$filename = TestPath::file()->path;
+$symlink = TestPath::file()->path;
 
 $uid = posix_getuid();
 
@@ -17,15 +17,6 @@ var_dump( touch( $filename ) );
 var_dump( symlink( $filename, $symlink ) );
 var_dump( lchown( $filename, $uid ) );
 var_dump( fileowner( $symlink ) === $uid );
-
-?>
---CLEAN--
-<?php
-
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'lchown_basic.txt';
-$symlink = __DIR__ . DIRECTORY_SEPARATOR . 'lchown_basic_symlink.txt';
-unlink($filename);
-unlink($symlink);
 
 ?>
 --EXPECT--

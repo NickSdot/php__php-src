@@ -4,12 +4,16 @@ SPL: RecursiveDirectoryIterator with CURRENT_AS_PATHNAME flag
 Paul Garvin pgarvin76@gmail.com
 --FILE--
 <?php
-$td = __DIR__ . '/bug66405';
-mkdir($td);
-touch($td . '/file1.txt');
-touch($td . '/file2.md');
-mkdir($td . '/testsubdir');
-touch($td . '/testsubdir/file3.csv');
+$td = TestPath::directory('bug66405');
+mkdir($td->path);
+$file1 = $td->file('file1.txt');
+$file2 = $td->file('file2.md');
+$subdir = $td->directory('testsubdir');
+$file3 = $subdir->file('file3.csv');
+touch($file1->path);
+touch($file2->path);
+mkdir($subdir->path);
+touch($file3->path);
 
 class Bug66405 extends RecursiveDirectoryIterator
 {
@@ -42,15 +46,6 @@ foreach ($rii as $file) {
 $results = explode("\n", ob_get_clean());
 sort($results);
 echo implode("\n", $results);
-?>
---CLEAN--
-<?php
-$td = __DIR__ . '/bug66405';
-unlink($td . '/testsubdir/file3.csv');
-unlink($td . '/file2.md');
-unlink($td . '/file1.txt');
-rmdir($td . '/testsubdir');
-rmdir($td);
 ?>
 --EXPECTF--
 Bug66405 file3.csv

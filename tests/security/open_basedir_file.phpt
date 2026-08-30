@@ -16,11 +16,6 @@ var_dump(file($initdir."/test/ok/../ok/ok.txt"));
 
 test_open_basedir_after("file");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [file] ***
 bool(true)

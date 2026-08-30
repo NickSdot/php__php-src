@@ -21,7 +21,7 @@ if (PHP_OS_FAMILY === 'Solaris')
 
     $fds = [];
     for ($i = 0; $i < 1023; $i++) {
-        $fds[] = @fopen(__DIR__ . "/GH-9590-tmpfile.$i", 'w');
+        $fds[] = @fopen(TestPath::file(), 'w');
     }
 
     require_once 'connect.inc';
@@ -60,9 +60,3 @@ to equal the maximum number of open files supported by your system,
 in order to avoid seeing this error again at a later date. in %s on line %d
 bool(false)
 done!
---CLEAN--
-<?php
-for ($i = 0; $i < 1023; $i++) {
-    @unlink(__DIR__ . "/GH-9590-tmpfile.$i");
-}
-?>

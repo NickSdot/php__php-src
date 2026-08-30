@@ -10,7 +10,7 @@ if (PHP_INT_SIZE != 4) die("skip this test is for 32bit platform only");
 $int_numbers = array( 0, 1, -1, 2.7, -2.7, 23333333, -23333333, "1234" );
 
 /* creating dumping file */
-$data_file = __DIR__ . '/fprintf_variation_006.txt';
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
@@ -25,8 +25,6 @@ fclose($fp);
 
 print_r(file_get_contents($data_file));
 echo "\nDone";
-
-unlink($data_file);
 
 ?>
 --EXPECT--

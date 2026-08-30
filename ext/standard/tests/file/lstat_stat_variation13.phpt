@@ -10,9 +10,10 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
 
-$filename = "$file_path/lstat_stat_variation13.tmp";
+$filename = $file->path;
 
 echo "*** Checking stat() on a file opened using read/write mode ***\n";
 $file_handle = fopen($filename, "w");  // create file
@@ -32,11 +33,6 @@ var_dump( compare_self_stat($new_stat) );
 var_dump( compare_stats($old_stat, $new_stat, $all_stat_keys) );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation13.tmp");
 ?>
 --EXPECT--
 *** Checking stat() on a file opened using read/write mode ***

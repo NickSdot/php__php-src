@@ -5,8 +5,9 @@ phar
 zlib
 --FILE--
 <?php
-$filename = __DIR__ . '/bug70417.tar';
-@unlink("$filename.gz");
+$archive = TestPath::file('archive.tar');
+$compressed = TestPath::file('archive.tar.gz');
+$filename = $archive->path;
 $resBefore = count(get_resources());
 $arch = new PharData($filename);
 $arch->addFromString('foo', 'bar');
@@ -15,12 +16,6 @@ $arch->compress(Phar::GZ);
 unset($arch);
 $resAfter = count(get_resources());
 var_dump($resAfter - $resBefore);
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . '/bug70417.tar';
-@unlink($filename);
-@unlink("$filename.gz");
 ?>
 --EXPECT--
 int(0)

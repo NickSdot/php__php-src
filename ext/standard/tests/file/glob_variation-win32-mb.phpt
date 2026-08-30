@@ -10,31 +10,33 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 <?php
 echo "*** Testing glob() : usage variations ***\n";
 
-$file_path = __DIR__;
+$directory = TestPath::directory('glob_variation私はガラスを食べられます');
+$wonder = $directory->directory('wonder');
+$first = $directory->file('wonder12345');
+$second = $directory->file('wonder;123456');
 
 // temp dir created
-//mkdir("$file_path/glob_variation");
-mkdir("$file_path/glob_variation私はガラスを食べられます");
-mkdir("$file_path/glob_variation私はガラスを食べられます/wonder");
+mkdir($directory);
+mkdir($wonder);
 
 // temp files created
-$fp = fopen("$file_path/glob_variation私はガラスを食べられます/wonder12345", "w");
+$fp = fopen($first, "w");
 fclose($fp);
-$fp = fopen("$file_path/glob_variation私はガラスを食べられます/wonder;123456", "w");
+$fp = fopen($second, "w");
 fclose($fp);
 
 $patterns = array (
-  "$file_path/glob_variation私はガラスを食べられます/*der*",
-  "$file_path/glob_variation私はガラスを食べられます/?onder*",
-  "$file_path/glob_variation私はガラスを食べられます/w*der?*",
-  "$file_path/glob_variation私はガラスを食べられます/*der5",
-  "$file_path/glob_variation私はガラスを食べられます/??onder*",
-  "$file_path/glob_variation私はガラスを食べられます/***der***",
-  "$file_path/glob_variation私はガラスを食べられます/++onder*",
-  "$file_path/glob_variation私はガラスを食べられます/WONDER5\0",
+  "$directory/*der*",
+  "$directory/?onder*",
+  "$directory/w*der?*",
+  "$directory/*der5",
+  "$directory/??onder*",
+  "$directory/***der***",
+  "$directory/++onder*",
+  "$directory/WONDER5\0",
   '$file_path/glob_variation私はガラスを食べられます/wonder5',
-  "$file_path/glob_variation私はガラスを食べられます/?wonder?",
-  "$file_path/glob_variation私はガラスを食べられます/wonder?",
+  "$directory/?wonder?",
+  "$directory/wonder?",
   TRUE  // boolean true
 );
 $counter = 1;
@@ -56,17 +58,18 @@ foreach($patterns as $pattern) {
 }
 
 echo "\n*** Testing glob() with pattern within braces ***\n";
-var_dump( glob("$file_path/glob_variation私はガラスを食べられます/*{5}", GLOB_BRACE) );
+var_dump( glob("$directory/*{5}", GLOB_BRACE) );
 
 // delete temp files and dir
-unlink("$file_path/glob_variation私はガラスを食べられます/wonder12345");
-unlink("$file_path/glob_variation私はガラスを食べられます/wonder;123456");
-rmdir("$file_path/glob_variation私はガラスを食べられます/wonder");
-rmdir("$file_path/glob_variation私はガラスを食べられます");
+unlink($first);
+unlink($second);
+rmdir($wonder);
+rmdir($directory);
 
 echo "\n*** Testing glob() on directories ***\n";
 // temp dir created to check for pattern matching the sub dir created in it
-mkdir("$file_path/glob_variation私はガラスを食べられます/wonder1/wonder2", 0777, true);
+$wonder2 = $directory->directory('wonder1')->directory('wonder2');
+mkdir($wonder2, 0777, true);
 
 $counter = 1;
 /* loop through $patterns to match each $pattern with the directories created
@@ -82,13 +85,6 @@ foreach($patterns as $pattern) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/glob_variation私はガラスを食べられます/wonder1/wonder2");
-rmdir("$file_path/glob_variation私はガラスを食べられます/wonder1/");
-rmdir("$file_path/glob_variation私はガラスを食べられます/");
 ?>
 --EXPECTF--
 *** Testing glob() : usage variations ***

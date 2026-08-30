@@ -6,16 +6,18 @@ Test lstat() and stat() functions: usage variations - effects of rename() on fil
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$old_file = TestPath::file();
+$new_file = TestPath::file();
 
 /* create temp file */
-$fp = fopen("$file_path/lstat_stat_variation1.tmp", "w");  // temp file
+$fp = fopen($old_file->path, "w");  // temp file
 fclose($fp);
 
 // renaming a file and check stat
 echo "*** Testing stat() for files after being renamed ***\n";
 $file_path = __DIR__;
-$old_filename = "$file_path/lstat_stat_variation1.tmp";
-$new_filename = "$file_path/lstat_stat_variation1a.tmp";
+$old_filename = $old_file->path;
+$new_filename = $new_file->path;
 $old_stat = stat($old_filename);
 clearstatcache();
 var_dump( rename($old_filename, $new_filename) );
@@ -31,11 +33,6 @@ var_dump( compare_stats($old_stat, $old_stat, $all_stat_keys) );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation1a.tmp");
 ?>
 --EXPECT--
 *** Testing stat() for files after being renamed ***

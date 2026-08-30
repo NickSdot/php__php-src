@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'san_peer_matching.pem.tmp';
+$certFile = TestPath::file();
 $san = 'DNS:example.org, DNS:www.example.org, DNS:test.example.org';
 
 $serverCode = <<<'CODE'
@@ -46,10 +46,6 @@ $certificateGenerator->saveNewCertAsFileWithKey(null, $certFile, null, $san);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'san_peer_matching.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

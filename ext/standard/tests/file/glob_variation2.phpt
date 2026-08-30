@@ -2,35 +2,28 @@
 Test glob() function with relative path
 --FILE--
 <?php
-$file_path = __DIR__;
-
 // temp dirname used here
-$dir_name = 'glob_test';
+$directory = TestPath::directory('glob_test');
+$file = $directory->file('file.text');
 
 // create temp directory
-mkdir("$file_path/$dir_name");
+mkdir($directory);
 
 // create temp file
-$fp = fopen("$file_path/$dir_name/file.text", "w");
+$fp = fopen($file, "w");
 fclose($fp);
 
 echo "Testing glob() with relative paths:\n";
 
-chdir("$file_path/$dir_name");
+chdir($directory);
 var_dump( glob("./*") );
-var_dump( glob("../$dir_name/*"));
+var_dump( glob("../$directory->name/*"));
 
-chdir("$file_path");
-var_dump( glob("$dir_name/*"));
-var_dump( glob("$dir_name"));
+chdir($file->directory);
+var_dump( glob("$directory->name/*"));
+var_dump( glob("$directory->name"));
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/glob_test/file.text");
-rmdir("$file_path/glob_test/");
 ?>
 --EXPECT--
 Testing glob() with relative paths:

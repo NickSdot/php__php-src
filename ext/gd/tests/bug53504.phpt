@@ -13,6 +13,7 @@ gd
 <?php
 $cwd = __DIR__;
 $font = "$cwd/Tuffy.ttf";
+$output = TestPath::file();
 
 $g = imagecreate(800, 800);
 $bgnd  = imagecolorallocate($g, 255, 255, 255);
@@ -85,10 +86,8 @@ foreach ($tests as $testnum => $test) {
         $test['y'] - (int)($width * sin(deg2rad($test['angle']))), $blue);
 }
 
-imagepng($g, "$cwd/bug53504.png");
+imagepng($g, $output->path);
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/bug53504.png'); ?>
 --EXPECT--
  0: ........
  1: ........

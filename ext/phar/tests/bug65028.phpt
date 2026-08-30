@@ -126,30 +126,27 @@ $files = array(
 );
 
 // Create Phar with the filenames above
-$phar = new Phar(__DIR__ . "/bug65028.phar");
+$archive = TestPath::file('bug65028.phar');
+$copy = TestPath::file('bug65028-copy.phar');
+$phar = new Phar($archive->path);
 foreach($files as $file)
 {
     $phar->addFromString($file, "");
 }
 
 // Copy phar
-copy(__DIR__ . "/bug65028.phar", __DIR__ . "/bug65028-copy.phar");
+copy($archive->path, $copy->path);
 
 // Open phar
 try
 {
-    $phar = new Phar(__DIR__ . "/bug65028-copy.phar");
+    $phar = new Phar($copy->path);
     echo "No exception thrown.\n";
 }
 catch(UnexpectedValueException $ex)
 {
     echo $ex::class, ': ', $ex->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug65028.phar");
-@unlink(__DIR__ . "/bug65028-copy.phar");
 ?>
 --EXPECT--
 No exception thrown.

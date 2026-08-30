@@ -9,17 +9,9 @@ if (PHP_OS_FAMILY !== "Windows") die("skip only for Windows");
 $file = md5('SplFileInfo::getExtension');
 $exts = array('.txt', '.extension', '..', '');
 foreach ($exts as $ext) {
-    touch($file . $ext);
-    $info = new SplFileInfo($file . $ext);
-    var_dump($info->getExtension(), pathinfo($file . $ext, PATHINFO_EXTENSION));
-}
-?>
---CLEAN--
-<?php
-$file = md5('SplFileInfo::getExtension');
-$exts = array('.txt', '.extension', '..', '');
-foreach ($exts as $ext) {
-    @unlink($file . $ext);
+    $path = TestPath::touch($file . $ext)->path;
+    $info = new SplFileInfo($path);
+    var_dump($info->getExtension(), pathinfo($path, PATHINFO_EXTENSION));
 }
 ?>
 --EXPECT--

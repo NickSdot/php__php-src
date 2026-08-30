@@ -11,17 +11,16 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 /* test the stats of file opened in write mode and then same in read mode */
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
+require __DIR__ . "/file.inc";
 
 
-$file_handle = fopen("$file_path/stat_variation5.tmp", "w");  // temp file
+$filename = TestPath::file();
+$file_handle = fopen($filename, "w");  // temp file
 fclose($file_handle);
 
 
 echo "\n*** Testing stat(): on a file with read/write permission ***\n";
 
-$filename = "$file_path/stat_variation5.tmp";
 $file_handle = fopen($filename, "w");  // create file
 fclose($file_handle);
 $old_stat = stat($filename);
@@ -43,11 +42,6 @@ clearstatcache();
 
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_variation5.tmp");
 ?>
 --EXPECT--
 *** Testing stat(): on a file with read/write permission ***

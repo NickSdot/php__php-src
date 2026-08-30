@@ -10,12 +10,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Testing filesize() with data written using different file modes and by creating holes in file */
 
-$file_path = __DIR__;
+$filename = TestPath::file()->path;
 
 echo "*** Testing filesize(): usage variations ***\n";
 echo "\n*** Testing filesize() with data written using different file modes and by creating holes in file ***\n";
 
-$filename = $file_path."/filesize_variation4.tmp";
 $string = "Test 2 test the filesize() fn, with data containing all the types like !@@##$%^&*():<>?|~+!;',.\][{}(special) cha
 rs, 12345(numeric) chars, and \n(newline char), \t(tab), \0, \r and so on........\0";
 echo "-- opening the file in 'w' mode and get the size --\n";
@@ -68,17 +67,11 @@ var_dump( filesize($filename) );  //0 bytes
 clearstatcache();
 
 echo "-- with empty file --\n";
-$filename = __DIR__."/filesize_variation4_empty.tmp";
+$filename = TestPath::file()->path;
 fclose( fopen($filename, "w") );
 var_dump( filesize($filename) );  //0 bytes
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/filesize_variation4.tmp");
-unlink($file_path."/filesize_variation4_empty.tmp");
 ?>
 --EXPECT--
 *** Testing filesize(): usage variations ***

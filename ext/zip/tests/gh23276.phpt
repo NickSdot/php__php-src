@@ -25,7 +25,7 @@ function getEntryStream(ZipArchive $zip) {
     return $stream;
 }
 
-$filename = __DIR__ . '/gh23276.zip';
+$filename = TestPath::file();
 
 $zip = new Holder;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -80,10 +80,6 @@ var_dump($weakRef->get());
 fclose($stream1);
 var_dump(stream_get_contents($stream2));
 fclose($stream2);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh23276.zip');
 ?>
 --EXPECT--
 NULL

@@ -3,8 +3,7 @@ parse_ini_file() multiple calls
 --FILE--
 <?php
 
-$filename = __DIR__."/parse_ini_file.dat";
-@unlink($filename); /* Make sure the file really does not exist! */
+$filename = TestPath::file('parse_ini_file.dat');
 
 var_dump(parse_ini_file($filename));
 var_dump(parse_ini_file($filename, true));
@@ -113,7 +112,6 @@ file_put_contents($filename, $ini);
 var_dump(parse_ini_file($filename, true));
 
 
-@unlink($filename);
 echo "Done\n";
 ?>
 --EXPECTF--

@@ -12,6 +12,7 @@ dba
 --FILE--
 <?php
 require_once(__DIR__ .'/test.inc');
+$db_filename = TestPath::file();
 echo "database handler: $handler\n";
 if (($db_file=dba_open($db_filename, "n", $handler))!==FALSE) {
     dba_insert("key1", "Content String 1", $db_file);
@@ -33,10 +34,6 @@ if (($db_file=dba_open($db_filename, "n", $handler))!==FALSE) {
     echo "Error creating database\n";
 }
 
-?>
---CLEAN--
-<?php
-    require(__DIR__ .'/clean.inc');
 ?>
 --EXPECT--
 database handler: flatfile

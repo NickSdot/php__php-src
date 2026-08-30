@@ -2,7 +2,7 @@
 Test fpassthru() function: Basic functionality
 --FILE--
 <?php
-$file_name = __DIR__."/passthru.tmp";
+$file_name = TestPath::file();
 $write_handle = fopen($file_name, "w");
 
 $string = "Hello, world\n, abcdefg\tadsdsfdf\n8u2394723947\t$%$%#$%#$%#^#%^
@@ -51,10 +51,6 @@ fclose($read_handle);
 
 echo "*** Done ***\n";
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/passthru.tmp");
 ?>
 --EXPECT--
 *** Test basic functionality of fpassthru() function ***

@@ -8,7 +8,7 @@ if (strpos(PHP_OS, 'FreeBSD') !== false) {
 ?>
 --FILE--
 <?php
-$callee = __DIR__ . "/process_proc_open_bug51800_right.php";
+$callee = TestPath::file();
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 $cmd = "$php -n " . escapeshellarg($callee);
 
@@ -62,11 +62,6 @@ var_dump(array(
         "stderr" => $stderr,
 ), strlen($stdout), strlen($stderr));
 
-?>
---CLEAN--
-<?php
-$callee = __DIR__ . "/process_proc_open_bug51800_right.php";
-unlink($callee);
 ?>
 --EXPECTF--
 array(3) {

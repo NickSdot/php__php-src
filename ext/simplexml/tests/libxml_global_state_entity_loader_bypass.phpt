@@ -21,15 +21,12 @@ simplexml_load_string($xml);
 echo "--- Constructor test ---\n";
 new SimpleXMLElement($xml);
 echo "--- File test ---\n";
-file_put_contents("libxml_global_state_entity_loader_bypass.tmp", $xml);
-simplexml_load_file("libxml_global_state_entity_loader_bypass.tmp");
+$file = TestPath::file();
+file_put_contents($file, $xml);
+simplexml_load_file($file);
 
 echo "Done\n";
 
-?>
---CLEAN--
-<?php
-@unlink("libxml_global_state_entity_loader_bypass.tmp");
 ?>
 --EXPECT--
 --- String test ---

@@ -13,7 +13,7 @@ if (getenv('SKIP_REPEAT')) die("skip Not repeatable");
 ?>
 --FILE--
 <?php
-$tmp = __DIR__ . "/bug65915.inc.php";
+$tmp = TestPath::file();
 
 file_put_contents($tmp, '<?php return function(){ return "a";};');
 $f = require $tmp;
@@ -25,7 +25,6 @@ file_put_contents($tmp, '<?php return function(){ return "b";};');
 $f = require $tmp;
 var_dump($f());
 
-@unlink($tmp);
 ?>
 --EXPECT--
 string(1) "a"

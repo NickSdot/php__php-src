@@ -10,13 +10,17 @@ zip
 <?php
 include __DIR__ . '/utils.inc';
 
-$dirname = __DIR__ . '/oo_addpattern_dir/';
-$file = $dirname . 'tmp.zip';
+TestContext::useRelativeWorkspace();
+$directory = TestPath::directory();
+$dirname = $directory->path . '/';
+$file = $directory->file('tmp.zip');
+$foo = $directory->file('foo.txt');
+$bar = $directory->file('bar.txt');
 
 @mkdir($dirname);
 copy(__DIR__ . '/test.zip', $file);
-touch($dirname . 'foo.txt');
-touch($dirname . 'bar.txt');
+touch($foo);
+touch($bar);
 
 $zip = new ZipArchive();
 if (!$zip->open($file)) {
@@ -53,14 +57,6 @@ if ($zip->status == ZIPARCHIVE::ER_OK) {
 } else {
         echo "failed3\n";
 }
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_addpattern_dir/';
-unlink($dirname . 'tmp.zip');
-unlink($dirname . 'foo.txt');
-unlink($dirname . 'bar.txt');
-rmdir($dirname);
 ?>
 --EXPECT--
 string(19) "File already exists"

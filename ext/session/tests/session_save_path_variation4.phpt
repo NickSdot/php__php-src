@@ -15,19 +15,15 @@ session.name=PHPSESSID
 ob_start();
 
 echo "*** Testing session_save_path() : variation ***\n";
-$initdir = __DIR__;
-$sessions = ($initdir."/session_save_path_variation4");
+$initdir = TestPath::directory();
+mkdir($initdir);
+$sessions = $initdir->directory();
 
 chdir($initdir);
 
-// Delete the existing directory
-if (file_exists($sessions) === TRUE) {
-    @rmdir($sessions);
-}
-
 var_dump(mkdir($sessions));
 var_dump(chdir($sessions));
-ini_set("session.save_path", $initdir);
+ini_set("session.save_path", $initdir->path);
 var_dump(session_save_path());
 var_dump(session_start());
 var_dump(session_save_path());
@@ -36,12 +32,6 @@ var_dump(session_save_path());
 
 echo "Done";
 ob_end_flush();
-?>
---CLEAN--
-<?php
-$initdir = __DIR__;
-$sessions = ($initdir."/session_save_path_variation4");
-rmdir($sessions);
 ?>
 --EXPECTF--
 *** Testing session_save_path() : variation ***

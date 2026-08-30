@@ -21,7 +21,7 @@ if (!empty($host)) {
     $url = "{$host}/get.inc?test=get";
 } else {
     // Create a temporary file for the test
-    $tempname = tempnam(sys_get_temp_dir(), 'CURL_HANDLE');
+    $tempname = TestPath::file();
     $url = 'file://'. $tempname;
     // add the test data to the file
     file_put_contents($tempname, "Hello World!\nHello World!");
@@ -45,7 +45,6 @@ curl_setopt_array($ch, $options);
 $returnContent = curl_exec($ch);
 
 var_dump($returnContent);
-isset($tempname) and is_file($tempname) and @unlink($tempname);
 
 ?>
 --EXPECT--

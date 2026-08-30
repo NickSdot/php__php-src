@@ -7,7 +7,8 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$p = new Phar(__DIR__ . '/phar_commitwrite.phar.zip', 0, 'phar_commitwrite.phar');
+$archive = TestPath::file('phar_commitwrite.phar.zip');
+$p = new Phar($archive, 0, 'phar_commitwrite.phar');
 $p['file1.txt'] = 'hi';
 $p->stopBuffering();
 var_dump($p->getStub());
@@ -21,10 +22,6 @@ __HALT_COMPILER();
 ?>");
 var_dump($p->getStub());
 var_dump($p->isFileFormat(Phar::ZIP));
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/phar_commitwrite.phar.zip');
 ?>
 --EXPECTF--
 string(60) "<?php // zip-based phar archive stub file

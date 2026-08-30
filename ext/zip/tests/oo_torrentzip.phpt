@@ -8,7 +8,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$name = __DIR__ . '/torrent.zip';
+$name = TestPath::file('torrent.zip');
 
 $zip = new ZipArchive();
 
@@ -23,11 +23,6 @@ echo "\nOpen read\n";
 $zip->open($name, ZipArchive::RDONLY);
 var_dump($zip->getArchiveFlag(ZipArchive::AFL_IS_TORRENTZIP));
 $zip->close();
-?>
---CLEAN--
-<?php
-$name = __DIR__ . '/torrent.zip';
-@unlink($name);
 ?>
 --EXPECTF--
 Open write

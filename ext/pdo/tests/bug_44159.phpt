@@ -36,8 +36,6 @@ foreach ($attrs as $attr) {
     }
 }
 
-@unlink(__DIR__."/foo.db");
-
 ?>
 --EXPECT--
 TypeError: PDO::setAttribute(): Argument #2 ($value) PDO::ATTR_STATEMENT_CLASS value must be of type array, null given

@@ -3,9 +3,11 @@ FileSystemIterator without SKIP_DOTS
 --FILE--
 <?php
 
-$dir = __DIR__ . '/filesystemiterator_no_skip_dots';
-mkdir($dir);
-touch($dir . '/file');
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('filesystemiterator_no_skip_dots');
+mkdir($dir->path);
+$file = $dir->file('file');
+touch($file->path);
 
 $it = new FileSystemIterator($dir, 0);
 $files = [];
@@ -15,12 +17,6 @@ foreach ($it as $f) {
 sort($files);
 var_dump($files);
 
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/filesystemiterator_no_skip_dots';
-unlink($dir . '/file');
-rmdir($dir);
 ?>
 --EXPECT--
 array(3) {

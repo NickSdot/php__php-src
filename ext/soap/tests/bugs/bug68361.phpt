@@ -86,16 +86,13 @@ $xml = <<<XML
 </definitions>
 XML;
 
-file_put_contents(__DIR__ . "/bug68361.xml", $xml);
-$client = new SoapClient(__DIR__ . "/bug68361.xml");
+$file = TestPath::file();
+file_put_contents($file, $xml);
+$client = new SoapClient($file);
 
 $res = $client->__getTypes(); // Segmentation fault here
 
 print_r($res);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/bug68361.xml");
 ?>
 --EXPECT--
 Array

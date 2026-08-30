@@ -4,10 +4,13 @@ Bug #70103 (ZipArchive::addGlob ignores remove_all_path option)
 zip
 --FILE--
 <?php
-$dir = __DIR__ . '/bug70103';
+$directory = TestPath::directory();
+$dir = $directory->path;
+$foo = $directory->file('foo.txt')->path;
+$archive = $directory->file('test.zip')->path;
 
 mkdir($dir); chmod($dir, 0777);
-file_put_contents($dir . '/foo.txt', 'foo');
+file_put_contents($foo, 'foo');
 
 $zip = new ZipArchive();
 $zip->open($dir . '/test.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -15,17 +18,10 @@ $zip->addGlob($dir . '/*.txt', GLOB_NOSORT, array('remove_all_path' => true));
 $zip->close();
 
 $zip = new ZipArchive();
-$zip->open($dir . '/test.zip');
+$zip->open($archive);
 var_dump($zip->numFiles);
 var_dump($zip->getNameIndex(0));
 $zip->close();
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/bug70103';
-unlink($dir . '/foo.txt');
-unlink($dir . '/test.zip');
-rmdir($dir);
 ?>
 --EXPECT--
 int(1)

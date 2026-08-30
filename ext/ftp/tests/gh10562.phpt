@@ -12,7 +12,7 @@ if (!$ftp) die("Couldn't connect to the server");
 
 var_dump(ftp_login($ftp, 'anonymous', 'IEUser@'));
 
-$local_file = __DIR__ . DIRECTORY_SEPARATOR . "gh10562.txt";
+$local_file = TestPath::file();
 $fout = fopen($local_file, "w");
 
 // This requests more data, but we don't do the loop to fetch it.
@@ -28,10 +28,6 @@ while ($ret == FTP_MOREDATA) {
 fclose($fout);
 
 echo file_get_contents($local_file), "\n";
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "gh10562.txt");
 ?>
 --EXPECT--
 bool(true)

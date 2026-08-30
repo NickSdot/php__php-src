@@ -15,27 +15,27 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $gd1 = TestPath::file('test私はガラスを食べられます.gd1');
+    $gd2 = TestPath::file('test私はガラスを食べられます.gd2');
+    $jpeg1 = TestPath::file();
+    $jpeg2 = TestPath::file();
 
     echo "JPEG to GD1 conversion: ";
-    echo imagegd(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $cwd . "/test私はガラスを食べられます.gd1") ? 'ok' : 'failed';
+    echo imagegd(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd1) ? 'ok' : 'failed';
     echo "\n";
 
     echo "JPEG to GD2 conversion: ";
-    echo imagegd2(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $cwd . "/test私はガラスを食べられます.gd2") ? 'ok' : 'failed';
+    echo imagegd2(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd2) ? 'ok' : 'failed';
     echo "\n";
 
     echo "GD1 to JPEG conversion: ";
-    echo imagejpeg(imagecreatefromgd($cwd . "/test私はガラスを食べられます.gd1"), $cwd . "/test_gd1.jpeg") ? 'ok' : 'failed';
+    echo imagejpeg(imagecreatefromgd($gd1), $jpeg1->path) ? 'ok' : 'failed';
     echo "\n";
 
     echo "GD2 to JPEG conversion: ";
-    echo imagejpeg(imagecreatefromgd2($cwd . "/test私はガラスを食べられます.gd2"), $cwd . "/test_gd2.jpeg") ? 'ok' : 'failed';
+    echo imagejpeg(imagecreatefromgd2($gd2), $jpeg2->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test私はガラスを食べられます.gd1");
-    @unlink($cwd . "/test私はガラスを食べられます.gd2");
-    @unlink($cwd . "/test_gd1.jpeg");
-    @unlink($cwd . "/test_gd2.jpeg");
 ?>
 --EXPECT--
 JPEG to GD1 conversion: ok

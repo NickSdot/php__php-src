@@ -8,7 +8,8 @@ phar.readonly=0
 --FILE--
 <?php
 
-$phar = new Phar(__DIR__ . "/gh18953.phar");
+$archive = TestPath::file('gh18953.phar');
+$phar = new Phar($archive->path);
 $phar->addFromString("file", str_repeat("123", random_int(1, 1)));
 $phar->addEmptyDir("dir");
 $phar2 = $phar->compress(Phar::GZ);
@@ -19,7 +20,6 @@ var_dump($phar["file"]->openFile()->fread(100));
 var_dump($phar2["file"]->openFile()->fread(100));
 
 ?>
---CLEAN--
 <?php
 @unlink(__DIR__ . "/gh18953.phar");
 @unlink(__DIR__ . "/gh18953.phar.gz");

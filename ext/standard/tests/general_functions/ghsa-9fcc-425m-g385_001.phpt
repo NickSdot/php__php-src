@@ -17,25 +17,25 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%0%'"
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file_path = __DIR__ . '/ghsa-9fcc-425m-g385_001.bat';
+$batch_file = TestPath::file('ghsa-9fcc-425m-g385_001.bat');
 
-file_put_contents($batch_file_path, $batch_file_content);
+file_put_contents($batch_file, $batch_file_content);
 
 $descriptorspec = [STDIN, STDOUT, STDOUT];
 
-$proc = proc_open([$batch_file_path . ".", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . ".", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-$proc = proc_open([$batch_file_path . "  ", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . "  ", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-$proc = proc_open([$batch_file_path . ".  ", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . ".  ", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-$proc = proc_open([$batch_file_path . ". ...  ", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . ". ...  ", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-$proc = proc_open([$batch_file_path . ". ... . ", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . ". ... . ", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-$proc = proc_open([$batch_file_path . ". ... . .", "\"&notepad.exe"], $descriptorspec, $pipes);
+$proc = proc_open([$batch_file . ". ... . .", "\"&notepad.exe"], $descriptorspec, $pipes);
 proc_close($proc);
-proc_open([$batch_file_path . ". .\\.. . .", "\"&notepad.exe"], $descriptorspec, $pipes);
+proc_open([$batch_file . ". .\\.. . .", "\"&notepad.exe"], $descriptorspec, $pipes);
 
 ?>
 --EXPECTF--
@@ -53,7 +53,3 @@ operable program or batch file.
 operable program or batch file.
 
 Warning: proc_open(): CreateProcess failed: The system cannot find the file specified in %s on line %d
---CLEAN--
-<?php
-@unlink(__DIR__ . '/ghsa-9fcc-425m-g385_001.bat');
-?>

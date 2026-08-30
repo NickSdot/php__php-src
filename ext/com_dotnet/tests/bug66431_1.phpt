@@ -15,7 +15,7 @@ try {
 <?php
 
 $text= "Xin chào cộng đồng PHP";
-$fpath = str_replace("/", "\\", __DIR__ . "/bug66431.docx");
+$fpath = str_replace("/", "\\", TestPath::file('document.docx'));
 
 com_load_typelib('Word.Application');
 
@@ -44,15 +44,6 @@ if (!$result) {
     echo "Have: '$text'\n";
 }
 
-?>
---CLEAN--
-<?php
-
-$fpath = str_replace("/", "\\", __DIR__ . "/bug66431.docx");
-
-if (file_exists($fpath)) {
-    unlink($fpath);
-}
 ?>
 --EXPECT--
 bool(true)

@@ -818,7 +818,7 @@ mysqli.allow_local_infile=1
     $info = $new_info;
 
 
-    $file = tempnam(sys_get_temp_dir(), 'mysqli_test');
+    $file = TestPath::file();
     if ($fp = fopen($file, 'w')) {
         @fwrite($fp, '1;"a"');
         fclose($fp);
@@ -831,7 +831,6 @@ mysqli.allow_local_infile=1
             mysqli_get_client_stats_assert_eq('non_result_set_queries', $new_info, (string)($info['non_result_set_queries'] + 1), $test_counter, 'LOAD DATA LOCAL');
             $info = $new_info;
         }
-        unlink($file);
     }
 
     mysqli_get_client_stats_assert_eq('bytes_received_real_data_normal', $info, $expected, $test_counter);

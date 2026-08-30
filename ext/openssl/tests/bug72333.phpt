@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug72333.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $context = stream_context_create(['ssl' => ['local_cert' => '%s']]);
@@ -71,10 +71,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug72333.pem.tmp');
 ?>
 --EXPECT--
 done

@@ -19,7 +19,7 @@ $file_modes = array("w", "wb", "wt", "w+", "w+b", "w+t",
                     "a", "ab", "at", "a+","a+b", "a+t",
                     "x", "xb", "xt", "x+", "x+b", "x+t");
 
-$file_name = "$file_path/fflush_variation1.tmp";
+$file_name = TestPath::file();
 
 $count = 1;
 

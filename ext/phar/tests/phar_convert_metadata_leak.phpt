@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.zip';
+$fname = TestPath::file('phar_convert_metadata_leak.zip')->path;
 
 $phar = new PharData($fname);
 $phar->setMetadata("foobar");
@@ -18,7 +18,5 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');?>
 --EXPECTF--
 BadMethodCallException: data phar "%s" has invalid extension phar.zip

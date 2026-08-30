@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('archive.phar')->path;
 $pname = 'phar://' . $fname;
 
 $a = new Phar($fname);
@@ -19,7 +19,5 @@ $b = new PharFileInfo($pname . '/a/subdir/here');
 unset($b);
 ?>
 ===DONE===
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECT--
 ===DONE===

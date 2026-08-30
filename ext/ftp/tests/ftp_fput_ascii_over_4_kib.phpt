@@ -12,7 +12,7 @@ ftp_login($ftp, 'user', 'pass');
 $ftp or die("Couldn't connect to the server");
 
 $filename = "large_file.txt";
-$filepath = __DIR__ . "/" . $filename;
+$filepath = TestPath::file();
 
 // Test on boundary of 2 buffers
 for ($i = 4094; $i < 4098; $i++) {
@@ -21,10 +21,6 @@ for ($i = 4094; $i < 4098; $i++) {
     var_dump(ftp_put($ftp, "large_file.txt", $filepath, FTP_ASCII));
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/large_file.txt");
 ?>
 --EXPECT--
 bool(true)

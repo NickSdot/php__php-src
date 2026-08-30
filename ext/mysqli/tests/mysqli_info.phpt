@@ -49,37 +49,32 @@ mysqli.allow_local_infile=1
         printf("[014] Expecting null, got %s/%s\n", gettype($tmp), $tmp);
 
     // NOTE: no LOAD DATA INFILE test
-    if ($dir = sys_get_temp_dir()) {
-        do {
-            $file = $dir . '/' . 'mysqli_info_phpt.cvs';
-            if (!$fp = fopen($file, 'w'))
-                /* ignore this error */
-                break;
+    $file = TestPath::file();
+    do {
+        if (!$fp = fopen($file, 'w'))
+            /* ignore this error */
+            break;
 
-            if (!fwrite($fp, "100;'a';\n") ||
-                !fwrite($fp, "101;'b';\n") ||
-                !fwrite($fp, "102;'c';\n")) {
-                @unlink($file);
-                break;
-            }
-            fclose($fp);
-            if (!mysqli_query($link, "DELETE FROM test")) {
-                printf("[015] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
-                break;
-            }
+        if (!fwrite($fp, "100;'a';\n") ||
+            !fwrite($fp, "101;'b';\n") ||
+            !fwrite($fp, "102;'c';\n")) {
+            break;
+        }
+        fclose($fp);
+        if (!mysqli_query($link, "DELETE FROM test")) {
+            printf("[015] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
+            break;
+        }
 
-            if (!@mysqli_query($link, sprintf("LOAD DATA LOCAL INFILE '%s' INTO TABLE test FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\'' LINES TERMINATED BY '\n'", $file))) {
-                /* ok, because we might not be allowed to do this */
-                @unlink($file);
-                break;
-            }
+        if (!@mysqli_query($link, sprintf("LOAD DATA LOCAL INFILE '%s' INTO TABLE test FIELDS TERMINATED BY ';' OPTIONALLY ENCLOSED BY '\'' LINES TERMINATED BY '\n'", $file))) {
+            /* ok, because we might not be allowed to do this */
+            break;
+        }
 
-            if (!is_string($tmp = mysqli_info($link)) || ('' == $tmp))
-                printf("[016] Expecting string/any_non_empty, got %s/%s\n", gettype($tmp), $tmp);
+        if (!is_string($tmp = mysqli_info($link)) || ('' == $tmp))
+            printf("[016] Expecting string/any_non_empty, got %s/%s\n", gettype($tmp), $tmp);
 
-            unlink($file);
-        } while (false);
-    }
+    } while (false);
 
     print "done!";
 ?>

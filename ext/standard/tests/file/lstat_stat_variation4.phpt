@@ -10,11 +10,12 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
 
 /* create temp file  */
 
-$file_name = "$file_path/lstat_stat_variation4.tmp";
+$file_name = $file->path;
 $fp = fopen($file_name, "w");  // temp file
 fclose($fp);
 
@@ -38,11 +39,6 @@ var_dump( compare_stats($old_stat, $new_stat, $affected_members, "<") );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation4.tmp");
 ?>
 --EXPECT--
 *** Testing stat() for file after using touch() on the file ***

@@ -12,26 +12,24 @@ if (!@mb_internal_encoding('BIG5')) {
 }
 ?>
 --INI--
-sendmail_path={MAIL:{PWD}/mb_send_mail06.eml}
+sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
+$mail = TestPath::file("mail.eml");
+chdir($mail->directory);
 $to = 'example@example.com';
 
 /* default setting */
 mb_send_mail($to, mb_language(), "test");
-readfile(__DIR__ . "/mb_send_mail06.eml");
+readfile($mail);
 
 /* Traditional Chinese () */
 if (mb_language("traditional chinese")) {
     mb_internal_encoding('BIG5');
     mb_send_mail($to, "´úÅç ".mb_language(), "´úÅç");
-    readfile(__DIR__ . "/mb_send_mail06.eml");
+    readfile($mail);
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/mb_send_mail06.eml");
 ?>
 --EXPECTF--
 To: example@example.com

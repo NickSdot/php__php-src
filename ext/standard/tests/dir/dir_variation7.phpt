@@ -22,18 +22,17 @@ echo "*** Testing dir() : remove execute permission from the parent dir ***\n";
     |-> sub_dir    ( sub parent )
          |-> child_dir  ( child dir)
 */
-$file_path = __DIR__;
-$parent_dir_path = $file_path."/dir_variation7";
+$parent_dir_path = TestPath::directory();
 @mkdir($parent_dir_path);
 chmod($parent_dir_path, 0777);
 
 // create sub_dir
-$sub_dir_path = $parent_dir_path."/sub_dir";
+$sub_dir_path = $parent_dir_path->directory();
 @mkdir($sub_dir_path);
 chmod($sub_dir_path, 0777);
 
 //create sub_sub_dir
-$child_dir_path = $sub_dir_path."/child_dir";
+$child_dir_path = $sub_dir_path->directory();
 @mkdir($child_dir_path);
 
 // remove the write and execute permission from sub parent
@@ -50,22 +49,10 @@ $d = dir($child_dir_path); // try to open, expected failure
 var_dump( $d ); // dump it
 
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$parent_dir_path = $file_path."/dir_variation7";
-$sub_dir_path = $parent_dir_path."/sub_dir";
-$child_dir_path = $sub_dir_path."/child_dir";
 
-// changing permissions for each temporary directory to delete them
 chmod($parent_dir_path, 0777);
 chmod($sub_dir_path, 0777);
 chmod($child_dir_path, 0777);
-
-rmdir($child_dir_path);
-rmdir($sub_dir_path);
-rmdir($parent_dir_path);
 ?>
 --EXPECTF--
 *** Testing dir() : remove execute permission from the parent dir ***

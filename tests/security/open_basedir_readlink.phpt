@@ -8,6 +8,7 @@ if(PHP_OS_FAMILY === "Windows") {
 ?>
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 chdir(__DIR__);
 ini_set("open_basedir", ".");
 require_once "open_basedir.inc";
@@ -35,12 +36,6 @@ var_dump(symlink($target, $symlink));
 var_dump(readlink($symlink));
 
 test_open_basedir_after("readlink");
-?>
---CLEAN--
-<?php
-chdir(__DIR__);
-require_once "open_basedir.inc";
-delete_directories();
 ?>
 --EXPECTF--
 *** Testing open_basedir configuration [readlink] ***

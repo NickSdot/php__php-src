@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$name = __DIR__ . '/withattr.zip';
+$name = TestPath::file();
 
 echo "== Set\n";
 $zip = new ZipArchive;
@@ -36,11 +36,6 @@ var_dump($zip->getExternalAttributesIndex($id, $a, $b, ZipArchive::FL_UNCHANGED)
 $zip->close();
 ?>
 == Done
---CLEAN--
-<?php
-$name = __DIR__ . '/withattr.zip';
-@unlink($name);
-?>
 --EXPECT--
 == Set
 bool(true)

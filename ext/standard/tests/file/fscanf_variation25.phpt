@@ -5,12 +5,10 @@ Test fscanf() function: usage variations - char formats with boolean
 
 /* Test fscanf() to scan boolean data using different char format types */
 
-$file_path = __DIR__;
-
 echo "*** Test fscanf(): different char format types with boolean data ***\n";
 
 // create a file
-$filename = "$file_path/fscanf_variation25.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -62,12 +60,6 @@ foreach($char_formats as $char_format) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation25.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Test fscanf(): different char format types with boolean data ***

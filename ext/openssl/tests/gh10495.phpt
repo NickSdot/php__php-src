@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'gh10495.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'gh10495-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $peerName = 'gh10495';
 $clientCode = <<<'CODE'
@@ -99,11 +99,6 @@ ServerClientTestCase::getInstance()->run($clientCode, [
     'server' => $serverCode,
     'proxy' => $proxyCode,
 ]);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'gh10495.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'gh10495-ca.pem.tmp');
 ?>
 --EXPECT--
 bool(false)

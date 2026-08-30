@@ -21,20 +21,17 @@ class StreamExploiter {
     }
 }
 
-var_dump(mkdir('test_bug_61367-write'));
-var_dump(mkdir('test_bug_61367-write/base'));
-var_dump(file_put_contents('test_bug_61367-write/bad', 'blah'));
-var_dump(chdir('test_bug_61367-write/base'));
+$directory = TestPath::directory();
+$base = $directory->directory();
+$bad = $directory->file('bad');
+var_dump(mkdir($directory));
+var_dump(mkdir($base));
+var_dump(file_put_contents($bad, 'blah'));
+var_dump(chdir($base));
 
 stream_wrapper_register( 'exploit', 'StreamExploiter' );
 $s = fopen( 'exploit://', 'r' );
 
-?>
---CLEAN--
-<?php
-@unlink('test_bug_61367-write/bad');
-rmdir('test_bug_61367-write/base');
-rmdir('test_bug_61367-write');
 ?>
 --EXPECTF--
 bool(true)

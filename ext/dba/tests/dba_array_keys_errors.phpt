@@ -10,7 +10,7 @@ check_skip_any();
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$name = 'array_keys_errors.db';
+$name = TestPath::file()->path;
 
 $db = get_any_db($name);
 
@@ -40,12 +40,6 @@ try {
 
 dba_close($db);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'array_keys_errors.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 Using handler: "%s"

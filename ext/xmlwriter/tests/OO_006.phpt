@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$doc_dest = 'OO_006.xml';
+$doc_dest = TestPath::file();
 $xw = new XMLWriter();
 $xw->openUri($doc_dest);
 $xw->startDtd('foo', NULL, 'urn:bar');
@@ -18,7 +18,6 @@ $xw->endElement();
 $output_bytes = $xw->flush(true);
 echo file_get_contents($doc_dest);
 unset($xw);
-unlink($doc_dest);
 ?>
 --EXPECT--
 <!DOCTYPE foo SYSTEM "urn:bar"><foo><foo:bar xmlns:foo="urn:foo">dummy content</foo:bar></foo>

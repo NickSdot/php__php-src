@@ -74,7 +74,7 @@ OUTPUT;
         );
 
         if ($EXPECTED_OUTPUT !== $varOutput) {
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_invalid_container_{$failuresNb}.txt", $varOutput);
+            file_put_contents(TestPath::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }
@@ -95,7 +95,7 @@ OUTPUT;
         );
 
         if ($EXPECTED_OUTPUT !== $varOutput) {
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_invalid_container_{$failuresNb}.txt", $varOutput);
+            file_put_contents(TestPath::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }

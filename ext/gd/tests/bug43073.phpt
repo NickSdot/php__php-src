@@ -31,6 +31,7 @@ $exp = [
 ];
 $cwd = __DIR__;
 $font = "$cwd/Tuffy.ttf";
+$output = TestPath::file();
 $delta_t = 360.0 / 16; # Make 16 steps around
 $g = imagecreate(800, 800);
 $bgnd  = imagecolorallocate($g, 255, 255, 255);
@@ -56,10 +57,8 @@ for ($angle = 0.0, $i = 0; $angle < 360.0; $angle += $delta_t, $i++) {
   $y    = $cos_t * $y - $sin_t * $x;
   $x    = $temp;
 }
-imagepng($g, "$cwd/bug43073.png");
+imagepng($g, $output->path);
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/bug43073.png'); ?>
 --EXPECT--
  0: ........
  1: ........

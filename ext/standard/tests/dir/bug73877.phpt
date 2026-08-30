@@ -10,10 +10,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$base = __DIR__ . DIRECTORY_SEPARATOR . "bug73877";
-$dir0 = $base . DIRECTORY_SEPARATOR . "bug73877";
-$dir1 = $base . DIRECTORY_SEPARATOR . "Серёжка";
-$junk0 = $base . DIRECTORY_SEPARATOR . "Серёжка2";
+$base = TestPath::directory();
+$dir0 = $base->directory('bug73877');
+$dir1 = $base->directory('Серёжка');
+$junk0 = $base->directory();
 
 mkdir($base);
 mkdir($dir0);
@@ -26,20 +26,6 @@ var_dump(
     readlink($junk0),
     strlen(readlink($dir0)) === strlen(readlink($junk0))
 );
-
-?>
---CLEAN--
-<?php
-
-$base = __DIR__ . DIRECTORY_SEPARATOR . "bug73877";
-$dir0 = $base . DIRECTORY_SEPARATOR . "bug73877";
-$dir1 = $base . DIRECTORY_SEPARATOR . "Серёжка";
-$junk0 = $base . DIRECTORY_SEPARATOR . "Серёжка2";
-
-rmdir($junk0);
-rmdir($dir0);
-rmdir($dir1);
-rmdir($base);
 
 ?>
 --EXPECTF--

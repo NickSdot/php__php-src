@@ -3,8 +3,8 @@ stream_copy_to_stream() file to file with a partially read destination
 --FILE--
 <?php
 
-$srcFile = __DIR__ . '/stream_copy_dest_read_ahead_src.txt';
-$dstFile = __DIR__ . '/stream_copy_dest_read_ahead_dst.txt';
+$srcFile = TestPath::file();
+$dstFile = TestPath::file();
 
 file_put_contents($srcFile, str_repeat("N", 50));
 file_put_contents($dstFile, str_repeat("O", 3000));
@@ -25,11 +25,6 @@ fclose($dst);
 $result = file_get_contents($dstFile);
 var_dump(strlen($result));
 var_dump($result === str_repeat("O", 10) . str_repeat("N", 50) . str_repeat("O", 2940));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/stream_copy_dest_read_ahead_src.txt');
-@unlink(__DIR__ . '/stream_copy_dest_read_ahead_dst.txt');
 ?>
 --EXPECT--
 int(50)

@@ -16,26 +16,26 @@ if (!defined('SCM_RIGHTS')) {
 ?>
 --FILE--
 <?php
-$dir = sys_get_temp_dir();
-$rpath = $dir . "/socket_sendmsg_scm_rights_object_r.sock";
-$ppath1 = $dir . "/socket_sendmsg_scm_rights_object_p1.sock";
-$ppath2 = $dir . "/socket_sendmsg_scm_rights_object_p2.sock";
-@unlink($rpath);
-@unlink($ppath1);
-@unlink($ppath2);
+$rpath = TestPath::file('socket_sendmsg_scm_rights_object_r.sock');
+$ppath1 = TestPath::file('socket_sendmsg_scm_rights_object_p1.sock');
+$ppath2 = TestPath::file('socket_sendmsg_scm_rights_object_p2.sock');
+chdir($rpath->directory);
+$rpath_name = $rpath->name;
+$ppath1_name = $ppath1->name;
+$ppath2_name = $ppath2->name;
 
 $recv = socket_create(AF_UNIX, SOCK_DGRAM, 0);
-socket_bind($recv, $rpath);
+socket_bind($recv, $rpath_name);
 
 $send = socket_create(AF_UNIX, SOCK_DGRAM, 0);
-socket_connect($send, $rpath);
+socket_connect($send, $rpath_name);
 
 // Two Socket objects in a single SCM_RIGHTS message, each bound to a known
 // path so the received fds can be identified and ordered via getsockname().
 $payload1 = socket_create(AF_UNIX, SOCK_DGRAM, 0);
-socket_bind($payload1, $ppath1);
+socket_bind($payload1, $ppath1_name);
 $payload2 = socket_create(AF_UNIX, SOCK_DGRAM, 0);
-socket_bind($payload2, $ppath2);
+socket_bind($payload2, $ppath2_name);
 
 socket_sendmsg($send, [
     'iov' => ['x'],
@@ -59,15 +59,8 @@ var_dump($got[0] instanceof Socket);
 var_dump($got[1] instanceof Socket);
 socket_getsockname($got[0], $addr0);
 socket_getsockname($got[1], $addr1);
-var_dump($addr0 === $ppath1);
-var_dump($addr1 === $ppath2);
-?>
---CLEAN--
-<?php
-$dir = sys_get_temp_dir();
-@unlink($dir . "/socket_sendmsg_scm_rights_object_r.sock");
-@unlink($dir . "/socket_sendmsg_scm_rights_object_p1.sock");
-@unlink($dir . "/socket_sendmsg_scm_rights_object_p2.sock");
+var_dump($addr0 === $ppath1_name);
+var_dump($addr1 === $ppath2_name);
 ?>
 --EXPECT--
 int(2)

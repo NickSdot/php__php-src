@@ -3,14 +3,15 @@ Test rename() function: basic functionality
 --FILE--
 <?php
 echo "\n*** Testing rename() by giving stream context as third argument ***\n";
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 
 $context = stream_context_create();
 
 // on directory
-$dir_name = "$file_path/rename_variation_dir9";
-$new_dir_name = "$file_path/rename_variation_dir9_new";
+$dir_name = $file_path->directory();
+$new_dir_name = $file_path->directory();
 
+mkdir($file_path);
 mkdir($dir_name);
 
 var_dump( rename($dir_name, $new_dir_name, $context) );
@@ -18,8 +19,8 @@ var_dump( file_exists($dir_name) );  // expecting flase
 var_dump( file_exists($new_dir_name) ); // expecting true
 
 //on file
-$src_name = "$file_path/rename_variation9.tmp";
-$dest_name = "$file_path/rename_variation9_new.tmp";
+$src_name = $file_path->file();
+$dest_name = $file_path->file();
 
 // create the file
 $fp = fopen($src_name, "w");
@@ -31,11 +32,6 @@ var_dump( file_exists($src_name) );  // expecting false
 var_dump( file_exists($dest_name) );  // expecting true
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/rename_variation9_new.tmp");
-rmdir(__DIR__."/rename_variation_dir9_new");
 ?>
 --EXPECT--
 *** Testing rename() by giving stream context as third argument ***

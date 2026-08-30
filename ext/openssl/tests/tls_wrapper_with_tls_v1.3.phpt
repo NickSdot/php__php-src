@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'tls_wrapper_with_tls_v1.3.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -62,10 +62,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('tls_wrapper_with_tls_v1.3', $ce
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tls_wrapper_with_tls_v1.3.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

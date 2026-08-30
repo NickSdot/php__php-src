@@ -17,8 +17,8 @@ ob_start();
 echo "*** Testing session_set_save_handler() : test write short circuit ***\n";
 
 require_once "save_handler.inc";
-$path = __DIR__ . '/session_set_save_handler_variation6';
-@mkdir($path);
+$path = TestPath::directory();
+mkdir($path);
 session_save_path($path);
 session_set_save_handler("open", "close", "read", "write", "destroy", "gc", "create_sid", "validate_sid", "update");
 
@@ -54,11 +54,6 @@ session_start();
 session_destroy();
 
 ob_end_flush();
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/session_set_save_handler_variation6';
-rmdir($path);
 ?>
 --EXPECTF--
 *** Testing session_set_save_handler() : test write short circuit ***

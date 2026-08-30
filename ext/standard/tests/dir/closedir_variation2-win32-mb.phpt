@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "*** Testing closedir() : usage variations ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = __DIR__ . "/私はガラスを食べられますclosedir_variation2";
+$directory = TestPath::directory('私はガラスを食べられますclosedir_variation2');
 mkdir($directory);
 
 $dh = opendir($directory);
@@ -33,11 +33,6 @@ try {
 }
 echo "Directory Handle: ";
 var_dump($dh);
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . "/私はガラスを食べられますclosedir_variation2";
-rmdir($directory);
 ?>
 --EXPECTF--
 *** Testing closedir() : usage variations ***

@@ -7,8 +7,10 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.zip';
+$archive = TestPath::file('bug48377.phar');
+$fname = $archive->path;
+$converted = TestPath::file('bug48377.zip');
+$fname2 = $converted->path;
 
 touch($fname2);
 
@@ -20,8 +22,5 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');?>
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');?>
 --EXPECTF--
 BadMethodCallException: phar "%sbug48377.zip" exists and must be unlinked prior to conversion

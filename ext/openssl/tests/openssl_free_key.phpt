@@ -20,9 +20,7 @@ if ($privkey === false)
     die("failed to create private key");
 
 $passphrase = "banana";
-$key_file_name = tempnam(sys_get_temp_dir(), "ssl");
-if ($key_file_name === false)
-    die("failed to get a temporary filename!");
+$key_file_name = TestPath::file();
 
 echo "Export key to file\n";
 
@@ -58,7 +56,6 @@ openssl_free_key($loaded_key);
 
 echo "OK!\n";
 
-@unlink($key_file_name);
 ?>
 --EXPECTF--
 Creating private key

@@ -10,19 +10,21 @@ if (PHP_OS_FAMILY === 'Windows') {
 TEST_PHP_FORK_SERVER=0
 --FILE--
 <?php
-$root = __DIR__ . '/automatic_worker_limit_' . getmypid();
-$bin = $root . '/bin';
-$tests = $root . '/tests';
-mkdir($bin, recursive: true);
+$root = TestPath::directory();
+mkdir($root);
+$bin = $root->directory();
+$tests = $root->directory();
+mkdir($bin);
 mkdir($tests);
 
-$nproc = $bin . '/nproc';
+$nproc = $bin->file('nproc');
 file_put_contents($nproc, "#!/bin/sh\nprintf '64\\n'\n");
 chmod($nproc, 0755);
 
 $testFiles = [];
 for ($i = 0; $i < 11; $i++) {
-    $testFiles[] = $file = $tests . "/$i.phpt";
+    $file = $tests->file("worker-$i.phpt");
+    $testFiles[] = $file->path;
     file_put_contents($file, <<<PHPT
         --TEST--
         worker cap $i
@@ -83,18 +85,6 @@ var_dump(str_contains($output, 'Spawning 10 workers...'));
 [$exitCode, $output] = $runTests(['--asan', '-j3']);
 var_dump($exitCode);
 var_dump(str_contains($output, 'Spawning 3 workers...'));
-?>
---CLEAN--
-<?php
-foreach (glob(__DIR__ . '/automatic_worker_limit_*') ?: [] as $root) {
-    foreach (glob($root . '/tests/*.phpt') ?: [] as $file) {
-        unlink($file);
-    }
-    @unlink($root . '/bin/nproc');
-    @rmdir($root . '/tests');
-    @rmdir($root . '/bin');
-    @rmdir($root);
-}
 ?>
 --EXPECT--
 int(0)

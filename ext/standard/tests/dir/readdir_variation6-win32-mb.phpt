@@ -19,7 +19,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = __DIR__ . "/私はガラスを食べられますreaddir_variation6";
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // create files within the temporary directory
@@ -55,11 +55,6 @@ foreach ($a as $file) {
 delete_files($dir_path, 3, "私はガラスを食べられますreaddir_variation6");
 closedir($dir_handle1);
 closedir();
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/私はガラスを食べられますreaddir_variation6";
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing readdir() : usage variations ***

@@ -16,7 +16,7 @@ if (!$dbh) {
     die ('Could not connect to the server');
 }
 
-$tracefile = __DIR__ . '/trace.tmp';
+$tracefile = TestPath::file();
 
 @unlink($tracefile);
 var_dump(file_exists($tracefile));
@@ -39,11 +39,6 @@ array_walk($trace, 'search_trace_file');
 var_dump($found > 0);
 var_dump(file_exists($tracefile));
 
-?>
---CLEAN--
-<?php
-$tracefile = __DIR__ . '/trace.tmp';
-unlink($tracefile);
 ?>
 --EXPECTF--
 bool(false)

@@ -17,9 +17,9 @@ imagecolorallocate($im, 255, 255, 255);
 $red = imagecolorallocate($im, 255, 0, 0);
 imagefilledrectangle($im, 3,3, 7,7, $red);
 
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'test_image_equals_file_palette.png';
+$filename = TestPath::file();
 imagepalettetotruecolor($im);
-imagepng($im, $filename);
+imagepng($im, $filename->path);
 
 $im = imagecreate(10, 10);
 imagecolorallocate($im, 255, 255, 255);
@@ -41,7 +41,3 @@ test_image_equals_file($filename, $im);
 --EXPECT--
 The images differ in 25 pixels.
 The images are equal.
---CLEAN--
-<?php
-unlink(__DIR__ . DIRECTORY_SEPARATOR . 'test_image_equals_file_palette.png');
-?>

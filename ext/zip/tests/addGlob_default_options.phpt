@@ -4,11 +4,12 @@ ZipArchive::addGlob() uses the default options when none are supplied
 zip
 --FILE--
 <?php
-$dir = __DIR__ . '/addglob_default_options_dir';
+$directory = TestPath::directory();
+$dir = $directory->path;
+$src = $directory->file('data.txt');
+$archive = $directory->file('test.zip');
 @mkdir($dir);
-$src = $dir . '/data.txt';
 file_put_contents($src, str_repeat('The quick brown fox. ', 3000));
-$archive = $dir . '/test.zip';
 
 function stat_first(string $archive): array
 {
@@ -56,13 +57,6 @@ $zip->open($archive);
 var_dump($zip->numFiles);
 var_dump($zip->getFromName($src) === file_get_contents($src));
 $zip->close();
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/addglob_default_options_dir';
-@unlink($dir . '/test.zip');
-@unlink($dir . '/data.txt');
-@rmdir($dir);
 ?>
 --EXPECT--
 -- no options --

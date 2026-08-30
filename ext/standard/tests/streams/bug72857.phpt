@@ -2,7 +2,7 @@
 Bug #72857 stream_socket_recvfrom read access violation
 --FILE--
 <?php
-    $fname = __DIR__ . DIRECTORY_SEPARATOR . "stream_socket_recvfrom.tmp";
+    $fname = TestPath::file();
     $fp0 = fopen($fname, 'w');
     $v2=10;
     $v3=STREAM_PEEK;
@@ -11,7 +11,6 @@ Bug #72857 stream_socket_recvfrom read access violation
     var_dump(stream_socket_recvfrom($fp0,$v2,$v3,$v4), $v4);
 
     fclose($fp0);
-    unlink($fname);
 ?>
 --EXPECT--
 bool(false)

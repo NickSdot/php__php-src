@@ -115,8 +115,7 @@ unlink($file);
 
     $db = MySQLPDOTest::factory();
     $blob = 'I am a mighty BLOB!' . chr(0) . "I am a binary thingie!";
-    $tmp = MySQLPDOTest::getTempDir();
-    $file = $tmp . DIRECTORY_SEPARATOR . 'pdoblob.tst';
+    $file = TestPath::file();
 
     try {
 
@@ -142,7 +141,6 @@ unlink($file);
 require_once __DIR__ . '/inc/mysql_pdo_test.inc';
 $db = MySQLPDOTest::factory();
 $db->exec('DROP TABLE IF EXISTS test_stmt_blobfromstream');
-@unlink(MySQLPDOTest::getTempDir() . DIRECTORY_SEPARATOR . 'pdoblob.tst');
 ?>
 --EXPECT--
 Emulated PS...

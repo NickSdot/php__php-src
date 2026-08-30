@@ -16,11 +16,14 @@ if (strtolower(substr(PHP_OS, 0, 3)) === 'win') {
 // best way I could manage to reproduce this problem without modifying php itself :-/
 
 for ($i = 0; $i < 10; $i++) {
-    $senderSocketPath = '/tmp/' . substr(md5(rand()), 0, rand(8, 16)) . '.sock';
+    $senderSocketFile = TestPath::file(substr(md5(rand()), 0, rand(8, 16)) . '.sock');
+    chdir($senderSocketFile->directory);
+    $senderSocketPath = $senderSocketFile->name;
     $senderSocket = socket_create(AF_UNIX, SOCK_DGRAM, 0);
     socket_bind($senderSocket, $senderSocketPath);
 
-    $receiverSocketPath = '/tmp/' . substr(md5(rand()), 0, rand(8, 16)) . '.sock';
+    $receiverSocketFile = TestPath::file(substr(md5(rand()), 0, rand(8, 16)) . '.sock');
+    $receiverSocketPath = $receiverSocketFile->name;
     $receiverSocket = socket_create(AF_UNIX, SOCK_DGRAM, 0);
     socket_bind($receiverSocket, $receiverSocketPath);
 
@@ -38,9 +41,7 @@ for ($i = 0; $i < 10; $i++) {
     echo "Responded to sender with 'Pong!'\n";
 
     socket_close($receiverSocket);
-    unlink($receiverSocketPath);
     socket_close($senderSocket);
-    unlink($senderSocketPath);
 }
 ?>
 --EXPECT--

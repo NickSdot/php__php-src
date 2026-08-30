@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$name = __DIR__ . '/getstream.zip';
+$name = TestPath::file();
 
 $zip = new ZipArchive;
 $r = $zip->open($name, ZIPARCHIVE::CREATE);
@@ -51,11 +51,6 @@ fclose($fp);
 $zip->close();
 ?>
 == Done
---CLEAN--
-<?php
-$name = __DIR__ . '/getstream.zip';
-@unlink($name);
-?>
 --EXPECTF--
 == Name
 int(0)

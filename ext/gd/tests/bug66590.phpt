@@ -11,21 +11,17 @@ if (!function_exists('imagewebp')) die('skip WebP support not available');
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . '/bug66590.webp';
+$filename = TestPath::file();
 $im = imagecreatetruecolor(75, 75);
 $red = imagecolorallocate($im, 255, 0, 0);
 imagefilledrectangle($im, 0, 0, 74, 74, $red);
-imagewebp($im, $filename);
+imagewebp($im, $filename->path);
 $stream = fopen($filename, 'rb');
 fread($stream, 4); // skip "RIFF"
 $length = fread($stream, 4);
 fclose($stream);
 $length = unpack('V', $length)[1] + 8;
 var_dump($length === filesize($filename));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bug66590.webp');
 ?>
 --EXPECT--
 bool(true)

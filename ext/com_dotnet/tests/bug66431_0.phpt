@@ -6,7 +6,7 @@ com_dotnet
 <?php
 
 $text= "Xin chào cộng đồng PHP";
-$fpath = str_replace("/", "\\", __DIR__ . "/bug66431.txt");
+$fpath = str_replace("/", "\\", TestPath::file());
 
 $fso = new COM("Scripting.FileSystemObject");
 $fh = $fso->OpenTextFile($fpath, 2, true);
@@ -24,15 +24,6 @@ if (!$result) {
     echo "Have: '$text'\n";
 }
 
-?>
---CLEAN--
-<?php
-
-$fpath = str_replace("/", "\\", __DIR__ . "/bug66431.txt");
-
-if (file_exists($fpath)) {
-    unlink($fpath);
-}
 ?>
 --EXPECT--
 bool(true)

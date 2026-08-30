@@ -14,7 +14,7 @@ gd
 
 echo "Simple test of imagepolygon() function\n";
 
-$dest = dirname(realpath(__FILE__)) . '/imagepolygon.png';
+$dest = TestPath::file();
 
 // create a blank image
 $image = imagecreatetruecolor(400, 300);
@@ -34,7 +34,7 @@ imagepolygon($image, array (
     $col_poly);
 
 // output the picture to a file
-imagepng($image, $dest);
+imagepng($image, $dest->path);
 
 $col1 = imagecolorat($image, 100, 200);
 $col2 = imagecolorat($image, 100, 100);
@@ -43,11 +43,6 @@ $color2 = imagecolorsforindex($image, $col2);
 var_dump($color1, $color2);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-    $dest = dirname(realpath(__FILE__)) . '/imagepolygon.png';
-    @unlink($dest);
 ?>
 --EXPECT--
 Simple test of imagepolygon() function

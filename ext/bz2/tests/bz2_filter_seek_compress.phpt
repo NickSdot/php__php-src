@@ -7,7 +7,7 @@ bz2
 /* Write filters are not reset on stream seek; seeking only affects the
  * stream's read/write position, not the filter pipeline state. */
 
-$file = __DIR__ . '/bz2_filter_seek_compress.bz2';
+$file = TestPath::file();
 
 $text = 'Hello, World!';
 
@@ -39,10 +39,6 @@ $content = stream_get_contents($fp);
 fclose($fp);
 
 echo "Decompressed content matches: " . ($content === $text ? "YES" : "NO") . "\n";
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bz2_filter_seek_compress.bz2');
 ?>
 --EXPECTF--
 Size after write: %d

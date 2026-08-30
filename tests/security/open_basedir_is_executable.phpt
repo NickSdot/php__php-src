@@ -16,11 +16,6 @@ var_dump(is_executable($initdir."/test/ok/../ok/ok.txt"));
 
 test_open_basedir_after("is_executable");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [is_executable] ***
 bool(true)

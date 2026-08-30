@@ -13,10 +13,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
 
 /* create temp file */
-$filename = "$file_path/lstat_stat_variation21.tmp";
+$filename = $file->path;
 $fp = fopen($filename, "w");  // temp file
 fclose($fp);
 
@@ -41,11 +42,6 @@ $affected_members = array(7, 9, 10, 'size', 'mtime', 'ctime');
 var_dump( compare_stats($old_stat, $new_stat, $affected_members, '!=') );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation21.tmp");
 ?>
 --EXPECT--
 *** Testing stat() on file by truncating it to given size ***

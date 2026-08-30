@@ -9,7 +9,7 @@ Test scandir() function : usage variations - different file names
 
 echo "*** Testing scandir() : usage variations ***\n";
 
-$dir_path = __DIR__ . "/scandir_variation8/";
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // heredoc string
@@ -46,7 +46,7 @@ $iterator = 1;
 foreach($inputs as $key => $input) {
     echo "\n-- Iteration $iterator --\n";
     $handle = "fp{$iterator}";
-    var_dump( $$handle = fopen(@"$dir_path$input.tmp", 'w') );
+    var_dump( $$handle = fopen(@"$dir_path/$input.tmp", 'w') );
     fclose($$handle);
     $iterator++;
 };
@@ -54,16 +54,6 @@ foreach($inputs as $key => $input) {
 echo "\n-- Call to scandir() --\n";
 var_dump($content = scandir($dir_path));
 
-// remove all files in directory so can remove directory in CLEAN section
-foreach ($content as $file_name) {
-    // suppress errors as won't be able to remove "." and ".." entries
-    @unlink($dir_path . $file_name);
-}
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/scandir_variation8";
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing scandir() : usage variations ***

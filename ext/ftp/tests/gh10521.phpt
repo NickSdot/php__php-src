@@ -16,7 +16,7 @@ if (!$ftp) die("Couldn't connect to the server");
 
 var_dump(ftp_login($ftp, 'anonymous', 'IEUser@'));
 
-$local_file = __DIR__ . DIRECTORY_SEPARATOR . "gh10521.txt";
+$local_file = TestPath::file();
 
 foreach ([12345678910, 9223372036854775807] as $size) {
     $handle = fopen($local_file, 'w');
@@ -26,10 +26,6 @@ foreach ([12345678910, 9223372036854775807] as $size) {
     fclose($handle);
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "gh10521.txt");
 ?>
 --EXPECTF--
 bool(true)

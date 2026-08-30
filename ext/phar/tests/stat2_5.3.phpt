@@ -10,8 +10,10 @@ phar.require_hash=0
 Phar::interceptFileFuncs();
 var_dump(is_file(__FILE__));
 
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
+$source = TestPath::file('stat2_5.3.tar');
+$fname2 = $source->path;
+$converted = TestPath::file('stat2_5.3.phar.tar');
+$fname3 = $converted->path;
 copy(__DIR__ . '/tar/files/links.tar', $fname2);
 $a = new PharData($fname2);
 $b = $a->convertToExecutable(Phar::TAR, Phar::NONE, '.phar.tar');
@@ -31,11 +33,6 @@ $b->setStub('<?php
 include "phar://" . __FILE__ . "/foo/stat.php";
 __HALT_COMPILER();');
 include $fname3;
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar');
-@unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
 ?>
 --EXPECT--
 bool(true)

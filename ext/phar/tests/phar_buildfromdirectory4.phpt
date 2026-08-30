@@ -9,30 +9,26 @@ open_basedir=
 --FILE--
 <?php
 
-mkdir(__DIR__.'/testdir4');
+$directory = TestPath::directory('testdir4');
+mkdir($directory->path);
+$files = [];
 foreach(range(1, 4) as $i) {
-    file_put_contents(__DIR__."/testdir4/file$i.txt", "some content for file $i");
+    $files[$i] = $directory->file("file$i.txt");
+    file_put_contents($files[$i], "some content for file $i");
 }
 
 try {
-    $phar = new Phar(__DIR__ . '/buildfromdirectory4.phar');
-    $a = $phar->buildFromDirectory(__DIR__ . '/testdir4');
+    $archive = TestPath::file('buildfromdirectory4.phar');
+    $phar = new Phar($archive->path);
+    $a = $phar->buildFromDirectory($directory->path);
     asort($a);
     var_dump($a);
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-var_dump(file_exists(__DIR__ . '/buildfromdirectory4.phar'));
+var_dump(file_exists($archive));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/buildfromdirectory4.phar');
-foreach(range(1, 4) as $i) {
-    unlink(__DIR__ . "/testdir4/file$i.txt");
-}
-rmdir(__DIR__ . '/testdir4');
 ?>
 --EXPECTF--
 array(4) {

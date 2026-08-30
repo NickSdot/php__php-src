@@ -11,21 +11,24 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$directory = TestPath::directory();
+$subdirectory = $directory->directory();
+$file = $directory->file();
 
 /* test the effects on stats with creating file/subdir in a dir
 */
 
 /* create temp file */
-mkdir("$file_path/lstat_stat_variation8/");  // temp dir
+mkdir($directory);  // temp dir
 
 // creating and deleting subdir and files in the dir
 echo "*** Testing stat() on dir after subdir and file is created in it ***\n";
-$dirname = "$file_path/lstat_stat_variation8";
+$dirname = $directory->path;
 $old_stat = stat($dirname);
 clearstatcache();
 sleep(1);
-mkdir("$dirname/lstat_stat_variation8_subdir");
-$file_handle = fopen("$dirname/lstat_stat_variation8a.tmp", "w");
+mkdir($subdirectory);
+$file_handle = fopen($file->path, "w");
 fclose($file_handle);
 $new_stat = stat($dirname);
 
@@ -38,13 +41,6 @@ clearstatcache();
 var_dump(compare_stats($old_stat, $new_stat, $affected_members, "<"));
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation8/lstat_stat_variation8a.tmp");
-rmdir("$file_path/lstat_stat_variation8/lstat_stat_variation8_subdir/");
-rmdir("$file_path/lstat_stat_variation8");
 ?>
 --EXPECT--
 *** Testing stat() on dir after subdir and file is created in it ***

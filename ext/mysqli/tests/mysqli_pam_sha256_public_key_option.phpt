@@ -44,15 +44,6 @@ if (strlen($row['Value']) < 100) {
     die(sprintf("skip Server misconfiguration? RSA pub key is suspicious, [%d] %s\n", $link->errno, $link->error));
 }
 
-/* date changes may give false positive */
-$file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-if ((file_exists($file) && !unlink($file)) || !($fp = @fopen($file, "w"))) {
-    die(sprintf("skip Cannot create RSA pub key file '%s'", $file));
-}
-if (strlen($row['Value']) != fwrite($fp, $row['Value'])) {
-    die(sprintf("skip Failed to create pub key file"));
-}
-
 // Ignore errors because this variable exists only in MySQL 5.6 and 5.7
 $link->query("SET @@session.old_passwords=2");
 
@@ -88,32 +79,39 @@ echo "nocache";
 <?php
     require_once 'connect.inc';
 
-    $file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-    if (file_exists($file) && is_readable($file)) {
+    $public_key_link = my_mysqli_connect($host, $user, $passwd, $db, $port, $socket);
+    $public_key_result = $public_key_link->query("SHOW STATUS LIKE 'Rsa_public_key'");
+    $public_key = $public_key_result->fetch_assoc()['Value'];
+    $public_key_result->free();
+    $public_key_link->close();
 
-        $link = mysqli_init();
-        if (!($link->options(MYSQLI_SERVER_PUBLIC_KEY, $file))) {
-            printf("[001] mysqli_options failed, [%d] %s\n", $link->errno, $link->error);
-        }
+    $file = TestPath::file();
+    $fp = fopen($file, "w");
+    fwrite($fp, $public_key);
+    fclose($fp);
 
-        if (!$link->real_connect($host, 'shatest', 'shatest', $db, $port, $socket)) {
-            printf("[002] [%d] %s\n", $link->connect_errno, $link->connect_error);
-        }
-
-        if (!$res = $link->query("SELECT id FROM test WHERE id = 1"))
-            printf("[003] [%d] %s\n", $link->errno, $link->error);
-
-        if (!$row = mysqli_fetch_assoc($res)) {
-            printf("[004] [%d] %s\n", $link->errno, $link->error);
-        }
-
-        if ($row['id'] != 1) {
-            printf("[005] Expecting 1 got %s/'%s'", gettype($row['id']), $row['id']);
-        }
-
-        $res->close();
-        $link->close();
+    $link = mysqli_init();
+    if (!($link->options(MYSQLI_SERVER_PUBLIC_KEY, $file))) {
+        printf("[001] mysqli_options failed, [%d] %s\n", $link->errno, $link->error);
     }
+
+    if (!$link->real_connect($host, 'shatest', 'shatest', $db, $port, $socket)) {
+        printf("[002] [%d] %s\n", $link->connect_errno, $link->connect_error);
+    }
+
+    if (!$res = $link->query("SELECT id FROM test WHERE id = 1"))
+        printf("[003] [%d] %s\n", $link->errno, $link->error);
+
+    if (!$row = mysqli_fetch_assoc($res)) {
+        printf("[004] [%d] %s\n", $link->errno, $link->error);
+    }
+
+    if ($row['id'] != 1) {
+        printf("[005] Expecting 1 got %s/'%s'", gettype($row['id']), $row['id']);
+    }
+
+    $res->close();
+    $link->close();
 
     print "done!";
 ?>
@@ -122,8 +120,6 @@ echo "nocache";
     require_once 'clean_table.inc';
     $link->query('DROP USER shatest');
     $link->query('DROP USER shatest@localhost');
-    $file = sprintf("%s%s%s_%s", sys_get_temp_dir(), DIRECTORY_SEPARATOR, "test_sha256_" , @date("Ymd"));
-    @unlink($file);
 ?>
 --EXPECT--
 done!

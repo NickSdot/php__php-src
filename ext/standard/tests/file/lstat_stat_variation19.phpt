@@ -6,27 +6,29 @@ Test lstat() and stat() functions: usage variations - dir/file names in array
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$directory = TestPath::directory();
+$file = $directory->file();
 
 
 /* create temp file, link and directory */
-@rmdir("$file_path/lstat_stat_variation19");  // ensure that dir doesn't exists
-mkdir("$file_path/lstat_stat_variation19");  // temp dir
+@rmdir($directory->path);  // ensure that dir doesn't exists
+mkdir($directory);  // temp dir
 
-$fp = fopen("$file_path/lstat_stat_variation19.tmp", "w");  // temp file
+$fp = fopen($file->path, "w");  // temp file
 fclose($fp);
 
 echo "*** Testing stat() with filename & directory name stored inside an array ***\n";
 
 // array with default numeric index
 $names = array(
-  "$file_path/lstat_stat_variation19.tmp",
-  "$file_path/lstat_stat_variation19"
+  $file->path,
+  $directory->path
 );
 
 //array with string key index
 $names_with_key = array (
-  'file' => "$file_path/lstat_stat_variation19.tmp",
-  "dir" => "$file_path/lstat_stat_variation19"
+  'file' => $file->path,
+  "dir" => $directory->path
 );
 
 echo "\n-- Testing stat() on filename stored inside an array --\n";
@@ -38,12 +40,6 @@ var_dump( stat($names[1]) ); // values stored with numeric index
 var_dump( stat($names_with_key["dir"]) ); // value stored with string key
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation19.tmp");
-rmdir("$file_path/lstat_stat_variation19");
 ?>
 --EXPECTF--
 *** Testing stat() with filename & directory name stored inside an array ***

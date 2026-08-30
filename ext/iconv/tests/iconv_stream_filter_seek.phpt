@@ -4,7 +4,7 @@ iconv stream filter with seek to start
 iconv
 --FILE--
 <?php
-$file = __DIR__ . '/iconv_stream_filter_seek.txt';
+$file = TestPath::file();
 
 $text = 'Hello, this is a test for iconv stream filter seeking functionality.';
 
@@ -29,10 +29,6 @@ $result = fseek($fp, 50, SEEK_SET);
 echo "Seek to middle: " . ($result === 0 ? "SUCCESS" : "FAILURE") . "\n";
 
 fclose($fp);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/iconv_stream_filter_seek.txt');
 ?>
 --EXPECTF--
 First read (20 bytes): Hello, this is a tes

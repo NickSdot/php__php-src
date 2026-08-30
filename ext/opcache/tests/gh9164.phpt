@@ -9,7 +9,7 @@ opcache.enable_cli=1
 --FILE--
 <?php
 
-$incfile = __DIR__.'/gh9164.inc';
+$incfile = TestPath::file();
 
 // Generate enough classes so that the out of bound access will cause a crash
 // without relying on assertion
@@ -30,13 +30,12 @@ if ($pid == 0) {
 } else if ($pid > 0) {
     pcntl_wait($status);
     // Ensure that file has been cached. If not, this is testing nothing anymore.
-    if (!isset(opcache_get_status()['scripts'][$incfile])) {
+    if (!isset(opcache_get_status()['scripts'][$incfile->path])) {
         print "File not cached\n";
     }
     // Populates local cache
     require $incfile;
     var_dump(new FooBar4095);
-    unlink($incfile);
 } else {
     echo "pcntl_fork() failed\n";
 }

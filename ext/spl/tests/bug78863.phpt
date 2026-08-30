@@ -2,13 +2,15 @@
 Bug #78863 (DirectoryIterator class silently truncates after a null byte)
 --FILE--
 <?php
-$dir = __DIR__ . '/bug78863';
-mkdir($dir);
-touch("$dir/bad");
-mkdir("$dir/sub");
-touch("$dir/sub/good");
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('bug78863');
+mkdir($dir->path);
+touch($dir->file('bad')->path);
+$sub = $dir->directory('sub');
+mkdir($sub->path);
+touch($sub->file('good')->path);
 
-$it = new DirectoryIterator(__DIR__ . "/bug78863\0/sub");
+$it = new DirectoryIterator($dir->path . "\0/sub");
 foreach ($it as $fileinfo) {
     if (!$fileinfo->isDot()) {
         var_dump($fileinfo->getFilename());
@@ -21,11 +23,3 @@ Stack trace:
 #0 %s(%d): DirectoryIterator->__construct('%s')
 #1 {main}
   thrown in %s on line %d
---CLEAN--
-<?php
-$dir = __DIR__ . '/bug78863';
-unlink("$dir/sub/good");
-rmdir("$dir/sub");
-unlink("$dir/bad");
-rmdir($dir);
-?>

@@ -8,10 +8,10 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$caFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca.pem.tmp';
-$csFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs.pem.tmp';
-$ukFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk.pem.tmp';
-$usFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us.pem.tmp';
+$caFile = TestPath::file();
+$csFile = TestPath::file();
+$ukFile = TestPath::file();
+$usFile = TestPath::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
@@ -68,13 +68,6 @@ $clientCode = sprintf($clientCode, $caFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us.pem.tmp');
 ?>
 --EXPECTF--
 string(%d) "cs.php.net"

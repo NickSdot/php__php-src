@@ -19,7 +19,6 @@ restore_error_handler();
 <?php
 imagecreatefrompng('php://filter/read=string.rot13/resource=' . __DIR__ . '/test.png');
 ?>
---CLEAN--
 --EXPECTF--
 
 Warning: imagecreatefrompng(): "php://filter/read=string.rot13/resource=%s" is not a valid PNG file in %s on line %d
