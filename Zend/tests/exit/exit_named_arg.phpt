@@ -2,13 +2,14 @@
 Using exit()/die() as function call with a named argument
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 
 $values = [
     12,
     "Goodbye!",
 ];
 
-const FILE_PATH = __DIR__ . '/exit_named_arg_test.php';
+$file = TestPath::file('exit.php');
 const FILE_CONTENT = <<<'TEMPLATE'
 <?php
 try {
@@ -20,25 +21,20 @@ try {
 TEMPLATE;
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
-$command = $php . ' --no-php-ini ' . escapeshellarg(FILE_PATH);
+$command = $php . ' --no-php-ini ' . escapeshellarg($file->path);
 
 foreach ([FILE_CONTENT, str_replace('exit', 'die', FILE_CONTENT)] as $code) {
     foreach ($values as $value) {
         echo 'Using ', var_export($value, true), ' as value:', PHP_EOL;
         $output = [];
         $content = str_replace('VALUE', var_export($value, true), $code);
-        file_put_contents(FILE_PATH, $content);
+        file_put_contents($file, $content);
         exec($command, $output, $exit_status);
         echo 'Exit status is: ', $exit_status, PHP_EOL,
              'Output is:', PHP_EOL, join($output), PHP_EOL;
     }
 }
 
-?>
---CLEAN--
-<?php
-const FILE_PATH = __DIR__ . '/exit_named_arg_test.php';
-@unlink(FILE_PATH);
 ?>
 --EXPECT--
 Using 12 as value:
