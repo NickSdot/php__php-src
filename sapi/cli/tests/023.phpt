@@ -9,7 +9,7 @@ if (substr(PHP_OS, 0, 3) == "WIN") die("skip non windows test");
 <?php
 $php = getenv("TEST_PHP_EXECUTABLE_ESCAPED");
 $cwd = getcwd();
-$ini_file = __DIR__ . "/023.ini";
+$ini_file = TestPath::file("023.ini")->path;
 $ini_file_escaped = escapeshellarg($ini_file);
 file_put_contents($ini_file, <<<INI
 ; no sections should match as cli doesn't support any
@@ -37,10 +37,6 @@ var_dump(stream_get_contents($pipes[2]));
 
 proc_terminate($proc);
 proc_close($proc);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/023.ini");
 ?>
 --EXPECT--
 string(3) "40M"

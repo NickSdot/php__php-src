@@ -20,7 +20,7 @@ if (strlen("#!".getenv('TEST_PHP_EXECUTABLE')) > 127) {
 
 $php = getenv('TEST_PHP_EXECUTABLE');
 
-$filename = __DIR__.'/021.tmp.php';
+$filename = TestPath::file('021.tmp.php')->path;
 
 $script = "#!$php -n\n".
           "ola\n".
@@ -34,10 +34,6 @@ chmod($filename, 0777);
 echo shell_exec($filename);
 
 echo "\nDone\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/021.tmp.php');
 ?>
 --EXPECT--
 ola

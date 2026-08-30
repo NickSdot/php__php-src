@@ -1,9 +1,5 @@
 --TEST--
 Stdin and escaped args being passed to run command
---CLEAN--
-<?php
-@unlink("run_002_tmp.fixture");
-?>
 --PHPDBG--
 ev file_put_contents("run_002_tmp.fixture", "stdin\ndata")
 b 6

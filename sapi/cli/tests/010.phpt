@@ -12,9 +12,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 
-$filename = __DIR__."/010.test.php";
+$filename = TestPath::file("010.test.php")->path;
 $filename_escaped = escapeshellarg($filename);
-$filename_txt = __DIR__."/010-F.test.txt";
+$filename_txt = TestPath::file("010-F.test.txt")->path;
 $filename_txt_escaped = escapeshellarg($filename_txt);
 
 $code = '
@@ -33,11 +33,6 @@ file_put_contents($filename_txt, $txt);
 
 var_dump(shell_exec("cat $filename_txt_escaped | $php -n -F $filename_escaped"));
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/010.test.php");
-@unlink(__DIR__."/010-F.test.txt");
 ?>
 --EXPECT--
 string(25) "

@@ -8,7 +8,7 @@ if (substr(PHP_OS, 0, 3) == "WIN") die("skip non windows test");
 --FILE--
 <?php
 $php = getenv("TEST_PHP_EXECUTABLE_ESCAPED");
-$ini_file = __DIR__ . "/bug74600.ini";
+$ini_file = TestPath::file("bug74600.ini")->path;
 $ini_file_escaped = escapeshellarg($ini_file);
 file_put_contents($ini_file, <<<INI
 [PHP]\n;\rs=\000\000=\n;\r[PATH\000]\000\376 =\n
@@ -29,10 +29,6 @@ var_dump(stream_get_contents($pipes[2]));
 
 proc_terminate($proc);
 proc_close($proc);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/bug74600.ini");
 ?>
 --EXPECT--
 string(4) "okey"

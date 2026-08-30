@@ -58,11 +58,6 @@ run_and_output("$php -n -l $filename_bad_escaped $filename_bad_escaped some.unkn
 
 echo "Done\n";
 ?>
---CLEAN--
-<?php
-@unlink($filename_good);
-@unlink($filename_bad);
-?>
 --EXPECTF--
 Array
 (
