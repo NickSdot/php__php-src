@@ -42,6 +42,7 @@ unlink($dir . "/test2.txt");
 unlink($magic_file_copy);
 unlink($magic_file_copy2);
 rmdir($dir);
+
 ?>
 --EXPECTF--
 bool(false)%A
