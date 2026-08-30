@@ -7,7 +7,7 @@ include ("file.inc");
 
 echo "*** Testing fwrite() : error conditions ***\n";
 
-$filename = TestPath::file('fwrite_error.tmp');
+$filename = TestPath::file();
 $file_handle  = fopen ( $filename, "w");
 $data = "data";
 

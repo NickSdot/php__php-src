@@ -19,7 +19,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): tracking file pointer along with reading data from file ***\n";
 
 // create a file
-$filename = TestPath::file('fscanf_variation55.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

@@ -5,7 +5,7 @@ file_get_contents() test using basic syntax
 --FILE--
 <?php
     $file_content = "Bienvenue au CodeFest a Montreal";
-    $temp_filename = TestPath::file('fichier_a_lire.txt');
+    $temp_filename = TestPath::file();
     $handle = fopen($temp_filename,"w");
     fwrite($handle,$file_content);
     fclose($handle);

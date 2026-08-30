@@ -13,7 +13,7 @@ obscure_filename
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$dir = TestPath::directory('file_put_contents_variation8');
+$dir = TestPath::directory();
 mkdir($dir);
 chdir($dir);
 

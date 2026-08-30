@@ -23,7 +23,7 @@ class foo
 $obj = new foo(); //creating new object
 
 // create a file
-$filename = TestPath::file('fscanf_variation54.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

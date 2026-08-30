@@ -10,7 +10,7 @@ second line of string
 third line of string
 EOD;
 
-$filename = TestPath::file('fsync_basic.tmp');
+$filename = TestPath::file();
 
 // opening a file
 $file_handle = fopen($filename, "w");

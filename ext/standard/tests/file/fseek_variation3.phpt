@@ -6,7 +6,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing fseek() : variation - beyond file boundaries ***\n";
 
-$outputfile = TestPath::file('fseek_variation3.tmp');
+$outputfile = TestPath::file();
 
 $h = fopen($outputfile, "wb+");
 for ($i = 1; $i < 10; $i++) {

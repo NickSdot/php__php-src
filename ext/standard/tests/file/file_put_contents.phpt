@@ -7,7 +7,7 @@ class foo {
         return __METHOD__;
     }
 }
-$file = TestPath::file('file_put_contents.txt');
+$file = TestPath::file();
 
 $context = stream_context_create();
 

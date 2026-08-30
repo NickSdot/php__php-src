@@ -3,7 +3,7 @@ Bug #77081 ftruncate() changes seek pointer in c mode
 --FILE--
 <?php
 
-$filename = TestPath::file('test77081');
+$filename = TestPath::file();
 
 file_put_contents($filename, 'foo');
 $stream = fopen($filename, 'c');

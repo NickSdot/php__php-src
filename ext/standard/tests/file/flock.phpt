@@ -3,7 +3,7 @@ flock() tests
 --FILE--
 <?php
 
-$file = TestPath::file('flock.dat')->path;
+$file = TestPath::file()->path;
 
 $fp = fopen($file, "w");
 fclose($fp);

@@ -19,7 +19,7 @@ $file_modes = array("w", "wb", "wt", "w+", "w+b", "w+t",
                     "a", "ab", "at", "a+","a+b", "a+t");
 
 $file_name = TestPath::file();
-$symlink_name = TestPath::file('symlnk_fflush_variation2.tmp');
+$symlink_name = TestPath::file();
 
 $count = 1;
 

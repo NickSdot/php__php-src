@@ -11,10 +11,10 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$filename = TestPath::file('filePutContentsVar9.tmp');
-$softlink = TestPath::file('filePutContentsVar9.SoftLink');
-$hardlink = TestPath::file('filePutContentsVar9.HardLink');
-$chainlink = TestPath::file('filePutContentsVar9.ChainLink');
+$filename = TestPath::file();
+$softlink = TestPath::file();
+$hardlink = TestPath::file();
+$chainlink = TestPath::file();
 
 
 // link files even though it original file doesn't exist yet

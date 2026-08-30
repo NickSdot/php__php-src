@@ -13,12 +13,12 @@ require __DIR__ . '/../skipif_root.inc';
 $file_path = TestPath::directory();
 
 echo "*** Test copy() function: Trying to create a copy of file in a dir which doesn't have write permissions ***";
-$file = TestPath::file('copy_variation15.tmp');
+$file = TestPath::file();
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello, world...", 20));
 fclose($file_handle);
 
-$dir = TestPath::directory('copy_variation15');
+$dir = TestPath::directory();
 mkdir($dir);
 
 $old_perms = fileperms($dir);
