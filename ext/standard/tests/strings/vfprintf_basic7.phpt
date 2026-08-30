@@ -18,7 +18,7 @@ $arg2 = array(-1111,-1234567);
 $arg3 = array(-1111,-1234567,-2345432);
 
 /* creating dumping file */
-$data_file = TestPath::file('vfprintf_basic7.txt');
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 

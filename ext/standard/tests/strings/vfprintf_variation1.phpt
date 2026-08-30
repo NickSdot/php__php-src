@@ -9,7 +9,7 @@ precision=14
 echo "*** Testing vfprintf() : variation functionality ***\n";
 
 // Open handle
-$file = 'vfprintf_variation1.txt';
+$file = TestPath::file();
 $fp = fopen( $file, 'a+' );
 
 $funset = fopen( __FILE__, 'r' );
@@ -49,13 +49,6 @@ writeAndDump( $fp, "Testing %b %d %f %o %s %x %X", array( 9, 6, 2.5502, 24, "foo
 
 // Close handle
 fclose( $fp );
-
-?>
---CLEAN--
-<?php
-
-$file = 'vfprintf_variation1.txt';
-unlink( $file );
 
 ?>
 --EXPECT--

@@ -3,7 +3,7 @@ php_strip_whitespace() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/php_strip_whitespace.dat";
+$filename = TestPath::file();
 
 var_dump(php_strip_whitespace($filename));
 
@@ -35,7 +35,6 @@ class test {
 file_put_contents($filename, $data);
 var_dump(php_strip_whitespace($filename));
 
-@unlink($filename);
 echo "Done\n";
 ?>
 --EXPECTF--

@@ -11,7 +11,7 @@ allow_url_fopen=1
 --FILE--
 <?php
 
-$filename = __DIR__."/highlight_file.dat";
+$filename = TestPath::file('highlight_file.dat');
 
 var_dump(highlight_file($filename));
 
@@ -32,7 +32,6 @@ file_put_contents($filename, $data);
 var_dump(highlight_file($filename));
 
 
-@unlink($filename);
 echo "Done\n";
 ?>
 --EXPECTF--

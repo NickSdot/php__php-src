@@ -15,7 +15,7 @@ $arg3 = array("one","two","three");
 
 
 /* creating dumping file */
-$data_file = TestPath::file('vfprintf_basic1.txt');
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 

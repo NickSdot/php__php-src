@@ -19,7 +19,7 @@ $arg2 = array(11,132);
 $arg3 = array(11,132,177);
 
 /* creating dumping file */
-$data_file = TestPath::file('vfprintf_basic9.txt');
+$data_file = TestPath::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 
