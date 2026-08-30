@@ -8,7 +8,7 @@ if (!in_array('inifile', dba_handlers())) die('skip inifile handler not availabl
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'bug70825.ini';
+$filename = TestPath::file();
 
 $db = dba_open($filename, 'n', 'inifile');
 dba_insert('foo', 23, $db);
@@ -63,8 +63,3 @@ string(4) "1337"
 string(2) "23"
 string(2) "42"
 string(4) "1337"
---CLEAN--
-<?php
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'bug70825.ini';
-@unlink($filename);
-?>

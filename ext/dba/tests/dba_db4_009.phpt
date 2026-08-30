@@ -11,21 +11,14 @@ check_skip('db4');
 <?php
 $handler = "db4";
 echo "database handler: $handler\n";
-$db_file1 = __DIR__.'/test1.dbm';
-$db_file2 = __DIR__.'/test2.dbm';
+$db_file1 = TestPath::file('test1.dbm');
+$db_file2 = TestPath::file('test2.dbm');
 $db_file1 = dba_open($db_file1, "n", $handler);
 $db_file2 = dba_open($db_file2, "n", $handler);
 var_dump(dba_list());
 dba_close($db_file1);
 dba_close($db_file2);
 
-?>
---CLEAN--
-<?php
-$db_filename1 = __DIR__.'/test1.dbm';
-$db_filename2 = __DIR__.'/test2.dbm';
-@unlink($db_filename1);
-@unlink($db_filename2);
 ?>
 --EXPECTF--
 database handler: db4
