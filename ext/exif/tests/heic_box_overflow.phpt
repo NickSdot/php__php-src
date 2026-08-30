@@ -14,13 +14,10 @@ function convert($x) {
     return chr($x);
 }
 
-file_put_contents(__DIR__."/heic_box_overflow", implode('', array_map(convert(...), $bytearray)));
+$file = TestPath::file();
+file_put_contents($file, implode('', array_map(convert(...), $bytearray)));
 
-var_dump(exif_read_data(__DIR__."/heic_box_overflow"));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/heic_box_overflow");
+var_dump(exif_read_data($file));
 ?>
 --EXPECTF--
 Warning: exif_read_data(): Invalid HEIF file in %s on line %d
