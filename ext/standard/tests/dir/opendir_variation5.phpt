@@ -23,17 +23,17 @@ echo "*** Testing opendir() : usage variations ***\n";
  *      |-> child_dir  ( child dir)
  */
 
-$parent_dir_path = __DIR__ . "/opendir_variation5";
+$parent_dir_path = TestPath::directory('opendir_variation5');
 mkdir($parent_dir_path);
 chmod($parent_dir_path, 0777);
 
 // create sub_dir
-$sub_dir_path = $parent_dir_path . "/sub_dir";
+$sub_dir_path = $parent_dir_path->directory('sub_dir');
 mkdir($sub_dir_path);
 chmod($sub_dir_path, 0777);
 
 //create sub_sub_dir
-$child_dir_path = $sub_dir_path."/child_dir";
+$child_dir_path = $sub_dir_path->directory('child_dir');
 mkdir($child_dir_path);
 
 // remove the write and execute permission from sub parent
@@ -57,21 +57,10 @@ if (is_resource($dir_handle1)) {
 if (is_resource($dir_handle2)) {
     closedir($dir_handle2);
 }
-?>
---CLEAN--
-<?php
-$parent_dir_path = __DIR__ . "/opendir_variation5";
-$sub_dir_path = $parent_dir_path."/sub_dir";
-$child_dir_path = $sub_dir_path."/child_dir";
 
-// changing permissions for each temporary directory to delete them
 chmod($parent_dir_path, 0777);
 chmod($sub_dir_path, 0777);
 chmod($child_dir_path, 0777);
-
-rmdir($child_dir_path);
-rmdir($sub_dir_path);
-rmdir($parent_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variations ***

@@ -17,16 +17,15 @@ echo "*** Testing dir() : checking with valid and invalid paths ***\n";
 
 /* create the temporary directories */
 
-$file_path = __DIR__;
+$dir_path1 = TestPath::directory('dir_variation91');
+$dir_path2 = TestPath::directory('dir_variation92');
 
 // directory dir_variation91 with one sub-directory sub_dir11 and sub-sub-directory sub_dir111
-$dir_path1 = $file_path."/dir_variation91";
-$sub_dir11 = $dir_path1."/sub_dir11";
-$sub_dir111 = $sub_dir11."/sub_dir111";
+$sub_dir11 = $dir_path1->directory('sub_dir11');
+$sub_dir111 = $sub_dir11->directory('sub_dir111');
 
 // directory dir_variation92 with one sub-directory sub_dir21
-$dir_path2 = $file_path."/dir_variation92";
-$sub_dir21 = $dir_path2."/sub_dir21";
+$sub_dir21 = $dir_path2->directory('sub_dir21');
 
 @mkdir($dir_path1);
 @mkdir($dir_path2);
@@ -49,22 +48,6 @@ var_dump( dir("$dir_path2/sub_dir21/../../dir_variation91/sub_dir12/..") );
 var_dump( dir("$dir_path1/sub_dir11/sub_dir111/../../dir_variation92/sub_dir21/..") );
 
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-
-$dir_path1 = $file_path."/dir_variation91";
-$sub_dir11 = $dir_path1."/sub_dir11";
-$sub_dir111 = $sub_dir11."/sub_dir111";
-$dir_path2 = $file_path."/dir_variation92";
-$sub_dir21 = $dir_path2."/sub_dir21";
-
-rmdir($sub_dir21);
-rmdir($sub_dir111);
-rmdir($sub_dir11);
-rmdir($dir_path1);
-rmdir($dir_path2);
 ?>
 --EXPECTF--
 *** Testing dir() : checking with valid and invalid paths ***

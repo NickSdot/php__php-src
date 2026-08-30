@@ -17,7 +17,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing readdir() : usage variations ***\n";
 
 // create the temporary directory
-$dir_path = __DIR__ . "/readdir_variation5";
+$dir_path = TestPath::directory('readdir_variation5');
 mkdir($dir_path);
 
 /* different values for directory permissions */
@@ -59,11 +59,8 @@ foreach($permission_values as $perm) {
     closedir($dh);
     $iterator++;
 }
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/readdir_variation5";
-rmdir($dir_path);
+
+chmod($dir_path, 0777);
 ?>
 --EXPECTF--
 *** Testing readdir() : usage variations ***

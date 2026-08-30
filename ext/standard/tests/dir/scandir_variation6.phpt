@@ -15,9 +15,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 echo "*** Testing scandir() : usage variations ***\n";
 
 // create the temporary directories
-$file_path = __DIR__;
-$dir_path = $file_path . "/scandir_variation6";
-$sub_dir_path = $dir_path . "/sub_dir1";
+$dir_path = TestPath::directory('scandir_variation6');
+$sub_dir_path = $dir_path->directory('sub_dir1');
+$file_path = dirname($dir_path->path);
 
 mkdir($dir_path);
 mkdir($sub_dir_path);
@@ -32,14 +32,6 @@ echo "\n-- Wildcard = '?' --\n";
 var_dump( scandir($dir_path . "/sub_dir?") );
 var_dump( scandir($dir_path . "/sub?dir1") );
 
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/scandir_variation6";
-$sub_dir_path = $dir_path . "/sub_dir1";
-
-rmdir($sub_dir_path);
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing scandir() : usage variations ***

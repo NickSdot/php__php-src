@@ -14,14 +14,14 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_variation4-win32-mb';
+$base_dir_path = TestPath::directory('opendir_variation4-mb');
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one_dir_path = $base_dir_path->directory($level_one_dir_name);
 
 $level_two_dir_name = "私はガラスを食べられますlevel_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two_dir_path = $level_one_dir_path->directory($level_two_dir_name);
 
 // create directories
 mkdir($level_one_dir_path);
@@ -70,13 +70,6 @@ function clean_dh($dh){
     }
     unset($dh);
 }
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_variation4-win32-mb';
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one/私はガラスを食べられますlevel_two");
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variation ***

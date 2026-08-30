@@ -8,8 +8,8 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 ?>
 --FILE--
 <?php
-$base = __DIR__ . DIRECTORY_SEPARATOR . "bug73971";
-$filename =  $base . DIRECTORY_SEPARATOR . str_repeat('テスト', 48); // 144 glyph here, less than 256
+$base = TestPath::directory('bug73971');
+$filename = $base->directory(str_repeat('テスト', 48)); // 144 glyph here, less than 256
 
 mkdir($base);
 mkdir($filename); // created correctly
@@ -29,14 +29,6 @@ foreach ($dir as $finfo) {
     var_dump($finfo->getFilename());
 }
 
-?>
---CLEAN--
-<?php
-$base = __DIR__ . DIRECTORY_SEPARATOR . "bug73971";
-$filename =  $base . DIRECTORY_SEPARATOR . str_repeat('テスト', 48);
-
-rmdir($filename);
-rmdir($base);
 ?>
 --EXPECT--
 string(432) "テストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテストテスト"

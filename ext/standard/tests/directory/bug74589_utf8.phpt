@@ -16,8 +16,8 @@ internal_encoding=utf-8
 */
 
 $item = "bug74589_新建文件夹"; // utf-8 string
-$dir = __DIR__ . DIRECTORY_SEPARATOR . $item;
-$test_file = $dir . DIRECTORY_SEPARATOR . "test.php";
+$dir = TestPath::directory($item);
+$test_file = $dir->file('test.php');
 $test_file_escaped = escapeshellarg($test_file);
 
 mkdir($dir);
@@ -37,11 +37,3 @@ echo shell_exec("$php -n $test_file_escaped");
 string(%d) "%sbug74589_新建文件夹"
 string(%d) "%sbug74589_新建文件夹%etest.php"
 bool(true)
---CLEAN--
-<?php
-	$item = "bug74589_新建文件夹"; // utf-8 string
-	$dir = __DIR__ . DIRECTORY_SEPARATOR . $item;
-	$test_file = $dir . DIRECTORY_SEPARATOR . "test.php";
-	unlink($test_file);
-	rmdir($dir);
-?>
