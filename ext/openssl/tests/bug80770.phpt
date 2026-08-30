@@ -9,11 +9,11 @@ if (OPENSSL_VERSION_NUMBER < 0x10101000) die("skip OpenSSL v1.1.1 required");
 ?>
 --FILE--
 <?php
-$clientCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug80770_client.pem.tmp';
-$caCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug80770_ca.pem.tmp';
-$csFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug80770_cs.pem.tmp';
-$ukFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug80770_uk.pem.tmp';
-$usFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug80770_us.pem.tmp';
+$clientCertFile = TestPath::file();
+$caCertFile = TestPath::file();
+$csFile = TestPath::file();
+$ukFile = TestPath::file();
+$usFile = TestPath::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
@@ -75,14 +75,6 @@ $clientCode = sprintf($clientCode, $clientCertFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug80770_client.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug80770_ca.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug80770_cs.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug80770_uk.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug80770_us.pem.tmp');
 ?>
 --EXPECTF--
 CLIENT_CERT_CAPTURED

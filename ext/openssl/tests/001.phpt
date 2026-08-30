@@ -18,7 +18,7 @@ if ($privkey === false) {
 }
 
 $passphrase = "banana";
-$key_file_name = __DIR__ . '/001-tmp.key';
+$key_file_name = TestPath::file();
 if ($key_file_name === false) {
     die("failed to get a temporary filename!");
 }
@@ -62,11 +62,6 @@ openssl_pkey_free($loaded_key);
 
 echo "OK!\n";
 
-?>
---CLEAN--
-<?php
-$key_file_name = __DIR__ . DIRECTORY_SEPARATOR . '001-tmp.key';
-@unlink($key_file_name);
 ?>
 --EXPECTF--
 Creating private key

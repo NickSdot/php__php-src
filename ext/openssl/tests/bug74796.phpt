@@ -14,10 +14,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
-$caFile = __DIR__ . '/bug74796_ca.pem.tmp';
-$csFile = __DIR__ . '/bug74796_cs.pem.tmp';
-$ukFile = __DIR__ . '/bug74796_uk.pem.tmp';
-$usFile = __DIR__ . '/bug74796_us.pem.tmp';
+$caFile = TestPath::file();
+$csFile = TestPath::file();
+$ukFile = TestPath::file();
+$usFile = TestPath::file();
+$proxyLog = TestPath::file();
 $certificateGenerator->saveCaCert($caFile);
 $certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $csFile);
 $certificateGenerator->saveNewCertAsFileWithKey('uk.php.net', $ukFile);
@@ -125,7 +126,7 @@ $proxyCode = <<<'CODE'
                 if ($firstRead) {
                     $sni = parse_sni_from_client_hello($clientData);
                     if ($sni !== null) {
-                        file_put_contents(__DIR__ . "/bug74796_proxy_sni.log", $sni . "\n", FILE_APPEND);
+                        file_put_contents('%s', $sni . "\n", FILE_APPEND);
                     }
                     $firstRead = false;
                 }
@@ -163,25 +164,18 @@ $clientCode = <<<'CODE'
         phpt_notify('proxy');
     }
 
-    echo file_get_contents(__DIR__ . "/bug74796_proxy_sni.log");
+    echo file_get_contents('%s');
 
     phpt_notify('server');
 CODE;
-$clientCode = sprintf($clientCode, $caFile);
+$proxyCode = sprintf($proxyCode, $proxyLog);
+$clientCode = sprintf($clientCode, $caFile, $proxyLog);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, [
         'server' => $serverCode,
         'proxy' => $proxyCode,
 ]);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug74796_proxy_sni.log");
-@unlink(__DIR__ . '/bug74796_ca.pem.tmp');
-@unlink(__DIR__ . '/bug74796_cs.pem.tmp');
-@unlink(__DIR__ . '/bug74796_uk.pem.tmp');
-@unlink(__DIR__ . '/bug74796_us.pem.tmp');
 ?>
 --EXPECT--
 string(19) "Hello from server 0"

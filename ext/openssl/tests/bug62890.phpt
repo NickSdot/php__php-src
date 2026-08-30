@@ -10,7 +10,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 default_socket_timeout=-1
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug62890.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -43,10 +43,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('bug62890', $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug62890.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)
