@@ -4,7 +4,7 @@ stream_get_meta_data() with a relative file path
 <?php
 
 echo "Create a file:\n";
-$filename = __FILE__ . '.tmp';
+$filename = TestPath::file('stream_get_meta_data_file_variation4.php.tmp');
 $fp = fopen('File://' . $filename, 'w+');
 
 var_dump(stream_get_meta_data($fp));
@@ -21,8 +21,6 @@ $fp = fopen($relative_filename, 'r');
 var_dump(stream_get_meta_data($fp));
 
 fclose($fp);
-
-unlink($filename);
 
 ?>
 --EXPECTF--

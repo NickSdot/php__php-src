@@ -2,7 +2,7 @@
 Bug #51800 proc_open on Windows hangs forever, the right way to do it with more data
 --FILE--
 <?php
-$callee = __DIR__ . "/process_proc_open_bug51800_right2.php";
+$callee = TestPath::file('process_proc_open_bug51800_right2.php');
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 $cmd = "$php -n " . escapeshellarg($callee);
 
@@ -62,11 +62,6 @@ var_dump(array(
         "stderr" => $stderr,
 ), strlen($stdout), strlen($stderr));
 
-?>
---CLEAN--
-<?php
-$callee = __DIR__ . "/process_proc_open_bug51800_right2.php";
-unlink($callee);
 ?>
 --EXPECTF--
 array(3) {

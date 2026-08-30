@@ -10,10 +10,8 @@ function my_stream_copy_to_stream($fin, $fout) {
 
 $size = 65536;
 
-do {
-    $path1 = sprintf("%s/%s%da", __DIR__, uniqid(), time());
-    $path2 = sprintf("%s/%s%db", __DIR__, uniqid(), time());
-} while ($path1 == $path2);
+$path1 = TestPath::file('bug22538a');
+$path2 = TestPath::file('bug22538b');
 
 $fp = fopen($path1, "w") or die("Cannot open $path1\n");
 $str = "abcdefghijklmnopqrstuvwxyz\n";
@@ -34,8 +32,6 @@ var_dump($cnt);
 var_dump(filesize($path2));
 var_dump(md5_file($path1));
 var_dump(md5_file($path2));
-unlink($path1);
-unlink($path2);
 ?>
 --EXPECT--
 int(65529)

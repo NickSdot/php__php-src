@@ -9,7 +9,7 @@ $filemodes = array('r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+',
                    'rt', 'rt+', 'wt', 'wt+', 'at', 'at+', 'xt', 'xt+');
 
 //create a file
-$filename = __FILE__ . '.tmp';
+$filename = TestPath::file('stream_get_meta_data_file_variation1.tmp');
 $fp = fopen($filename, 'w+');
 fclose($fp);
 
@@ -23,8 +23,6 @@ foreach ($filemodes as $mode) {
     var_dump(stream_get_meta_data($fp));
     fclose($fp);
 }
-
-unlink($filename);
 
 ?>
 --EXPECTF--

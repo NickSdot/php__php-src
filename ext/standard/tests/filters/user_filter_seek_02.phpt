@@ -40,7 +40,7 @@ class CountingFilter extends php_user_filter
 
 stream_filter_register('test.counting', 'CountingFilter');
 
-$file = __DIR__ . '/user_filter_seek_002.txt';
+$file = TestPath::file('user_filter_seek_002.txt');
 $text = 'ABC';
 
 file_put_contents($file, $text);
@@ -62,7 +62,6 @@ $result = fseek($fp, 1, SEEK_SET);
 echo "Seek to middle: " . ($result === 0 ? "SUCCESS" : "FAILURE") . "\n";
 
 fclose($fp);
-unlink($file);
 
 ?>
 --EXPECTF--
