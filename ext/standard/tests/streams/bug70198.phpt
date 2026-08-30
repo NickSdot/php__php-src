@@ -16,7 +16,7 @@ server
 */
 
 $srv_addr = "tcp://127.0.0.1:8964";
-$srv_fl = TestPath::file('bug70198_svr.php');
+$srv_fl = TestPath::file();
 $srv_fl_escaped = escapeshellarg($srv_fl);
 $srv_fl_cont = <<<SRV
 <?php

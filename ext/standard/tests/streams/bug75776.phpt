@@ -10,7 +10,7 @@ $compression = [
     'bz2' => ['bzip2.compress', 'bzdecompress']
 ];
 foreach ($compression as $ext => [$filter, $function]) {
-    $file = TestPath::file("75776.$ext");
+    $file = TestPath::file();
     $stream = fopen($file, 'w');
     stream_filter_append($stream, $filter);
     fwrite($stream,"sdfgdfg");

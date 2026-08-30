@@ -2,7 +2,7 @@
 convert filters (base64, quoted-printable) with seek to start only
 --FILE--
 <?php
-$file = TestPath::file('convert_filters_seek.txt');
+$file = TestPath::file();
 
 $text = 'Hello World! This is a test for convert filter seeking functionality.';
 

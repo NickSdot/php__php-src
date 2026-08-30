@@ -15,7 +15,7 @@ class debugfilter extends php_user_filter {
 
 stream_filter_register("myfilter","debugfilter");
 
-$file = TestPath::file('test.txt');
+$file = TestPath::file();
 $fp = fopen($file, "w");
 stream_filter_append($fp, "myfilter");
 stream_filter_append($fp, "myfilter");

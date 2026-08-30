@@ -2,7 +2,7 @@
 Bug #72857 stream_socket_recvfrom read access violation
 --FILE--
 <?php
-    $fname = TestPath::file('stream_socket_recvfrom.tmp');
+    $fname = TestPath::file();
     $fp0 = fopen($fname, 'w');
     $v2=10;
     $v3=STREAM_PEEK;

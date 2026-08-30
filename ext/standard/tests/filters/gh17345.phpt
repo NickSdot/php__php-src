@@ -2,7 +2,7 @@
 GH-17345 (Bug #35916 was not completely fixed)
 --FILE--
 <?php
-$file = TestPath::file('gh17345.txt');
+$file = TestPath::file();
 
 class strtoupper_filter extends php_user_filter
 {

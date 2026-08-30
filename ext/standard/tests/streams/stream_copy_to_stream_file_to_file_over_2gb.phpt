@@ -13,8 +13,8 @@ if (disk_free_space($dir) < 4 * 1024 * 1024 * 1024) {
 --FILE--
 <?php
 $size = 3 * 1024 * 1024 * 1024; // exceeds the ~2GB per-call kernel copy limit
-$src = TestPath::file('stream_copy_over_2gb_src.bin');
-$dst = TestPath::file('stream_copy_over_2gb_dst.bin');
+$src = TestPath::file();
+$dst = TestPath::file();
 
 // Create a sparse 3GB source so the copy loop runs without using 3GB of data.
 $fh = fopen($src, "wb");

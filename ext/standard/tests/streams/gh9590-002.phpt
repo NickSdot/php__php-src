@@ -15,12 +15,12 @@ if (PHP_OS_FAMILY === 'Solaris' && PHP_INT_SIZE === 8)
 
 posix_setrlimit(POSIX_RLIMIT_NOFILE, 2048, -1);
 
-$directory = TestPath::directory('GH-9590-002');
+$directory = TestPath::directory();
 mkdir($directory);
 
 $fds = [];
 for ($i = 0; $i < 1023; $i++) {
-    $fds[] = @fopen($directory->file("tmpfile.$i"), 'w');
+    $fds[] = @fopen($directory->file(), 'w');
 }
 
 list($a, $b) = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);

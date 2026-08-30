@@ -2,7 +2,7 @@
 string filters (rot13, toupper, tolower) with seek - fully seekable
 --FILE--
 <?php
-$file = TestPath::file('string_filters_seek.txt');
+$file = TestPath::file();
 
 $text = 'Hello World! This is a test for string filter seeking.';
 

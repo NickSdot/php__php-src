@@ -40,7 +40,7 @@ class CountingFilter extends php_user_filter
 
 stream_filter_register('test.counting', 'CountingFilter');
 
-$file = TestPath::file('user_filter_seek_002.txt');
+$file = TestPath::file();
 $text = 'ABC';
 
 file_put_contents($file, $text);

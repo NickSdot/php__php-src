@@ -48,7 +48,7 @@ class RotateFilter extends php_user_filter
 
 stream_filter_register('test.rotate', 'RotateFilter');
 
-$file = TestPath::file('user_filter_seek_001.txt');
+$file = TestPath::file();
 $text = 'Hello World';
 
 file_put_contents($file, $text);

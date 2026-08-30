@@ -37,7 +37,7 @@ class TrackingFilter extends php_user_filter
 
 stream_filter_register('test.tracking', 'TrackingFilter');
 
-$file = TestPath::file('user_filter_seek_03.txt');
+$file = TestPath::file();
 file_put_contents($file, "abcdefghij");
 
 /* Read chain: seek-to-start should dispatch with STREAM_FILTER_READ */

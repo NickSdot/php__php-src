@@ -7,7 +7,7 @@ all
 
 error_reporting(E_ALL);
 
-$fl = TestPath::file('test69900.php');
+$fl = TestPath::file();
 $max_ms = 20;
 
 $test_content = '<?php

@@ -9,7 +9,7 @@ $filemodes = array('r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+',
                    'rt', 'rt+', 'wt', 'wt+', 'at', 'at+', 'xt', 'xt+');
 
 //create a file
-$filename = TestPath::file('stream_get_meta_data_file_variation1.tmp');
+$filename = TestPath::file('file.tmp');
 $fp = fopen($filename, 'w+');
 fclose($fp);
 

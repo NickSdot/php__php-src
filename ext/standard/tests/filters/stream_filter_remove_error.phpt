@@ -7,8 +7,7 @@ if(! in_array( "string.rot13", $filters )) die( "skip rot13 filter not available
 ?>
 --FILE--
 <?php
-$file = TestPath::file('streamfilterTestErrors.txt');
-touch( $file );
+$file = TestPath::touch();
 $fp = fopen( $file, 'w+' );
 $filter = stream_filter_append( $fp, "string.rot13", STREAM_FILTER_WRITE );
 

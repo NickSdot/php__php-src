@@ -21,7 +21,7 @@ file data
 
 var_dump($_POST, $_FILES);
 
-$file_path = TestPath::file('put_multipart_uploaded_file.txt');
+$file_path = TestPath::file();
 move_uploaded_file($_FILES['file_name']['tmp_name'], $file_path);
 var_dump(file_get_contents($file_path));
 

@@ -21,7 +21,7 @@ class TestStream {
         return $this->s >= 2;
     }
 }
-$tmp = TestPath::touch('gh15908.tmp');
+$tmp = TestPath::touch();
 stream_wrapper_register("test", "TestStream");
 $f = fopen("test://", "r");
 try {

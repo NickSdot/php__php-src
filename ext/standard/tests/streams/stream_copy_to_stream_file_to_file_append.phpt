@@ -3,8 +3,8 @@ stream_copy_to_stream() file to file with an append-mode destination
 --FILE--
 <?php
 
-$srcFile = TestPath::file('stream_copy_append_src.txt');
-$dstFile = TestPath::file('stream_copy_append_dst.txt');
+$srcFile = TestPath::file();
+$dstFile = TestPath::file();
 
 file_put_contents($srcFile, str_repeat("b", 3000));
 file_put_contents($dstFile, "PREFIX-");

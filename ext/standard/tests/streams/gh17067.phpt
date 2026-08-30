@@ -2,7 +2,7 @@
 GH-17067 (glob:// wrapper doesn't cater to CWD for ZTS builds)
 --FILE--
 <?php
-$dir = TestPath::directory('gh17067');
+$dir = TestPath::directory();
 mkdir($dir);
 touch("$dir/foo");
 

@@ -6,7 +6,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die('skip not for Windows');
 ?>
 --FILE--
 <?php
-$file = TestPath::touch('stream_copy_to_stream_socket_empty.tmp');
+$file = TestPath::touch();
 $dest = fopen($file, 'wb');
 
 [$a, $b] = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
