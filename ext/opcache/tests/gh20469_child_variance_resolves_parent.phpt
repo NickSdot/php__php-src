@@ -13,7 +13,7 @@ server
 --FILE--
 <?php
 TestContext::useRelativeWorkspace();
-$dir = TestPath::directory('gh20469_child_variance_resolves_parent');
+$dir = TestPath::directory();
 mkdir($dir);
 $classes = $dir->directory('classes');
 mkdir($classes);

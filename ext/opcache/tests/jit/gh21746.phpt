@@ -22,7 +22,8 @@ final class LR {
     }
 }
 
-$renderFile = __DIR__ . '/gh21746.inc';
+$renderFile = TestPath::file();
+file_put_contents($renderFile, file_get_contents(__DIR__ . '/gh21746.inc'));
 
 // prevent JITing $renderFile
 ini_set('opcache.file_update_protection', 100);

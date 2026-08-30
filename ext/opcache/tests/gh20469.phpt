@@ -7,7 +7,7 @@ server
 --FILE--
 <?php
 TestContext::useRelativeWorkspace();
-$dir = TestPath::directory('gh20469');
+$dir = TestPath::directory();
 mkdir($dir);
 $classes = $dir->directory('classes');
 mkdir($classes);
