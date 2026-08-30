@@ -13,13 +13,17 @@ if(!defined("GLOB_BRACE")) die ('skip');
 --FILE--
 <?php
 include __DIR__ . '/utils.inc';
-$dirname = __DIR__ . '/oo_addglob_dir/';
-$file = $dirname . 'tmp.zip';
+TestContext::useRelativeWorkspace();
+$directory = TestPath::directory();
+$dirname = $directory->path . '/';
+$file = $directory->file('tmp.zip');
+$foo = $directory->file('foo.txt');
+$bar = $directory->file('bar.baz');
 
 @mkdir($dirname);
 copy(__DIR__ . '/test.zip', $file);
-touch($dirname . 'foo.txt');
-touch($dirname . 'bar.baz');
+touch($foo);
+touch($bar);
 
 $zip = new ZipArchive();
 if (!$zip->open($file)) {
@@ -57,14 +61,6 @@ if ($zip->status == ZIPARCHIVE::ER_OK) {
 } else {
         echo "failed 4\n";
 }
-?>
---CLEAN--
-<?php
-$dirname = __DIR__ . '/oo_addglob_dir/';
-unlink($dirname . 'tmp.zip');
-unlink($dirname . 'foo.txt');
-unlink($dirname . 'bar.baz');
-rmdir($dirname);
 ?>
 --EXPECT--
 string(19) "File already exists"

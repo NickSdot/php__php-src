@@ -7,7 +7,7 @@ zip
 --FILE--
 <?php
 $dirname = __DIR__ . '/';
-$file = TestPath::file('oo_unchangeIndex.zip')->path;
+$file = TestPath::file();
 copy($dirname.'test.zip', $file);
 
 var_dump(md5_file($file));

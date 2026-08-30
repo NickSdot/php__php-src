@@ -4,7 +4,7 @@ GH-21698 (ZipArchive::addGlob memory leak when open_basedir rejects the match)
 zip
 --FILE--
 <?php
-$zipfile = TestPath::file('gh21698.zip')->path;
+$zipfile = TestPath::file();
 $zip = new ZipArchive();
 $zip->open($zipfile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 

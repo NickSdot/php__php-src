@@ -9,7 +9,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$directory = TestPath::directory('oo_get_from_crc_empty_dir');
+$directory = TestPath::directory();
 $dirname = $directory->path;
 mkdir($dirname);
 $empty = $directory->file('empty.txt');

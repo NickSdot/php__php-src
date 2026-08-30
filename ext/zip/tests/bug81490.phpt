@@ -5,15 +5,12 @@ zip
 --FILE--
 <?php
 $zip = new ZipArchive();
-$zip->open(__DIR__ . "/bug81490.zip", ZipArchive::CREATE|ZipArchive::OVERWRITE);
+$archive = TestPath::file();
+$destination = TestPath::directory();
+$zip->open($archive, ZipArchive::CREATE|ZipArchive::OVERWRITE);
 $zip->addFromString("", "yada yada");
-mkdir(__DIR__ . "/bug81490");
-$zip->open(__DIR__ . "/bug81490.zip");
-$zip->extractTo(__DIR__ . "/bug81490", "");
+mkdir($destination->path);
+$zip->open($archive);
+$zip->extractTo($destination, "");
 ?>
 --EXPECT--
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug81490.zip");
-@rmdir(__DIR__ . "/bug81490");
-?>

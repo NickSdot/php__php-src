@@ -13,16 +13,11 @@ class MyZipArchive extends ZipArchive {
 }
 
 new MyZipArchive;
-$file = __DIR__ . '/ZipArchive_destruct.zip';
+$file = TestPath::file();
 $leak->open($file, ZIPARCHIVE::CREATE);
 $leak->addFromString('test', 'test');
 
 ?>
 ===DONE===
---CLEAN--
-<?php
-$file = __DIR__ . '/ZipArchive_destruct.zip';
-@unlink($file);
-?>
 --EXPECT--
 ===DONE===

@@ -9,7 +9,7 @@ if(!PHP_ZTS) { die('skip ZTS required'); }
 --FILE--
 <?php
 $zip = new ZipArchive();
-$zip->open(TestPath::file('bug72660.zip')->path, ZIPARCHIVE::CREATE);
+$zip->open(TestPath::file(), ZIPARCHIVE::CREATE);
 $zip->addPattern("/noexists/");
 ?>
 okey

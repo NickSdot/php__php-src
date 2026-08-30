@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$name = TestPath::file('getstream.zip')->path;
+$name = TestPath::file();
 
 $zip = new ZipArchive;
 $r = $zip->open($name, ZIPARCHIVE::CREATE);

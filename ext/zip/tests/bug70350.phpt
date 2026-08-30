@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$directory = TestPath::directory('bug70350');
+$directory = TestPath::directory();
 $dir = $directory->path;
 $archiveFile = $directory->file('a.zip')->path;
 $down = $directory->directory('down2');

@@ -9,7 +9,7 @@ if (!method_exists('ZipArchive', 'registerCancelCallback')) die('skip libzip too
 --FILE--
 <?php
 $zip = new ZipArchive;
-$zip->open(TestPath::file('gh22176_cancel.zip')->path, ZipArchive::CREATE);
+$zip->open(TestPath::file(), ZipArchive::CREATE);
 $zip->registerCancelCallback(function () {
     throw new \Exception('cancel boom');
 });

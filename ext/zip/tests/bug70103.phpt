@@ -4,7 +4,7 @@ Bug #70103 (ZipArchive::addGlob ignores remove_all_path option)
 zip
 --FILE--
 <?php
-$directory = TestPath::directory('bug70103');
+$directory = TestPath::directory();
 $dir = $directory->path;
 $foo = $directory->file('foo.txt')->path;
 $archive = $directory->file('test.zip')->path;

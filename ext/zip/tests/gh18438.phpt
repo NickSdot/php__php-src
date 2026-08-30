@@ -24,7 +24,7 @@ class CustomStreamWrapper {
     }
 }
 
-$file = __DIR__ . '/gh18438.zip';
+$file = TestPath::file();
 $zip = new ZipArchive;
 $zip->open($file, ZIPARCHIVE::CREATE);
 var_dump($zip->addPattern('/nomatches/'));
@@ -32,11 +32,6 @@ var_dump($zip->addPattern('/invalid'));
 
 stream_wrapper_register('custom', CustomStreamWrapper::class);
 var_dump($zip->addPattern('/invalid', 'custom://'));
-?>
---CLEAN--
-<?php
-$file = __DIR__ . '/gh18438.zip';
-@unlink($file);
 ?>
 --EXPECTF--
 array(0) {

@@ -4,17 +4,22 @@ Bug #77978 (Dirname ending in colon unzips to wrong dir)
 zip
 --FILE--
 <?php
-$file = __DIR__ . "/bug77978.zip";
-$target = __DIR__ . "/bug77978";
+TestContext::useRelativeWorkspace();
+$archive = TestPath::file();
+$targetDirectory = TestPath::directory();
+$target = $targetDirectory->path;
+$dir = $targetDirectory->directory('dir');
+$colon = $dir->directory('test:');
+$extracted = $colon->file('filename.txt');
 
 mkdir($target);
 
 $zip = new ZipArchive();
-$zip->open($file, ZipArchive::CREATE|ZipArchive::OVERWRITE);
+$zip->open($archive, ZipArchive::CREATE|ZipArchive::OVERWRITE);
 $zip->addFromString("dir/test:/filename.txt", "contents");
 $zip->close();
 
-$zip->open($file);
+$zip->open($archive);
 // Windows won't extract filenames with colons; we suppress the warning
 @$zip->extractTo($target, "dir/test:/filename.txt");
 $zip->close();
@@ -25,11 +30,3 @@ var_dump(PHP_OS_FAMILY === "Windows" || file_exists("$target/dir/test:/filename.
 --EXPECT--
 bool(true)
 bool(true)
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug77978.zip");
-@unlink(__DIR__ . "/bug77978/dir/test:/filename.txt");
-@rmdir(__DIR__ . "/bug77978/dir/test:");
-@rmdir(__DIR__ . "/bug77978/dir");
-@rmdir(__DIR__ . "/bug77978");
-?>

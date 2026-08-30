@@ -4,7 +4,7 @@ setComment error behavior
 zip
 --FILE--
 <?php
-$file = TestPath::file('__tmp_oo_set_comment_error.zip')->path;
+$file = TestPath::file();
 
 @unlink($file);
 

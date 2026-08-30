@@ -11,8 +11,7 @@ if (!method_exists('ZipArchive', 'registerProgressCallback')) die('skip libzip t
 date.timezone=UTC
 --FILE--
 <?php
-$dirname = dirname(__FILE__) . '/';
-$file = $dirname . '__tmp_oo_progress_trampoline.zip';
+$file = TestPath::file();
 
 class TrampolineTest {
     public function __call(string $name, array $arguments): void {
@@ -65,13 +64,6 @@ unlink($file);
 unset($zip);
 ?>
 Done
---CLEAN--
-<?php
-$dirname = dirname(__FILE__) . '/';
-$file = $dirname . '__tmp_oo_progress_trampoline.zip';
-
-@unlink($file);
-?>
 --EXPECT--
 bool(true)
 bool(true)

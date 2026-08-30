@@ -10,7 +10,7 @@ zip
 <?php
 
 include __DIR__ . '/utils.inc';
-$dirname = TestPath::directory('oo_add_from_string_dir')->path . '/';
+$dirname = TestPath::directory();
 $file = $dirname . 'tmp.zip';
 
 @mkdir($dirname);

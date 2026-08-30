@@ -6,7 +6,7 @@ zip
 <?php
 
 $zip = new ZipArchive;
-$res = $zip->open(__DIR__ . '/bug64342.zip', ZipArchive::CREATE);
+$res = $zip->open(TestPath::file(), ZipArchive::CREATE);
 if ($res === TRUE) {
     $f = md5(uniqid()) . '.txt';
     echo "$f\n";
@@ -29,11 +29,6 @@ if ($res === TRUE) {
 
 ?>
 DONE
---CLEAN--
-<?php
-
-@unlink(__DIR__ . '/bug64342.zip');
-?>
 --EXPECTF--
 %s.txt
 

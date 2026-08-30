@@ -4,7 +4,7 @@ ZipArchive::getFrom*() rejects an entry with an inconsistent uncompressed size
 zip
 --FILE--
 <?php
-$directory = TestPath::directory('oo_get_from_length_dir');
+$directory = TestPath::directory();
 $dirname = $directory->path;
 $file = $directory->file('inconsistent.zip')->path;
 $entry = $directory->file('a.txt');

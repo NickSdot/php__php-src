@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$file = TestPath::touch('addglob_too_long_add_path.zip')->path;
+$file = TestPath::touch();
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
