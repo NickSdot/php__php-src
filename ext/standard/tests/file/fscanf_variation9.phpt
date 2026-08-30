@@ -16,7 +16,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different float format types with integer values ***\n";
 
 // create a file
-$filename = "$file_path/fscanf_variation9.tmp";
+$filename = TestPath::file('fscanf_variation9.tmp');
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -79,12 +79,6 @@ foreach($float_formats as $float_format) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation9.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Test fscanf(): different float format types with integer values ***

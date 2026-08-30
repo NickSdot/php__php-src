@@ -7,7 +7,7 @@ include ("file.inc");
 
 echo "*** Testing fwrite() : error conditions ***\n";
 
-$filename = __DIR__."/fwrite_error.tmp";
+$filename = TestPath::file('fwrite_error.tmp');
 $file_handle  = fopen ( $filename, "w");
 $data = "data";
 
@@ -28,11 +28,6 @@ try {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$filename = __DIR__."/fwrite_error.tmp";
-unlink( $filename );
 ?>
 --EXPECT--
 *** Testing fwrite() : error conditions ***

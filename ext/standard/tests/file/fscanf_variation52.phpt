@@ -50,14 +50,6 @@ foreach($modes as $mode) {
 
 echo "\n*** Done ***";
 ?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation52.tmp";
-if(file_exists($filename)) {
-  unlink($filename);
-}
-?>
 --EXPECT--
 *** Test fscanf(): to read an empty file ***
 

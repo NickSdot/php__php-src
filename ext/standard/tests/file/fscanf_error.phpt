@@ -5,7 +5,7 @@ Test fscanf() function: error conditions
 echo "*** Testing fscanf() for error conditions ***\n";
 $file_path = __DIR__;
 
-$filename = "$file_path/fscanf_error.tmp";
+$filename = TestPath::file('fscanf_error.tmp');
 $file_handle = fopen($filename, 'w');
 if ($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -48,12 +48,6 @@ foreach($invalid_formats as $format)  {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_error.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Testing fscanf() for error conditions ***
