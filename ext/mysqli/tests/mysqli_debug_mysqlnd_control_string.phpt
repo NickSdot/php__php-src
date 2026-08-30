@@ -57,7 +57,7 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
         return trim(substr(file_get_contents($trace_file), 0, 100024));
     }
 
-    $trace_file = sprintf('%s%s%s', sys_get_temp_dir(), DIRECTORY_SEPARATOR, 'mysqli_debug_phpt.trace');
+    $trace_file = TestPath::file();
 
     $trace = try_control_string($link, 't:O,' . $trace_file, $trace_file, 10);
     if (!strstr($trace, 'SELECT * FROM test') && !strstr($trace, 'mysql_real_query'))
@@ -211,7 +211,6 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
     mysqli_close($link);
     print "done";
     print "libmysql/DBUG package prints some debug info here.";
-    @unlink($trace_file);
 ?>
 --CLEAN--
 <?php

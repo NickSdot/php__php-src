@@ -20,7 +20,8 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
     require_once 'connect.inc';
 
     // NOTE: documentation is not clear on this: function always return NULL or TRUE
-    if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s/mysqli_debug_phpt.trace', sys_get_temp_dir()))))
+    $trace_file = TestPath::file();
+    if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s', $trace_file))))
         printf("[002] Expecting boolean/true, got %s/%s\n", gettype($tmp), $tmp);
 
     // table.inc will create a database connection and run some SQL queries, therefore
@@ -28,7 +29,6 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
     require_once 'table.inc';
 
     clearstatcache();
-    $trace_file = sprintf('%s/mysqli_debug_phpt.trace', sys_get_temp_dir());
     if (!file_exists($trace_file))
         printf("[003] Trace file '%s' has not been created\n", $trace_file);
     if (filesize($trace_file) < 50)
@@ -50,8 +50,6 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
     clearstatcache();
     if (!file_exists($trace_file))
         printf("[006] Trace file '%s' does not exist\n", $trace_file);
-    unlink($trace_file);
-
     print "done!";
 ?>
 --CLEAN--

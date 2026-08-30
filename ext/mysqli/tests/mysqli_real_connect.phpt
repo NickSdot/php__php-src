@@ -96,7 +96,7 @@ mysqli.allow_local_infile=1
         if (!mysqli_real_connect($link, $host, $user, $passwd, $db, $port, $socket, 128))
             printf("[019] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
-        $filename = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'mysqli_real_connect_phpt';
+        $filename = TestPath::file();
         if (!$fp = fopen($filename, 'w'))
             printf("[020] Cannot open temporary file %s\n", $filename);
 
@@ -107,7 +107,6 @@ mysqli.allow_local_infile=1
         if (mysqli_query($link, "LOAD DATA LOCAL INFILE '$filename' INTO TABLE test FIELDS TERMINATED BY ';'"))
             printf("[021] LOAD DATA INFILE should have been forbidden!\n");
 
-        unlink($filename);
     }
 
     mysqli_close($link);

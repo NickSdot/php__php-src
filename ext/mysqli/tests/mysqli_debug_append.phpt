@@ -21,7 +21,8 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test is not for Windows platfo
 <?php
     require_once 'connect.inc';
 
-    if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s/mysqli_debug_phpt.trace', sys_get_temp_dir()))))
+    $trace_file = TestPath::file();
+    if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s', $trace_file))))
         printf("[001] Expecting boolean/true, got %s/%s\n", gettype($tmp), $tmp);
 
     // table.inc will create a database connection and run some SQL queries, therefore
@@ -29,7 +30,6 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test is not for Windows platfo
     require_once 'table.inc';
 
     clearstatcache();
-    $trace_file = sprintf('%s/mysqli_debug_phpt.trace', sys_get_temp_dir());
     if (!file_exists($trace_file))
         printf("[002] Trace file '%s' has not been created\n", $trace_file);
     if (filesize($trace_file) < 50)
@@ -72,12 +72,6 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test is not for Windows platfo
         if (!strstr(file_get_contents($trace_file), $trace))
             printf("[011] Cannot find original file content any more. Seems that the trace file got overwritten and not appended. Please check.");
     }
-
-    // what will happen if we create new trace entries...?
-    unlink($trace_file);
-    clearstatcache();
-    if (file_exists($trace_file))
-        printf("[012] Could not remove trace file '%s'.\n", $trace_file);
 
     mysqli_close($link);
     print "done";
