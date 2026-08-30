@@ -12,7 +12,7 @@ echo "*** Testing readdir() : basic functionality ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path = TestPath::directory('readdir_basic');
+$path = TestPath::directory();
 mkdir($path);
 create_files($path, 3);
 

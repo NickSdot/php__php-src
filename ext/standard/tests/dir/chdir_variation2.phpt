@@ -8,7 +8,7 @@ Test chdir() function : usage variations - relative paths
 
 echo "*** Testing chdir() : usage variations ***\n";
 
-$base_dir_path = TestPath::directory('chdir_variation2');
+$base_dir_path = TestPath::directory();
 mkdir($base_dir_path);
 
 $level2_one_dir_name = "level2_one";

@@ -12,7 +12,7 @@ echo "*** Testing scandir() : basic functionality ***\n";
 include (__DIR__ . '/../file/file.inc');
 
 // set up directory
-$directory = TestPath::directory('scandir_basic');
+$directory = TestPath::directory();
 mkdir($directory);
 create_files($directory, 3);
 

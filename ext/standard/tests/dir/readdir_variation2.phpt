@@ -8,7 +8,7 @@ Test readdir() function : usage variations - empty directories
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = TestPath::directory('readdir_variation2');
+$path = TestPath::directory();
 mkdir($path);
 $dir_handle = opendir($path);
 

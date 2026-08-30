@@ -23,7 +23,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = TestPath::directory('scandir_variation10-mb');
+$dir = TestPath::directory();
 mkdir($dir);
 @create_files($dir, 2, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 

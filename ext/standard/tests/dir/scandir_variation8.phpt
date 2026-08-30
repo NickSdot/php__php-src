@@ -9,7 +9,7 @@ Test scandir() function : usage variations - different file names
 
 echo "*** Testing scandir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('scandir_variation8');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // heredoc string

@@ -14,7 +14,7 @@ echo "*** Testing dir() : basic functionality ***\n";
 include(__DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory('dir_basic-mb');
+$dir_path = TestPath::directory('私はガラスを食べられますdir_basic');
 @mkdir($dir_path);
 
 // create files within the temporary directory

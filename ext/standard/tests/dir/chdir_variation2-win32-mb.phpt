@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing chdir() : usage variations ***\n";
 
-$base_dir_path = TestPath::directory('chdir_variation2-mb');
+$base_dir_path = TestPath::directory();
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";

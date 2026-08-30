@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 echo "*** Testing opendir() : usage variations ***\n";
 // create the temporary directories
-$dir_path = TestPath::directory('opendir_variation6');
+$dir_path = TestPath::directory('opendir_var');
 $sub_dir_path = $dir_path->directory('sub_dir1');
 $file_path = dirname($dir_path);
 

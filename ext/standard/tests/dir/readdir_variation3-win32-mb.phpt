@@ -19,8 +19,8 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = TestPath::directory('readdir_variation3-mb');
-$path_sub = $path_top . '/私はガラスを食べられますsub_folder';
+$path_top = TestPath::directory();
+$path_sub = $path_top->directory('私はガラスを食べられますsub_folder');
 mkdir($path_top);
 mkdir($path_sub);
 

@@ -8,14 +8,14 @@ Test opendir() function : usage variations - different relative paths
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$base_dir_path = TestPath::directory('opendir_variation4');
+$base_dir_path = TestPath::directory();
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "level_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one_dir_path = $base_dir_path->directory($level_one_dir_name);
 
 $level_two_dir_name = "level_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two_dir_path = $level_one_dir_path->directory($level_two_dir_name);
 
 // create directories
 mkdir($level_one_dir_path);

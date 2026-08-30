@@ -22,17 +22,17 @@ echo "*** Testing dir() : remove execute permission from the parent dir ***\n";
     |-> sub_dir    ( sub parent )
          |-> child_dir  ( child dir)
 */
-$parent_dir_path = TestPath::directory('dir_variation7');
+$parent_dir_path = TestPath::directory();
 @mkdir($parent_dir_path);
 chmod($parent_dir_path, 0777);
 
 // create sub_dir
-$sub_dir_path = $parent_dir_path->directory('sub_dir');
+$sub_dir_path = $parent_dir_path->directory();
 @mkdir($sub_dir_path);
 chmod($sub_dir_path, 0777);
 
 //create sub_sub_dir
-$child_dir_path = $sub_dir_path->directory('child_dir');
+$child_dir_path = $sub_dir_path->directory();
 @mkdir($child_dir_path);
 
 // remove the write and execute permission from sub parent

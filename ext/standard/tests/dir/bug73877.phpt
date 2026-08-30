@@ -10,10 +10,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$base = TestPath::directory('bug73877');
+$base = TestPath::directory();
 $dir0 = $base->directory('bug73877');
 $dir1 = $base->directory('Серёжка');
-$junk0 = $base->directory('Серёжка2');
+$junk0 = $base->directory();
 
 mkdir($base);
 mkdir($dir0);

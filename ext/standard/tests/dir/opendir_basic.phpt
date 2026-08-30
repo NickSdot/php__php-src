@@ -2,7 +2,7 @@
 Test opendir() function : basic functionality
 --FILE--
 <?php
-$base_dir_path = TestPath::directory('opendir_basic');
+$base_dir_path = TestPath::directory();
 /*
  * Test basic functionality of opendir() with absolute and relative paths as $path argument
  */
@@ -12,10 +12,10 @@ echo "*** Testing opendir() : basic functionality ***\n";
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "level_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one_dir_path = $base_dir_path->directory($level_one_dir_name);
 
 $level_two_dir_name = "level_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two_dir_path = $level_one_dir_path->directory($level_two_dir_name);
 
 // create temporary directories - will remove in CLEAN section
 mkdir($level_one_dir_path);

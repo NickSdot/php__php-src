@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing closedir() : basic functionality ***\n";
 
-$dir_path = TestPath::directory('closedir_basic-mb');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 echo "\n-- Call closedir() with no arguments: --\n";

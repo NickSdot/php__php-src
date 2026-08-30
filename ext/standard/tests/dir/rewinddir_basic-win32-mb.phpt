@@ -17,8 +17,8 @@ echo "*** Testing rewinddir() : basic functionality ***\n";
 // include file.inc for create_files function
 include(__DIR__ . "/../file/file.inc");
 
-$dir_path1 = TestPath::directory('rewinddir_basic_dir1-mb');
-$dir_path2 = TestPath::directory('rewinddir_basic_dir2-mb');
+$dir_path1 = TestPath::directory();
+$dir_path2 = TestPath::directory();
 mkdir($dir_path1);
 mkdir($dir_path2);
 

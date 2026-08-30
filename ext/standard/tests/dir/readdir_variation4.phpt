@@ -9,7 +9,7 @@ Test readdir() function : usage variations - different file names
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('readdir_variation4');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // heredoc string

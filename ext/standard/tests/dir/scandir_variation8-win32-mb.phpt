@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing scandir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('scandir_variation8-mb');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // heredoc string

@@ -7,7 +7,7 @@ Test chdir() function : basic functionality
  */
 
 echo "*** Testing chdir() : basic functionality ***\n";
-$base_dir_path = TestPath::directory('chdir_basic');
+$base_dir_path = TestPath::directory();
 mkdir($base_dir_path);
 
 $level1_one_dir_name = "level1_one";

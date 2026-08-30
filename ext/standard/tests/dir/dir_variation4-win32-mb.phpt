@@ -19,7 +19,7 @@ echo "*** Testing dir() : operate on previously opened directory ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory('dir_variation4-mb');
+$dir_path = TestPath::directory('私はガラスを食べられますdir_variation4');
 @mkdir($dir_path);
 
 // create files within the temporary directory

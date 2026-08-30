@@ -8,7 +8,7 @@ Test rewinddir() function : usage variations - operate on a closed directory
 
 echo "*** Testing rewinddir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('rewinddir_variation2');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 echo "\n-- Create the directory handle, read and close the directory --\n";

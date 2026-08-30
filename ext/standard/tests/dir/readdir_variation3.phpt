@@ -13,7 +13,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = TestPath::directory('readdir_variation3');
+$path_top = TestPath::directory();
 $path_sub = $path_top->directory('sub_folder');
 mkdir($path_top);
 mkdir($path_sub);

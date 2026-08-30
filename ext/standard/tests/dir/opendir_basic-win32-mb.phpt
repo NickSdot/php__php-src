@@ -14,14 +14,14 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = TestPath::directory('opendir_basic-mb');
+$base_dir_path = TestPath::directory();
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one_dir_path = $base_dir_path->directory($level_one_dir_name);
 
 $level_two_dir_name = "私はガラスを食べられますlevel_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
+$level_two_dir_path = $level_one_dir_path->directory($level_two_dir_name);
 
 // create temporary directories - will remove in CLEAN section
 mkdir($level_one_dir_path);

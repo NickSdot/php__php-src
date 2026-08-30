@@ -2,7 +2,7 @@
 Test closedir() function : usage variations - close directory handle twice
 --FILE--
 <?php
-$directory = TestPath::directory('closedir_variation2');
+$directory = TestPath::directory();
 /*
  * close the directory handle twice using closedir() to test behaviour
  */

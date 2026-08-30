@@ -16,7 +16,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing scandir() : usage variations ***\n";
 
 // create the temporary directory
-$dir_path = TestPath::directory('scandir_variation7');
+$dir_path = TestPath::directory();
 mkdir($dir_path);
 
 // different values for directory permissions
