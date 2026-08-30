@@ -6,7 +6,7 @@ zip
 <?php
 include __DIR__ . '/utils.inc';
 
-touch($file = __DIR__ . '/bug_gh12661.zip');
+$file = TestPath::touch('archive.zip');
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -17,9 +17,5 @@ $zip->close();
 
 ?>
 Done
---CLEAN--
-<?php
-unlink(__DIR__ . '/bug_gh12661.zip');
-?>
 --EXPECT--
 Done
