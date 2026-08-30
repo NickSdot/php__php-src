@@ -3,7 +3,7 @@ testing stream_get_meta_data() "eof" field for a file stream
 --FILE--
 <?php
 
-$filename = __FILE__ . '.tmp';
+$filename = TestPath::file();
 
 $fp = fopen($filename, "w+");
 
@@ -26,8 +26,6 @@ while(!feof($fp)) {
 var_dump(stream_get_meta_data($fp));
 
 fclose($fp);
-
-unlink($filename);
 
 ?>
 --EXPECTF--

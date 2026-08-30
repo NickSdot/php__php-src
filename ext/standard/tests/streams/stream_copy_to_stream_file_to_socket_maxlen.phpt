@@ -22,7 +22,7 @@ $serverCode = <<<'CODE'
 CODE;
 
 $clientCode = <<<'CODE'
-    $src = tmpfile();
+    $src = fopen(TestPath::file(), 'w+b');
     fwrite($src, str_repeat("A", 8192) . str_repeat("B", 8192));
     rewind($src);
 

@@ -6,7 +6,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die('skip not for Windows');
 ?>
 --FILE--
 <?php
-$file = tempnam(sys_get_temp_dir(), 'sct');
+$file = TestPath::file();
 $dest = fopen($file, 'wb');
 
 [$a, $b] = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
@@ -17,7 +17,6 @@ var_dump($copied);
 
 fclose($a);
 fclose($dest);
-@unlink($file);
 ?>
 --EXPECT--
 int(0)
