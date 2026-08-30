@@ -4,17 +4,12 @@ xmlwriter_set_indent_string passing xmlwriter resource
 xmlwriter
 --FILE--
 <?php
-$temp_filename = __DIR__."/xmlwriter_set_indent_string.tmp";
+$temp_filename = TestPath::file();
     $fp = fopen($temp_filename, "w");
     fwrite ($fp, "Hi");
     fclose($fp);
 $resource = xmlwriter_open_uri($temp_filename);
 var_dump(xmlwriter_set_indent_string($resource, '  '));
-?>
---CLEAN--
-<?php
-$temp_filename = __DIR__."/xmlwriter_set_indent_string.tmp";
-unlink($temp_filename);
 ?>
 --CREDITS--
 Koen Kuipers koenk82@gmail.com

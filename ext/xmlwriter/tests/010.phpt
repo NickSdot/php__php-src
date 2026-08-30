@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$file = __DIR__.'/010.tmp';
+$file = TestPath::file();
 
 $xw = xmlwriter_open_uri($file);
 
@@ -36,8 +36,6 @@ xmlwriter_flush($xw, empty: true);
 unset($xw);
 
 var_dump(file_get_contents($file));
-
-@unlink($file);
 
 echo "Done\n";
 ?>
