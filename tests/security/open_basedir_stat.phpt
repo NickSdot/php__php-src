@@ -7,7 +7,6 @@ open_basedir=.
 require_once "open_basedir.inc";
 test_open_basedir_array("stat");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [stat] ***
 bool(true)

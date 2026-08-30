@@ -7,7 +7,6 @@ open_basedir=.
 require_once "open_basedir.inc";
 test_open_basedir("is_file");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [is_file] ***
 bool(true)

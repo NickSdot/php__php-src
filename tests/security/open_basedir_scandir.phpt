@@ -14,7 +14,6 @@ var_dump(scandir($initdir."/test/ok"));
 var_dump(scandir($initdir."/test/ok/../ok"));
 
 test_open_basedir_after("scandir");?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [scandir] ***
 bool(true)

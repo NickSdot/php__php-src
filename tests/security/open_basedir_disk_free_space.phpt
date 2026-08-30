@@ -12,7 +12,6 @@ test_open_basedir_error("disk_free_space");
 var_dump(disk_free_space($initdir."/test/ok"));
 test_open_basedir_after("disk_free_space");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [disk_free_space] ***
 bool(true)

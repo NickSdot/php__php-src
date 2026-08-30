@@ -14,7 +14,6 @@ var_dump(opendir($initdir."/test/ok"));
 var_dump(opendir($initdir."/test/ok/../ok"));
 
 test_open_basedir_after("opendir");?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [opendir] ***
 bool(true)

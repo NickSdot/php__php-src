@@ -39,7 +39,6 @@ var_dump(unlink($symlink));
 
 test_open_basedir_after("symlink");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [symlink] ***
 bool(true)

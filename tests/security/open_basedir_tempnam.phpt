@@ -32,7 +32,6 @@ var_dump(unlink($file));
 
 test_open_basedir_after("tempnam");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [tempnam] ***
 bool(true)

@@ -13,7 +13,6 @@ var_dump(file_exists('./test/foo'));
 $file = str_repeat('x', 2 * PHP_MAXPATHLEN);
 var_dump(file_exists("./test/$file"));
 ?>
---CLEAN--
 --EXPECTF--
 bool(true)
 bool(true)

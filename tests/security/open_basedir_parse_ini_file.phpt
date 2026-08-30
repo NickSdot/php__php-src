@@ -24,7 +24,6 @@ var_dump(parse_ini_file("./../."));
 
 test_open_basedir_after("parse_ini_file");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [parse_ini_file] ***
 bool(true)

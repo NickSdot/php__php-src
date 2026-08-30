@@ -16,7 +16,6 @@ var_dump(rename($initdir."/test/bad/bad.txt", "rename.txt"));
 
 test_open_basedir_after("rename");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [rename] ***
 bool(true)

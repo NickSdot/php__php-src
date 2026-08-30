@@ -16,7 +16,6 @@ var_dump(rmdir($initdir."/test/bad"));
 
 test_open_basedir_after("rmdir");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [rmdir] ***
 bool(true)

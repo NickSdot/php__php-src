@@ -16,7 +16,6 @@ var_dump(file_put_contents($initdir."/test/bad/bad.txt", "Hello World!"));
 
 test_open_basedir_after("file_put_contents");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [file_put_contents] ***
 bool(true)

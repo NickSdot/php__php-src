@@ -17,7 +17,6 @@ var_dump(mkdir($initdir."/test/ok/blah"));
 var_dump(rmdir($initdir."/test/ok/blah"));
 test_open_basedir_after("mkdir");
 ?>
---CLEAN--
 --EXPECTF--
 *** Testing open_basedir configuration [mkdir] ***
 bool(true)
