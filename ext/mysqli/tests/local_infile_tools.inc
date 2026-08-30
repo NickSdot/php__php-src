@@ -1,9 +1,7 @@
 <?php
     /* Utility function for mysqli_set_local_infile*.phpt tests */
-    function shutdown_clean($file) {
-        if ($file) {
-            unlink($file);
-        }
+    if (!class_exists('TestPath', false)) {
+        require_once __DIR__ . '/../../../testing/Context/bootstrap-file.php';
     }
 
     function check_local_infile_allowed_by_server($link) {
@@ -57,14 +55,11 @@
 
     function create_standard_csv($offset, $verbose = true) {
         // create a CVS file
-        $file = tempnam(sys_get_temp_dir(), 'mysqli_test');
+        $file = TestPath::file();
         if (!$fp = fopen($file, 'w')) {
             if ($verbose)
                 printf("[%03d + 1] Cannot create CVS file '%s'\n", $offset, $file);
             return NULL;
-        } else {
-            /* Looks ugly? No, handy if you have crashes... */
-            register_shutdown_function("shutdown_clean", $file);
         }
 
         if (!fwrite($fp, "97;'x';\n") ||

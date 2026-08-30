@@ -8,7 +8,9 @@ if (PHP_OS_FAMILY !== "Windows") die("skip only for Windows");
 ?>
 --FILE--
 <?php
-copy(__DIR__ . "/../helpers/bad_cmd.exe", "cmd.exe");
+$cmd_file = TestPath::file('cmd.exe');
+chdir($cmd_file->directory);
+copy(__DIR__ . "/../helpers/bad_cmd.exe", $cmd_file);
 $spec = [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]];
 var_dump($proc = proc_open("@echo hello", $spec, $pipes, null));
 $read = [$pipes[1], $pipes[2]];
@@ -20,12 +22,7 @@ if (($num = stream_select($read, $write, $except, 1000)) === false) {
         fpassthru($stream);
     }
 }
-@unlink("cmd.exe");
 ?>
 --EXPECTF--
 resource(%d) of type (process)
 hello
---CLEAN--
-<?php
-@unlink("cmd.exe");
-?>

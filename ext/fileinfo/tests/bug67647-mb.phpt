@@ -13,12 +13,11 @@ fileinfo
 
 $src = __DIR__ . DIRECTORY_SEPARATOR . "67647.mov";
 
-$f_base = "67647私はガラスを食べられます.mov";
-$f = __DIR__ . DIRECTORY_SEPARATOR . $f_base;
+$f = TestPath::file('67647私はガラスを食べられます.mov');
 
 /* Streams mb path support is tested a lot elsewhere. Copy the existing file
     therefore, avoid duplication in the repo. */
-if (!copy($src, $f) || empty(glob($f))) {
+if (!copy($src, $f) || empty(glob($f->path))) {
     die("failed to copy '$src' to '$f'");
 }
 
@@ -27,12 +26,6 @@ var_dump($fi->file($f));
 
 ?>
 +++DONE+++
---CLEAN--
-<?php
-    $f_base = "67647私はガラスを食べられます.mov";
-    $f = __DIR__ . DIRECTORY_SEPARATOR . $f_base;
-    unlink($f);
-?>
 --EXPECT--
 string(15) "video/quicktime"
 +++DONE+++

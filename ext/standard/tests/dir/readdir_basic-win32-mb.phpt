@@ -18,8 +18,7 @@ echo "*** Testing readdir() : basic functionality ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path = __DIR__ . '/私はガラスを食べられますreaddir_basic';
-mkdir($path);
+$path = TestPath::directory()->create();
 create_files($path, 3);
 
 echo "\n-- Call readdir() with \$path argument --\n";
@@ -46,11 +45,6 @@ foreach($a as $file) {
 
 delete_files($path, 3);
 closedir($dh);
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/私はガラスを食べられますreaddir_basic';
-rmdir($path);
 ?>
 --EXPECTF--
 *** Testing readdir() : basic functionality ***

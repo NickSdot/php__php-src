@@ -5,7 +5,7 @@ zlib
 --FILE--
 <?php
 $original = str_repeat("hallo php",4096);
-$filename = tempnam(sys_get_temp_dir(), "phpt");
+$filename = TestPath::file();
 
 $fp = gzopen($filename, "wb");
 gzwrite($fp, $original);
@@ -27,7 +27,6 @@ if ($data == $original) {
     var_dump($data);
 }
 gzclose($fp);
-unlink($filename);
 ?>
 --EXPECT--
 int(36864)

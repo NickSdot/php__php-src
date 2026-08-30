@@ -7,16 +7,15 @@ Jelle Lampaert
 sqlite3
 --FILE--
 <?php
+$db_file = TestPath::file();
 
 try {
-  $db = new SQLite3(__DIR__ . '/db1.db');
-  $db->open(__DIR__ . '/db1.db');
+  $db = new SQLite3($db_file);
+  $db->open($db_file);
 } catch (Exception $ex) {
   echo $ex::class, ': ', $ex->getMessage(), "\n";
 }
 
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/db1.db'); ?>
 --EXPECT--
 Exception: Already initialised DB Object

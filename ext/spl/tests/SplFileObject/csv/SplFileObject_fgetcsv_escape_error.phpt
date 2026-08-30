@@ -2,20 +2,17 @@
 SplFileObject::fgetcsv() escape error
 --FILE--
 <?php
-$fp = fopen('SplFileObject__fgetcsv8.csv', 'w+');
+$file = TestPath::file();
+$fp = fopen($file, 'w+');
 fwrite($fp, '"aaa","b""bb","ccc"');
 fclose($fp);
 
-$fo = new SplFileObject('SplFileObject__fgetcsv8.csv');
+$fo = new SplFileObject($file);
 try {
     var_dump($fo->fgetcsv(',', '"', 'invalid'));
 } catch (ValueError $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink('SplFileObject__fgetcsv8.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::fgetcsv() is deprecated since 8.6 in %s on line %d

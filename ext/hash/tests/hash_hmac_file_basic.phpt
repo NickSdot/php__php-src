@@ -6,7 +6,7 @@ Hash: hash_hmac_file() function : basic functionality
 
 echo "*** Testing hash_hmac_file() : basic functionality ***\n";
 
-$file = __DIR__ . "hash_hmac_file.txt";
+$file = TestPath::file();
 /* Creating a temporary file file */
 if (($fp = fopen( $file, "w+")) == FALSE) {
     echo "Cannot create file ($file)";
@@ -47,8 +47,6 @@ echo "whirlpool: " . hash_hmac_file('whirlpool', $file, $key) . "\n";
 
 echo "md5(raw): " . bin2hex(hash_hmac_file('md5', $file, $key, TRUE)). "\n";
 echo "sha256(raw): " . bin2hex(hash_hmac_file('sha256', $file, $key, TRUE)). "\n";
-
-unlink($file);
 
 ?>
 --EXPECT--

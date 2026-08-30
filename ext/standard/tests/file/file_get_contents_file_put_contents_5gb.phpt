@@ -31,14 +31,13 @@ function get_system_memory(): int|float|false
 if (get_system_memory() < 10 * 1024 * 1024 * 1024) {
     die('skip Reason: Insufficient RAM (less than 10GB)');
 }
-$tmpfile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "file_get_contents_file_put_contents_5gb.bin";
-$tmpfileh = fopen($tmpfile, "wb");
-if ($tmpfileh === false) {
+$probe = tempnam(sys_get_temp_dir(), 'php');
+if ($probe === false) {
     die('skip Reason: Unable to create temporary file');
 }
-fclose($tmpfileh);
-unlink($tmpfile);
-if (disk_free_space(dirname($tmpfile)) < 10 * 1024 * 1024 * 1024) {
+$directory = dirname($probe);
+unlink($probe);
+if (disk_free_space($directory) < 10 * 1024 * 1024 * 1024) {
     die('skip Reason: Insufficient disk space (less than 10GB)');
 }
 ?>
@@ -46,7 +45,8 @@ if (disk_free_space(dirname($tmpfile)) < 10 * 1024 * 1024 * 1024) {
 memory_limit=6G
 --FILE--
 <?php
-$tmpfile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "file_get_contents_file_put_contents_5gb.bin";
+TestContext::useSystemWorkspace();
+$tmpfile = TestPath::file();
 $large_string_len = 5 * 1024 * 1024 * 1024;
 
 $large_string = str_repeat('a', $large_string_len);
@@ -67,14 +67,6 @@ if (strlen($result_large_string) !== $large_string_len) {
     echo "File read successfully." . PHP_EOL;
 }
 
-clearstatcache(true, $tmpfile);
-if (file_exists($tmpfile)) {
-    unlink($tmpfile);
-}
-?>
---CLEAN--
-<?php
-@unlink(sys_get_temp_dir() . DIRECTORY_SEPARATOR . "file_get_contents_file_put_contents_5gb.bin");
 ?>
 --EXPECT--
 File written successfully.

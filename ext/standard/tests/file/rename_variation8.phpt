@@ -7,41 +7,36 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die('skip..  not for Windows');
 --FILE--
 <?php
 echo "\n*** Testing rename() on non-existing file ***\n";
-$file_path = __DIR__;
+$source_file = TestPath::file();
+$destination_file = TestPath::file();
+$directory = TestPath::directory();
+$renamed_directory = TestPath::directory();
+$missing_directory = TestPath::directory();
+$missing_destination = TestPath::directory();
 
 // try renaming a non existing file
-$src_name = $file_path."/non_existent_file.tmp";
-$dest_name = $file_path."/rename_variation8_new.tmp";
-var_dump( rename($src_name, $dest_name) );
+var_dump( rename($source_file, $destination_file) );
 
 // ensure that $dest_name didn't get created
-var_dump( file_exists($src_name) );  // expecting false
-var_dump( file_exists($dest_name) ); // expecting false
+var_dump( file_exists($source_file) );  // expecting false
+var_dump( file_exists($destination_file) ); // expecting false
 
 // rename a existing dir to new name
 echo "\n*** Testing rename() on existing directory ***\n";
-$dir_name = $file_path."/rename_basic_dir";
-mkdir($dir_name);
-$new_dir_name = $file_path."/rename_basic_dir1";
-var_dump( rename($dir_name, $new_dir_name) );
+mkdir($directory);
+var_dump( rename($directory, $renamed_directory) );
 //ensure that $new_dir_name got created
-var_dump( file_exists($dir_name) );  // expecting false
-var_dump( file_exists($new_dir_name) );  // expecting true
+var_dump( file_exists($directory) );  // expecting false
+var_dump( file_exists($renamed_directory) );  // expecting true
 
 // try to rename an non_existing dir
 echo "\n*** Testing rename() on non-existing directory ***\n";
-$non_existent_dir_name = $file_path."/non_existent_dir";
-$new_dir_name = "$file_path/rename_basic_dir2";
-var_dump( rename($non_existent_dir_name, $new_dir_name) );
+var_dump( rename($missing_directory, $missing_destination) );
 // ensure that $new_dir_name didn't get created
-var_dump( file_exists($non_existent_dir_name) );  // expecting flase
-var_dump( file_exists($new_dir_name) );  // expecting false
+var_dump( file_exists($missing_directory) );  // expecting flase
+var_dump( file_exists($missing_destination) );  // expecting false
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-rmdir(__DIR__."/rename_basic_dir1");
 ?>
 --EXPECTF--
 *** Testing rename() on non-existing file ***

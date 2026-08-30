@@ -21,22 +21,19 @@ $reader = XMLReader::xml($xml);
 $reader->read();
 
 echo "--- File test ---\n";
-file_put_contents("libxml_global_state_entity_loader_bypass.tmp", $xml);
-$reader = XMLReader::open("libxml_global_state_entity_loader_bypass.tmp");
+$file = TestPath::file();
+file_put_contents($file, $xml);
+$reader = XMLReader::open($file);
 $reader->read();
 
 echo "--- Stream test ---\n";
-$stream = fopen("libxml_global_state_entity_loader_bypass.tmp", "r");
+$stream = fopen($file, "r");
 $reader = XMLReader::fromStream($stream);
 $reader->read();
 fclose($stream);
 
 echo "Done\n";
 
-?>
---CLEAN--
-<?php
-@unlink("libxml_global_state_entity_loader_bypass.tmp");
 ?>
 --EXPECT--
 --- String test ---

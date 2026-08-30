@@ -7,9 +7,9 @@ xsl
 ExPatch-LLC
 --FILE--
 <?php
-$cDIR = __DIR__;
-file_put_contents($cDIR . '/gh22621_external.xml', '<root xmlns:custom="urn:custom"><data>secret</data></root>');
-$uri = 'file:///' . ltrim(str_replace('\\', '/', $cDIR), '/') . '/gh22621_external.xml';
+$file = TestPath::file();
+file_put_contents($file, '<root xmlns:custom="urn:custom"><data>secret</data></root>');
+$uri = 'file://' . $file;
 
 $stored_ns = null;
 
@@ -49,10 +49,6 @@ var_dump($stored_ns->localName);
 var_dump($stored_ns->namespaceURI);
 var_dump($stored_ns->parentNode->localName);
 var_dump($stored_ns->ownerDocument instanceof DOMDocument);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh22621_external.xml');
 ?>
 --EXPECTF--
 <?xml version="1.0"?>

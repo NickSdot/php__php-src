@@ -4,7 +4,7 @@ bzip2.compress write filter: write_seek_mode parameter
 bz2
 --FILE--
 <?php
-$file = __DIR__ . '/bz2_filter_write_seek_modes.bz2';
+$file = TestPath::file();
 
 $text1 = 'First message that will be discarded.';
 $text2 = 'Second message that replaces the first.';
@@ -39,10 +39,6 @@ stream_filter_append($fp, 'bzip2.compress', STREAM_FILTER_WRITE,
     ['write_seek_mode' => 'nope']);
 fclose($fp);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bz2_filter_write_seek_modes.bz2');
 ?>
 --EXPECTF--
 bool(true)

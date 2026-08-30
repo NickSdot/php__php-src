@@ -8,8 +8,9 @@ if (!method_exists('ZipArchive', 'registerCancelCallback')) die('skip libzip too
 ?>
 --FILE--
 <?php
+$file = TestPath::file('archive.zip');
 $zip = new ZipArchive;
-$zip->open(__DIR__ . '/gh22176_cancel.zip', ZipArchive::CREATE);
+$zip->open($file, ZipArchive::CREATE);
 $zip->registerCancelCallback(function () {
     throw new \Exception('cancel boom');
 });
@@ -18,10 +19,6 @@ echo "done\n";
 // The archive is flushed and the object destroyed during request shutdown;
 // the thrown exception bails out through libzip's zip_close() without leaking
 // its internal state, and the bailout resumes once libzip has unwound.
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh22176_cancel.zip');
 ?>
 --EXPECTF--
 done

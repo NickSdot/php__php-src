@@ -72,16 +72,15 @@ pg_exec ($db, "COMMIT");
 
 echo "import/export LO\n";
 $path = __DIR__ . '/';
+$exported = TestPath::file();
 pg_query($db, 'BEGIN');
 $oid = pg_lo_import($db, $path . 'php.gif');
 pg_query($db, 'COMMIT');
 pg_query($db, 'BEGIN');
-@unlink($path . 'php.gif.exported');
-pg_lo_export($db, $oid, $path . 'php.gif.exported');
-if (!file_exists($path . 'php.gif.exported')) {
+pg_lo_export($db, $oid, $exported);
+if (!file_exists($exported)) {
     echo "Export failed\n";
 }
-@unlink($path . 'php.gif.exported');
 pg_query($db, 'COMMIT');
 
 /* invalid OID values */

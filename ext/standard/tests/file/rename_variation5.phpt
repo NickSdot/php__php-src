@@ -12,15 +12,16 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 /* test rename() by trying to rename an existing file/dir/link to the same name
   and one another */
 // create a dir
-$file_path = __DIR__;
-$dirname = "$file_path/rename_variation5_dir";
+$file_path = TestPath::directory();
+$dirname = $file_path->directory();
+$filename = $file_path->file();
+$linkname = $file_path->file();
+mkdir($file_path);
 mkdir($dirname);
 //create a file
-$filename = "$file_path/rename_variation5.tmp";
 $fp = fopen($filename, "w");
 fclose($fp);
 // create a link
-$linkname = "$file_path/rename_variation5_link.tmp";
 symlink($filename, $linkname);
 
 echo "\n-- Renaming link to same link name --\n";
@@ -50,13 +51,6 @@ echo "\n-- Renaming existing directory to existing link name --\n";
 var_dump( rename($dirname, $linkname) );
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/rename_variation5_link.tmp");
-unlink($file_path."/rename_variation5.tmp");
-rmdir($file_path."/rename_variation5_dir");
 ?>
 --EXPECTF--
 -- Renaming link to same link name --

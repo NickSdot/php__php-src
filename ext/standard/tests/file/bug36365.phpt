@@ -7,7 +7,7 @@ if (getenv("SKIP_SLOW_TESTS")) die('skip slow test');
 ?>
 --FILE--
 <?php
-$testdir = __DIR__ . '/bug36365';
+$testdir = TestPath::directory();
 
 mkdir($testdir);
 for ($i = 0; $i < 70000; $i++) {
@@ -15,14 +15,6 @@ for ($i = 0; $i < 70000; $i++) {
 }
 
 var_dump(count(scandir($testdir)));
-?>
---CLEAN--
-<?php
-$testdir = __DIR__ . '/bug36365';
-for ($i = 0; $i < 70000; $i++) {
-    unlink(sprintf("$testdir/%05d.txt", $i));
-}
-rmdir($testdir);
 ?>
 --EXPECT--
 int(70002)

@@ -20,16 +20,13 @@ if (!$dbh) {
 pg_close($dbh);
 
 require_once dirname(__DIR__, 2) . '/dba/tests/setup/setup_dba_tests.inc';
-$name = 'bug14383.db';
+TestContext::useRelativeWorkspace();
+$name = TestPath::file('bug14383.db')->path;
+TestPath::file('bug14383.db.lck');
+TestPath::file('bug14383.db-lock');
 
 $handler = get_any_handler($name);
 run_standard_tests($handler, $name);
-?>
---CLEAN--
-<?php
-require_once dirname(__DIR__, 2) . '/dba/tests/setup/setup_dba_tests.inc';
-$name = 'bug14383.db';
-cleanup_standard_db($name);
 ?>
 --EXPECTF--
 Using handler: "%s"

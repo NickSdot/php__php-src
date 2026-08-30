@@ -10,18 +10,20 @@ opcache
 server
 --FILE--
 <?php
-$dir = __DIR__;
-$dir1 = "$dir/test1";
-$dir2 = "$dir/test2";
-$link = "$dir/test";
-$file1 = "$dir1/index.php";
-$file2 = "$dir2/index.php";
-$main = "$dir/main.php";
-@mkdir($dir1);
-@mkdir($dir2);
-@file_put_contents($main,  '<?php include(\'' . $link .'/index.php\');');
-@file_put_contents($file1, "TEST 1\n");
-@file_put_contents($file2, "TEST 2\n");
+TestContext::useRelativeWorkspace();
+$workspace = TestPath::directory()->create();
+$dir1 = $workspace->directory('test1');
+$dir2 = $workspace->directory('test2');
+$link = $workspace->directory('test');
+$file1 = $dir1->file('index.php');
+$file2 = $dir2->file('index.php');
+$main = $workspace->file('main.php');
+$mainUrl = str_replace(__DIR__ . '/', '', $main->path);
+mkdir($dir1);
+mkdir($dir2);
+file_put_contents($main, '<?php include(\'' . $link .'/index.php\');');
+file_put_contents($file1, "TEST 1\n");
+file_put_contents($file2, "TEST 2\n");
 while (filemtime($file1) != filemtime($file2)) {
     touch($file1);
     touch($file2);
@@ -39,8 +41,8 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 include "php_cli_server.inc";
 //php_cli_server_start('-d opcache.enable=1 -d opcache.enable_cli=1 -d opcache.revalidate_path=1');
 php_cli_server_start('-d opcache.enable=1 -d opcache.enable_cli=1 -d opcache.revalidate_path=1 -d opcache.file_update_protection=0 -d realpath_cache_size=0');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/main.php');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/main.php');
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $mainUrl);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $mainUrl);
 if (substr(PHP_OS, 0, 3) == 'WIN') {
     @rmdir($link);
     $ln = str_replace('/', '\\', $link);
@@ -50,28 +52,8 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
     @unlink($link);
     @symlink($dir2, $link);
 }
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/main.php');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/main.php');
-?>
---CLEAN--
-<?php
-$dir = __DIR__;
-$dir1 = "$dir/test1";
-$dir2 = "$dir/test2";
-$link = "$dir/test";
-$file1 = "$dir1/index.php";
-$file2 = "$dir2/index.php";
-$main = "$dir/main.php";
-@unlink($main);
-if (substr(PHP_OS, 0, 3) == 'WIN') {
-	@rmdir($link);
-} else {
-	@unlink($link);
-}
-@unlink($file1);
-@unlink($file2);
-@rmdir($dir1);
-@rmdir($dir2);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $mainUrl);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $mainUrl);
 ?>
 --EXPECT--
 TEST 1

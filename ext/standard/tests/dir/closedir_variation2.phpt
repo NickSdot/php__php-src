@@ -2,6 +2,7 @@
 Test closedir() function : usage variations - close directory handle twice
 --FILE--
 <?php
+$directory = TestPath::directory();
 /*
  * close the directory handle twice using closedir() to test behaviour
  */
@@ -9,7 +10,6 @@ Test closedir() function : usage variations - close directory handle twice
 echo "*** Testing closedir() : usage variations ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = __DIR__ . "/closedir_variation2";
 mkdir($directory);
 
 $dh = opendir($directory);
@@ -27,11 +27,6 @@ try {
 }
 echo "Directory Handle: ";
 var_dump($dh);
-?>
---CLEAN--
-<?php
-$directory = __DIR__ . "/closedir_variation2";
-rmdir($directory);
 ?>
 --EXPECTF--
 *** Testing closedir() : usage variations ***

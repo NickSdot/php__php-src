@@ -3,7 +3,7 @@ fwrite() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/fwrite.dat";
+$filename = TestPath::file()->path;
 
 $fp = fopen($filename, "w");
 var_dump(fwrite($fp, ""));
@@ -20,11 +20,6 @@ fclose($fp);
 var_dump(file_get_contents($filename));
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$filename = __DIR__."/fwrite.dat";
-@unlink($filename);
 ?>
 --EXPECTF--
 int(0)

@@ -7,7 +7,7 @@ bz2
 
 function test($case) {
     $plain = "The quick brown fox jumps over the lazy dog.";
-    $fn = "bug71263.bz2";
+    $fn = TestPath::file();
     $compressed = (string) bzcompress($plain);
     echo "Compressed len = ", strlen($compressed), "\n";
 
@@ -37,7 +37,6 @@ function test($case) {
         echo "read: "; var_dump($s);
     }
     fclose($r);
-    unlink($fn);
 }
 
 test(1);

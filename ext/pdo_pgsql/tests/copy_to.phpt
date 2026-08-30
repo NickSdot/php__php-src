@@ -50,7 +50,7 @@ try {
 
 echo "Testing pgsqlCopyToFile() with default parameters\n";
 
-$filename="test_pgsqlCopyToFile.csv";
+$filename = TestPath::file();
 var_dump($db->pgsqlCopyToFile('test_copy_to',$filename));
 echo file_get_contents($filename);
 echo "Testing pgsqlCopyToFile() with different field separator and not null indicator\n";
@@ -74,9 +74,6 @@ try {
     echo "Exception: {$e->getMessage()}\n";
 }
 
-if(isset($filename)) {
-    @unlink($filename);
-}
 ?>
 --CLEAN--
 <?php

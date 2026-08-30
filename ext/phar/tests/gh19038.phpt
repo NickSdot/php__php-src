@@ -7,7 +7,8 @@ phar.readonly=0
 --FILE--
 <?php
 
-$phar = new Phar(__DIR__ . "/gh19038.phar");
+$archive = TestPath::file('gh19038.phar');
+$phar = new Phar($archive->path);
 $phar->addFromString("file", "123");
 $file = $phar["file"]->openFile();
 $file->fseek(3);
@@ -15,10 +16,6 @@ var_dump($file->fwrite("456", 3));
 $file->fseek(0);
 echo $file->fread(100);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/gh19038.phar");
 ?>
 --EXPECT--
 int(3)

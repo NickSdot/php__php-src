@@ -12,7 +12,7 @@ curl_setopt($ch1, CURLOPT_SAFE_UPLOAD, 1);
 curl_setopt($ch1, CURLOPT_URL, "{$host}/get.php?test=file");
 curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
 
-$filename = __DIR__ . '/curl_copy_handle_variation3.txt';
+$filename = TestPath::file('curl_copy_handle_variation3.txt');
 file_put_contents($filename, "Test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);
@@ -34,7 +34,3 @@ Deprecated: Function curl_close() is deprecated since 8.5, as it has no effect s
 string(%d) "curl_copy_handle_variation3.txt|application/octet-stream|5"
 
 Deprecated: Function curl_close() is deprecated since 8.5, as it has no effect since PHP 8.0 in %s on line %d
---CLEAN--
-<?php
-@unlink(__DIR__ . '/curl_copy_handle_variation3.txt');
-?>

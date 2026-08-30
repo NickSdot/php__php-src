@@ -3,7 +3,7 @@ fscanf() tests
 --FILE--
 <?php
 
-$filename = __DIR__."/fscanf.dat";
+$filename = TestPath::file();
 
 file_put_contents($filename, "data");
 
@@ -69,11 +69,6 @@ try {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$filename = __DIR__."/fscanf.dat";
-unlink($filename);
 ?>
 --EXPECT--
 int(0)

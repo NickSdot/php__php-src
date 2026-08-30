@@ -11,15 +11,14 @@ session.use_strict_mode=0
 --FILE--
 <?php
 
-$base = __DIR__ . '/gc_dirdepth_test';
-@mkdir($base);
-@mkdir("$base/a");
+$base = TestPath::directory()->create();
+$level1 = $base->directory('a')->create();
 
 // ── Part 1: dirdepth=1
 session_save_path("1;$base");
 
 $stale_id   = 'abcdefghijklmnopqrstuvwx';
-$stale_file = "$base/a/sess_$stale_id";
+$stale_file = $level1->file("sess_$stale_id");
 file_put_contents($stale_file, 'user|s:5:"alice";');
 touch($stale_file, time() - 100);   // 100 s old; gc_maxlifetime=1 → must be GC'd
 
@@ -33,7 +32,7 @@ $depth_file_gone = !file_exists($stale_file);
 session_save_path($base);
 
 $flat_id   = 'bbcdefghijklmnopqrstuvwx';
-$flat_file = "$base/sess_$flat_id";
+$flat_file = $base->file("sess_$flat_id");
 file_put_contents($flat_file, 'user|s:5:"alice";');
 touch($flat_file, time() - 100);
 
@@ -53,14 +52,6 @@ var_dump($result_flat);
 
 echo "dirdepth=0 — expired session file removed: ";
 var_dump($flat_file_gone);
-?>
---CLEAN--
-<?php
-$base = __DIR__ . '/gc_dirdepth_test';
-@unlink("$base/a/sess_abcdefghijklmnopqrstuvwx");
-@unlink("$base/a/sess_a0000000000000000000000000");
-@rmdir("$base/a");
-@rmdir($base);
 ?>
 --EXPECT--
 dirdepth=1 — session_gc() return value: int(1)

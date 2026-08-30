@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('archive.phar.php');
 $pname = 'phar://' . $fname;
 $file = "<?php
 Phar::mapPhar('hio');
@@ -24,8 +24,6 @@ while (false !== ($a = readdir($dir))) {
     var_dump(is_dir('phar://hio/' . $a));
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECT--
 string(1) "a"
 bool(false)

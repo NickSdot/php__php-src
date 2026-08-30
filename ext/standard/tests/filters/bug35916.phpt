@@ -2,8 +2,7 @@
 Bug #35916 (Duplicate calls to stream_bucket_append() lead to a crash)
 --FILE--
 <?php
-$file = __DIR__ . "/bug35916.txt";
-@unlink($file);
+$file = TestPath::file();
 
 class strtoupper_filter extends php_user_filter
 {
@@ -37,7 +36,6 @@ fread($fp, 1024);
 fwrite($fp, "Thank you\n");
 fclose($fp);
 readfile($file);
-unlink($file);
 ?>
 --EXPECTF--
 fffffffffff

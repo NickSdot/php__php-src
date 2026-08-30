@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('archive.phar.php');
 $pname = 'phar://' . $fname;
 $file = "<?php __HALT_COMPILER(); ?>";
 
@@ -22,8 +22,6 @@ include $pname . '/b';
 include $pname . '/b/b';
 
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECT--
 This is a
 This is b

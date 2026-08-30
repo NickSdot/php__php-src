@@ -7,15 +7,12 @@ pdo_sqlite
 class A extends PDO
 { function __call($m, $p) {print __CLASS__."::$m\n";} }
 
-$a = new A('sqlite:' . __DIR__ . '/dummy.db');
+$dbFile = TestPath::file();
+$a = new A('sqlite:' . $dbFile);
 
 $a->truc();
 $a->TRUC();
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/dummy.db');
 ?>
 --EXPECT--
 A::truc

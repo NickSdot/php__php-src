@@ -10,7 +10,7 @@ if (!method_exists(ZipArchive::class, 'registerCancelCallback')) {
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . '/gh23276_cancel_callback.zip';
+$filename = TestPath::file();
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -36,10 +36,6 @@ var_dump($callbackStateRef->get() !== null);
 var_dump(stream_get_contents($stream));
 fclose($stream);
 var_dump($callbackStateRef->get());
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh23276_cancel_callback.zip');
 ?>
 --EXPECT--
 bool(true)

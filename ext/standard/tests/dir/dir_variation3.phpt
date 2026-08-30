@@ -17,9 +17,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing dir() : different directory permissions ***";
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/dir_variation3";
-@mkdir($dir_path);
+$dir_path = TestPath::directory('dir_variation3')->create();
 
 /* different values for directory permissions */
 $permission_values = array(
@@ -44,8 +42,6 @@ for($count = 0; $count < count($permission_values); $count++) {
   echo "\n-- Iteration ".($count + 1)." --\n";
 
   // try to remove the dir if exists  & create
-  $file_path = __DIR__;
-  $dir_path = $file_path."/dir_variation3";
   @chmod ($dir_path, 0777); // change dir permission to allow all operation
   @rmdir ($dir_path);  // try n delete the dir
 
@@ -68,13 +64,6 @@ for($count = 0; $count < count($permission_values); $count++) {
 }
 
 echo "Done";
-?>
---CLEAN--
-<?php
-// deleting temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/dir_variation3";
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing dir() : different directory permissions ***

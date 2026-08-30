@@ -23,7 +23,7 @@ class foo
 $obj = new foo(); //creating new object
 
 // create a file
-$filename = "$file_path/fscanf_variation54.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -52,12 +52,6 @@ foreach($formats as $format) {
 
 fclose($file_handle);
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation54.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Test fscanf(): to read objects from a file ***

@@ -15,16 +15,17 @@ $file_path = __DIR__;
 require "$file_path/file.inc";
 
 /* create temp file & link */
-$fp = fopen("$file_path/lstat_stat_variation3.tmp", "w");  // temp file
+$tmp_file = TestPath::file();
+$old_linkname = TestPath::file();
+$new_linkname = TestPath::file();
+$fp = fopen($tmp_file, "w");  // temp file
 fclose($fp);
 
 // temp link
-symlink("$file_path/lstat_stat_variation3.tmp", "$file_path/lstat_stat_variation_link3.tmp");
+symlink($tmp_file, $old_linkname);
 
 // renaming a link
 echo "*** Testing lstat() for link after being renamed ***\n";
-$old_linkname = "$file_path/lstat_stat_variation_link3.tmp";
-$new_linkname = "$file_path/lstat_stat_variation_link3a.tmp";
 $old_stat = lstat($old_linkname);
 clearstatcache();
 var_dump( rename($old_linkname, $new_linkname) );
@@ -39,12 +40,6 @@ $keys_to_compare = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12,
                        "dev", "ino", "mode", "nlink", "uid", "gid",
                        "rdev", "size", "atime", "mtime", "blksize", "blocks");
 var_dump( compare_stats($old_stat, $new_stat, $keys_to_compare) );
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation3.tmp");
-unlink("$file_path/lstat_stat_variation_link3a.tmp");
 ?>
 --EXPECT--
 *** Testing lstat() for link after being renamed ***

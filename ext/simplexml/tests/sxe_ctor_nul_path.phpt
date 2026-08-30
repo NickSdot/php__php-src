@@ -4,7 +4,7 @@ SimpleXMLElement constructor rejects NUL bytes in $data
 simplexml
 --FILE--
 <?php
-$tmp = tempnam(sys_get_temp_dir(), 'sxe');
+$tmp = TestPath::file();
 file_put_contents($tmp, '<r/>');
 $path = $tmp . "\0evil";
 
@@ -29,7 +29,6 @@ try {
     echo $e::class, ": ", $e->getMessage(), "\n";
 }
 
-unlink($tmp);
 ?>
 --EXPECT--
 ValueError: SimpleXMLElement::__construct(): Argument #1 ($data) must not contain any null bytes

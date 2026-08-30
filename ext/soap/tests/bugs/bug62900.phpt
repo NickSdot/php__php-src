@@ -44,7 +44,9 @@ $combinations = [
     [$wsdl_without_ns, $xsd_without_ns],
 ];
 
-chdir(__DIR__);
+$workspace = TestPath::directory()->create();
+$wsdlFile = $workspace->file('bug62900.wsdl');
+$xsdFile = $workspace->file('bug62900.xsd');
 
 $args = ["-d", "display_startup_errors=0", "-d", "extension_dir=" . ini_get("extension_dir"), "-d", "extension=" . (substr(PHP_OS, 0, 3) == "WIN" ? "php_" : "") . "soap." . PHP_SHLIB_SUFFIX];
 if (php_ini_loaded_file()) {
@@ -54,20 +56,15 @@ if (php_ini_loaded_file()) {
 }
 
 foreach ($combinations as list($wsdl, $xsd)) {
-    file_put_contents(__DIR__."/bug62900.wsdl", $wsdl);
-    file_put_contents(__DIR__."/bug62900.xsd", $xsd);
+    file_put_contents($wsdlFile, $wsdl);
+    file_put_contents($xsdFile, $xsd);
 
-    $proc = proc_open([PHP_BINARY, ...$args, __DIR__.'/bug62900_run'], [1 => ["pipe", "w"], 2 => ["pipe", "w"]], $pipes);
+    $proc = proc_open([PHP_BINARY, ...$args, __DIR__.'/bug62900_run', $wsdlFile], [1 => ["pipe", "w"], 2 => ["pipe", "w"]], $pipes);
     echo stream_get_contents($pipes[1]);
     fclose($pipes[1]);
     proc_close($proc);
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/bug62900.wsdl");
-@unlink(__DIR__."/bug62900.xsd");
 ?>
 --EXPECTF--
 Fatal error: Uncaught SoapFault exception: [WSDL] SOAP-ERROR: Parsing Schema: can't import schema from '%sbug62900.xsd', unexpected 'targetNamespace'='http://www.w3.org/XML/1998/namespacex', expected 'http://www.w3.org/XML/1998/namespace' in %s:%d

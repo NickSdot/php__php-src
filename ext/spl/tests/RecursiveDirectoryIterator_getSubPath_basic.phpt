@@ -5,13 +5,13 @@ Pawel Krynicki <pawel [dot] krynicki [at] xsolve [dot] pl>
 #testfest AmsterdamPHP 2012-06-23
 --FILE--
 <?php
-$depth0 = "depth01";
+$root = TestPath::directory()->create();
 $depth1 = 'depth1';
 $depth2 = 'depth2';
-$targetDir = __DIR__ . DIRECTORY_SEPARATOR . $depth0 . DIRECTORY_SEPARATOR . $depth1 . DIRECTORY_SEPARATOR . $depth2;
-mkdir($targetDir, 0777, true);
-touch($targetDir . DIRECTORY_SEPARATOR . 'getSubPath_test.tmp');
-$iterator = new RecursiveDirectoryIterator(__DIR__ . DIRECTORY_SEPARATOR . $depth0);
+$level1 = $root->directory($depth1)->create();
+$targetDir = $level1->directory($depth2)->create();
+$targetDir->file()->create();
+$iterator = new RecursiveDirectoryIterator($root);
 $it = new RecursiveIteratorIterator($iterator);
 
 $list = [];
@@ -23,23 +23,6 @@ asort($list);
 foreach ($list as $item) {
     echo $item . "\n";
 }
-?>
---CLEAN--
-<?php
-function rrmdir($dir) {
-    foreach(glob($dir . '/*') as $file) {
-        if(is_dir($file)) {
-            rrmdir($file);
-        } else {
-            unlink($file);
-        }
-    }
-
-    rmdir($dir);
-}
-
-$targetDir = __DIR__.DIRECTORY_SEPARATOR . "depth01";
-rrmdir($targetDir);
 ?>
 --EXPECTF--
 depth1

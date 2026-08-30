@@ -3,30 +3,25 @@ file() on a file with blank lines
 --WHITESPACE_SENSITIVE--
 --FILE--
 <?php
+$file = TestPath::file();
 
-$filepath = __DIR__ . '/file_variation_7.tmp';
-$fd = fopen($filepath, "w+");
+$fd = fopen($file, "w+");
 fwrite($fd, "Line 1\n\n \n  \n\Line 3");
 fclose($fd);
 
 echo "file():\n";
-var_dump(file($filepath));
+var_dump(file($file));
 
 echo "\nfile() with FILE_IGNORE_NEW_LINES:\n";
-var_dump(file($filepath, FILE_IGNORE_NEW_LINES));
+var_dump(file($file, FILE_IGNORE_NEW_LINES));
 
 echo "\nfile() with FILE_SKIP_EMPTY_LINES:\n";
-var_dump(file($filepath, FILE_SKIP_EMPTY_LINES));
+var_dump(file($file, FILE_SKIP_EMPTY_LINES));
 
 echo "\nfile() with FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES:\n";
-var_dump(file($filepath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+var_dump(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 
 
-?>
---CLEAN--
-<?php
-$filepath = __DIR__ . '/file_variation_7.tmp';
-unlink($filepath);
 ?>
 --EXPECT--
 file():

@@ -5,11 +5,8 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$tname = tempnam(sys_get_temp_dir(), "ssl");
-if ($tname === false)
-    die("failed to get a temporary filename!");
-$cryptfile= $tname . ".der";
-$decryptfile = $tname . ".out";
+$cryptfile = TestPath::file();
+$decryptfile = TestPath::file();
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $headers = array("test@test", "testing openssl_cms_encrypt()");
@@ -33,13 +30,10 @@ if (openssl_cms_decrypt($cryptfile, $decryptfile, $single_cert, $privkey, OPENSS
 
 if (file_exists($cryptfile)) {
     echo "true\n";
-    unlink($cryptfile);
 }
 if (file_exists($decryptfile)) {
     echo "true\n";
-    unlink($decryptfile);
 }
-unlink($tname);
 ?>
 --EXPECT--
 bool(true)

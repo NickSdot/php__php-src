@@ -11,7 +11,8 @@ url_rewriter.tags="a=href,area=href,frame=src,form="
 --FILE--
 <?php
 
-session_save_path(__DIR__);
+$session_dir = TestPath::directory()->create();
+session_save_path($session_dir);
 session_start();
 
 ob_start();
@@ -26,12 +27,6 @@ ob_flush();
 
 ob_end_clean();
 
-?>
---CLEAN--
-<?php
-foreach (glob(__DIR__ . '/sess_*') as $filename) {
-  unlink($filename);
-}
 ?>
 --EXPECTF--
 Deprecated: PHP Startup: Disabling session.use_only_cookies INI setting is deprecated in Unknown on line 0

@@ -19,9 +19,7 @@ echo "*** Testing dir() : operate on previously opened directory ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/私はガラスを食べられますdir_variation4";
-@mkdir($dir_path);
+$dir_path = TestPath::directory('私はガラスを食べられますdir_variation4')->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "私はガラスを食べられますdir_variation4");
@@ -43,13 +41,6 @@ var_dump( $e->read() ); // with current handle
 // delete temporary files
 delete_files($dir_path, 3, "私はガラスを食べられますdir_variation4");
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_path = $file_path."/私はガラスを食べられますdir_variation4";
-
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing dir() : operate on previously opened directory ***

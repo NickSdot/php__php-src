@@ -12,11 +12,8 @@ try {
 
 $dom = new DOMDocument;
 $dom->loadxml('<?xml version="1.0" ?><root />');
-var_dump($dom->save(__DIR__ . '/bug79191.xml'));
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/bug79191.xml');
+$file = TestPath::file();
+var_dump($dom->save($file));
 ?>
 --EXPECTF--
 int(%d)

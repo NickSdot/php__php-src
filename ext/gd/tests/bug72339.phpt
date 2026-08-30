@@ -17,7 +17,7 @@ if (!GD_BUNDLED) {
 ?>
 --FILE--
 <?php
-$fname = __DIR__ . DIRECTORY_SEPARATOR . "bug72339.gd";
+$fname = TestPath::file('bug72339.gd');
 
 $fh = fopen($fname, "w");
 fwrite($fh, "gd2\x00");
@@ -32,8 +32,6 @@ fwrite($fh, str_repeat("\x41\x41\x41\x41", 0x1000000)); // overflow data
 fclose($fh);
 
 $im = imagecreatefromgd2($fname);
-
-unlink($fname);
 
 ?>
 --EXPECTF--

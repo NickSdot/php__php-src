@@ -17,7 +17,7 @@ posix_setrlimit(POSIX_RLIMIT_NOFILE, 2048, -1);
 
 $fds = [];
 for ($i = 0; $i < 1023; $i++) {
-    $fds[] = @fopen(__DIR__ . "/GH-9590-001-tmpfile.$i", 'w');
+    $fds[] = @fopen(TestPath::file(), 'w');
 }
 
 list($a, $b) = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
@@ -34,9 +34,3 @@ It is set to 1024, but you have descriptors numbered at least as high as %d.
 to equal the maximum number of open files supported by your system,
 in order to avoid seeing this error again at a later date. in %s on line %d
 bool(false)
---CLEAN--
-<?php
-for ($i = 0; $i < 1023; $i++) {
-    @unlink(__DIR__ . "/GH-9590-001-tmpfile.$i");
-}
-?>

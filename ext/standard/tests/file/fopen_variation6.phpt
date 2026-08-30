@@ -5,7 +5,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing fopen() : variation ***\n";
-$absfile = __FILE__.'.tmp';
+$absfile = TestPath::file();
 $relfile = "fopen_variation6.tmp";
 
 $h = fopen($absfile, "w");

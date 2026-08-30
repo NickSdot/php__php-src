@@ -6,7 +6,8 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('archive.phar.php');
+$fname = $archive->path;
 $pname = 'phar://' . $fname;
 $file = "<?php __HALT_COMPILER(); ?>";
 // wrong crc32
@@ -17,7 +18,5 @@ include 'files/phar_test.inc';
 
 echo file_get_contents($pname.'/a');
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 Warning: file_get_contents(): Failed to open stream: phar error: internal corruption of phar "%s" (crc32 mismatch on file "a") in %s on line %d

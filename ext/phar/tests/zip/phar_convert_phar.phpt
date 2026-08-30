@@ -8,9 +8,13 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '2.phar';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.3.phar';
+$archive = TestPath::file('phar_convert_phar.phar');
+$archiveZip = TestPath::file('phar_convert_phar.phar.zip');
+$archive2 = TestPath::file('phar_convert_phar2.phar');
+$archive3 = TestPath::file('phar_convert_phar.3.phar');
+$fname = $archive->path;
+$fname2 = $archive2->path;
+$fname3 = $archive3->path;
 
 $phar = new Phar($fname);
 $phar['a.txt'] = 'some text';
@@ -34,14 +38,6 @@ $phar = new Phar($fname2);
 var_dump($phar->isFileFormat(Phar::PHAR));
 var_dump(strlen($phar->getStub()));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.3.phar');
-__HALT_COMPILER();
 ?>
 --EXPECT--
 bool(false)

@@ -33,8 +33,8 @@ function iptc_make_tag($rec, $data, $value)
   }
 
 
-$file="1x1.jpg";
-$file2="1x1_with_iptc_tags.jpg";
+$file = TestPath::file();
+$file2 = TestPath::file('1x1_with_iptc_tags.jpg');
 $base64_1x1_jpeg="/9j/4AAQSkZJRgABAQEAYABgAAD//gA8Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gMTAwCv/bAEMAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/bAEMBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/AABEIAAEAAQMBEQACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/AP8AP/oA/9k=";
 #write file
 $fd=fopen($file,"wb");
@@ -74,7 +74,7 @@ else { echo "error can't write $file2".PHP_EOL;exit(1); }
 
 
 #check jpeg properties for new image with iptc tags
-echo "new generated image with itpc tags : $file2".PHP_EOL;
+echo "new generated image with itpc tags : {$file2->name}".PHP_EOL;
 $ret = getimagesize($file2,$info);
 if ($ret===false) { echo "getimagesize error".PHP_EOL;exit(1); }
 list($width, $height, $type, $attr) = $ret;
@@ -100,8 +100,6 @@ foreach ($tags as $tag => $string) {
   }
 }
 #clean before exit
-@unlink($file);
-@unlink($file2);
 if ($error==0) { echo "OK".PHP_EOL;exit(0);}
 echo "something wrong: $error errors".PHP_EOL;
 ?>

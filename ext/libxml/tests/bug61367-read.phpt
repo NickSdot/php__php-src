@@ -36,20 +36,17 @@ XML
     }
 }
 
-var_dump(mkdir('test_bug_61367-read'));
-var_dump(mkdir('test_bug_61367-read/base'));
-var_dump(file_put_contents('test_bug_61367-read/bad', 'blah'));
-var_dump(chdir('test_bug_61367-read/base'));
+$directory = TestPath::directory('test_bug_61367-read');
+$base = $directory->directory();
+$bad = $directory->file('bad');
+var_dump(mkdir($directory));
+var_dump(mkdir($base));
+var_dump(file_put_contents($bad, 'blah'));
+var_dump(chdir($base));
 
 stream_wrapper_register( 'exploit', 'StreamExploiter' );
 $s = fopen( 'exploit://', 'r' );
 
-?>
---CLEAN--
-<?php
-unlink('test_bug_61367-read/bad');
-rmdir('test_bug_61367-read/base');
-rmdir('test_bug_61367-read');
 ?>
 --EXPECTF--
 bool(true)

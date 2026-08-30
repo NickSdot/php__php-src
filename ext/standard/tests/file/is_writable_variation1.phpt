@@ -10,30 +10,31 @@ require __DIR__ . '/../skipif_root.inc';
 require __DIR__.'/file.inc';
 echo "*** Testing is_writable(): usage variations ***\n";
 
-$file_path = __DIR__;
-mkdir("$file_path/is_writable_variation1");
+$directory = TestPath::directory()->create();
+$file = $directory->file('bar.tmp');
+$filename = $file->name;
 
 // create a new temporary file
-$fp = fopen("$file_path/is_writable_variation1/bar.tmp", "w");
+$fp = fopen($file, "w");
 fclose($fp);
 
 /* array of files to be tested to check if they are writable
    using is_writable() function */
 $files_arr = array(
-  "$file_path/is_writable_variation1/bar.tmp",
+  "$directory/$filename",
 
   /* Testing a file trailing slash */
-  "$file_path/is_writable_variation1/bar.tmp/",
+  "$directory/$filename/",
 
   /* Testing file with double slashes */
-  "$file_path/is_writable_variation1//bar.tmp",
-  "$file_path//is_writable_variation1//bar.tmp",
-  "$file_path/is_writable_variation1/*.tmp",
-  "$file_path/is_writable_variation1/b*.tmp",
+  "$directory//$filename",
+  "$directory/../$directory->name//$filename",
+  "$directory/*.tmp",
+  "$directory/b*.tmp",
 
   /* Testing directories */
   ".",  // current directory, exp: bool(true)
-  "$file_path/is_writable_variation1"  // temp directory, exp: bool(true)
+  "$directory"  // temp directory, exp: bool(true)
 );
 $counter = 1;
 /* loop through to test each element in the above array
@@ -55,11 +56,6 @@ foreach($files_arr as $file) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/is_writable_variation1/bar.tmp");
-rmdir(__DIR__."/is_writable_variation1/");
 ?>
 --EXPECTF--
 *** Testing is_writable(): usage variations ***

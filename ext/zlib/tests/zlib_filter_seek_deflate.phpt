@@ -8,7 +8,7 @@ zlib
  * stream's read/write position, not the filter pipeline state. This ensures
  * seeking a stream with write filters does not disrupt the filter state. */
 
-$file = __DIR__ . '/zlib_filter_seek_deflate.zlib';
+$file = TestPath::file('zlib_filter_seek_deflate.zlib');
 
 $text = 'Hello, World!';
 
@@ -40,10 +40,6 @@ $content = stream_get_contents($fp);
 fclose($fp);
 
 echo "Decompressed content matches: " . ($content === $text ? "YES" : "NO") . "\n";
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/zlib_filter_seek_deflate.zlib');
 ?>
 --EXPECTF--
 Size after write: %d

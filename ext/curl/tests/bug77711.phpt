@@ -12,7 +12,7 @@ curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
 curl_setopt($ch, CURLOPT_URL, "{$host}/get.php?test=file");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-$filename = __DIR__ . '/АБВ.txt';
+$filename = TestPath::file('АБВ.txt');
 file_put_contents($filename, "Test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);
@@ -23,7 +23,3 @@ var_dump(curl_exec($ch));
 --EXPECTF--
 bool(true)
 string(%d) "АБВ.txt|application/octet-stream|5"
---CLEAN--
-<?php
-@unlink(__DIR__ . '/АБВ.txt');
-?>

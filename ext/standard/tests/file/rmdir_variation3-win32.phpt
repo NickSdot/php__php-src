@@ -11,8 +11,11 @@ if(substr(PHP_OS, 0, 3) != "WIN")
 <?php
 echo "*** Testing rmdir() : variation ***\n";
 
-$workDir = "rmdirVar3Win32.tmp";
+TestContext::useRelativeWorkspace();
+$workDir = TestPath::directory('rmdirVar3Win32.tmp');
+$workDirName = $workDir->name;
 $subDir = "aSubDir";
+chdir(dirname($workDir->path));
 mkdir($workDir);
 $cwd = getcwd();
 
@@ -20,29 +23,29 @@ $unixifiedDir = '/'.substr(str_replace('\\','/',$cwd).'/'.$workDir.'/'.$subDir, 
 
 $dirs = array(
              // relative
-             $workDir.'\\'.$subDir,
-             '.\\'.$workDir.'\\'.$subDir,
-             $workDir.'\\..\\'.$workDir.'\\'.$subDir,
+             $workDirName.'\\'.$subDir,
+             '.\\'.$workDirName.'\\'.$subDir,
+             $workDirName.'\\..\\'.$workDirName.'\\'.$subDir,
 
              // relative bad path
-             $workDir.'\\..\\BADDIR\\'.$subDir,
+             $workDirName.'\\..\\BADDIR\\'.$subDir,
              'BADDIR\\'.$subDir,
 
              //absolute
-             $cwd.'\\'.$workDir.'\\'.$subDir,
-             $cwd.'\\.\\'.$workDir.'\\'.$subDir,
-             $cwd.'\\'.$workDir.'\\..\\'.$workDir.'\\'.$subDir,
+             $cwd.'\\'.$workDirName.'\\'.$subDir,
+             $cwd.'\\.\\'.$workDirName.'\\'.$subDir,
+             $cwd.'\\'.$workDirName.'\\..\\'.$workDirName.'\\'.$subDir,
 
              //absolute bad path
              $cwd.'\\BADDIR\\'.$subDir,
 
              //trailing separators
-             $workDir.'\\'.$subDir.'\\',
-             $cwd.'\\'.$workDir.'\\'.$subDir.'\\',
+             $workDirName.'\\'.$subDir.'\\',
+             $cwd.'\\'.$workDirName.'\\'.$subDir.'\\',
 
              // multiple separators
-             $workDir.'\\\\'.$subDir,
-             $cwd.'\\\\'.$workDir.'\\\\'.$subDir,
+             $workDirName.'\\\\'.$subDir,
+             $cwd.'\\\\'.$workDirName.'\\\\'.$subDir,
 
              // Unixified Dir
              $unixifiedDir,
@@ -51,22 +54,17 @@ $dirs = array(
 
 
 foreach($dirs as $dir) {
-   mkdir($workDir.'/'.$subDir);
+   mkdir($workDir . '/' . $subDir);
    echo "-- removing $dir --\n";
    $res = rmdir($dir);
    if ($res === true) {
       echo "Directory removed\n";
    }
    else {
-      rmdir($workDir.'/'.$subDir);
+      rmdir($workDir . '/' . $subDir);
    }
 }
 
-?>
---CLEAN--
-<?php
-@rmdir("rmdirVar3Win32.tmp/aSubDir");
-@rmdir("rmdirVar3Win32.tmp");
 ?>
 --EXPECTF--
 *** Testing rmdir() : variation ***

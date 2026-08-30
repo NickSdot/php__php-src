@@ -9,13 +9,13 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 
-$script_directory = __DIR__;
+$filepath = TestPath::file();
+$script_directory = dirname($filepath->path);
 chdir($script_directory);
-$test_dirname = basename(__FILE__, ".php") . "testdir";
-mkdir($test_dirname);
+$testDir = TestPath::directory()->create();
+$test_dirname = $testDir->name;
 
-$filepath = __DIR__ . '/file_variation_5.tmp';
-$filename = basename($filepath);
+$filename = $filepath->name;
 $fd = fopen($filepath, "w+");
 fwrite($fd, "Line 1\nLine 2\nLine 3");
 fclose($fd);
@@ -27,23 +27,16 @@ echo "\nfile() on a path containing .. with invalid directories\n";
 var_dump(file("./$test_dirname/bad_dir/../../$filename"));
 
 echo "\nfile() on a linked file\n";
-$linkname = "somelink5";
+$linkname = TestPath::file();
 var_dump(symlink($filepath, $linkname));
 var_dump(file($linkname));
 var_dump(unlink($linkname));
 
 echo "\nfile() on a relative path from a different working directory\n";
-chdir($test_dirname);
+chdir($testDir);
 var_dump(file("../$filename"));
 chdir($script_directory);
 
-?>
---CLEAN--
-<?php
-$test_dirname = __DIR__ . '/' . basename(__FILE__, ".clean.php") . "testdir";
-$filepath = __DIR__ . '/file_variation_5.tmp';
-@unlink($filepath); // Should be delete via the symlink deletion
-rmdir($test_dirname);
 ?>
 --EXPECT--
 file() on a path containing .. and .

@@ -2,26 +2,17 @@
 Test realpath() with relative paths
 --FILE--
 <?php
-$file_path = __DIR__;
-@mkdir("$file_path/realpath_basic4/home/test", 0777, true);
-@symlink("$file_path/realpath_basic4/home", "$file_path/realpath_basic4/link1");
-@symlink("$file_path/realpath_basic4/link1", "$file_path/realpath_basic4/link2");
-echo "1. " . realpath("$file_path/realpath_basic4/link2") . "\n";
-echo "2. " . realpath("$file_path/realpath_basic4/link2/test") . "\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-if (PHP_OS_FAMILY == 'Windows') {
-    rmdir("$file_path/realpath_basic4/link2");
-    rmdir("$file_path/realpath_basic4/link1");
-} else {
-    unlink("$file_path/realpath_basic4/link2");
-    unlink("$file_path/realpath_basic4/link1");
-}
-rmdir("$file_path/realpath_basic4/home/test");
-rmdir("$file_path/realpath_basic4/home");
-rmdir("$file_path/realpath_basic4");
+$file_path = TestPath::directory();
+$root = $file_path->directory('realpath_basic4');
+$home = $root->directory('home');
+$test = $home->directory('test');
+$link1 = $root->file();
+$link2 = $root->file();
+@mkdir($test, 0777, true);
+@symlink($home, $link1);
+@symlink($link1, $link2);
+echo "1. " . realpath($link2) . "\n";
+echo "2. " . realpath($link2 . '/test') . "\n";
 ?>
 --EXPECTF--
 1. %s%erealpath_basic4%ehome

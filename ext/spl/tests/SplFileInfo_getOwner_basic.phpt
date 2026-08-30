@@ -10,17 +10,11 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$filename = __DIR__ . "/SplFileInfo_getOwner_basic";
-touch($filename);
+$filename = TestPath::file()->create();
 $fileInfo = new SplFileInfo($filename);
 $expected = fileowner($filename);
 $actual = $fileInfo->getOwner();
 var_dump($expected == $actual);
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . "/SplFileInfo_getOwner_basic";
-unlink($filename);
 ?>
 --EXPECT--
 bool(true)

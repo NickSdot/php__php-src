@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__.'/gh17518.phar.php';
+$fname = TestPath::file('gh17518.phar.php')->path;
 $phar = new Phar($fname);
 $phar['a'] = 'b';
 try {
@@ -14,10 +14,6 @@ try {
 } catch (Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__.'/gh17518.phar.php');
 ?>
 --EXPECTF--
 PharException: phar error: attempted to extract non-existent file or directory "" from phar "%sgh17518.phar.php"

@@ -16,7 +16,7 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-$filename = __DIR__ . '/_fromUri_custom_constructor_error.xml';
+$filename = TestPath::file();
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books></books>';
 file_put_contents($filename, $xmlstring);
@@ -30,7 +30,3 @@ try {
 --EXPECT--
 Error: Unable to open source data
 Error: nope
---CLEAN--
-<?php
-@unlink(__DIR__ . '/_fromUri_custom_constructor_error.xml');
-?>

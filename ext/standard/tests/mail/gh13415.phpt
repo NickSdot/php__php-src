@@ -4,6 +4,8 @@ GH-13415 (Added validation of line breaks \n in $additional_headers of mail())
 sendmail_path={MAIL:gh13415.out}
 --FILE--
 <?php
+$outFile = TestPath::file('gh13415.out');
+chdir($outFile->directory);
 echo "LF only:\n";
 try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \nCc: hacker@example.com"]);
@@ -30,12 +32,6 @@ try {
     mail('to@example.com', 'Test Subject', 'A Message', ['Reply-To' => "foo@example.com \0Cc: hacker@example.com"]);
 } catch (Throwable $e) {
     echo $e->getMessage()."\n\n";
-}
-?>
---CLEAN--
-<?php
-if (file_exists('gh13415.out')) {
-    unlink('gh13415.out');
 }
 ?>
 --EXPECTF--

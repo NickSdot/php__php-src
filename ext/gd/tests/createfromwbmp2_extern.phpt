@@ -4,7 +4,7 @@ imagecreatefromwbmp with invalid wbmp
 gd
 --FILE--
 <?php
-$filename = __DIR__ . '/_tmp_createfromwbmp2_extern.wbmp';
+$filename = TestPath::file('_tmp_createfromwbmp2_extern.wbmp');
 $fp = fopen($filename,"wb");
 if (!$fp) {
     exit("Failed to create <$filename>");
@@ -36,7 +36,6 @@ for ($i=0; $i<10000; $i++) {
 
 fclose($fp);
 $im = imagecreatefromwbmp($filename);
-unlink($filename);
 ?>
 --EXPECTF--
 Warning: imagecreatefromwbmp(): %croduct of memory allocation multiplication would exceed INT_MAX, failing operation gracefully%win %s on line %d

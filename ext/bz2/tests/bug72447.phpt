@@ -7,13 +7,9 @@ bz2
 $input = "AAAAAAAA";
 $param = array('blocks' => $input);
 
-$fp = fopen('testfile', 'w');
+$fp = fopen(TestPath::file(), 'w');
 stream_filter_append($fp, 'bzip2.compress', STREAM_FILTER_WRITE, $param);
 fclose($fp);
-?>
---CLEAN--
-<?php
-unlink('testfile');
 ?>
 --EXPECTF--
 Warning: stream_filter_append(): Number of blocks parameter must be of type int, string given in %s on line %d

@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'streams_crypto_method.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -56,10 +56,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('streams_crypto_method', $certFi
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'streams_crypto_method.pem.tmp');
 ?>
 --EXPECT--
 Hello World!

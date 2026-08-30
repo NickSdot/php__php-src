@@ -7,14 +7,11 @@ phar.readonly=0
 --FILE--
 <?php
 
-$phar = new Phar(__DIR__.'/SplFileInfo_openFile_write.phar');
+$archive = TestPath::file('archive.phar');
+$phar = new Phar($archive->path);
 $phar->addFromString('test', 'contents');
 var_dump($phar['test']->openFile('w'));
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__.'/SplFileInfo_openFile_write.phar');
 ?>
 --EXPECTF--
 object(SplFileObject)#%d (%d) {

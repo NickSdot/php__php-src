@@ -13,9 +13,8 @@ if(substr(PHP_OS, 0, 3) != 'WIN' ) {
 $sysroot = exec('echo %systemroot%');
 $icacls = "$sysroot\\System32\\icacls.exe";
 $user = get_current_user();
-$unreadable = __DIR__ . '/unreadable.db';
+$unreadable = TestPath::file()->create();
 
-touch($unreadable);
 $cmd = $icacls . ' ' . $unreadable . ' /inheritance:r /deny ' . $user . ':(F,M,R,RX,W)';
 exec($cmd);
 
@@ -28,7 +27,6 @@ echo "Done\n";
 
 $cmd = $icacls . ' ' . $unreadable . ' /grant ' . $user . ':(F,M,R,RX,W)';
 exec($cmd);
-unlink($unreadable);
 ?>
 --EXPECTF--
 Exception: Unable to open database: %s in %ssqlite3_15_open_error-win.php:%d

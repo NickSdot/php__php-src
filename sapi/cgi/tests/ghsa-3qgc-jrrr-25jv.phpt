@@ -11,8 +11,9 @@ if ($codepage !== '932' && $codepage !== '936' && $codepage !== '950') die("skip
 --FILE--
 <?php
 include 'include.inc';
+TestContext::useRelativeWorkspace();
 
-$filename = __DIR__."/GHSA-3qgc-jrrr-25jv_tmp.php";
+$filename = TestPath::file("GHSA-3qgc-jrrr-25jv_tmp.php")->path;
 $script = '<?php echo "hello "; echo "world"; ?>';
 file_put_contents($filename, $script);
 
@@ -26,10 +27,6 @@ putenv("REDIRECT_STATUS=1");
 
 passthru("$php -s");
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/GHSA-3qgc-jrrr-25jv_tmp.php");
 ?>
 --EXPECTF--
 X-Powered-By: PHP/%s

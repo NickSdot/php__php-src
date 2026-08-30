@@ -9,7 +9,7 @@ if (!function_exists("proc_open")) echo "skip proc_open() is not available";
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 
-$f = __DIR__ . DIRECTORY_SEPARATOR . "proc_only_mb1.php";
+$f = TestPath::file('proc_only_mb1.php');
 $f_escaped = escapeshellarg($f);
 file_put_contents($f,'<?php var_dump($argv); ?>');
 
@@ -35,10 +35,6 @@ proc_close($p);
 
 echo $out;
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "proc_only_mb1.php");
 ?>
 --EXPECTF--
 array(4) {

@@ -20,15 +20,10 @@ foreach (get_defined_functions()["internal"] as $function) {
 }
 $contents .= "}\n";
 
-file_put_contents("func_info_generated.php", $contents);
+$file = TestPath::file();
+file_put_contents($file, $contents);
 
-require_once("func_info_generated.php");
-
-?>
---CLEAN--
-<?php
-
-unlink("func_info_generated.php");
+require_once($file);
 
 ?>
 --EXPECT--

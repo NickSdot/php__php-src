@@ -17,17 +17,11 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$dirname = 'DirectoryIterator_getOwner_basic';
-mkdir($dirname);
-$dir = new DirectoryIterator($dirname);
-$expected = fileowner($dirname);
+$directory = TestPath::directory()->create();
+$dir = new DirectoryIterator($directory);
+$expected = fileowner($directory);
 $actual = $dir->getOwner();
 var_dump($expected == $actual);
-?>
---CLEAN--
-<?php
-$dirname = 'DirectoryIterator_getOwner_basic';
-rmdir($dirname);
 ?>
 --EXPECT--
 bool(true)

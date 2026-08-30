@@ -10,7 +10,7 @@ include "include.inc";
 $php = get_cgi_path();
 reset_env_vars();
 
-$f = tempnam(sys_get_temp_dir(), 'cgitest');
+$f = TestPath::file()->path;
 
 putenv("TRANSLATED_PATH=".$f."/x");
 putenv("SCRIPT_FILENAME=".$f."/x");
@@ -35,7 +35,6 @@ echo shell_exec("$php -n $f");
 
 echo "Done\n";
 
-@unlink($f);
 ?>
 --EXPECTF--
 Status: 403 Forbidden

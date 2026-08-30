@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different unsigned format types with strings ***\n";
 
 // create a file
-$filename = "$file_path/fscanf_variation43.tmp";
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");
@@ -72,12 +72,6 @@ foreach($unsigned_formats as $unsigned_format) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$filename = "$file_path/fscanf_variation43.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Test fscanf(): different unsigned format types with strings ***

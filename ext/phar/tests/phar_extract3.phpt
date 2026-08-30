@@ -9,7 +9,10 @@ phar.readonly=0
 
 $fname   = __DIR__ . '/files/bogus.zip';
 $fname2  = __DIR__ . '/files/notbogus.zip';
-$extract = __DIR__ . '/test-extract3';
+$extractDir = TestPath::directory('test-extract3');
+$extract = $extractDir->path;
+$extractDir->file('stuff.txt');
+$extractDir->file('nonsense.txt');
 
 $phar = new PharData($fname);
 
@@ -30,13 +33,6 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/test-extract3/';
-@unlink($dir . 'stuff.txt');
-@unlink($dir . 'nonsense.txt');
-@rmdir($dir);
 ?>
 --EXPECTF--
 InvalidArgumentException: Invalid argument, %sfiles/bogus.zip cannot be found

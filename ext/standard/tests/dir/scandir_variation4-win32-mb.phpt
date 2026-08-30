@@ -17,16 +17,13 @@ echo "*** Testing scandir() : usage variations ***\n";
 // include for create_files/delete_files functions
 include (__DIR__ . '/../file/file.inc');
 
-$base_dir_path = __DIR__ . '/scandir_variation4-win32-mb';
-@mkdir($base_dir_path);
+$base_dir_path = TestPath::directory()->create();
 
-$level_one_dir_path = "$base_dir_path/私はガラスを食べられますlevel_one";
-$level_two_dir_path = "$level_one_dir_path/私はガラスを食べられますlevel_two";
+$level_one_dir_path = $base_dir_path->directory('私はガラスを食べられますlevel_one')->create();
+$level_two_dir_path = $level_one_dir_path->directory('私はガラスを食べられますlevel_two')->create();
 
 // create directories and files
-mkdir($level_one_dir_path);
 create_files($level_one_dir_path, 2, 'numeric', 0755, 1, 'w', '私はガラスを食べられますlevel_one', 1);
-mkdir($level_two_dir_path);
 create_files($level_two_dir_path, 2, 'numeric', 0755, 1, 'w', '私はガラスを食べられますlevel_two', 1);
 
 echo "\n-- \$path = './私はガラスを食べられますlevel_one': --\n";
@@ -57,15 +54,6 @@ echo "\n-- \$path = '../../'私はガラスを食べられますlevel_one': --\n
 var_dump(chdir($level_two_dir_path));
 var_dump(scandir('../../私はガラスを食べられますlevel_one'));
 
-@delete_files($level_one_dir_path, 2, '私はガラスを食べられますlevel_one');
-@delete_files($level_two_dir_path, 2, '私はガラスを食べられますlevel_two');
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/scandir_variation4-win32-mb';
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one/私はガラスを食べられますlevel_two");
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one");
-rmdir($base_dir_path);
 ?>
 --EXPECT--
 *** Testing scandir() : usage variations ***

@@ -10,15 +10,14 @@ session.gc_maxlifetime=10
 session.use_strict_mode=0
 --FILE--
 <?php
-$base = __DIR__ . '/gc_selective_test';
-@mkdir($base);
-@mkdir("$base/a");
+$base = TestPath::directory()->create();
+$level1 = $base->directory('a')->create();
 
 session_save_path("1;$base");
 
-$expired = "$base/a/sess_aexpired0000000000000000";
-$fresh   = "$base/a/sess_afresh000000000000000000";
-$other   = "$base/a/other_file";
+$expired = $level1->file('sess_aexpired0000000000000000');
+$fresh   = $level1->file('sess_afresh000000000000000000');
+$other   = $level1->file('other_file');
 
 file_put_contents($expired, 'user|s:5:"alice";');
 touch($expired, time() - 100);   // 100 s old > gc_maxlifetime=10 → deleted
@@ -42,15 +41,6 @@ var_dump(!file_exists($expired));
 
 echo "other file kept: ";
 var_dump(file_exists($other));
-?>
---CLEAN--
-<?php
-$base = __DIR__ . '/gc_selective_test';
-@unlink("$base/a/sess_afresh000000000000000000");
-@unlink("$base/a/sess_a0000000000000000000000000");
-@unlink("$base/a/other_file");
-@rmdir("$base/a");
-@rmdir($base);
 ?>
 --EXPECT--
 session_gc() return value: int(1)

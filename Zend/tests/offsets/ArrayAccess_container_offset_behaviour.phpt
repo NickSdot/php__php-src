@@ -124,7 +124,7 @@ foreach (['A', 'B'] as $class) {
         );
 
         if ($varOutput !== $expected_output) {
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_ArrayAccess_container_{$failuresNb}.txt", $varOutput);
+            file_put_contents(TestPath::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }
@@ -155,7 +155,7 @@ foreach (['A', 'B'] as $class) {
         );
 
         if ($varOutput !== $expected_output) {
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . "debug_ArrayAccess_container_{$failuresNb}.txt", $varOutput);
+            file_put_contents(TestPath::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }

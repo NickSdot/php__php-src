@@ -8,7 +8,7 @@ if (!defined("OPENSSL_KEYTYPE_DSA")) die("skip DSA disabled");
 ?>
 --FILE--
 <?php
-$csrfile = __DIR__ . "/openssl_csr_export_to_file_csr.tmp";
+$csrfile = TestPath::file();
 $wrong = "wrong";
 $config = __DIR__ . DIRECTORY_SEPARATOR . 'openssl.cnf';
 $phex = 'dcf93a0b883972ec0e19989ac5a2ce310e1d37717e8d9571bb7623731866e61e' .
@@ -49,13 +49,6 @@ try {
     echo $e->getMessage(), "\n";
 }
 var_dump(openssl_csr_export_to_file($csr, $csrfile, false));
-?>
---CLEAN--
-<?php
-$csrfile = __DIR__ . "/openssl_csr_export_to_file_csr.tmp";
-if (file_exists($csrfile)) {
-    unlink($csrfile);
-}
 ?>
 --EXPECTF--
 bool(true)

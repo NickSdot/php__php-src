@@ -5,14 +5,10 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/cert.crt";
-$outfile = __DIR__ . "/gh16357.txt";
+$outfile = TestPath::file();
 $certs = [123];
 var_dump(openssl_pkcs7_encrypt($infile, $outfile, $certs, null));
 var_dump($certs);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . "/gh16357.txt");
 ?>
 --EXPECT--
 bool(false)

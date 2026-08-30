@@ -16,61 +16,21 @@
 // Although safe mode has been removed in php 6.0, open_basedir is still valid.
 //      See http://www.php.net/features.safe-mode for more information
 
-function recursive_delete_directory($directory) {
+function create_directories($selectWorkspace = TRUE) {
+    global $testDirectory;
 
-    // Remove any trailing slash first
-    if (substr($directory, -1) == '/') {
-        $directory = substr($directory, 0, -1);
+    if ($selectWorkspace) {
+        TestContext::useRelativeWorkspace();
     }
-
-    // Make sure the directory is valid
-    if (is_dir($directory) == FALSE) {
-        return FALSE;
-    }
-
-    // Check we can access the directory
-    if (is_readable($directory) == FALSE) {
-        return FALSE;
-    }
-
-    $handle = opendir($directory);
-
-    // Scan through the directory contents
-    while (FALSE !== ($item = readdir($handle))) {
-        if ($item != '.') {
-             if ($item != '..') {
-                $path = ($directory.'/'.$item);
-                if (is_dir($path) == TRUE) {
-                    recursive_delete_directory($path);
-                } else {
-                    @chmod($path, 0777);
-                    unlink($path);
-                }
-            }
-        }
-    }
-
-    closedir($handle);
-    @chmod($directory, 0777);
-    rmdir($directory);
-
-    return TRUE;
-}
-
-function create_directories() {
-    delete_directories();
-    $directory = getcwd();
-
-    var_dump(mkdir($directory."/test"));
-    var_dump(mkdir($directory."/test/ok"));
-    var_dump(mkdir($directory."/test/bad"));
-    file_put_contents($directory."/test/ok/ok.txt", "Hello World!");
-    file_put_contents($directory."/test/bad/bad.txt", "Hello World!");
-}
-
-function delete_directories() {
-    $directory = (getcwd()."/test");
-    recursive_delete_directory($directory);
+    $testDirectory = TestPath::directory('test');
+    var_dump(mkdir($testDirectory));
+    $okDirectory = $testDirectory->directory('ok');
+    var_dump(mkdir($okDirectory));
+    $badDirectory = $testDirectory->directory('bad');
+    var_dump(mkdir($badDirectory));
+    file_put_contents($okDirectory->file('ok.txt'), "Hello World!");
+    file_put_contents($badDirectory->file('bad.txt'), "Hello World!");
+    chdir(dirname($testDirectory));
 }
 
 function test_open_basedir_error($function) {
@@ -86,13 +46,16 @@ function test_open_basedir_error($function) {
     var_dump($function($directory."/test/bad/../bad/bad.txt"));
 }
 
-function test_open_basedir_before($function, $change = TRUE) {
-    global $savedDirectory;
+function test_open_basedir_before($function, $change = TRUE, $selectWorkspace = TRUE) {
+    global $initdir, $testDirectory, $savedDirectory;
     echo "*** Testing open_basedir configuration [$function] ***\n";
-    $directory = getcwd();
+    create_directories($selectWorkspace);
+    $directory = dirname($testDirectory);
+    if (isset($initdir)) {
+        $initdir = $directory;
+    }
     $savedDirectory = $directory;
     var_dump(chdir($directory));
-    create_directories();
 
     // Optionally change directory
     if ($change == TRUE) {
@@ -100,7 +63,6 @@ function test_open_basedir_before($function, $change = TRUE) {
     }
 }
 
-// Delete directories using a --CLEAN-- section!
 function test_open_basedir_after($function) {
     echo "*** Finished testing open_basedir configuration [$function] ***\n";
 }

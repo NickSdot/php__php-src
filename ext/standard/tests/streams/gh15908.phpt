@@ -21,18 +21,14 @@ class TestStream {
         return $this->s >= 2;
     }
 }
-touch(__DIR__."/gh15908.tmp");
+$tmp = TestPath::file()->create();
 stream_wrapper_register("test", "TestStream");
 $f = fopen("test://", "r");
 try {
-    file_put_contents(__DIR__."/gh15908.tmp", $f, FILE_USE_INCLUDE_PATH, $f);
+    file_put_contents($tmp, $f, FILE_USE_INCLUDE_PATH, $f);
 } catch (Error $e) {
     echo $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/gh15908.tmp");
 ?>
 --EXPECT--
 file_put_contents(): supplied resource is not a valid Stream-Context resource

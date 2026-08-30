@@ -15,7 +15,10 @@ $stub = "<?php header('Content-Type: text/plain;');
 Phar::mount('this.file', '". __FILE__ . "');
 echo 'OK\n';
 __HALT_COMPILER(); ?>";
-$p = new Phar(__DIR__ . '/issue0149.phar.php', 0, 'this');
+TestContext::useRelativeWorkspace();
+$archive = TestPath::file('archive.phar.php');
+$archiveUrl = str_replace(__DIR__ . '/', '', $archive->path);
+$p = new Phar($archive, 0, 'this');
 $p['index.php'] = "";  # A Phar must have at least one file, hence this dummy
 $p->setStub($stub);
 unset($p);
@@ -28,13 +31,9 @@ if (file_exists(ini_get('extension_dir').'/phar.'.PHP_SHLIB_SUFFIX)) {
 }
 php_cli_server_start($ini);
 
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/issue0149.phar.php');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/issue0149.phar.php');
-echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/issue0149.phar.php');
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/issue0149.phar.php');
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $archiveUrl);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $archiveUrl);
+echo file_get_contents('http://' . PHP_CLI_SERVER_ADDRESS . '/' . $archiveUrl);
 ?>
 --EXPECT--
 OK

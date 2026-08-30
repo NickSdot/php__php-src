@@ -6,7 +6,8 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('phar_oo_getcontents.phar.php');
+$fname = $archive->path;
 
 $phar = new Phar($fname);
 $phar['a/b'] = 'file contents
@@ -23,11 +24,6 @@ echo $phar['hi']->getContent(), "\n";
 } catch (Exception $e) {
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php');
-__halt_compiler();
 ?>
 --EXPECTF--
 file contents

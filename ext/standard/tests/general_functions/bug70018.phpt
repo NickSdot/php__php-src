@@ -4,7 +4,7 @@ Bug #70018 (exec does not strip all whitespace)
 <?php
 $output = array();
 
-$test_fl = __DIR__ . DIRECTORY_SEPARATOR . md5(uniqid());
+$test_fl = TestPath::file();
 $test_fl_escaped = escapeshellarg($test_fl);
 file_put_contents($test_fl, '<?php echo "abc\f\n \n";');
 
@@ -12,7 +12,6 @@ exec(getenv('TEST_PHP_EXECUTABLE_ESCAPED') . " -n $test_fl_escaped", $output);
 
 var_dump($output);
 
-@unlink($test_fl);
 ?>
 --EXPECT--
 array(2) {

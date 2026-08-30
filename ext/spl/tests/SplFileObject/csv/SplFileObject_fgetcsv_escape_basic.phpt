@@ -2,16 +2,13 @@
 SplFileObject::fgetcsv with alternative escape
 --FILE--
 <?php
-$fp = fopen('SplFileObject__fgetcsv6.csv', 'w+');
+$file = TestPath::file();
+$fp = fopen($file, 'w+');
 fwrite($fp, '"aaa","b""bb","ccc"');
 fclose($fp);
 
-$fo = new SplFileObject('SplFileObject__fgetcsv6.csv');
+$fo = new SplFileObject($file);
 var_dump($fo->fgetcsv(',', '"', '"'));
-?>
---CLEAN--
-<?php
-unlink('SplFileObject__fgetcsv6.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::fgetcsv() is deprecated since 8.6 in %s on line %d

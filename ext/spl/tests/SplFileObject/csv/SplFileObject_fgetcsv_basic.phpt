@@ -2,7 +2,8 @@
 SplFileObject::fgetcsv default path
 --FILE--
 <?php
-$fp = fopen('SplFileObject__fgetcsv1.csv', 'w+');
+$file = TestPath::file();
+$fp = fopen($file, 'w+');
 fputcsv(
     $fp,
     [
@@ -15,13 +16,9 @@ fputcsv(
 );
 fclose($fp);
 
-$fo = new SplFileObject('SplFileObject__fgetcsv1.csv');
+$fo = new SplFileObject($file);
 $fo->setCsvControl(escape: '');
 var_dump($fo->fgetcsv());
-?>
---CLEAN--
-<?php
-unlink('SplFileObject__fgetcsv1.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::setCsvControl() is deprecated since 8.6 in %s on line %d

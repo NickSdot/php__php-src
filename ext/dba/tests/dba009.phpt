@@ -12,6 +12,7 @@ dba
 --FILE--
 <?php
     require_once(__DIR__ .'/test.inc');
+    $db_file = TestPath::file();
     echo "database handler: $handler\n";
     if (($db=dba_popen($db_file, "n", $handler))!==FALSE) {
         echo "Opened\n";
@@ -27,10 +28,6 @@ dba
         dba_insert("a", "Inserted", $db);
         echo dba_fetch("a", $db)."\n";
     }
-?>
---CLEAN--
-<?php
-    require(__DIR__ .'/clean.inc');
 ?>
 --EXPECTF--
 database handler: %s

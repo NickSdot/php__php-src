@@ -13,7 +13,7 @@ if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
 ?>
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.1.phar.php';
+$fname = TestPath::file('archive.phar.php');
 $pname = 'phar://hio';
 $file = '<?php include "' . $pname . '/a.php"; __HALT_COMPILER(); ?>';
 
@@ -35,10 +35,6 @@ $a['dir']->chmod(000);
 var_dump($a['dir']->isReadable());
 $a['dir']->chmod(0666);
 var_dump($a['dir']->isReadable());
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.1.phar.php');
 ?>
 --EXPECT--
 bool(false)

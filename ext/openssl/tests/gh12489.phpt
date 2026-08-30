@@ -5,8 +5,8 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = __DIR__ . "/out.cms";;
-$vout = $outfile . '.vout';
+$outfile = TestPath::file();
+$vout = TestPath::file();
 
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $single_cert = "file://" . __DIR__ . "/cert.crt";
@@ -19,14 +19,6 @@ ini_set('open_basedir', __DIR__);
 var_dump(openssl_cms_verify($infile,OPENSSL_CMS_NOVERIFY|OPENSSL_CMS_DETACHED|OPENSSL_CMS_BINARY,
          NULL, array(), NULL, $vout, NULL, "../test.cms", OPENSSL_ENCODING_PEM));
 var_dump(openssl_error_string());
-?>
---CLEAN--
-<?php
-$outfile = __DIR__ . "/out.cms";;
-$vout = $outfile . '.vout';
-
-@unlink($outfile);
-@unlink($vout);
 ?>
 --EXPECTF--
 bool(true)

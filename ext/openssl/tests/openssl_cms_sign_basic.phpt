@@ -5,10 +5,7 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/cert.crt";
-$outfile = tempnam(sys_get_temp_dir(), "ssl");
-if ($outfile === false) {
-    die("failed to get a temporary filename!");
-}
+$outfile = TestPath::file();
 
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $single_cert = "file://" . __DIR__ . "/cert.crt";
@@ -35,7 +32,6 @@ var_dump(openssl_cms_sign($infile, $outfile, $single_cert, $wrong, $headers));
 
 if (file_exists($outfile)) {
     echo "true\n";
-    unlink($outfile);
 }
 ?>
 --EXPECTF--

@@ -24,18 +24,13 @@ echo "*** Testing scandir() : usage variations ***\n";
  *      |-> child_dir  ( child dir)
  */
 
-$parent_dir_path = __DIR__ . "/scandir_variation5";
-mkdir($parent_dir_path);
-chmod($parent_dir_path, 0777);
+$parent_dir_path = TestPath::directory()->create(permissions: 0777);
 
 // create sub_dir
-$sub_dir_path = $parent_dir_path . "/sub_dir";
-mkdir($sub_dir_path);
-chmod($sub_dir_path, 0777);
+$sub_dir_path = $parent_dir_path->directory()->create(permissions: 0777);
 
 //create sub_sub_dir
-$child_dir_path = $sub_dir_path."/child_dir";
-mkdir($child_dir_path);
+$child_dir_path = $sub_dir_path->directory()->create();
 
 // remove the write and execute permission from sub parent
 chmod($sub_dir_path, 0444);
@@ -49,21 +44,10 @@ chmod($parent_dir_path, 0666); // restricting parent directory
 
 echo "\n-- After restricting parent directory --\n";
 var_dump(scandir($child_dir_path));
-?>
---CLEAN--
-<?php
-$parent_dir_path = __DIR__ . "/scandir_variation5";
-$sub_dir_path = $parent_dir_path."/sub_dir";
-$child_dir_path = $sub_dir_path."/child_dir";
 
-// changing permissions for each temporary directory to delete them
 chmod($parent_dir_path, 0777);
 chmod($sub_dir_path, 0777);
 chmod($child_dir_path, 0777);
-
-rmdir($child_dir_path);
-rmdir($sub_dir_path);
-rmdir($parent_dir_path);
 ?>
 --EXPECTF--
 *** Testing scandir() : usage variations ***

@@ -13,15 +13,12 @@ $doc->loadHTML("<p>foo\0bar</p>", LIBXML_NOERROR);
 $html = $doc->saveHTML();
 var_dump(strpos($html, '<p>foo</p>') !== false);
 
-file_put_contents(__DIR__ . '/80268.html', "<p>foo\0bar</p>");
+$filename = TestPath::file();
+file_put_contents($filename, "<p>foo\0bar</p>");
 $doc = new DOMDocument;
-$doc->loadHTMLFile(__DIR__ . '/80268.html', LIBXML_NOERROR);
+$doc->loadHTMLFile($filename, LIBXML_NOERROR);
 $html = $doc->saveHTML();
 var_dump(strpos($html, '<p>foo</p>') !== false);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/80268.html');
 ?>
 --EXPECTF--
 bool(false)

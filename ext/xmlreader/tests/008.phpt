@@ -21,8 +21,11 @@ $xmlstring = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 </MOVIE>
 </LIST>';
 
-$dtdfile = rawurlencode(__DIR__) . '/dtdexample.dtd';
-$file = __DIR__ . '/_008.xml';
+TestContext::useRelativeWorkspace();
+$dtd = TestPath::file('dtdexample.dtd');
+copy(__DIR__ . '/dtdexample.dtd', $dtd);
+$dtdfile = rawurlencode($dtd->directory) . '/dtdexample.dtd';
+$file = TestPath::file();
 file_put_contents($file, $xmlstring);
 
 
@@ -35,8 +38,6 @@ if ($reader->isValid()) {
     echo "file DTD: ok\n";
 }
 $reader->close();
-unlink($file);
-
 $xmlstring = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE LIST SYSTEM "file:///' . $dtdfile. '">
 <LIST>

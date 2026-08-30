@@ -16,9 +16,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing opendir() : usage variations ***\n";
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path . "/opendir_variation7";
-mkdir($dir_path);
+$dir_path = TestPath::directory()->create();
 
 /* different values for directory permissions */
 $permission_values = array(
@@ -61,12 +59,8 @@ foreach ($permission_values as $perm) {
     }
     $iterator++;
 }
-?>
---CLEAN--
-<?php
-// deleting temporary directory
-$dir_path = __DIR__ . "/opendir_variation7";
-rmdir($dir_path);
+
+chmod($dir_path, 0777);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variations ***

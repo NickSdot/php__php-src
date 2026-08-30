@@ -7,7 +7,7 @@ Felix De Vliegher <felix.devliegher@gmail.com>
 echo "*** Testing hash_file() : error conditions ***\n";
 
 // Set up file
-$filename = 'hash_file_error_example.txt';
+$filename = TestPath::file();
 file_put_contents( $filename, 'The quick brown fox jumped over the lazy dog.' );
 
 
@@ -21,13 +21,6 @@ try {
 
 echo "\n-- Testing hash_file() function with a non-existent file --\n";
 var_dump(hash_file('md5', 'nonexistent.txt'));
-
-?>
---CLEAN--
-<?php
-
-$filename = 'hash_file_error_example.txt';
-unlink( $filename );
 
 ?>
 --EXPECTF--

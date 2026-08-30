@@ -13,7 +13,7 @@ if (disk_free_space(__DIR__) <= 4.1 * 1024 * 1024 * 1024 ) {
 --FILE--
 <?php
 
-$fn = __DIR__ . DIRECTORY_SEPARATOR . "test76422";
+$fn = TestPath::file();
 
 $file_handle = fopen($fn,'cb');
 
@@ -47,11 +47,6 @@ if (false === $ftruncate_result) {
 fclose($file_handle);
 var_dump(filesize($fn) >= $truncate_offset);
 unlink($fn);
-?>
---CLEAN--
-<?php
-$fn = __DIR__ . "/test76422";
-@unlink($fn);
 ?>
 --EXPECT--
 bool(true)

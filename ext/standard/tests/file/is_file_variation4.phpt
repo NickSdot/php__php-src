@@ -4,25 +4,27 @@ Test is_file() function: usage variations - diff. path notations (Bug #42027)
 <?php
 /* Passing file names with different notations, using slashes, wild-card chars */
 
-$file_path = __DIR__;
-
 echo "*** Testing is_file() with different notations of file names ***\n";
-$dir_name = $file_path."/is_file_variation4";
+$directory = TestPath::directory('is_file_variation4');
+$file = $directory->file('is_file_variation4.tmp');
+mkdir($directory);
+$file_path = dirname($directory->path);
+$dir_name = $directory;
 mkdir($dir_name);
-$file_handle = fopen($dir_name."/is_file_variation4.tmp", "w");
+$file_handle = fopen($file, "w");
 fclose($file_handle);
 
 $files_arr = array(
-  "/is_file_variation4/is_file_variation4.tmp",
+  "/$directory->name/$file->name",
 
   /* Testing a file trailing slash */
-  "/is_file_variation4/is_file_variation4.tmp/",
+  "/$directory->name/$file->name/",
 
   /* Testing file with double slashes */
-  "/is_file_variation4//is_file_variation4.tmp",
-  "//is_file_variation4//is_file_variation4.tmp",
-  "/is_file_variation4/*.tmp",
-  "is_file_variation4/is_file*.tmp",
+  "/$directory->name//$file->name",
+  "//$directory->name//$file->name",
+  "/$directory->name/*.tmp",
+  "$directory->name/is_file*.tmp",
 );
 
 $count = 1;
@@ -39,13 +41,6 @@ foreach($files_arr as $file) {
 }
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_name = $file_path."/is_file_variation4";
-unlink($dir_name."/is_file_variation4.tmp");
-rmdir($dir_name);
 ?>
 --EXPECT--
 *** Testing is_file() with different notations of file names ***

@@ -12,28 +12,22 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Creating soft and hard links to a file and applying fileinode() on links */
 
-$file_path = __DIR__;
-fclose( fopen($file_path."/fileinode_variation1.tmp", "w") );
+$file = TestPath::file()->create();
 
 echo "*** Testing fileinode() with links ***\n";
 /* With symlink */
-symlink($file_path."/fileinode_variation1.tmp", $file_path."/fileinode_variation1_symlink.tmp");
-var_dump( fileinode($file_path."/fileinode_variation1_symlink.tmp") ); //expected true
+$symlink = TestPath::file();
+symlink($file, $symlink);
+var_dump( fileinode($symlink) ); //expected true
 clearstatcache();
 
 /* With hardlink */
-link($file_path."/fileinode_variation1.tmp", $file_path."/fileinode_variation1_link.tmp");
-var_dump( fileinode($file_path."/fileinode_variation1_link.tmp") );  // expected: true
+$link = TestPath::file();
+link($file, $link);
+var_dump( fileinode($link) );  // expected: true
 clearstatcache();
 
 echo "\n*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink($file_path."/fileinode_variation1_symlink.tmp");
-unlink($file_path."/fileinode_variation1_link.tmp");
-unlink($file_path."/fileinode_variation1.tmp");
 ?>
 --EXPECTF--
 *** Testing fileinode() with links ***

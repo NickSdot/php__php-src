@@ -5,7 +5,6 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing file() : variation ***\n";
-$testfile = __DIR__."/fileVar9.txt";
 
 $contents = array(
    "File ends on a single character\na",
@@ -16,19 +15,14 @@ $contents = array(
    );
 
 foreach ($contents as $content) {
-    $h = fopen($testfile, "w");
+    $file = TestPath::file();
+    $h = fopen($file, "w");
     fwrite($h, $content);
     fclose($h);
-    var_dump(file($testfile));
-    unlink($testfile);
+    var_dump(file($file));
 }
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$testfile = __DIR__."/fileVar9.txt";
-@unlink($testfile);
 ?>
 --EXPECT--
 *** Testing file() : variation ***

@@ -8,9 +8,7 @@ Test closedir() function : basic functionality
 
 echo "*** Testing closedir() : basic functionality ***\n";
 
-$base_dir = __DIR__;
-$dir_path = $base_dir . '/closedir_basic';
-mkdir($dir_path);
+$dir_path = TestPath::directory()->create();
 
 echo "\n-- Call closedir() with no arguments: --\n";
 $dh1 = opendir($dir_path);
@@ -27,12 +25,6 @@ if ((int)$dh1 === (int)$dh2) {
 var_dump(closedir($dh2));
 echo "-- Check Directory Handle: --\n";
 var_dump($dh2);
-?>
---CLEAN--
-<?php
-$base_dir = __DIR__;
-$dir_path = $base_dir . '/closedir_basic';
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing closedir() : basic functionality ***

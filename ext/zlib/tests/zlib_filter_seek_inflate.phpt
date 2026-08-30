@@ -4,7 +4,7 @@ zlib.inflate filter with seek to start
 zlib
 --FILE--
 <?php
-$file = __DIR__ . '/zlib_filter_seek_inflate.zlib';
+$file = TestPath::file('zlib_filter_seek_inflate.zlib');
 
 $text = 'I am the very model of a modern major general, I\'ve information vegetable, animal, and mineral.';
 
@@ -30,10 +30,6 @@ $result = fseek($fp, 50, SEEK_SET);
 echo "Seek to middle: " . ($result === 0 ? "SUCCESS" : "FAILURE") . "\n";
 
 fclose($fp);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/zlib_filter_seek_inflate.zlib');
 ?>
 --EXPECTF--
 First read (20 bytes): I am the very model 

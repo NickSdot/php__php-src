@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$doc_dest = 'OO_001.xml';
+$doc_dest = TestPath::file();
 $xw = new XMLWriter();
 $xw->openUri($doc_dest);
 $xw->startDocument('1.0', 'UTF-8', 'standalonearg');
@@ -16,7 +16,6 @@ $xw->endDocument();
 $output_bytes = $xw->flush(true);
 echo file_get_contents($doc_dest);
 unset($xw);
-unlink($doc_dest);
 ?>
 --EXPECT--
 <?xml version="1.0" encoding="UTF-8" standalone="standalonearg"?>

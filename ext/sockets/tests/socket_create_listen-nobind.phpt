@@ -5,7 +5,7 @@ sockets
 --SKIPIF--
 <?php
 
-$filename = __FILE__ . '.root_check.tmp';
+$filename = tempnam(sys_get_temp_dir(), 'php-sockets-root-check-');
 $fp = fopen($filename, 'w');
 fclose($fp);
 if (fileowner($filename) == 0) {

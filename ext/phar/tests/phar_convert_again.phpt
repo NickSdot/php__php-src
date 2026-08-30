@@ -10,8 +10,19 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '2.tbz';
+$archive = TestPath::file('phar_convert_again.phar');
+$fname = $archive->path;
+$copy = TestPath::file('phar_convert_again2.tbz');
+$fname2 = $copy->path;
+TestPath::file('phar_convert_again.zip');
+TestPath::file('phar_convert_again.tar.gz');
+TestPath::file('phar_convert_again.tar.bz2');
+TestPath::file('phar_convert_again2.phar');
+TestPath::file('phar_convert_again2.phar.tar');
+TestPath::file('phar_convert_again2.tar');
+TestPath::file('phar_convert_again2.phar.zip');
+TestPath::file('phar_convert_again2.zip');
+TestPath::file('phar_convert_again2.phar.tar.gz');
 $pname = 'phar://' . $fname;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;
@@ -151,21 +162,6 @@ $tgz->convertToData(Phar::TAR, Phar::GZ, '.phar/.tgz.oops');
 } catch (Exception $e) {
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar.gz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar.bz2');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.tbz');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '2.phar.tar.gz');
-__HALT_COMPILER();
 ?>
 --EXPECTF--
 %sphar_convert_again.zip

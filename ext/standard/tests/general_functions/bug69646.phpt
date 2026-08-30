@@ -21,14 +21,13 @@ var_dump( \$argv );
 
 SCRIPT;
 
-$script = __DIR__ . DIRECTORY_SEPARATOR . "arginfo.php";
+$script = TestPath::file('arginfo.php');
 file_put_contents($script, $helper_script);
 
 $cmd = getenv('TEST_PHP_EXECUTABLE_ESCAPED') . " " . escapeshellarg($script) . " "  . escapeshellarg($a) . " " . escapeshellarg($b);
 
 system($cmd);
 
-unlink($script);
 ?>
 --EXPECTF--
 string(2) "a\"

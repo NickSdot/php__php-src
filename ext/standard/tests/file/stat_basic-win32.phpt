@@ -8,23 +8,21 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 ?>
 --FILE--
 <?php
-$file_path = __DIR__;
-require("$file_path/file.inc");
+require __DIR__ . "/file.inc";
 
 echo "*** Testing stat() : basic functionality ***\n";
 
 /* creating temp directory and file */
 
 // creating dir
-$dirname = "$file_path/stat_basic";
-mkdir($dirname);
+$dirname = TestPath::directory()->create();
 // stat of the dir created
 $dir_stat = stat($dirname);
 clearstatcache();
 sleep(2);
 
 // creating file
-$filename = "$dirname/stat_basic.tmp";
+$filename = $dirname->file();
 $file_handle = fopen($filename, "w");
 fclose($file_handle);
 // stat of the file created
@@ -56,12 +54,6 @@ echo "*** Testing stat(): for the return value ***\n";
 var_dump( is_array( stat($filename) ) );
 
 echo "\n---Done---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/stat_basic/stat_basic.tmp");
-rmdir("$file_path/stat_basic");
 ?>
 --EXPECTF--
 *** Testing stat() : basic functionality ***

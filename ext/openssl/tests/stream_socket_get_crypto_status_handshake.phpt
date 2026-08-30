@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'crypto_status_handshake.pem.tmp';
+$certFile = TestPath::file();
 $peerName = 'crypto-status-handshake';
 
 /* Plain blocking TLS server. */
@@ -128,10 +128,6 @@ ServerClientTestCase::getInstance()->run($clientCode, [
     'server' => $serverCode,
     'proxy' => $proxyCode,
 ]);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'crypto_status_handshake.pem.tmp');
 ?>
 --EXPECT--
 bool(true)

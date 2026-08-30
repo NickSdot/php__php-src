@@ -17,7 +17,7 @@ umask(0);
 Phar::interceptFileFuncs();
 var_dump(stat(""));
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$fname = TestPath::file('stat.phar.php');
 $fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
 $fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
 $a = new Phar($fname);
@@ -74,8 +74,6 @@ include "my/index.php";
 __HALT_COMPILER();');
 include $fname;
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 bool(false)
 stat

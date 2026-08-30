@@ -11,13 +11,11 @@ if (!isset($support['WebP Support']) || $support['WebP Support'] === false) {
 ?>
 --FILE--
 <?php
-$empty_webp = __DIR__ . "/gh13774.webp";
+$empty_webp = TestPath::file();
 file_put_contents($empty_webp, "");
 $im = imagecreatefromwebp($empty_webp);
 var_dump($im);
 ?>
---CLEAN--
-<?php unlink(__DIR__ . "/gh13774.webp")?>
 --EXPECTF--
 Warning: imagecreatefromwebp(): gd-webp cannot get webp info in %s on line %d
 

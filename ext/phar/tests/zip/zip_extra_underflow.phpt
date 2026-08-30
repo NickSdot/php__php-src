@@ -12,7 +12,7 @@ function uint32($value) {
     return pack('V', $value);
 }
 
-$filename = __DIR__ . '/zip_extra_underflow.zip';
+$filename = TestPath::file('zip_extra_underflow.zip')->path;
 $entry = 'test.txt';
 $contents = 'hello';
 $crc = crc32($contents);
@@ -82,10 +82,6 @@ try {
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/zip_extra_underflow.zip');
 ?>
 --EXPECTF--
 UnexpectedValueException: phar error: Unable to process extra field header for file in central directory in zip-based phar "%szip_extra_underflow.zip"

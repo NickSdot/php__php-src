@@ -4,7 +4,7 @@ bzip2.decompress filter with seek to start
 bz2
 --FILE--
 <?php
-$file = __DIR__ . '/bz2_filter_seek_decompress.bz2';
+$file = TestPath::file();
 
 $text = 'I am the very model of a modern major general, I\'ve information vegetable, animal, and mineral.';
 
@@ -29,10 +29,6 @@ $result = fseek($fp, 50, SEEK_SET);
 echo "Seek to middle: " . ($result === 0 ? "SUCCESS" : "FAILURE") . "\n";
 
 fclose($fp);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bz2_filter_seek_decompress.bz2');
 ?>
 --EXPECTF--
 First read (20 bytes): I am the very model 

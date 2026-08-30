@@ -13,8 +13,8 @@ if (!(imagetypes() & IMG_PNG)) {
 
 echo "Simple test of imagecopyresampled() function\n";
 
-$dest_lge = dirname(realpath(__FILE__)) . '/imagelarge.png';
-$dest_sml = dirname(realpath(__FILE__)) . '/imagesmall.png';
+$dest_lge = TestPath::file();
+$dest_sml = TestPath::file();
 
 // create a blank image
 $image_lge = imagecreatetruecolor(400, 300);
@@ -29,7 +29,7 @@ $col_ellipse = imagecolorallocate($image_lge, 0, 255, 0);
 imagefilledellipse($image_lge, 200, 150, 300, 200, $col_ellipse);
 
 // output the picture to a file
-imagepng($image_lge, $dest_lge);
+imagepng($image_lge, $dest_lge->path);
 
 // Get new dimensions
 $percent = 0.5; // new image 50% of original
@@ -43,18 +43,11 @@ $new_height = $height * $percent;
 $image_sml = imagecreatetruecolor($new_width, $new_height);
 imagecopyresampled($image_sml, $image_lge, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
-imagepng($image_sml, $dest_sml);
+imagepng($image_sml, $dest_sml->path);
 
 list($width, $height) = getimagesize($dest_sml);
 echo "Size of copy: width=". $width . " height=" . $height . "\n";
 echo "Done\n";
-?>
---CLEAN--
-<?php
-    $dest_lge = dirname(realpath(__FILE__)) . '/imagelarge.png';
-    $dest_sml = dirname(realpath(__FILE__)) . '/imagesmall.png';
-    @unlink($dest_lge);
-    @unlink($dest_sml);
 ?>
 --EXPECT--
 Simple test of imagecopyresampled() function

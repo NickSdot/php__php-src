@@ -14,9 +14,7 @@ echo "*** Testing dir() : basic functionality ***\n";
 include(__DIR__."/../file/file.inc");
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/私はガラスを食べられますdir_basic";
-@mkdir($dir_path);
+$dir_path = TestPath::directory('私はガラスを食べられますdir_basic')->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "私はガラスを食べられますdir_basic");
@@ -48,13 +46,6 @@ try {
 // delete temp files
 delete_files($dir_path, 3, "私はガラスを食べられますdir_basic", 1, ".tmp");
 echo "Done";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_path = $file_path."/私はガラスを食べられますdir_basic";
-
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing dir() : basic functionality ***

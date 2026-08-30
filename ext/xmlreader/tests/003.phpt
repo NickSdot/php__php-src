@@ -4,7 +4,7 @@ XMLReader: libxml2 XML Reader, attributes test
 xmlreader
 --FILE--
 <?php
-$filename = __DIR__ . '/_003.xml';
+$filename = TestPath::file();
 
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books><book num="1" idx="2">book1</book></books>';
@@ -77,7 +77,6 @@ while ($reader->read()) {
     }
 }
 $reader->close();
-unlink($filename);
 ?>
 --EXPECT--
 num: 1

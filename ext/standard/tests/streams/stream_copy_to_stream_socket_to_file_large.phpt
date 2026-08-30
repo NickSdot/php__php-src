@@ -24,7 +24,7 @@ CODE;
 
 $clientCode = <<<'CODE'
     $source = stream_socket_client("tcp://{{ ADDR }}", $errno, $errstr, 10);
-    $tmp = tmpfile();
+    $tmp = fopen(TestPath::file(), 'w+b');
 
     stream_copy_to_stream($source, $tmp);
 

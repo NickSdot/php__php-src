@@ -10,13 +10,11 @@ sendmail_path={MAIL:bug73203.eml}
 mail.add_x_header = Off
 --FILE--
 <?php
+$outFile = TestPath::file('bug73203.eml');
+chdir($outFile->directory);
 var_dump(
     mail('test@example.com', 'subject', 'message', 'From: lala@example.com', '')
 );
 ?>
 --EXPECT--
 bool(true)
---CLEAN--
-<?php
-unlink('bug73203.eml');
-?>

@@ -10,39 +10,39 @@ if(substr(PHP_OS, 0, 3) != "WIN")
 --FILE--
 <?php
 echo "*** Testing file() : variation ***\n";
-$mainDir = "fileVar8_win32.dir";
-$subDir = "fileVar8Sub";
-$absMainDir = __DIR__."\\".$mainDir;
+$mainDir = TestPath::directory('fileVar8_win32.dir');
+$absMainDir = $mainDir;
 mkdir($absMainDir);
-$absSubDir = $absMainDir."\\".$subDir;
+$subDir = $mainDir->directory('fileVar8Sub');
+$absSubDir = $subDir;
 mkdir($absSubDir);
 
 $old_dir_path = getcwd();
-chdir(__DIR__);
+chdir(dirname($mainDir->path));
 $unixifiedDir = '/'.substr(str_replace('\\','/',$absSubDir),3);
 
 $allDirs = array(
   // absolute paths
   "$absSubDir\\",
-  "$absSubDir\\..\\".$subDir,
-  "$absSubDir\\\\..\\.\\".$subDir,
-  "$absSubDir\\..\\..\\".$mainDir."\\.\\".$subDir,
-  "$absSubDir\\..\\\\\\".$subDir."\\\\..\\\\..\\".$subDir,
+  "$absSubDir\\..\\".$subDir->name,
+  "$absSubDir\\\\..\\.\\".$subDir->name,
+  "$absSubDir\\..\\..\\".$mainDir->name."\\.\\".$subDir->name,
+  "$absSubDir\\..\\\\\\".$subDir->name."\\\\..\\\\..\\".$subDir->name,
   "$absSubDir\\BADDIR",
 
   // relative paths
-  $mainDir."\\".$subDir,
-  $mainDir."\\\\".$subDir,
-   $mainDir."\\\\\\".$subDir,
-  ".\\".$mainDir."\\..\\".$mainDir."\\".$subDir,
+  $mainDir->name."\\".$subDir->name,
+  $mainDir->name."\\\\".$subDir->name,
+   $mainDir->name."\\\\\\".$subDir->name,
+  ".\\".$mainDir->name."\\..\\".$mainDir->name."\\".$subDir->name,
   "BADDIR",
 
   // unixifed path
   $unixifiedDir,
 );
 
-$filename = 'FileGetContentsVar7.tmp';
-$absFile = $absSubDir.'/'.$filename;
+$filename = $subDir->file();
+$absFile = $filename;
 $h = fopen($absFile,"w");
 fwrite($h, "contents read");
 fclose($h);
@@ -51,24 +51,12 @@ for($i = 0; $i<count($allDirs); $i++) {
   $j = $i+1;
   $dir = $allDirs[$i];
   echo "\n-- Iteration $j --\n";
-  var_dump(file($dir."\\".$filename));
+  var_dump(file($dir."\\".$filename->name));
 }
 
 chdir($old_dir_path);
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$mainDir = "fileVar8_win32.dir";
-$subDir = "fileVar8Sub";
-$absMainDir = __DIR__."/".$mainDir;
-$absSubDir = $absMainDir."/".$subDir;
-$filename = 'FileGetContentsVar7.tmp';
-$absFile = $absSubDir.'/'.$filename;
-unlink($absFile);
-rmdir($absSubDir);
-rmdir($absMainDir);
 ?>
 --EXPECTF--
 *** Testing file() : variation ***

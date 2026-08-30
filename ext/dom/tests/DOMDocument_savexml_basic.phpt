@@ -23,14 +23,10 @@ EOXML;
 $dom = new DOMDocument();
 $dom->loadXML($xml);
 $root = $dom->documentElement;
-$directory = __DIR__;
-
-$filename = $directory."/tmp_dom_savexml".time();
+$filename = TestPath::file();
 var_dump($dom->save($filename));
 $result = file_get_contents($filename);
 var_dump($result == $dom->saveXML());
-
-unlink($filename);
 ?>
 --EXPECT--
 int(181)

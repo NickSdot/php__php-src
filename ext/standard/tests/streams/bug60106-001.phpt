@@ -8,7 +8,9 @@ if( substr(PHP_OS, 0, 3) == "WIN" )
 --FILE--
 <?php
 error_reporting(E_ALL | E_NOTICE);
-$socket_file = "/tmp/" . str_repeat("a", 512);
+$socket = TestPath::file();
+chdir($socket->directory);
+$socket_file = $socket->name . str_repeat("a", 512);
 function get_truncated_socket_filename($errno, $errmsg, $file, $line) {
     global $socket_file;
     echo $errmsg, "\n";
@@ -17,7 +19,6 @@ function get_truncated_socket_filename($errno, $errmsg, $file, $line) {
 }
 set_error_handler("get_truncated_socket_filename", E_NOTICE);
 stream_socket_server("unix://" . $socket_file);
-unlink($socket_file);
 ?>
 --EXPECTF--
 stream_socket_server(): socket path exceeded the maximum allowed length of %d bytes and was truncated

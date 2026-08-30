@@ -13,11 +13,6 @@ open_basedir=.
 require_once "open_basedir.inc";
 test_open_basedir("realpath");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [realpath] ***
 bool(true)

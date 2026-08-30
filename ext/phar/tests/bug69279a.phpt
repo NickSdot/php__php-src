@@ -6,21 +6,18 @@ zlib
 --FILE--
 <?php
 $phar = new PharData(__DIR__ . '/bug69279a.zip');
-mkdir(__DIR__ . '/bug69279a');
-var_dump($phar->extractTo(__DIR__ . '/bug69279a', null, true));
-var_dump(strncmp(file_get_contents(__DIR__ . '/bug69279a/1.txt'), 'Lorem ipsum', 11));
-var_dump(strncmp(file_get_contents(__DIR__ . '/bug69279a/2.txt'), 'foo', 3));
-var_dump(strncmp(file_get_contents(__DIR__ . '/bug69279a/3.txt'), 'Lorem ipsum', 11));
+$output = TestPath::directory();
+mkdir($output->path);
+$file1 = $output->file('1.txt');
+$file2 = $output->file('2.txt');
+$file3 = $output->file('3.txt');
+var_dump($phar->extractTo($output->path, null, true));
+var_dump(strncmp(file_get_contents($file1), 'Lorem ipsum', 11));
+var_dump(strncmp(file_get_contents($file2), 'foo', 3));
+var_dump(strncmp(file_get_contents($file3), 'Lorem ipsum', 11));
 ?>
 --EXPECT--
 bool(true)
 int(0)
 int(0)
 int(0)
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bug69279a/1.txt');
-@unlink(__DIR__ . '/bug69279a/2.txt');
-@unlink(__DIR__ . '/bug69279a/3.txt');
-@rmdir(__DIR__ . '/bug69279a');
-?>

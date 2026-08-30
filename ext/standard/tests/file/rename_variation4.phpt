@@ -9,36 +9,35 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 
-$file_path = __DIR__;
+$file_path = TestPath::directory();
+$source = $file_path->file();
+$numeric = $file_path->file('12345');
+$source_dir = $file_path->directory();
+mkdir($file_path);
 
 require __DIR__.'/file.inc';
 
 /* Renaming a file, link and directory to numeric name */
 echo "\n*** Testing rename() by renaming a file, link and directory to numeric name ***\n";
-$fp = fopen($file_path."/rename_variation4.tmp", "w");
+$fp = fopen($source, "w");
 fclose($fp);
 // renaming existing file to numeric name
-var_dump( rename($file_path."/rename_variation4.tmp", $file_path."/12345") );
+var_dump( rename($source, $numeric) );
 // ensure that rename worked fine
-var_dump( file_exists($file_path."/rename_variation4.tmp" ) );  // expecting false
-var_dump( file_exists($file_path."/12345" ) );  // expecting true
+var_dump( file_exists($source) );  // expecting false
+var_dump( file_exists($numeric) );  // expecting true
 // remove the file
-unlink($file_path."/12345");
+unlink($numeric);
 
-mkdir($file_path."/rename_variation4_dir");
+mkdir($source_dir);
 
 // renaming a directory to numeric name
-var_dump( rename($file_path."/rename_variation4_dir/", $file_path."/12345") );
+var_dump( rename($source_dir . '/', $numeric) );
 // ensure that rename worked fine
-var_dump( file_exists($file_path."/rename_variation4_dir" ) );  // expecting false
-var_dump( file_exists($file_path."/12345" ) );  // expecting true
+var_dump( file_exists($source_dir) );  // expecting false
+var_dump( file_exists($numeric) );  // expecting true
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir($file_path."/12345");
 ?>
 --EXPECT--
 *** Testing rename() by renaming a file, link and directory to numeric name ***

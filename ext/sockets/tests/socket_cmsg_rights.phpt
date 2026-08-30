@@ -16,7 +16,7 @@ die('skip not for AIX');
 <?php
 include __DIR__."/mcast_helpers.php.inc";
 
-$path = TestPath::file('socket_cmsg_rights.sock');
+$path = TestPath::file();
 chdir($path->directory);
 
 echo "creating send socket\n";

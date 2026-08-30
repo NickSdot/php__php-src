@@ -7,7 +7,7 @@ xmlreader
 
 $xmlstring = '<TEI.2>hello</TEI.2>';
 $relaxngfile = __DIR__ . '/relaxNG.rng';
-$file = __DIR__ . '/_007.xml';
+$file = TestPath::file();
 file_put_contents($file, $xmlstring);
 
 $reader = new XMLReader();
@@ -22,9 +22,6 @@ if ($reader->isValid()) {
   print "file relaxNG: failed\n";
 }
 $reader->close();
-unlink($file);
-
-
 $reader = new XMLReader();
 $reader->XML($xmlstring);
 

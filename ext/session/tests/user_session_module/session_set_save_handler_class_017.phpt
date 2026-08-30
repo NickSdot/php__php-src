@@ -8,6 +8,9 @@ session
 --FILE--
 <?php
 
+$save_path = TestPath::directory('session_set_save_handler_class_017')->create();
+session_save_path($save_path);
+
 ob_start();
 
 echo "*** Testing session_set_save_handler() function: class with create_sid ***\n";
@@ -49,7 +52,7 @@ class MySession2 extends SessionHandler {
     }
 
     public function create_sid(): string {
-        return pathinfo(__FILE__)['filename'];
+        return pathinfo(dirname($this->path))['filename'];
     }
 }
 
@@ -66,10 +69,6 @@ session_unset();
 
 session_start();
 var_dump($_SESSION);
-?>
---CLEAN--
-<?php
-@unlink(session_save_path().'/u_sess_PHPSESSIDsession_set_save_handler_class_017');
 ?>
 --EXPECTF--
 *** Testing session_set_save_handler() function: class with create_sid ***

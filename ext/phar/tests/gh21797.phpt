@@ -14,7 +14,8 @@ REQUEST_METHOD=GET
 PATH_INFO=/gh21797.phar
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$archive = TestPath::file('gh21797.phar');
+$fname = $archive->path;
 $phar = new Phar($fname);
 $phar->addFromString('index.php', '<?php echo "ok\n"; ?>');
 $phar->setStub('<?php
@@ -24,7 +25,5 @@ __HALT_COMPILER(); ?>');
 unset($phar);
 include $fname;
 ?>
---CLEAN--
-<?php @unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECT--
 no crash

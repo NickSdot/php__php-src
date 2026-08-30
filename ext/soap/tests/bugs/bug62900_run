@@ -1,2 +1,2 @@
 <?php
-new SoapClient(__DIR__."/bug62900.wsdl");
+new SoapClient($argv[1]);

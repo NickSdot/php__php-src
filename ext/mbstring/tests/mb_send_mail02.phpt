@@ -9,26 +9,24 @@ if (!function_exists("mb_send_mail") || !mb_language("japanese")) {
 }
 ?>
 --INI--
-sendmail_path={MAIL:{PWD}/mb_send_mail02.eml}
+sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
+$mail = TestPath::file("mail.eml");
+chdir($mail->directory);
 $to = 'example@example.com';
 
 /* default setting */
 mb_send_mail($to, mb_language(), "test");
-readfile(__DIR__ . "/mb_send_mail02.eml");
+readfile($mail);
 
 /* Japanese (EUC-JP) */
 if (mb_language("japanese")) {
     mb_internal_encoding('EUC-JP');
     mb_send_mail($to, "テスト ".mb_language(), "テスト");
-    readfile(__DIR__ . "/mb_send_mail02.eml");
+    readfile($mail);
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/mb_send_mail02.eml");
 ?>
 --EXPECTF--
 To: example@example.com

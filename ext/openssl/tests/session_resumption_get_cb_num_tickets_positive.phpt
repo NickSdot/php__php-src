@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_num_tickets.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -71,10 +71,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_num_tickets_test', $cer
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_num_tickets.pem.tmp');
 ?>
 --EXPECTF--
 Ticket test

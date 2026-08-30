@@ -6,7 +6,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing fseek() : variation - beyond file boundaries ***\n";
 
-$outputfile = __FILE__.".tmp";
+$outputfile = TestPath::file();
 
 $h = fopen($outputfile, "wb+");
 for ($i = 1; $i < 10; $i++) {
@@ -29,7 +29,6 @@ $data = fread($h, 4096);
 echo bin2hex($data)."\n";
 
 fclose($h);
-unlink($outputfile);
 
 echo "Done";
 ?>

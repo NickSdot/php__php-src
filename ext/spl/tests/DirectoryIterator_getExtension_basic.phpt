@@ -2,15 +2,11 @@
 SPL: DirectoryIterator::getExtension() basic test
 --FILE--
 <?php
-$dir = __DIR__ . DIRECTORY_SEPARATOR . md5('DirectoryIterator::getExtension') . DIRECTORY_SEPARATOR;
-
-if (!mkdir($dir)) {
-    die('Failed to create test directory');
-}
+$dir = TestPath::directory()->create();
 
 $files = array('test.txt', 'test.extension', 'test');
 foreach ($files as $file) {
-    touch($dir . $file);
+    $dir->file($file)->create();
 }
 
 $dit_exts = array();
@@ -27,15 +23,6 @@ foreach (new DirectoryIterator($dir) as $file) {
 var_dump($dit_exts === $nfo_exts);
 sort($dit_exts);
 var_dump($dit_exts);
-?>
---CLEAN--
-<?php
-$dir   = __DIR__ . DIRECTORY_SEPARATOR . md5('DirectoryIterator::getExtension') . DIRECTORY_SEPARATOR;
-$files = array('test.txt', 'test.extension', 'test');
-foreach ($files as $file) {
-    unlink($dir . $file);
-}
-rmdir($dir);
 ?>
 --EXPECT--
 bool(true)

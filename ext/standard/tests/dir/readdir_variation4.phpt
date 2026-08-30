@@ -9,8 +9,7 @@ Test readdir() function : usage variations - different file names
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$dir_path = __DIR__ . "/readdir_variation4/";
-mkdir($dir_path);
+$dir_path = TestPath::directory()->create();
 
 // heredoc string
 $heredoc = <<<EOT
@@ -46,7 +45,7 @@ $iterator = 1;
 foreach($inputs as $key => $input) {
     echo "\n-- Iteration $iterator --\n";
     $handle = "fp{$iterator}";
-    var_dump( $$handle = fopen(@"$dir_path$input.tmp", 'w') );
+    var_dump( $$handle = fopen(@"$dir_path/$input.tmp", 'w') );
     var_dump( fwrite($$handle, $key));
     fclose($$handle);
     $iterator++;
@@ -60,8 +59,6 @@ while(FALSE !== ($file = readdir($dir_handle))){
     // store file names into an array so can use sorted in expected output
     $contents[] = $file;
 
-    // remove files while going through directory
-    @unlink($dir_path . $file);
 }
 
 // more important to check that all contents are present than order they are returned in
@@ -69,11 +66,6 @@ sort($contents);
 var_dump($contents);
 
 closedir($dir_handle);
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/readdir_variation4/";
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing readdir() : usage variations ***

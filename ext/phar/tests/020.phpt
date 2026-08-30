@@ -6,13 +6,14 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$archive = TestPath::file('archive.phar.php');
+$fname = $archive->path;
 $pname = 'phar://' . $fname;
 $file = "<?php
 Phar::mapPhar('hio');
 __HALT_COMPILER(); ?>";
 
-$pfile = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+$pfile = $archive->path;
 $files = array();
 $files['a'] = 'a';
 $files['b/a'] = 'b';
@@ -23,8 +24,6 @@ include $fname;
 
 var_dump(stat('phar://hio/a'), stat('phar://hio/b'));
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 array(26) {
   [0]=>

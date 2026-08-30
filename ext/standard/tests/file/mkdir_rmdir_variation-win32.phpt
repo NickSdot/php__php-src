@@ -13,7 +13,7 @@ echo "*** Testing mkdir() and rmdir() for different permissions ***\n";
 
 $context = stream_context_create();
 
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 $counter = 1;
 
 for($mode = 0000; $mode <= 0777; $mode++) {
@@ -43,12 +43,6 @@ var_dump( mkdir("$file_path/mkdir/test1", 0777, true) );
 var_dump( chmod("$file_path/mkdir/", 0777) );  // chmod to enable removing test1 directory
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-rmdir(__DIR__."/mkdir/test/");
-rmdir(__DIR__."/mkdir/test1/");
-rmdir(__DIR__."/mkdir/");
 ?>
 --EXPECTF--
 *** Testing mkdir() and rmdir() for different permissions ***

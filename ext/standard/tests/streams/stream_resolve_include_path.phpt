@@ -2,11 +2,11 @@
 stream_resolve_include_path(string path)
 --FILE--
 <?php
-$include_path = __DIR__ . '/test_path';
-$include_path_nested = $include_path . '/nested';
+$include_path = TestPath::directory('test_path');
+$include_path_nested = $include_path->directory('nested');
 
-$include_path_file = $include_path . DIRECTORY_SEPARATOR . 'file';
-$include_path_nested_file = $include_path_nested . DIRECTORY_SEPARATOR . 'file';
+$include_path_file = $include_path->file('file');
+$include_path_nested_file = $include_path_nested->file('file');
 
 mkdir($include_path);
 mkdir($include_path_nested);
@@ -22,18 +22,6 @@ var_dump(stream_resolve_include_path('file'));
 set_include_path($include_path_nested . PATH_SEPARATOR . $include_path);
 var_dump(stream_resolve_include_path('file'));
 
-?>
---CLEAN--
-<?php
-$include_path = __DIR__ . '/test_path';
-$include_path_nested = $include_path . '/nested';
-$include_path_file = $include_path . DIRECTORY_SEPARATOR . 'file';
-$include_path_nested_file = $include_path_nested . DIRECTORY_SEPARATOR . 'file';
-
-unlink($include_path_nested_file);
-rmdir($include_path_nested);
-unlink($include_path_file);
-rmdir($include_path);
 ?>
 --EXPECTF--
 bool(false)

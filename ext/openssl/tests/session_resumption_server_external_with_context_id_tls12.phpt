@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_external_proper.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $sessionStore = [];
@@ -102,10 +102,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_external_proper_test', 
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_external_proper.pem.tmp');
 ?>
 --EXPECTF--
 Client first connection resumed: no

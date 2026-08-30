@@ -4,6 +4,7 @@ Leaking ZipArchive destructor
 zip
 --FILE--
 <?php
+$file = TestPath::file('archive.zip');
 
 class MyZipArchive extends ZipArchive {
     public function __destruct() {
@@ -13,16 +14,10 @@ class MyZipArchive extends ZipArchive {
 }
 
 new MyZipArchive;
-$file = __DIR__ . '/ZipArchive_destruct.zip';
 $leak->open($file, ZIPARCHIVE::CREATE);
 $leak->addFromString('test', 'test');
 
 ?>
 ===DONE===
---CLEAN--
-<?php
-$file = __DIR__ . '/ZipArchive_destruct.zip';
-@unlink($file);
-?>
 --EXPECT--
 ===DONE===

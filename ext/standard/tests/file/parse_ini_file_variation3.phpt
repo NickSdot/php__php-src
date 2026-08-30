@@ -5,7 +5,8 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing parse_ini_file() : variation ***\n";
-$pwd = getcwd();
+$pwd = (string) TestPath::directory();
+mkdir($pwd);
 $f = "parse_ini_file_variation3";
 $dir1 = $pwd."/".$f.".dir1";
 $dir2 = $pwd."/".$f.".dir2";
@@ -42,26 +43,6 @@ FILE;
 
 file_put_contents($output_file, $iniContent);
 var_dump(parse_ini_file($iniFile));
-
-?>
---CLEAN--
-<?php
-
-$pwd = getcwd();
-$f = "parse_ini_file_variation3";
-$iniFile = "php.ini";
-
-$dir1 = $pwd."/".$f.".dir1";
-$dir2 = $pwd."/".$f.".dir2";
-$dir3 = $pwd."/".$f.".dir3";
-$newdirs = array($dir1, $dir2, $dir3);
-$output_file = $dir2."/".$iniFile;
-
-// Tidy up after test
-unlink($output_file);
-foreach($newdirs as $newdir) {
-   rmdir($newdir);
-}
 
 ?>
 --EXPECTF--

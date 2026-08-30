@@ -10,10 +10,11 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$directory = TestPath::directory();
 
 
 /* create temp file, link and directory */
-$dirname = "$file_path/lstat_stat_variation10";
+$dirname = $directory->path;
 mkdir($dirname);  // temp dir
 
 // is_dir() on a directory
@@ -38,11 +39,6 @@ $compare_keys = array(0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12,
 var_dump( compare_stats($old_stat, $new_stat, $compare_keys) );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/lstat_stat_variation10");
 ?>
 --EXPECT--
 *** Testing stat() on directory after using is_dir() on it ***

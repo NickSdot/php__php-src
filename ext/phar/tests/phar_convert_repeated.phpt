@@ -8,7 +8,14 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$archive = TestPath::file('phar_convert_repeated.phar');
+$fname = $archive->path;
+TestPath::file('phar_convert_repeated.phar.zip');
+TestPath::file('phar_convert_repeated.phar.tar');
+TestPath::file('phar_convert_repeated.2.2.phar.zip');
+TestPath::file('phar_convert_repeated.2.2.2.phar.tar');
+TestPath::file('phar_convert_repeated.2.phar');
+TestPath::file('phar_convert_repeated.2.2.2.3.phar.zip');
 $pname = 'phar://' . $fname;
 $fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
 $fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
@@ -84,16 +91,6 @@ var_dump($phar->isFileFormat(Phar::ZIP));
 var_dump($phar->getStub());
 var_dump($phar->getAlias());
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.2.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.2.2.phar.tar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.2.2.3.phar.zip');
 ?>
 --EXPECTF--
 =================== new Phar() =======================

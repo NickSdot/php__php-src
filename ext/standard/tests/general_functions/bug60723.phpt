@@ -5,13 +5,11 @@ date.timezone=ASIA/Chongqing
 log_errors=On
 --FILE--
 <?php
-$dir = __DIR__;
-$log = $dir . "/tmp.err";
-ini_set("error_log", $log);
+$log = TestPath::file();
+ini_set("error_log", $log->path);
 echo $aa;
 error_log("dummy");
 readfile($log);
-unlink($log);
 ?>
 --EXPECTF--
 Warning: Undefined variable $aa in %s on line %d

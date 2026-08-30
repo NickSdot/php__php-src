@@ -9,13 +9,9 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 <?php
 /* Test copy(): Trying to create a copy of an existing dir */
 
-$file_path = __DIR__;
-
 echo "*** Test copy() function: Trying to create a copy of an existing dir ***\n";
-$src_dir = $file_path."/copy_variation12";
-mkdir($src_dir);
-
-$dest = $file_path."/copy_copy_variation12";
+$src_dir = TestPath::directory()->create();
+$dest = TestPath::file();
 
 var_dump( copy($src_dir, $dest) );
 
@@ -25,10 +21,6 @@ var_dump( filesize($src_dir) );
 var_dump( filesize($dest) );
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-rmdir(__DIR__."/copy_variation12");
 ?>
 --EXPECTF--
 *** Test copy() function: Trying to create a copy of an existing dir ***

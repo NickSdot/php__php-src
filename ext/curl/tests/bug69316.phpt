@@ -18,7 +18,7 @@ curl
 
   include 'server.inc';
   $host = curl_cli_server_start();
-  $temp_file = __DIR__ . '/body.tmp';
+  $temp_file = TestPath::file();
   $url = "{$host}/get.inc?test=getpost";
   $ch = curl_init();
   $f_file = fopen($temp_file, "w") or die("failed to open file\n");
@@ -27,10 +27,6 @@ curl
   curl_setopt($ch, CURLOPT_FILE, $f_file);
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_exec($ch);
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/body.tmp');
 ?>
 --EXPECTF--
 Warning: curl_exec(): CURLOPT_FILE resource has gone away, resetting to default in %s on line %d

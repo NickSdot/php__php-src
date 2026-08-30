@@ -11,15 +11,13 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$mainDir = "filePutContentsVar7.dir";
-$subDir = "filePutContentsVar7Sub";
-$absMainDir = __DIR__."/".$mainDir;
-mkdir($absMainDir);
-$absSubDir = $absMainDir."/".$subDir;
-mkdir($absSubDir);
+$mainDir = TestPath::directory('filePutContentsVar7.dir')->create();
+$subDir = $mainDir->directory('filePutContentsVar7Sub')->create();
+$absMainDir = $mainDir;
+$absSubDir = $subDir;
 
 $old_dir_path = getcwd();
-chdir(__DIR__);
+chdir(dirname($mainDir->path));
 
 
 // Note invalid dirs in p8 result in (The system cannot find the path specified.)
@@ -27,30 +25,30 @@ chdir(__DIR__);
 $allDirs = array(
   // absolute paths
   "$absSubDir/",
-  "$absSubDir/../".$subDir,
-  "$absSubDir//.././".$subDir,
-  "$absSubDir/../../".$mainDir."/./".$subDir,
-  "$absSubDir/..///".$subDir."//..//../".$subDir,
+  "$absSubDir/../".$subDir->name,
+  "$absSubDir//.././".$subDir->name,
+  "$absSubDir/../../".$mainDir->name."/./".$subDir->name,
+  "$absSubDir/..///".$subDir->name."//..//../".$subDir->name,
   "$absSubDir/BADDIR",
 
   // relative paths
-  $mainDir."/".$subDir,
-  $mainDir."//".$subDir,
-   $mainDir."///".$subDir,
-  "./".$mainDir."/../".$mainDir."/".$subDir,
+  $mainDir->name."/".$subDir->name,
+  $mainDir->name."//".$subDir->name,
+   $mainDir->name."///".$subDir->name,
+  "./".$mainDir->name."/../".$mainDir->name."/".$subDir->name,
   "BADDIR",
 
 );
 
-$filename = 'FileGetContentsVar7.tmp';
-$absFile = $absSubDir.'/'.$filename;
+$filename = $subDir->file();
+$absFile = $filename;
 $data = "This was the written data";
 
 for($i = 0; $i<count($allDirs); $i++) {
   $j = $i+1;
   $dir = $allDirs[$i];
   echo "\n-- Iteration $j --\n";
-  $res = file_put_contents($dir."/".$filename, ($data . $i));
+  $res = file_put_contents($dir."/".$filename->name, ($data . $i));
   if ($res !== false) {
       $in = file_get_contents($absFile);
       if ($in == ($data . $i)) {
@@ -59,7 +57,7 @@ for($i = 0; $i<count($allDirs); $i++) {
       else {
          echo "Data not written correctly or to correct place\n";
       }
-      unlink($dir."/".$filename);
+      unlink($dir."/".$filename->name);
   }
   else {
      echo "No data written\n";
@@ -70,18 +68,6 @@ for($i = 0; $i<count($allDirs); $i++) {
 chdir($old_dir_path);
 
 echo "\n*** Done ***\n";
-?>
---CLEAN--
-<?php
-$mainDir = "filePutContentsVar7.dir";
-$subDir = "filePutContentsVar7Sub";
-$absMainDir = __DIR__."/".$mainDir;
-$absSubDir = $absMainDir."/".$subDir;
-$filename = 'FileGetContentsVar7.tmp';
-$absFile = $absSubDir.'/'.$filename;
-@unlink($absFile);
-rmdir($absSubDir);
-rmdir($absMainDir);
 ?>
 --EXPECTF--
 *** Testing file_put_contents() : usage variation ***

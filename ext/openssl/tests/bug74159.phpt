@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug74159.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug74159-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 // the server code is doing many readings in a short interval which is
 // not really reliable on more powerful machine but cover different
@@ -115,11 +115,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug74159.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug74159-ca.pem.tmp');
 ?>
 --EXPECT--
 Written 1048575 bytes

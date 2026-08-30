@@ -3,8 +3,8 @@ stream_copy_to_stream() file to file with an append-mode destination
 --FILE--
 <?php
 
-$srcFile = __DIR__ . '/stream_copy_append_src.txt';
-$dstFile = __DIR__ . '/stream_copy_append_dst.txt';
+$srcFile = TestPath::file();
+$dstFile = TestPath::file();
 
 file_put_contents($srcFile, str_repeat("b", 3000));
 file_put_contents($dstFile, "PREFIX-");
@@ -22,11 +22,6 @@ fclose($dst);
 $result = file_get_contents($dstFile);
 var_dump(strlen($result));
 var_dump($result === "PREFIX-" . str_repeat("b", 3000));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/stream_copy_append_src.txt');
-@unlink(__DIR__ . '/stream_copy_append_dst.txt');
 ?>
 --EXPECT--
 int(3000)

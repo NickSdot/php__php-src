@@ -53,8 +53,6 @@ $tester->close();
 <?php
 require_once "tester.inc";
 FPM\Tester::clean();
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-@unlink($file_path);
 ?>
 --EXPECT--
 {

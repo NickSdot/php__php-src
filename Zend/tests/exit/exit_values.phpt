@@ -2,6 +2,7 @@
 exit(false);
 --FILE--
 <?php
+TestContext::useRelativeWorkspace();
 
 function zend_test_var_export($value) {
     if ($value === PHP_INT_MIN) {
@@ -37,7 +38,7 @@ $values = [
     new stdClass(),
 ];
 
-const FILE_PATH = __DIR__ . '/exit_values_test.php';
+$file = TestPath::file('exit.php');
 const FILE_CONTENT = <<<'TEMPLATE'
 <?php
 try {
@@ -49,14 +50,14 @@ try {
 TEMPLATE;
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
-$command = $php . ' --no-php-ini ' . escapeshellarg(FILE_PATH);
+$command = $php . ' --no-php-ini ' . escapeshellarg($file->path);
 
 foreach ([FILE_CONTENT, str_replace('exit', 'die', FILE_CONTENT)] as $code) {
     foreach ($values as $value) {
         echo 'Using ', zend_test_var_export($value), ' as value:', PHP_EOL;
         $output = [];
         $content = str_replace('VALUE', zend_test_var_export($value), $code);
-        file_put_contents(FILE_PATH, $content);
+        file_put_contents($file, $content);
         exec($command, $output, $exit_status);
         echo 'Exit status is: ', $exit_status, PHP_EOL,
              'Output is:', PHP_EOL, join($output), PHP_EOL;
@@ -70,11 +71,6 @@ foreach ([FILE_CONTENT, str_replace('exit', 'die', FILE_CONTENT)] as $code) {
          'Output is:', PHP_EOL, join($output), PHP_EOL;
 }
 
-?>
---CLEAN--
-<?php
-const FILE_PATH = __DIR__ . '/exit_values_test.php';
-@unlink(FILE_PATH);
 ?>
 --EXPECTF--
 Using NULL as value:

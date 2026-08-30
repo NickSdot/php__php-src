@@ -2,11 +2,11 @@
 Bug #68557 (SplFileInfo::getPathname() may be broken)
 --FILE--
 <?php
-mkdir(__DIR__ . DIRECTORY_SEPARATOR . 'tmp');
-touch(__DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'a');
-touch(__DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'b');
+$dir = TestPath::directory()->create();
+$dir->file()->create();
+$dir->file()->create();
 
-$d = new DirectoryIterator(__DIR__ . DIRECTORY_SEPARATOR . 'tmp');
+$d = new DirectoryIterator($dir);
 
 $d->seek(0);
 $path0 = $d->current()->getPathname();
@@ -28,12 +28,6 @@ var_dump($path2 === $d->current()->getPathname());
 
 $d->seek(0);
 var_dump($path0 === $d->current()->getPathname());
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'a');
-unlink(__DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'b');
-rmdir(__DIR__ . DIRECTORY_SEPARATOR . 'tmp');
 ?>
 --EXPECT--
 bool(true)

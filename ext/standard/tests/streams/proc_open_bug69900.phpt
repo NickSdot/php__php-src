@@ -7,7 +7,7 @@ all
 
 error_reporting(E_ALL);
 
-$fl = __DIR__ . DIRECTORY_SEPARATOR . "test69900.php";
+$fl = TestPath::file();
 $max_ms = 20;
 
 $test_content = '<?php
@@ -55,11 +55,6 @@ if ($moreThanLimit > 3) {
     echo "fgets() took more than $max_ms ms $moreThanLimit times\n";
 }
 
-?>
---CLEAN--
-<?php
-$fl = __DIR__ . DIRECTORY_SEPARATOR . "test69900.php";
-@unlink($fl);
 ?>
 --EXPECT--
 hello0

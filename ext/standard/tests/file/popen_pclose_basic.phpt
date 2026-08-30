@@ -13,9 +13,8 @@ require($file_path."/file.inc");
 echo "*** Testing popen() and pclose() with different processes ***\n";
 
 echo "-- Testing popen(): reading from the pipe --\n";
-$dirpath = $file_path."/popen_basic";
-mkdir($dirpath);
-touch($dirpath."/popen_basic.tmp");
+$dirpath = TestPath::directory()->create();
+$dirpath->file('popen_basic.tmp')->create();
 define('CMD', "ls " . escapeshellarg($dirpath));
 $file_handle = popen(CMD, 'r');
 fpassthru($file_handle);
@@ -54,14 +53,6 @@ $return_value_pclose = pclose($return_value_popen);
 var_dump( is_int($return_value_pclose) );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dirpath = $file_path."/popen_basic";
-unlink($dirpath."/popen_basic.tmp");
-unlink($dirpath."/popen_basic1.tmp");
-rmdir($dirpath);
 ?>
 --EXPECT--
 *** Testing popen() and pclose() with different processes ***

@@ -91,7 +91,7 @@ foreach ($numeric_string_cases as $name => $value) {
 $cases["fractional numeric-string within int range"] = occurrence_schema("maxOccurs", "3.141");
 
 foreach ($cases as $name => $schema) {
-    $file = tempnam(sys_get_temp_dir(), "wsdl");
+    $file = TestPath::file();
     file_put_contents($file, wsdl_with_schema($schema));
 
     try {
@@ -99,8 +99,6 @@ foreach ($cases as $name => $schema) {
         echo "$name: parsed\n";
     } catch (SoapFault $e) {
         echo "$name: ", $e::class, ': ', $e->getMessage(), "\n";
-    } finally {
-        unlink($file);
     }
 }
 ?>

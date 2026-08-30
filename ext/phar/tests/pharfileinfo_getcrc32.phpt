@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$fname = TestPath::file('pharfileinfo_getcrc32.phar')->path;
 $pname = 'phar://' . $fname;
 $file = "<?php
 Phar::mapPhar('hio');
@@ -39,8 +39,6 @@ var_dump($b->getCRC32());
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
 --EXPECTF--
 BadMethodCallException: Phar entry is a directory, does not have a CRC
 BadMethodCallException: Phar entry was not CRC checked

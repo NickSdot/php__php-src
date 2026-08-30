@@ -6,7 +6,7 @@ ini_set auto_detect_line_endings bool
 ini_set("auto_detect_line_endings", "on");
 var_dump(ini_get("auto_detect_line_endings"));
 
-$filePath = __DIR__ . DIRECTORY_SEPARATOR . "auto_detect_line_endings_2.txt";
+$filePath = TestPath::file()->path;
 file_put_contents($filePath, "fooBar1\rfooBar2\rfooBar3");
 
 $stdin = fopen($filePath, "r");
@@ -23,7 +23,3 @@ string(8) "fooBar1"
 string(8) "fooBar2"
 string(7) "fooBar3"
 Done
---CLEAN--
-<?php
-unlink(__DIR__ . DIRECTORY_SEPARATOR . "auto_detect_line_endings_2.txt");
-?>

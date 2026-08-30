@@ -8,9 +8,9 @@ echo "Test 7: Transform To Uri";
 include("prepare.inc");
 $proc->importStylesheet($xsl);
 print "\n";
-$doc = $proc->transformToUri($dom, "file://".__DIR__."/out.xml");
-print file_get_contents(__DIR__."/out.xml");
-unlink(__DIR__."/out.xml");
+$file = TestPath::file();
+$doc = $proc->transformToUri($dom, "file://".$file);
+print file_get_contents($file);
 print "\n";
 ?>
 --EXPECT--

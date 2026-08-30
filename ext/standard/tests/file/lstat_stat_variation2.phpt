@@ -6,14 +6,16 @@ Test lstat() and stat() functions: usage variations - effects of rename() on dir
 
 $file_path = __DIR__;
 require("file.inc");
+$old_directory = TestPath::directory();
+$new_directory = TestPath::directory();
 
 /* create temp directory */
-mkdir("$file_path/lstat_stat_variation1/");  // temp dir
+mkdir($old_directory);  // temp dir
 
 // renaming a directory and check stat
 echo "*** Testing stat() for directory after being renamed ***\n";
-$old_dirname = "$file_path/lstat_stat_variation1";
-$new_dirname = "$file_path/lstat_stat_variation1a";
+$old_dirname = $old_directory->path;
+$new_dirname = $new_directory->path;
 $old_stat = stat($old_dirname);
 clearstatcache();
 var_dump( rename($old_dirname, $new_dirname) );
@@ -32,11 +34,6 @@ var_dump( compare_stats($old_stat, $new_stat, $keys_to_compare) );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/lstat_stat_variation1a");
 ?>
 --EXPECT--
 *** Testing stat() for directory after being renamed ***

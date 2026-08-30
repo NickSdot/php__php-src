@@ -9,7 +9,7 @@ xmlreader
 // Set up test data in a new file
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books xmlns:ns1="http://www.ns1.namespace.org/" xmlns:ns2="http://www.ns2.namespace.org/"><book ns1:num="1" ns2:idx="2" ns1:idx="3" ns2:isbn="4">book1</book></books>';
-$filename = __DIR__ . '/015-get-errors.xml';
+$filename = TestPath::file();
 file_put_contents($filename, $xmlstring);
 
 // Load test data into a new XML Reader
@@ -40,10 +40,6 @@ while ($reader->read()) {
 
 // clean up
 $reader->close();
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/015-get-errors.xml');
 ?>
 --EXPECTF--
 Deprecated: XMLReader::getAttributeNs(): Passing null to parameter #2 ($namespace) of type string is deprecated in %s on line %d

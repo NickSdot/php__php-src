@@ -7,6 +7,7 @@ display_errors=stdout
 --FILE--
 <?php
 include "include.inc";
+TestContext::useRelativeWorkspace();
 
 function run_and_output($cmd) {
     if (!defined("PHP_WINDOWS_VERSION_MAJOR")) {
@@ -24,9 +25,9 @@ function run_and_output($cmd) {
 $php = get_cgi_path();
 reset_env_vars();
 
-$filename_good = __DIR__."/012_good.test.php";
+$filename_good = TestPath::file('012_good.test.php')->path;
 $filename_good_escaped = escapeshellarg($filename_good);
-$filename_bad = __DIR__."/012_bad.test.php";
+$filename_bad = TestPath::file('012_bad.test.php')->path;
 $filename_bad_escaped = escapeshellarg($filename_bad);
 
 $code = '
@@ -57,11 +58,6 @@ run_and_output("$php -n -l $filename_bad_escaped some.unknown $filename_bad_esca
 run_and_output("$php -n -l $filename_bad_escaped $filename_bad_escaped some.unknown");
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-@unlink($filename_good);
-@unlink($filename_bad);
 ?>
 --EXPECTF--
 Array

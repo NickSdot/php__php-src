@@ -13,10 +13,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$directory = TestPath::directory();
 
 // checking stat() on directory
 echo "*** Testing lstat() on a dir after changing its access permission ***\n";
-$dirname = "$file_path/lstat_stat_variation17";
+$dirname = $directory->path;
 mkdir($dirname);
 
 $old_stat = stat($dirname);
@@ -33,11 +34,6 @@ $affected_members = array(2, 10, 'mode', 'ctime');
 var_dump( compare_stats($old_stat, $new_stat, $affected_members, "!=") );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/lstat_stat_variation17");
 ?>
 --EXPECT--
 *** Testing lstat() on a dir after changing its access permission ***

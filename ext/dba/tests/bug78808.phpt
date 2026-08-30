@@ -10,7 +10,7 @@ check_skip('lmdb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'bug78808.db';
+$db_name = TestPath::file()->path;
 
 $value = str_repeat('*', 0x100000);
 $lmdb_h = dba_open($db_name, 'c', 'lmdb', 0644, 5*1048576);
@@ -22,9 +22,3 @@ echo "done\n";
 ?>
 --EXPECT--
 done
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'bug78808.db';
-cleanup_standard_db($db_name);
-?>

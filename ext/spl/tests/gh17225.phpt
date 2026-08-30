@@ -8,7 +8,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/gh17225.phar.zip';
+$fname = TestPath::file('gh17225.phar.zip')->path;
 $phar = new Phar($fname);
 class HasDestructor {
     public function __destruct() {
@@ -21,10 +21,6 @@ register_shutdown_function(function() {
     global $s;
 });
 var_dump($phar->isLink());
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh17225.phar.zip');
 ?>
 --EXPECTF--
 bool(false)

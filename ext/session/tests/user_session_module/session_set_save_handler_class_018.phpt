@@ -8,6 +8,9 @@ session
 --FILE--
 <?php
 
+$save_path = TestPath::directory('session_set_save_handler_class_018')->create();
+session_save_path($save_path);
+
 ob_start();
 
 echo "*** Testing session_set_save_handler() function: class with validate_sid ***\n";
@@ -49,11 +52,11 @@ class MySession2 extends SessionHandler {
     }
 
     public function create_sid(): string {
-        return pathinfo(__FILE__)['filename'];
+        return pathinfo(dirname($this->path))['filename'];
     }
 
     public function validateId($id): bool {
-        return pathinfo(__FILE__)['filename']===$id;
+        return pathinfo(dirname($this->path))['filename']===$id;
     }
 }
 
@@ -70,10 +73,6 @@ session_unset();
 
 session_start();
 var_dump($_SESSION);
-?>
---CLEAN--
-<?php
-@unlink(session_save_path().'/u_sess_PHPSESSIDsession_set_save_handler_class_018');
 ?>
 --EXPECT--
 *** Testing session_set_save_handler() function: class with validate_sid ***

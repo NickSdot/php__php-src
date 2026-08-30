@@ -2,7 +2,7 @@
 Bug #69181 (READ_CSV|DROP_NEW_LINE drops newlines within fields)
 --FILE--
 <?php
-$filename = __DIR__ . "/bug69181.csv";
+$filename = TestPath::file();
 $csv = <<<CSV
 "foo\n\nbar\nbaz",qux
 
@@ -65,7 +65,3 @@ baz"
   [1]=>
   string(3) "qux"
 }
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug69181.csv");
-?>

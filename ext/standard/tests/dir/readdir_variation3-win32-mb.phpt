@@ -19,8 +19,8 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = __DIR__ . '/readdir_variation3-win32-mb';
-$path_sub = $path_top . '/私はガラスを食べられますsub_folder';
+$path_top = TestPath::directory();
+$path_sub = $path_top->directory('私はガラスを食べられますsub_folder');
 mkdir($path_top);
 mkdir($path_sub);
 
@@ -43,13 +43,6 @@ delete_files($path_top, 2);
 delete_files($path_sub, 2);
 
 closedir($dir_handle);
-?>
---CLEAN--
-<?php
-$path_top = __DIR__ . '/readdir_variation3-win32-mb';
-$path_sub = $path_top . '/私はガラスを食べられますsub_folder';
-rmdir($path_sub);
-rmdir($path_top);
 ?>
 --EXPECT--
 *** Testing readdir() : usage variations ***

@@ -7,11 +7,9 @@ mail.log = mail.log
 <?php
 date_default_timezone_set("UTC");
 
-$logfile = ini_get("mail.log");
-if (file_exists($logfile)) {
-    unlink($logfile);
-}
-touch($logfile);
+$logfile = TestPath::file('mail.log')->create();
+$outFile = TestPath::file('mail.out');
+chdir($logfile->directory);
 clearstatcache();
 
 $to = "test@example.com";
@@ -30,11 +28,6 @@ clearstatcache();
 echo file_get_contents($logfile);
 ?>
 Done
---CLEAN--
-<?php
-unlink("mail.log");
-unlink("mail.out");
-?>
 --EXPECTF--
 bool(true)
 bool(true)

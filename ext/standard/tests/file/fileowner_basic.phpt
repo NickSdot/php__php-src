@@ -2,6 +2,8 @@
 Test fileowner() function: basic functionality
 --FILE--
 <?php
+$file = TestPath::file();
+$directory = TestPath::directory();
 echo "*** Testing fileowner(): basic functionality ***\n";
 
 echo "-- Testing with the file or directory created by owner --\n";
@@ -10,27 +12,16 @@ var_dump( fileowner(".") );
 var_dump( fileowner("./..") );
 
 /* Newly created files and dirs */
-$file_path = __DIR__;
-$file_name = $file_path."/fileowner_basic.tmp";
-$file_handle = fopen($file_name, "w");
+$file_handle = fopen($file, "w");
 $string = "Hello, world\n1234\n123Hello";
 fwrite($file_handle, $string);
-var_dump( fileowner($file_name) );
+var_dump( fileowner($file) );
 fclose($file_handle);
 
-$dir_name = $file_path."/fileowner_basic";
-mkdir($dir_name);
-var_dump( fileowner($dir_name) );
+$directory->create();
+var_dump( fileowner($directory) );
 
 echo "*** Done ***\n";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$file_name = $file_path."/fileowner_basic.tmp";
-$dir_name = $file_path."/fileowner_basic";
-unlink($file_name);
-rmdir($dir_name);
 ?>
 --EXPECTF--
 *** Testing fileowner(): basic functionality ***

@@ -42,10 +42,6 @@ foreach ($h as $key => $val) {
 }
 
 ?>
---CLEAN--
-<?php
-require(__DIR__ .'/clean.inc');
-?>
 --EXPECTREGEX--
 database handler: db4
 Test 1

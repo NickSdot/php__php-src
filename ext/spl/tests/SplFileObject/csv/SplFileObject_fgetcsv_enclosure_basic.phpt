@@ -2,7 +2,8 @@
 SplFileObject::fgetcsv with alternative enclosure
 --FILE--
 <?php
-$fp = fopen('SplFileObject__fgetcsv4.csv', 'w+');
+$file = TestPath::file();
+$fp = fopen($file, 'w+');
 fputcsv(
     $fp,
     [
@@ -16,13 +17,9 @@ fputcsv(
 );
 fclose($fp);
 
-$fo = new SplFileObject('SplFileObject__fgetcsv4.csv');
+$fo = new SplFileObject($file);
 $fo->setCsvControl(escape: '');
 var_dump($fo->fgetcsv(enclosure: '"'));
-?>
---CLEAN--
-<?php
-unlink('SplFileObject__fgetcsv4.csv');
 ?>
 --EXPECTF--
 Deprecated: Method SplFileObject::setCsvControl() is deprecated since 8.6 in %s on line %d

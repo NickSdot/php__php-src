@@ -11,7 +11,7 @@ if (function_exists('openssl_sign')) die('skip requires openssl disabled for moc
 phar.require_hash=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
+$fname = TestPath::file('archive.tar')->path;
 
 function openssl_sign() {
     return str_repeat('foobar', random_int(1, 1));
@@ -25,10 +25,6 @@ try {
     echo $e->getMessage();
 }
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar');
 ?>
 --EXPECTF--
 phar error: unable to write signature to tar-based phar: unable to write phar "%s" with requested openssl signature

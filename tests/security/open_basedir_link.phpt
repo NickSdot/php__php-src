@@ -33,11 +33,6 @@ var_dump(link($target, $link));
 var_dump(unlink($link));
 test_open_basedir_after("link");
 ?>
---CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [link] ***
 bool(true)

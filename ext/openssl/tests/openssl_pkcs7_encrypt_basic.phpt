@@ -5,15 +5,9 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/cert.crt";
-$outfile = tempnam(sys_get_temp_dir(), "ssl");
-if ($outfile === false)
-    die("failed to get a temporary filename!");
-$outfile2 = tempnam(sys_get_temp_dir(), "ssl");
-if ($outfile2 === false)
-    die("failed to get a temporary filename!");
-$outfile3 = tempnam(sys_get_temp_dir(), "ssl");
-if ($outfile3 === false)
-    die("failed to get a temporary filename!");
+$outfile = TestPath::file();
+$outfile2 = TestPath::file();
+$outfile3 = TestPath::file();
 
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
@@ -41,11 +35,9 @@ var_dump(openssl_pkcs7_encrypt($infile, $outfile3, $single_cert, $headers, PKCS7
 
 if (file_exists($outfile)) {
     echo "true\n";
-    unlink($outfile);
 }
 if (file_exists($outfile2)) {
     echo "true\n";
-    unlink($outfile2);
 }
 
 if (file_exists($outfile3)) {
@@ -54,7 +46,6 @@ if (file_exists($outfile3)) {
         echo "true\n";
     }
     unset($content); 
-    unlink($outfile3);
 }
 ?>
 --EXPECT--

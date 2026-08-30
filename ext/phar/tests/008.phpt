@@ -4,18 +4,17 @@ Phar::mapPhar truncated manifest (not enough for manifest length)
 phar
 --FILE--
 <?php
+$archive = TestPath::file('archive.phar.php');
 $file = "<?php
 Phar::mapPhar('hio');
 __HALT_COMPILER(); ?>";
 $file .= pack('V', 500) . 'notenough';
-file_put_contents(__DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php', $file);
+file_put_contents($archive, $file);
 try {
-include __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.php';
+include $archive;
 } catch (Exception $e) {
 echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.php'); ?>
 --EXPECTF--
 PharException: internal corruption of phar "%s" (truncated manifest header)

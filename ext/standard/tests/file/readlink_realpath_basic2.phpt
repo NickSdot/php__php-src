@@ -9,12 +9,18 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 /* creating directories, symbolic links and files */
-$file_path = __DIR__;
-mkdir("$file_path/readlink_realpath_basic2/home/test/", 0777, true);
+$file_path = TestPath::directory();
+$root = $file_path->directory('readlink_realpath_basic2');
+$home = $root->directory('home');
+$test = $home->directory('test');
+mkdir($test, 0777, true);
 
-$file_handle1 = fopen("$file_path/readlink_realpath_basic2/home/test/readlink_realpath_basic2.tmp", "w");
-$file_handle2 = fopen("$file_path/readlink_realpath_basic2/home/readlink_realpath_basic2.tmp", "w");
-$file_handle3 = fopen("$file_path/readlink_realpath_basic2/readlink_realpath_basic2.tmp", "w");
+$file1 = $test->file('readlink_realpath_basic2.tmp');
+$file2 = $home->file('readlink_realpath_basic2.tmp');
+$file3 = $root->file('readlink_realpath_basic2.tmp');
+$file_handle1 = fopen($file1, "w");
+$file_handle2 = fopen($file2, "w");
+$file_handle3 = fopen($file3, "w");
 fclose($file_handle1);
 fclose($file_handle2);
 fclose($file_handle3);
@@ -42,16 +48,6 @@ foreach($filenames as $file) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-$name_prefix = __DIR__."/readlink_realpath_basic2";
-unlink("$name_prefix/home/test/readlink_realpath_basic2.tmp");
-unlink("$name_prefix/home/readlink_realpath_basic2.tmp");
-unlink("$name_prefix/readlink_realpath_basic2.tmp");
-rmdir("$name_prefix/home/test/");
-rmdir("$name_prefix/home/");
-rmdir("$name_prefix/");
 ?>
 --EXPECTF--
 *** Testing realpath() on filenames ***

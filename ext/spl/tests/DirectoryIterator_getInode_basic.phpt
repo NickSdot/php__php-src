@@ -16,14 +16,10 @@ if (PHP_OS_FAMILY === 'Windows') { die('SKIP Testing file inodes, not available 
 <?php
 
 //file
-mkdir('test_dir_ptfi');
-$dirIterator = new DirectoryIterator('test_dir_ptfi');
+$directory = TestPath::directory()->create();
+$dirIterator = new DirectoryIterator($directory);
 var_dump(decoct($dirIterator->getInode()));
 
-?>
---CLEAN--
-<?php
-rmdir('test_dir_ptfi');
 ?>
 --EXPECTF--
 string(%d) "%d"

@@ -6,10 +6,8 @@ openssl
 <?php
 $infile = __DIR__ . "/plain.txt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
-$encrypted = tempnam(sys_get_temp_dir(), "cms_dec_basic");
-if ($encrypted === false)
-    die("failed to get a temporary filename!");
-$outfile = $encrypted . ".out";
+$encrypted = TestPath::file();
+$outfile = TestPath::file();
 
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $headers = array("test@test", "testing openssl_cms_encrypt()");
@@ -34,11 +32,9 @@ var_dump(openssl_cms_decrypt($encrypted, $outfile, $single_cert, $empty));
 
 if (file_exists($encrypted)) {
     echo "true\n";
-    unlink($encrypted);
 }
 if (file_exists($outfile)) {
     echo "true\n";
-    unlink($outfile);
 }
 ?>
 --EXPECTF--

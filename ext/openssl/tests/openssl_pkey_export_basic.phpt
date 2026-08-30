@@ -35,13 +35,11 @@ $detailsPKey = openssl_pkey_get_details($pKey);
 var_dump(array_diff_assoc($details['ec'], $detailsPKey['ec']));
 
 // Export to file
-$tempname = tempnam(sys_get_temp_dir(), 'openssl_ec');
+$tempname = TestPath::file();
 var_dump(openssl_pkey_export_to_file($key, $tempname, NULL, $config_arg));
 $details = openssl_pkey_get_details(openssl_pkey_get_private('file://' . $tempname));
 var_dump(OPENSSL_KEYTYPE_EC === $details['type']);
 var_dump($key instanceof OpenSSLAsymmetricKey);
-// Clean the temporary file
-@unlink($tempname);
 ?>
 --EXPECTF--
 object(OpenSSLAsymmetricKey)#%d (0) {

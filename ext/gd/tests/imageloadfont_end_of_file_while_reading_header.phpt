@@ -7,7 +7,7 @@ User Group: PHP-WVL & PHPGent #PHPTestFest
 gd
 --FILE--
 <?php
-$filename = __DIR__ .  '/imageloadfont_end_of_file_while_reading_header.gdf';
+$filename = TestPath::file();
 
 // End of file while reading header
 $bin = "\x41\x41\x41\x41\x00\x00\x00\x00\x00\x00";
@@ -22,10 +22,6 @@ $fp = fopen($filename, 'wb');
 fwrite($fp, $bin);
 fclose($fp);
 $font = imageloadfont($filename);
-?>
---CLEAN--
-<?php
-unlink(__DIR__.'/imageloadfont_end_of_file_while_reading_header.gdf');
 ?>
 --EXPECTF--
 Warning: imageloadfont(): End of file while reading header in %s on line %d

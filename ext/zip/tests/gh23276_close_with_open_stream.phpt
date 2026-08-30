@@ -4,7 +4,7 @@ GH-23276 (ZipArchive dropping its archive while a stream is open leaves the obje
 zip
 --FILE--
 <?php
-$filename = __DIR__ . '/gh23276_close_with_open_stream.zip';
+$filename = TestPath::file();
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -29,10 +29,6 @@ unset($zip);
 var_dump($weakRef->get());
 var_dump(stream_get_contents($stream));
 fclose($stream);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh23276_close_with_open_stream.zip');
 ?>
 --EXPECTF--
 bool(true)

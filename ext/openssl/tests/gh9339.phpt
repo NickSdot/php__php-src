@@ -10,13 +10,9 @@ oid_file = %s
 default_bits = 1024
 CONFIG;
 
-$configFile = __DIR__ . '/gh9339.cnf';
+$configFile = TestPath::file();
 file_put_contents($configFile, sprintf($configCode,  __DIR__ . '/' . str_repeat('a', 9000)));
 openssl_pkey_new([ 'config' => $configFile ]);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh9339.cnf');
 ?>
 --EXPECTF--
 

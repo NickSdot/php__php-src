@@ -13,11 +13,6 @@ foo=foo&bar[]=1&bar[]=2
 var_dump($_POST, $_FILES);
 
 ?>
---CLEAN--
-<?php
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-@unlink($file_path);
-?>
 --EXPECT--
 array(2) {
   ["foo"]=>

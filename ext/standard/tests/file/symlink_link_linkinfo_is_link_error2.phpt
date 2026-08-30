@@ -9,12 +9,12 @@ if (PHP_OS_FAMILY === 'Windows' && PHP_ZTS) {
 --FILE--
 <?php
 // create temp $filename and create link $linkname to it
-$filename = __DIR__."/symlink_link_linkinfo_is_link_error2.tmp";
+$filename = TestPath::file();
 $fp = fopen($filename, "w");  // create temp file
 fclose($fp);
 
 // linkname used to create soft/hard link
-$linkname = __DIR__."/symlink_link_linkinfo_is_link_link_error2.tmp";
+$linkname = TestPath::file();
 
 echo "*** Testing link() for error conditions ***\n";
 
@@ -34,10 +34,6 @@ var_dump( is_link(false) );  // boolean false as linkname
 var_dump( is_link($filename) );  // file given to is_link
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/symlink_link_linkinfo_is_link_error2.tmp");
 ?>
 --EXPECTF--
 *** Testing link() for error conditions ***

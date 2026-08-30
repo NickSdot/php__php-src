@@ -23,8 +23,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = __DIR__ . '/私はガラスを食べられますscandir_variation10';
-mkdir($dir);
+$dir = TestPath::directory()->create();
 @create_files($dir, 2, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 
 // Deterministic tests.
@@ -39,12 +38,6 @@ var_dump(in_array('..', $files));
 var_dump(in_array('私はガラスを食べられますfile1.tmp', $files));
 var_dump(in_array('私はガラスを食べられますfile2.tmp', $files));
 
-delete_files($dir, 2, "私はガラスを食べられますfile");
-?>
---CLEAN--
-<?php
-$dir = __DIR__ . '/私はガラスを食べられますscandir_variation10';
-rmdir($dir);
 ?>
 --EXPECT--
 SCANDIR_SORT_ASCENDING: 0

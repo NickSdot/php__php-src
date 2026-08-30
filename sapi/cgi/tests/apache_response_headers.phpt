@@ -7,11 +7,12 @@ include "skipif.inc";
 --FILE--
 <?php
 include "include.inc";
+TestContext::useRelativeWorkspace();
 
 $php = get_cgi_path();
 reset_env_vars();
 
-$test_file = __DIR__ . DIRECTORY_SEPARATOR ."apache_response_headers.test.php";
+$test_file = TestPath::file("apache_response_headers.test.php")->path;
 
 $code  = '<?php';
 $code .= '
@@ -30,10 +31,6 @@ file_put_contents( $test_file, $code );
 
 passthru( "$php -n -q " . escapeshellarg( $test_file ) );
 
-?>
---CLEAN--
-<?php
-@unlink( __DIR__ . DIRECTORY_SEPARATOR ."apache_response_headers.test.php" );
 ?>
 --EXPECTF--
 array(3) {

@@ -34,13 +34,14 @@ mysqli.allow_local_infile=1
         printf("[003] [%d] %s\n", $link->errno, $link->error);
     }
 
-    if (FALSE == file_put_contents('bug53503.data', "1\n2\n3\n"))
+    $file = TestPath::file();
+    if (FALSE == file_put_contents($file, "1\n2\n3\n"))
         printf("[004] Failed to create CVS file\n");
 
     if (!$link->query("SELECT 1 FROM DUAL"))
         printf("[005] [%d] %s\n", $link->errno, $link->error);
 
-    if (!$link->query("LOAD DATA LOCAL INFILE 'bug53503.data' INTO TABLE test")) {
+    if (!$link->query("LOAD DATA LOCAL INFILE '$file' INTO TABLE test")) {
         printf("[006] [%d] %s\n", $link->errno, $link->error);
         echo "bug";
     } else {
@@ -62,8 +63,6 @@ if (!$link->query($link, 'DROP TABLE IF EXISTS test')) {
 }
 
 $link->close();
-
-unlink('bug53503.data');
 ?>
 --EXPECT--
 done

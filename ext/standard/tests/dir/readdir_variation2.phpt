@@ -8,8 +8,7 @@ Test readdir() function : usage variations - empty directories
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = __DIR__ . '/readdir_variation2';
-mkdir($path);
+$path = TestPath::directory()->create();
 $dir_handle = opendir($path);
 
 echo "\n-- Pass an empty directory to readdir() --\n";
@@ -27,11 +26,6 @@ usort($entries, "mysort");
 foreach($entries as $entry) {
     var_dump($entry);
 }
-?>
---CLEAN--
-<?php
-$path = __DIR__ . '/readdir_variation2';
-rmdir($path);
 ?>
 --EXPECT--
 *** Testing readdir() : usage variations ***

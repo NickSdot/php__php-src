@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_no_context_verify.pem.tmp';
-$caCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_no_context_ca.pem.tmp';
+$certFile = TestPath::file();
+$caCertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -68,11 +68,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_verify_test', $certFile
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_no_context_verify.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_no_context_ca.pem.tmp');
 ?>
 --EXPECT--
 SERVER_EXCEPTION: session_id_context must be set if session_new_cb is set

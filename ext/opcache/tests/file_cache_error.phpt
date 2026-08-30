@@ -20,10 +20,7 @@ posix_setrlimit(POSIX_RLIMIT_FSIZE, -1, -1);
 <?php
 
 // Create new file to ensure that it's not cached accross test runs
-$file = tempnam(sys_get_temp_dir(), 'file_cache_error');
-register_shutdown_function(function () use ($file) {
-    unlink($file);
-});
+$file = TestPath::file();
 file_put_contents($file, '<?php echo "OK";');
 touch($file, time() - 3600);
 

@@ -6,7 +6,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing file_put_contents() : variation ***\n";
 
-$filename = "FilePutContentsVar1.tmp";
+$filename = TestPath::file();
 
 $data = "The first string to write";
 $extra = ", followed by this";
@@ -23,11 +23,6 @@ readfile($filename);
 echo "\n";
 
 
-?>
---CLEAN--
-<?php
-$filename = "FilePutContentsVar1.tmp";
-unlink($filename);
 ?>
 --EXPECT--
 *** Testing file_put_contents() : variation ***

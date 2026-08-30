@@ -12,7 +12,7 @@ dba.default_handler=flatfile
 --FILE--
 <?php
 $handler = "flatfile";
-$db_filename = 'ini_test_default_handler.db';
+$db_filename = TestPath::file()->path;
 echo "database handler: $handler\n";
 
 echo "Test 1\n";
@@ -27,12 +27,6 @@ ini_set('dba.default_handler', '');
 
 var_dump(dba_open($db_filename, 'n'));
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'ini_test_default_handler.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 database handler: flatfile

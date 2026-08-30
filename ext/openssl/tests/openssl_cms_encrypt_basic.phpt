@@ -5,9 +5,9 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = __DIR__ . "/openssl_cms_encrypt_basic.out1";
-$outfile2 = __DIR__ . "/openssl_cms_encrypt_basic.out2";
-$outfile3 = __DIR__ . "/openssl_cms_encrypt_basic.out3";
+$outfile = TestPath::file();
+$outfile2 = TestPath::file();
+$outfile3 = TestPath::file();
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $wrongkey = "file://" . __DIR__ . "/private_rsa_2048.key";
@@ -48,12 +48,6 @@ if (file_exists($outfile3)) {
     }
     unset($content); 
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/openssl_cms_encrypt_basic.out1");
-@unlink(__DIR__ . "/openssl_cms_encrypt_basic.out2");
-@unlink(__DIR__ . "/openssl_cms_encrypt_basic.out3");
 ?>
 --EXPECT--
 bool(true)

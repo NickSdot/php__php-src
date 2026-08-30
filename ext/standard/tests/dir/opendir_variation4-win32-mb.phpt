@@ -14,18 +14,13 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$base_dir_path = __DIR__ . '/opendir_variation4-win32-mb';
-@mkdir($base_dir_path);
+$base_dir_path = TestPath::directory()->create();
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";
-$level_one_dir_path = "$base_dir_path/$level_one_dir_name";
+$level_one_dir_path = $base_dir_path->directory($level_one_dir_name)->create();
 
 $level_two_dir_name = "私はガラスを食べられますlevel_two";
-$level_two_dir_path = "$base_dir_path/$level_one_dir_name/$level_two_dir_name";
-
-// create directories
-mkdir($level_one_dir_path);
-mkdir($level_two_dir_path);
+$level_two_dir_path = $level_one_dir_path->directory($level_two_dir_name)->create();
 
 echo "\n-- \$path = './私はガラスを食べられますlevel_one': --\n";
 var_dump(chdir($base_dir_path));
@@ -62,7 +57,7 @@ clean_dh($dh);
 
 /*
  * function to remove directory handle before re-using variable name in test
- * and to ensure directory is not in use at CLEAN section so can me removed
+ * and to ensure directory is not in use so can me removed
  */
 function clean_dh($dh){
     if (is_resource($dh)) {
@@ -70,13 +65,6 @@ function clean_dh($dh){
     }
     unset($dh);
 }
-?>
---CLEAN--
-<?php
-$base_dir_path = __DIR__ . '/opendir_variation4-win32-mb';
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one/私はガラスを食べられますlevel_two");
-rmdir("$base_dir_path/私はガラスを食べられますlevel_one");
-rmdir($base_dir_path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variation ***

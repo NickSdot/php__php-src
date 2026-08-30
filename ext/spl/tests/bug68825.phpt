@@ -9,11 +9,12 @@ if (PHP_OS_FAMILY === 'Windows') {
 ?>
 --FILE--
 <?php
-$dir = __DIR__ . '/bug68825';
+TestContext::useRelativeWorkspace();
+$dir = TestPath::directory('bug68825');
 
-if (!mkdir($dir)) {
+if (!mkdir($dir->path)) {
     die('Failed to create temporary directory for testing');
-} else if (!symlink(__FILE__, $dir . '/bug')) {
+} else if (!symlink(__DIR__ . '/bug68825.php', $dir->file('bug')->path)) {
     die('Failed to create symbolic link');
 }
 
@@ -26,9 +27,3 @@ foreach ($di as $entry) {
 ?>
 --EXPECTF--
 string(%d) "%s%eext%espl%etests%ebug68825.php"
---CLEAN--
-<?php
-$dir = __DIR__ . '/bug68825';
-unlink($dir . '/bug');
-rmdir($dir);
-?>

@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_require_new_cb.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -64,10 +64,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_require_cb_test', $cert
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_require_new_cb.pem.tmp');
 ?>
 --EXPECT--
 SERVER_EXCEPTION: session_new_cb is required when session_get_cb is providedConnection failed as expected

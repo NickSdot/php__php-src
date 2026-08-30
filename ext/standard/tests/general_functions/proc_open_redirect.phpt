@@ -30,12 +30,11 @@ var_dump(stream_get_contents($pipes[1]));
 proc_close($proc);
 
 echo "\nWith filename:\n";
-$fileName = __DIR__ . '/proc_open_redirect.txt';
+$fileName = TestPath::file();
 $proc = proc_open($cmd, [1 => ['file', $fileName, 'w'], 2 => ['redirect', 1]], $pipes);
 var_dump($pipes);
 proc_close($proc);
 var_dump(file_get_contents($fileName));
-unlink($fileName);
 
 echo "\nWith file:\n";
 $file = fopen($fileName, 'w');
@@ -44,7 +43,6 @@ var_dump($pipes);
 proc_close($proc);
 fclose($file);
 var_dump(file_get_contents($fileName));
-unlink($fileName);
 
 echo "\nWith inherited stdout:\n";
 $proc = proc_open($cmd, [2 => ['redirect', 1]], $pipes);

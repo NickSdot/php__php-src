@@ -5,7 +5,7 @@ Nikita Sveshnikov (Positive Technologies)
 --FILE--
 <?php
 // Minimal PoC: corruption/uninitialized memory leak when reading APP1 via php://filter
-$file = __DIR__ . '/gh20584.jpg';
+$file = TestPath::file();
 
 // Make APP1 large enough so it is read in multiple chunks
 $chunk = 8192;
@@ -30,10 +30,6 @@ $ret = $info['APP1'];
 
 var_dump($ret === $exp);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh20584.jpg');
 ?>
 --EXPECT--
 bool(true)

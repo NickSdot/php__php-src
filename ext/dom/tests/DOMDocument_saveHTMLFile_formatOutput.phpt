@@ -11,7 +11,7 @@ if (LIBXML_VERSION >= 21300) die("skip see https://gitlab.gnome.org/GNOME/libxml
 ?>
 --FILE--
 <?php
-$filename = __DIR__."/DOMDocument_saveHTMLFile_formatOutput.html";
+$filename = TestPath::file();
 $doc = new DOMDocument('1.0');
 $doc->formatOutput = true;
 $root = $doc->createElement('html');
@@ -25,7 +25,6 @@ $text = $title->appendChild($text);
 $bytes = $doc->saveHTMLFile($filename);
 var_dump($bytes);
 echo file_get_contents($filename);
-unlink($filename);
 ?>
 --EXPECT--
 int(129)

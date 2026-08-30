@@ -7,38 +7,30 @@ Test readfile() function: usage variation - include path
 // include file.inc
 require("file.inc");
 
-$file_path = __DIR__;
-$dirname = "$file_path/readfile_variation3";
+$directory = TestPath::directory()->create();
 
 echo "*** Testing readfile(): checking second argument, include path ***\n";
-// temp dir created
-mkdir($dirname);
 // temp file name used here
-$filename = "$dirname/readfile_variation3.tmp";
+$file = $directory->file();
 // create file
-$fp = fopen($filename, "w");
+$fp = fopen($file, "w");
 fill_file($fp, "text_with_new_line", 50);
 fclose($fp);
 
-// including $dirname in 'include_path'
-ini_set('include_path',$dirname);
+// including $directory in 'include_path'
+ini_set('include_path', (string) $directory);
 // 'include_path' set to true
-$count = readfile("readfile_variation3.tmp", true);
+$count = readfile($file->name, true);
 echo "\n";
 var_dump($count);
 // use the context argument with include path
 echo "*** Testing readfile(): checking second argument, include path with context specified ***\n";
 $context = stream_context_create();
-$count = readfile("readfile_variation3.tmp", true, $context);
+$count = readfile($file->name, true, $context);
 echo "\n";
 var_dump($count);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/readfile_variation3/readfile_variation3.tmp");
-rmdir(__DIR__."/readfile_variation3");
 ?>
 --EXPECT--
 *** Testing readfile(): checking second argument, include path ***

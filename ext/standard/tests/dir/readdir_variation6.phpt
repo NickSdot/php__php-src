@@ -13,8 +13,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = __DIR__ . "/readdir_variation6";
-mkdir($dir_path);
+$dir_path = TestPath::directory()->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "readdir_variation6");
@@ -49,11 +48,6 @@ foreach ($a as $file) {
 delete_files($dir_path, 3, "readdir_variation6");
 closedir($dir_handle1);
 closedir();
-?>
---CLEAN--
-<?php
-$dir_path = __DIR__ . "/readdir_variation6";
-rmdir($dir_path);
 ?>
 --EXPECTF--
 *** Testing readdir() : usage variations ***

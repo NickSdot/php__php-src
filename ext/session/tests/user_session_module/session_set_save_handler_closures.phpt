@@ -19,8 +19,7 @@ var_dump(session_module_name(''));
 var_dump(session_module_name("blah"));
 var_dump(session_module_name("foo"));
 
-$path = __DIR__ . '/session_set_save_handler_closures';
-@mkdir($path);
+$path = TestPath::directory()->create();
 session_save_path($path);
 session_set_save_handler($open_closure, $close_closure, $read_closure, $write_closure, $destroy_closure, $gc_closure);
 
@@ -47,7 +46,6 @@ session_start();
 session_destroy();
 
 ob_end_flush();
-@rmdir($path);
 ?>
 --EXPECTF--
 *** Testing session_set_save_handler() : using closures as callbacks ***

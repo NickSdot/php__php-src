@@ -6,7 +6,9 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$archive = TestPath::file('pharfileinfo_setmetadata.phar');
+$fname = $archive->path;
+TestPath::file('pharfileinfo_setmetadata.tar');
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);
@@ -37,9 +39,6 @@ $b->delMetadata();
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 ?>
---CLEAN--
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar'); ?>
-<?php unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.tar'); ?>
 --EXPECT--
 BadMethodCallException: Phar entry is a temporary directory (not an actual entry in the archive), cannot set metadata
 BadMethodCallException: Phar entry is a temporary directory (not an actual entry in the archive), cannot delete metadata

@@ -13,29 +13,30 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 require __DIR__.'/file.inc';
 echo "*** Testing is_executable(): usage variations ***\n";
 
-$file_path = __DIR__;
-mkdir("$file_path/is_executable_variation1");
+$directory = TestPath::directory()->create();
+$file = $directory->file('bar.tmp');
+$filename = $file->name;
 
 // create a new temporary file
-$fp = fopen("$file_path/is_executable_variation1/bar.tmp", "w");
+$fp = fopen($file, "w");
 fclose($fp);
 
 /* array of files checked to see if they are executable files
    using is_executable() function */
 $files_arr = array(
-  "$file_path/is_executable_variation1/bar.tmp",
+  "$directory/$filename",
 
   /* Testing a file with trailing slash */
-  "$file_path/is_executable_variation1/bar.tmp/",
+  "$directory/$filename/",
 
   /* Testing file with double slashes */
-  "$file_path/is_executable_variation1//bar.tmp",
-  "$file_path/is_executable_variation1/*.tmp",
-  "$file_path/is_executable_variation1/b*.tmp",
+  "$directory//$filename",
+  "$directory/*.tmp",
+  "$directory/b*.tmp",
 
   /* Testing directories */
   ".",  // current directory, exp: bool(true)
-  "$file_path/is_executable_variation1"  // temp directory, exp: bool(true)
+  "$directory"  // temp directory, exp: bool(true)
 );
 $counter = 1;
 /* loop through to test each element in the above array
@@ -52,11 +53,6 @@ foreach($files_arr as $file) {
 }
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/is_executable_variation1/bar.tmp");
-rmdir(__DIR__."/is_executable_variation1/");
 ?>
 --EXPECT--
 *** Testing is_executable(): usage variations ***

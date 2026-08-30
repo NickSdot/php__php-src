@@ -6,13 +6,10 @@ if (PHP_OS_FAMILY !== "Windows") die("skip for Windows only");
 ?>
 --FILE--
 <?php
-var_dump(realpath(__DIR__ . "/gh9227.txt."));
-var_dump(file_put_contents(__DIR__ . "/gh9227.txt", "bar"));
-var_dump(realpath(__DIR__ . "/gh9227.txt."));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/gh9227.txt");
+$file = TestPath::file('gh9227.txt');
+var_dump(realpath($file . "."));
+var_dump(file_put_contents($file, "bar"));
+var_dump(realpath($file . "."));
 ?>
 --EXPECT--
 bool(false)

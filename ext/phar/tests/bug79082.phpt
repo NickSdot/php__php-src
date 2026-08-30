@@ -10,36 +10,35 @@ if (defined("PHP_WINDOWS_VERSION_MAJOR")) die("skip not for Windows")
 <?php
 umask(022);
 var_dump(decoct(umask()));
+$output = TestPath::directory();
+mkdir($output->path);
+$extracted1 = $output->file('test79082-testfile');
+$extracted2 = $output->file('test79082-testfile2');
 chmod(__DIR__ . '/test79082/test79082-testfile', 0644);
 chmod(__DIR__ . '/test79082/test79082-testfile2', 0400);
 
 foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
     clearstatcache();
-    $phar = new PharData(__DIR__ . '/test79082.' . $ext, format: $format);
+    $archive = TestPath::file('archive.' . $ext);
+    $phar = new PharData($archive->path, format: $format);
     $phar->buildFromIterator(new \RecursiveDirectoryIterator(__DIR__ . '/test79082', \FilesystemIterator::SKIP_DOTS), __DIR__ . '/test79082');
-    $phar->extractTo(__DIR__);
-    var_dump(decoct(stat(__DIR__ . '/test79082-testfile')['mode']));
-    var_dump(decoct(stat(__DIR__ . '/test79082-testfile2')['mode']));
-    unlink(__DIR__ . '/test79082-testfile');
-    unlink(__DIR__ . '/test79082-testfile2');
+    $phar->extractTo($output->path);
+    var_dump(decoct(stat($extracted1)['mode']));
+    var_dump(decoct(stat($extracted2)['mode']));
+    unlink($extracted1);
+    unlink($extracted2);
 }
 foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
     clearstatcache();
-    $phar = new PharData(__DIR__ . '/test79082-d.' . $ext, format: $format);
+    $archive = TestPath::file('archive-d.' . $ext);
+    $phar = new PharData($archive->path, format: $format);
     $phar->buildFromDirectory(__DIR__ . '/test79082');
-    $phar->extractTo(__DIR__);
-    var_dump(decoct(stat(__DIR__ . '/test79082-testfile')['mode']));
-    var_dump(decoct(stat(__DIR__ . '/test79082-testfile2')['mode']));
-    unlink(__DIR__ . '/test79082-testfile');
-    unlink(__DIR__ . '/test79082-testfile2');
+    $phar->extractTo($output->path);
+    var_dump(decoct(stat($extracted1)['mode']));
+    var_dump(decoct(stat($extracted2)['mode']));
+    unlink($extracted1);
+    unlink($extracted2);
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/test79082.tar');
-unlink(__DIR__ . '/test79082.zip');
-unlink(__DIR__ . '/test79082-d.tar');
-unlink(__DIR__ . '/test79082-d.zip');
 ?>
 --EXPECT--
 string(2) "22"

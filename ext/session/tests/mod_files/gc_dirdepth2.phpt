@@ -10,15 +10,14 @@ session.gc_maxlifetime=10
 session.use_strict_mode=0
 --FILE--
 <?php
-$base = __DIR__ . '/gc_dirdepth2_test';
-@mkdir($base);
-@mkdir("$base/a");
-@mkdir("$base/a/b");
+$base = TestPath::directory()->create();
+$level1 = $base->directory('a')->create();
+$level2 = $level1->directory('b')->create();
 
 session_save_path("2;$base");
 
 $stale_id   = 'abcdefghijklmnopqrstuvwx';
-$stale_file = "$base/a/b/sess_$stale_id";
+$stale_file = $level2->file("sess_$stale_id");
 file_put_contents($stale_file, 'user|s:5:"alice";');
 touch($stale_file, time() - 100);
 
@@ -32,14 +31,6 @@ var_dump($result);
 
 echo "expired file removed: ";
 var_dump(!file_exists($stale_file));
-?>
---CLEAN--
-<?php
-$base = __DIR__ . '/gc_dirdepth2_test';
-@unlink("$base/a/b/sess_ab000000000000000000000000");
-@rmdir("$base/a/b");
-@rmdir("$base/a");
-@rmdir($base);
 ?>
 --EXPECT--
 session_gc() return value: int(1)

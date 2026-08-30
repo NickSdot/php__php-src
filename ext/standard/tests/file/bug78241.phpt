@@ -9,7 +9,7 @@ if (PHP_INT_SIZE != 8) die('skip this test is for 64bit platforms only');
 date.timezone=UTC
 --FILE--
 <?php
-$filename = __DIR__ . '/bug78241.txt';
+$filename = TestPath::file()->path;
 for ($i = 2037; $i <= 2040; $i++) {
   $t = mktime(1, 1 , 1, 1, 1, $i);
   echo 'Date: '.date('D, d M Y H:i:s', $t), PHP_EOL;
@@ -18,10 +18,6 @@ for ($i = 2037; $i <= 2040; $i++) {
   $file = filemtime($filename);
   echo 'File: '.date('D, d M Y H:i:s', $file), PHP_EOL, PHP_EOL;
 }
-?>
---CLEAN--
-<?php
-@unlink($filename = __DIR__ . '/bug78241.txt');
 ?>
 --EXPECT--
 Date: Thu, 01 Jan 2037 01:01:01

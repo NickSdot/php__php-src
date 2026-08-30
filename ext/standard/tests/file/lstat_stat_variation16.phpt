@@ -13,8 +13,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$file = TestPath::file();
 
-$filename = "$file_path/lstat_stat_variation16.tmp";
+$filename = $file->path;
 $fp = fopen($filename, "w");  // temp file
 fclose($fp);
 
@@ -34,11 +35,6 @@ $affected_members = array(10, 'ctime');
 var_dump( compare_stats($old_stat, $new_stat, $affected_members, "!=") );
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-unlink("$file_path/lstat_stat_variation16.tmp");
 ?>
 --EXPECT--
 *** Testing lstat() on a file after changing its access permission ***

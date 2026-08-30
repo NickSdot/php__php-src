@@ -8,9 +8,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/tar_makebz2.phar.tar';
-$fname2 = __DIR__ . '/tar_makebz2.phar.tar.bz2';
-$fname3 = __DIR__ . '/tar_makebz2_b.phar.tar.bz2';
+$tarArchive = TestPath::file('archive.tar');
+$compressed = TestPath::file('archive.tar.bz2');
+$copy = TestPath::file('archive-copy.tar.bz2');
+$fname = $tarArchive->path;
+$fname2 = $compressed->path;
+$fname3 = $copy->path;
 
 $phar = new Phar($fname);
 $phar['test'] = 'hi';
@@ -23,13 +26,6 @@ $phar2 = new Phar($fname3);
 var_dump($phar2->isFileFormat(Phar::TAR));
 var_dump($phar2->isCompressed() == Phar::BZ2);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/tar_makebz2.phar.bz2');
-@unlink(__DIR__ . '/tar_makebz2.phar.tar');
-@unlink(__DIR__ . '/tar_makebz2.phar.tar.bz2');
-@unlink(__DIR__ . '/tar_makebz2_b.phar.tar.bz2');
 ?>
 --EXPECT--
 bool(true)

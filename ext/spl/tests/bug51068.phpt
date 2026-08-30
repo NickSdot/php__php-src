@@ -2,9 +2,11 @@
 SPL: glob wrapper interactions with DirectoryIterator
 --FILE--
 <?php
-touch('bug.51068');
-mkdir('bug.51068.dir');
-touch('bug.51068.dir/lvl2.bug.51068');
+TestContext::useRelativeWorkspace();
+$file = TestPath::file('bug.51068')->create();
+chdir($file->directory);
+$dir = TestPath::directory('bug.51068.dir')->create();
+$nested = $dir->file('lvl2.bug.51068')->create();
 $iter = new DirectoryIterator('glob://*.51068');
 foreach ($iter as $f) {
     var_dump($f->getFilename());
@@ -20,12 +22,6 @@ foreach ($iter as $f) {
   var_dump($f->getFilename());
   var_dump($f->getSize() >= 0);
 }
-?>
---CLEAN--
-<?php
-unlink('bug.51068');
-unlink('bug.51068.dir/lvl2.bug.51068');
-rmdir('bug.51068.dir');
 ?>
 --EXPECT--
 string(9) "bug.51068"

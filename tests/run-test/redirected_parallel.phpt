@@ -56,24 +56,24 @@ function runRedirectedTests(array $testFiles): array
     return [proc_close($process), str_replace("\r", "\n", $output)];
 }
 
-$root = __DIR__ . '/redirected_parallel_' . getmypid();
-$targets = $root . '/targets';
-mkdir($targets, recursive: true);
+$root = TestPath::directory()->create();
+$targets = $root->directory()->create();
 
-writeRedirectedTest($targets . '/one.phpt', 'redirected one');
-writeRedirectedTest($targets . '/two.phpt', 'redirected two');
+writeRedirectedTest($targets->file('one.phpt'), 'redirected one');
+writeRedirectedTest($targets->file('two.phpt'), 'redirected two');
 
-$targetExpression = var_export($targets, true);
-$redirect = $root . '/redirect.phpt';
+$targetExpression = var_export($targets->path, true);
+$redirect = $root->file('redirect.phpt');
 file_put_contents($redirect, <<<PHPT
     --TEST--
     redirect wrapper
     --REDIRECTTEST--
     return ['ENV' => [], 'TESTS' => $targetExpression];
     PHPT);
-writeRedirectedTest($root . '/companion.phpt', 'companion');
+$companion = $root->file('companion.phpt');
+writeRedirectedTest($companion, 'companion');
 
-[$singleExitCode, $singleOutput] = runRedirectedTests([$redirect]);
+[$singleExitCode, $singleOutput] = runRedirectedTests([$redirect->path]);
 if ($singleExitCode !== 0) {
     echo $singleOutput;
 }
@@ -81,8 +81,8 @@ var_dump($singleExitCode);
 var_dump(str_contains($singleOutput, 'Fatal error'));
 
 [$parallelExitCode, $parallelOutput] = runRedirectedTests([
-    $redirect,
-    $root . '/companion.phpt',
+    $redirect->path,
+    $companion->path,
 ]);
 if ($parallelExitCode !== 0) {
     echo $parallelOutput;
@@ -90,18 +90,6 @@ if ($parallelExitCode !== 0) {
 var_dump($parallelExitCode);
 var_dump(str_contains($parallelOutput, 'TEST 3/3'));
 var_dump(str_contains($parallelOutput, 'TEST 3/2'));
-?>
---CLEAN--
-<?php
-foreach (glob(__DIR__ . '/redirected_parallel_*') ?: [] as $root) {
-    foreach (glob($root . '/targets/*') ?: [] as $file) {
-        unlink($file);
-    }
-    @rmdir($root . '/targets');
-    @unlink($root . '/redirect.phpt');
-    @unlink($root . '/companion.phpt');
-    @rmdir($root);
-}
 ?>
 --EXPECT--
 int(0)

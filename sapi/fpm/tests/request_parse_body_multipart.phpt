@@ -21,15 +21,15 @@ pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 EOT;
 
-$code = <<<'EOT'
+$uploadedFile = TestPath::file();
+$code = sprintf(<<<'EOT'
 <?php
 $_POST = ['post_global'];
 $_FILES = ['files_global'];
 [$post, $files] = request_parse_body();
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-move_uploaded_file($files[0]['tmp_name'], $file_path);
-$file_content = file_get_contents($file_path);
-unlink($file_path);
+$uploadedFilePath = %s;
+move_uploaded_file($files[0]['tmp_name'], $uploadedFilePath);
+$file_content = file_get_contents($uploadedFilePath);
 echo json_encode([
     'post' => $post,
     'files' => $files,
@@ -37,7 +37,7 @@ echo json_encode([
     'post_global' => $_POST,
     'files_global' => $_FILES,
 ], JSON_PRETTY_PRINT);
-EOT;
+EOT, var_export($uploadedFile->path, true));
 
 $tester = new FPM\Tester($cfg, $code);
 $tester->start();
@@ -92,6 +92,4 @@ $tester->close();
 <?php
 require_once "tester.inc";
 FPM\Tester::clean();
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-@unlink($file_path);
 ?>

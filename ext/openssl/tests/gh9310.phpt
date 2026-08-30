@@ -10,12 +10,11 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 <?php
 include 'ServerClientTestCase.inc';
 
-$baseDir = __DIR__ . '/gh9310';
-@mkdir($baseDir);
-$baseDirCertFile = $baseDir . '/cert.crt';
-$baseDirPkFile = $baseDir . '/private.key';
-$certFile = __DIR__ . '/gh9310.crt';
-$pkFile = __DIR__ . '/gh9310.key';
+$baseDir = TestPath::directory()->create();
+$baseDirCertFile = $baseDir->file('cert.crt');
+$baseDirPkFile = $baseDir->file('private.key');
+$certFile = TestPath::file('gh9310.crt');
+$pkFile = TestPath::file('gh9310.key');
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
@@ -24,13 +23,13 @@ $certificateGenerator->saveNewCertAndKey('gh9310', $certFile, $pkFile);
 copy($certFile, $baseDirCertFile);
 copy($pkFile, $baseDirPkFile);
 
-$sniCaFile = __DIR__ . '/gh9310_sni_ca.pem.tmp';
-$sniCsFile = __DIR__ . '/gh9310_sni_cs.pem.tmp';
-$sniUkCertFile = __DIR__ . '/gh9310_sni_uk_cert.pem.tmp';
-$sniUkKeyFile = __DIR__ . '/gh9310_sni_uk_key.pem.tmp';
-$sniUsCertFile = __DIR__ . '/gh9310_sni_us_cert.pem.tmp';
-$sniUsKeyFile = __DIR__ . '/gh9310_sni_us_key.pem.tmp';
-$baseDirSniUkCertFile = $baseDir . '/sni_uk_cert.pem';
+$sniCaFile = TestPath::file();
+$sniCsFile = TestPath::file('gh9310_sni_cs.pem.tmp');
+$sniUkCertFile = TestPath::file('gh9310_sni_uk_cert.pem.tmp');
+$sniUkKeyFile = TestPath::file('gh9310_sni_uk_key.pem.tmp');
+$sniUsCertFile = TestPath::file('gh9310_sni_us_cert.pem.tmp');
+$sniUsKeyFile = TestPath::file('gh9310_sni_us_key.pem.tmp');
+$baseDirSniUkCertFile = $baseDir->file();
 
 $certificateGenerator->saveCaCert($sniCaFile);
 $certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $sniCsFile);
@@ -42,7 +41,7 @@ copy($sniUkCertFile, $baseDirSniUkCertFile);
 
 $serverCodeTemplate = <<<'CODE'
     ini_set('log_errors', 'On');
-    ini_set('open_basedir',  __DIR__ . '/gh9310');
+    ini_set('open_basedir',  '%s');
     $serverUri = "ssl://127.0.0.1:0";
     $serverFlags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN;
     $serverCtx = stream_context_create(['ssl' => [
@@ -70,7 +69,7 @@ CODE;
 
 $sniServerCodeV1 = <<<'CODE'
     ini_set('log_errors', 'On');
-    ini_set('open_basedir', __DIR__ . '/gh9310');
+    ini_set('open_basedir', '%s');
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
     $ctx = stream_context_create(['ssl' => [
         'SNI_server_certs' => [
@@ -83,11 +82,11 @@ $sniServerCodeV1 = <<<'CODE'
 
     stream_socket_accept($server);
 CODE;
-$sniServerCodeV1 = sprintf($sniServerCodeV1, $sniCsFile);
+$sniServerCodeV1 = sprintf($sniServerCodeV1, $baseDir, $sniCsFile);
 
 $sniServerCodeV2 = <<<'CODE'
     ini_set('log_errors', 'On');
-    ini_set('open_basedir', __DIR__ . '/gh9310');
+    ini_set('open_basedir', '%s');
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
     $ctx = stream_context_create(['ssl' => [
         'SNI_server_certs' => [
@@ -103,11 +102,11 @@ $sniServerCodeV2 = <<<'CODE'
 
     stream_socket_accept($server);
 CODE;
-$sniServerCodeV2 = sprintf($sniServerCodeV2, $baseDirSniUkCertFile, $sniUkKeyFile);
+$sniServerCodeV2 = sprintf($sniServerCodeV2, $baseDir, $baseDirSniUkCertFile, $sniUkKeyFile);
 
 $sniServerCodeV3 = <<<'CODE'
     ini_set('log_errors', 'On');
-    ini_set('open_basedir', __DIR__ . '/gh9310');
+    ini_set('open_basedir', '%s');
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
     $ctx = stream_context_create(['ssl' => [
         'SNI_server_certs' => [
@@ -123,7 +122,7 @@ $sniServerCodeV3 = <<<'CODE'
 
     stream_socket_accept($server);
 CODE;
-$sniServerCodeV3 = sprintf($sniServerCodeV3, $sniUsCertFile, $sniUsKeyFile);
+$sniServerCodeV3 = sprintf($sniServerCodeV3, $baseDir, $sniUsCertFile, $sniUsKeyFile);
 
 $sniClientCodeTemplate = <<<'CODE'
     $flags = STREAM_CLIENT_CONNECT;
@@ -136,16 +135,16 @@ $sniClientCodeTemplate = <<<'CODE'
     @stream_socket_client("tls://{{ ADDR }}", $errno, $errstr, 1, $flags, $ctx);
 CODE;
 
-$serverCode = sprintf($serverCodeTemplate, $baseDirCertFile . "\0test", $baseDirPkFile);
+$serverCode = sprintf($serverCodeTemplate, $baseDir, $baseDirCertFile . "\0test", $baseDirPkFile);
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 
-$serverCode = sprintf($serverCodeTemplate, $baseDirCertFile, $baseDirPkFile . "\0test");
+$serverCode = sprintf($serverCodeTemplate, $baseDir, $baseDirCertFile, $baseDirPkFile . "\0test");
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 
-$serverCode = sprintf($serverCodeTemplate, $certFile, $pkFile);
+$serverCode = sprintf($serverCodeTemplate, $baseDir, $certFile, $pkFile);
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 
-$serverCode = sprintf($serverCodeTemplate, $baseDirCertFile, $pkFile);
+$serverCode = sprintf($serverCodeTemplate, $baseDir, $baseDirCertFile, $pkFile);
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 
 $sniClientCode = sprintf($sniClientCodeTemplate, $sniCaFile, 'cs.php.net');
@@ -157,23 +156,6 @@ ServerClientTestCase::getInstance()->run($sniClientCode, $sniServerCodeV2);
 $sniClientCode = sprintf($sniClientCodeTemplate, $sniCaFile, 'us.php.net');
 ServerClientTestCase::getInstance()->run($sniClientCode, $sniServerCodeV3);
 
-?>
---CLEAN--
-<?php
-$baseDir = __DIR__ . '/gh9310';
-
-@unlink(__DIR__ . '/gh9310.crt');
-@unlink(__DIR__ . '/gh9310.key');
-@unlink($baseDir . '/cert.crt');
-@unlink($baseDir . '/private.key');
-@unlink($baseDir . '/sni_uk_cert.pem');
-@unlink(__DIR__ . '/gh9310_sni_ca.pem.tmp');
-@unlink(__DIR__ . '/gh9310_sni_cs.pem.tmp');
-@unlink(__DIR__ . '/gh9310_sni_uk_cert.pem.tmp');
-@unlink(__DIR__ . '/gh9310_sni_uk_key.pem.tmp');
-@unlink(__DIR__ . '/gh9310_sni_us_cert.pem.tmp');
-@unlink(__DIR__ . '/gh9310_sni_us_key.pem.tmp');
-@rmdir($baseDir);
 ?>
 --EXPECTF--
 PHP Warning:  stream_socket_accept(): Path for local_cert in ssl stream context option must not contain any null bytes in %s

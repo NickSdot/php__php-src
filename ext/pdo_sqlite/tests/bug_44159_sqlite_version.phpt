@@ -4,7 +4,7 @@ PDO Common: Bug #44159: SQLite variant
 pdo_sqlite
 --FILE--
 <?php
-$pdo = new PDO("sqlite:".__DIR__."/foo.db");
+$pdo = new PDO("sqlite:" . TestPath::file());
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
 try {
@@ -18,8 +18,6 @@ try {
 } catch (\TypeError $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
-
-@unlink(__DIR__."/foo.db");
 
 ?>
 --EXPECT--

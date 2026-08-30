@@ -10,17 +10,11 @@ check_skip('lmdb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_lmdb.db';
+$db_name = TestPath::file()->path;
 
 $handler = 'lmdb';
 run_standard_tests($handler, $db_name);
 
-?>
---CLEAN--
-<?php
-require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = 'dba_lmdb.db';
-cleanup_standard_db($db_name);
 ?>
 --EXPECTF--
 === RUNNING WITH FILE LOCK ===

@@ -14,12 +14,12 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $output = TestPath::file();
 
     echo "GIF to JPEG conversion: ";
-    echo imagejpeg(imagecreatefromgif($cwd . "/conv_test.gif"), $cwd . "/test_gif.jpeg") ? 'ok' : 'failed';
+    echo imagejpeg(imagecreatefromgif($cwd . "/conv_test.gif"), $output->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_gif.jpeg");
 ?>
 --EXPECT--
 GIF to JPEG conversion: ok

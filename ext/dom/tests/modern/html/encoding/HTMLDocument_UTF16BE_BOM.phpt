@@ -10,17 +10,14 @@ var_dump($dom->characterSet);
 $dom->documentElement->firstChild->nextElementSibling->textContent = "é";
 $output = $dom->saveHtml();
 echo $output, "\n";
-$dom->saveHtmlFile(__DIR__ . "/utf16be_bom_output.tmp");
-var_dump(file_get_contents(__DIR__ . "/utf16be_bom_output.tmp") === $output);
+$outputFile = TestPath::file();
+$dom->saveHtmlFile($outputFile);
+var_dump(file_get_contents($outputFile) === $output);
 
 echo "--- After changing encoding to UTF-8 ---\n";
 $dom->characterSet = "UTF-8";
 echo $dom->saveHtml(), "\n";
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/utf16be_bom_output.tmp");
 ?>
 --EXPECTF--
 string(8) "UTF-16BE"

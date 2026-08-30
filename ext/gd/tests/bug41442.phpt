@@ -25,12 +25,12 @@ $str2 = ob_get_clean();
 var_dump(imagecreatefromstring($str2));
 
 /* file */
-$file = __DIR__."/bug41442.gd2";
-imagegd2($res, $file);
-$str2 = file_get_contents($file);
+$file = TestPath::file();
+$file_path = $file->path;
+unset($file);
+imagegd2($res, $file_path);
+$str2 = file_get_contents($file_path);
 var_dump(imagecreatefromstring($str2));
-
-@unlink($file);
 
 echo "Done\n";
 ?>

@@ -15,6 +15,7 @@ die("info $HND handler used");
 
 $handler = "db4";
 require_once(__DIR__ .'/test.inc');
+$db_filename = TestPath::file();
 echo "database handler: $handler\n";
 
 echo "Test 1\n";
@@ -55,10 +56,6 @@ echo "Test 6 - query after closing 2nd object\n";
 echo dba_fetch("key1", $db_file1), "\n";
 echo dba_fetch("key2", $db_file1), "\n";
 
-?>
---CLEAN--
-<?php
-    require(__DIR__ .'/clean.inc');
 ?>
 --EXPECTF--
 database handler: db4

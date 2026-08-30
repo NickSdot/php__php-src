@@ -13,7 +13,7 @@ if (@stream_socket_client('udp://[::1]:8888') === false)
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'san_ipv6_peer_matching.pem.tmp';
+$certFile = TestPath::file();
 $san = 'IP:2001:db8:85a3:8d3:1319:8a2e:370:7348';
 
 $serverCode = <<<'CODE'
@@ -51,10 +51,6 @@ $certificateGenerator->saveNewCertAsFileWithKey(null, $certFile, null, $san);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'san_ipv6_peer_matching.pem.tmp');
 ?>
 --EXPECTF--
 resource(%d) of type (stream)

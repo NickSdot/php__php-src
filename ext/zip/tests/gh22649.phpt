@@ -4,7 +4,7 @@ GH-22649 (setCommentName/Index after addFromString should not segfault)
 zip
 --FILE--
 <?php
-$file = __DIR__ . '/gh22649.zip';
+$file = TestPath::file();
 
 @unlink($file);
 
@@ -49,7 +49,3 @@ bool(true)
 bool(true)
 string(15) "dir/entry2d.txt"
 string(15) "dir/entry3d.txt"
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh22649.zip');
-?>

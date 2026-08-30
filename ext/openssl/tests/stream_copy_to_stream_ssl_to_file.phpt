@@ -9,8 +9,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 --FILE--
 <?php
 
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_copy_ssl.pem.tmp';
-$cacertFile = __DIR__ . DIRECTORY_SEPARATOR . 'stream_copy_ssl-ca.pem.tmp';
+$certFile = TestPath::file();
+$cacertFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverCtx = stream_context_create(['ssl' => [
@@ -36,7 +36,7 @@ $clientCode = <<<'CODE'
     ]]);
     $client = stream_socket_client("ssl://{{ ADDR }}", $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $clientCtx);
 
-    $tmp = tmpfile();
+    $tmp = fopen(TestPath::file(), 'w+');
     /* If the copy offloaded the raw socket fd it would write ciphertext; the
      * decrypted plaintext proves it correctly fell back to the userspace loop. */
     $copied = stream_copy_to_stream($client, $tmp);
@@ -59,11 +59,6 @@ $certificateGenerator->saveNewCertAsFileWithKey($peerName, $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_copy_ssl.pem.tmp');
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'stream_copy_ssl-ca.pem.tmp');
 ?>
 --EXPECT--
 int(7000)

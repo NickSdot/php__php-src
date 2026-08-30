@@ -146,7 +146,7 @@ function prepareUnaryLine($op, $cmp, $operator) {
     return $line;
 }
 
-$filename = __DIR__ . DIRECTORY_SEPARATOR . 'compare_binary_operands_temp.php';
+$filename = TestPath::file();
 $file = fopen($filename, "w");
 
 fwrite($file, "<?php\n");
@@ -179,11 +179,6 @@ if($c === 0) {
 } else {
     echo "Failed: $f\n";
 }
-?>
---CLEAN--
-<?php
-$fl = __DIR__ . DIRECTORY_SEPARATOR . 'compare_binary_operands_temp.php';
-@unlink($fl);
 ?>
 --EXPECT--
 Failed: 0

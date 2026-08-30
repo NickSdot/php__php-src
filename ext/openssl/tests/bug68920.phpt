@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug68920.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -54,10 +54,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('bug68920', $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug68920.pem.tmp');
 ?>
 --EXPECTF--
 Warning: stream_socket_client(): Expected peer fingerprint must be a string or an array in %s on line %d

@@ -8,11 +8,10 @@ echo "*** Testing file_put_contents() : variation ***\n";
 
 require_once('fopen_include_path.inc');
 
-$thisTestDir = basename(__FILE__, ".php") . ".dir";
-mkdir($thisTestDir);
+$thisTestDir = TestPath::directory()->create();
 chdir($thisTestDir);
 
-$filename = basename(__FILE__, ".php") . ".tmp";
+$filename = $thisTestDir->file()->name;
 
 $newpath = create_include_path();
 set_include_path($newpath);
@@ -39,13 +38,6 @@ function runtest() {
    unlink($filename);
 }
 
-?>
---CLEAN--
-<?php
-$thisTestDir = basename(__FILE__, ".clean.php") . ".dir";
-$filename = basename(__FILE__, ".clean.php") . ".tmp";
-@unlink($filename);
-rmdir($thisTestDir);
 ?>
 --EXPECT--
 *** Testing file_put_contents() : variation ***

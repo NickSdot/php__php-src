@@ -14,25 +14,19 @@ phar.readonly=0
 open_basedir=
 --FILE--
 <?php
-mkdir(__DIR__ . '/testdir');
-file_put_contents(__DIR__ . '/testdir/1.php', str_repeat(' ', 1455));
+$directory = TestPath::directory();
+mkdir($directory->path);
+$file = $directory->file('1.php');
+file_put_contents($file, str_repeat(' ', 1455));
 
-$phar = new Phar(__DIR__ . '/compressed.phar');
-$phar->buildFromDirectory(__DIR__ . '/testdir', '/\.php$/');
+$archive = TestPath::file('compressed.phar');
+$phar = new Phar($archive->path);
+$phar->buildFromDirectory($directory->path, '/\.php$/');
 $phar->setSignatureAlgorithm(Phar::SHA1);
 $phar->compressFiles(Phar::GZ);
 $phar->decompressFiles();
 
 echo 'ok';
-?>
---CLEAN--
-<?php
-if (is_file(__DIR__ . '/testdir/1.php'))
-  unlink(__DIR__ . '/testdir/1.php');
-if (is_dir(__DIR__ . '/testdir'))
-  rmdir(__DIR__ . '/testdir');
-if (is_file(__DIR__ . '/compressed.phar'))
-  unlink(__DIR__ . '/compressed.phar');
 ?>
 --EXPECT--
 ok

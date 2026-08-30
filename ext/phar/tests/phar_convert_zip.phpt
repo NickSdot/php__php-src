@@ -8,10 +8,13 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
+$archive = TestPath::file('phar_convert_zip.phar');
+$fname = $archive->path;
 $pname = 'phar://' . $fname;
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar.zip';
+$converted = TestPath::file('phar_convert_zip.phar.zip');
+$fname2 = $converted->path;
+$copy = TestPath::file('phar_convert_zip.2.phar.zip');
+$fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;
 
@@ -35,13 +38,6 @@ copy($fname2, $fname3);
 $phar = new Phar($fname3);
 var_dump($phar->isFileFormat(Phar::ZIP));
 var_dump($phar->getStub());
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar.zip');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar.zip');
-__HALT_COMPILER();
 ?>
 --EXPECT--
 bool(false)

@@ -15,9 +15,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 echo "*** Testing dir() : open a non-existent directory ***\n";
 
 // create the temporary directory
-$file_path = __DIR__;
-$dir_path = $file_path."/dir_variation6";
-@mkdir($dir_path);
+$dir_path = TestPath::directory()->create();
 
 // open existent directory
 $d = dir($dir_path);
@@ -31,7 +29,7 @@ echo "-- opening previously removed directory --\n";
 var_dump( dir($dir_path) );
 
 // point to a non-existent directory
-$non_existent_dir = $file_path."/non_existent_dir";
+$non_existent_dir = TestPath::directory();
 echo "-- opening non-existent directory --\n";
 $d = dir($non_existent_dir);
 var_dump( $d );

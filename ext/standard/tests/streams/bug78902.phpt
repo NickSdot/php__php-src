@@ -6,7 +6,7 @@ memory_limit=2M
 <?php
 
 /** create temporary file 2mb file */
-$tmp_file_name = tempnam(sys_get_temp_dir(), 'test_');
+$tmp_file_name = TestPath::file();
 $fp = fopen($tmp_file_name, 'w+');
 $size = 1024 * 1024 * 2; // 2mb, larger than the memory limit
 $chunk = 1024;

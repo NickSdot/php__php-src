@@ -2,48 +2,37 @@
 Bug #65069: GlobIterator fails to access files inside an open_basedir restricted dir
 --FILE--
 <?php
-$file_path = __DIR__;
+$baseDirectory = TestPath::directory()->create();
 // temp dirname used here
-$dirname = "$file_path/bug65069";
-// temp dir created
-mkdir($dirname);
+$childDir = $baseDirectory->directory()->create();
 
-ini_set('open_basedir', $dirname);
+ini_set('open_basedir', $childDir->path);
 
 // temp files created
-touch("$dirname/wonder12345");
-touch("$dirname/wonder.txt");
-touch("$dirname/file.text");
+$childDir->file('wonder12345')->create();
+$childDir->file('wonder.txt')->create();
+$childDir->file('file.text')->create();
 
-$spl_glob_it = new \GlobIterator("$dirname/*.txt");
+$spl_glob_it = new \GlobIterator("$childDir/*.txt");
 foreach ($spl_glob_it as $file_info) {
     echo $file_info->getFilename() . "\n";
 }
 
-$spl_glob_it = new \GlobIterator(dirname(dirname($dirname)) . "/*/*/*");
+$spl_glob_it = new \GlobIterator(dirname(dirname($childDir)) . "/*/*/*");
 foreach ($spl_glob_it as $file_info) {
     echo $file_info->getFilename() . "\n";
 }
 
-$spl_glob_empty = new \GlobIterator("$dirname/*.php");
+$spl_glob_empty = new \GlobIterator("$childDir/*.php");
 var_dump($spl_glob_empty->count());
 
 // top directory
-var_dump(iterator_to_array(new \GlobIterator(dirname(dirname($dirname)))));
+var_dump(iterator_to_array(new \GlobIterator(dirname(dirname($childDir)))));
 
 // not existing file
-var_dump(iterator_to_array(new \GlobIterator("$file_path/bug65069-this-will-never-exists")));
+var_dump(iterator_to_array(new \GlobIterator($baseDirectory->file('this-will-never-exists'))));
 
 
-?>
---CLEAN--
-<?php
-$file_path = dirname(__FILE__);
-$dirname = "$file_path/bug65069";
-unlink("$dirname/wonder12345");
-unlink("$dirname/wonder.txt");
-unlink("$dirname/file.text");
-rmdir($dirname);
 ?>
 --EXPECT--
 wonder.txt

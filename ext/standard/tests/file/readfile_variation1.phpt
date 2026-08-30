@@ -14,7 +14,7 @@ echo "*** Testing readfile(): checking third argument ***\n";
 // creating a context
 $context = stream_context_create();
 // temp file name used here
-$filename = "$file_path/readfile_variation1.tmp";
+$filename = TestPath::file();
 
 // create file
 $fp = fopen($filename, "w");
@@ -25,10 +25,6 @@ echo "\n";
 var_dump($count);
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/readfile_variation1.tmp");
 ?>
 --EXPECT--
 *** Testing readfile(): checking third argument ***

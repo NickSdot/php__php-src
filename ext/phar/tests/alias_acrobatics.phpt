@@ -7,8 +7,8 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar';
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.2.phar';
+$fname = TestPath::file('alias_acrobatics.phar')->path;
+$fname2 = TestPath::file('alias_acrobatics.2.phar')->path;
 
 $p = new Phar($fname);
 
@@ -31,11 +31,6 @@ $b = new Phar($fname, 0, 'another');
 } catch (Exception $e) {
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.phar');
-unlink(__DIR__ . '/' . basename(__FILE__, '.clean.php') . '.2.phar');
 ?>
 --EXPECTF--
 UnexpectedValueException: alias "foo" is already used for archive "%salias_acrobatics.phar" cannot be overloaded with "%salias_acrobatics.2.phar"

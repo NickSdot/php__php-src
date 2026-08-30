@@ -24,7 +24,8 @@ function tar_symlink($name, $target) {
     return substr_replace($h, sprintf("%06o\0 ", $sum), 148, 8);
 }
 
-$tar = __DIR__ . '/gh21986.tar';
+$archive = TestPath::file('archive.tar');
+$tar = $archive->path;
 file_put_contents(
     $tar,
     tar_symlink('a.txt', 'b.txt') .
@@ -34,10 +35,6 @@ file_put_contents(
 
 $phar = new PharData($tar);
 var_dump($phar['a.txt']->getContent());
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh21986.tar');
 ?>
 --EXPECT--
 string(0) ""

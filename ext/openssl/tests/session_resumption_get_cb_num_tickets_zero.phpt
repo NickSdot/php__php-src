@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_no_tickets_zero.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $sessionStore = [];
@@ -98,10 +98,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_no_tickets_zero_test', 
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_no_tickets_zero.pem.tmp');
 ?>
 --EXPECT--
 Client first connection resumed: no

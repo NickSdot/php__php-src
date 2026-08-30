@@ -9,7 +9,7 @@ if (!method_exists('ZipArchive', 'setEncryptionName')) die('skip encryption not 
 --FILE--
 <?php
 
-$name = __DIR__ . '/encrypted.zip';
+$name = TestPath::file('encrypted.zip');
 $pass = 'secret';
 
 echo "== Write\n";
@@ -42,11 +42,6 @@ $ctx = stream_context_create(array('zip' => array('password' => $pass)));
 var_dump(file_get_contents("zip://$name#bar.txt", false, $ctx)); // Ecnrypted, ok
 ?>
 == Done
---CLEAN--
-<?php
-$name = __DIR__ . '/encrypted.zip';
-@unlink($name);
-?>
 --EXPECTF--
 == Write
 bool(false)

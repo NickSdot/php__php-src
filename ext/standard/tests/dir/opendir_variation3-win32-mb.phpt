@@ -14,8 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$path = __DIR__ . "/私はガラスを食べられますopendir_variation3";
-mkdir($path);
+$path = TestPath::directory('私はガラスを食べられますopendir_variation3')->create();
 
 echo "\n-- Open directory first time: --\n";
 var_dump($dh1 = opendir($path));
@@ -31,11 +30,6 @@ if ($dh1 !== $dh2) {
 
 closedir($dh1);
 closedir($dh2);
-?>
---CLEAN--
-<?php
-$path = __DIR__ . "/私はガラスを食べられますopendir_variation3";
-rmdir($path);
 ?>
 --EXPECTF--
 *** Testing opendir() : usage variation ***

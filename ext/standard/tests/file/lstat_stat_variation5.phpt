@@ -13,11 +13,12 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
+$directory = TestPath::directory();
 
 
 /* create temp directory */
 
-$dir_name = "$file_path/lstat_stat_variation5";
+$dir_name = $directory->path;
 @rmdir($dir_name);  //ensure that dir doesn't exists
 mkdir($dir_name);  // temp dir
 
@@ -41,11 +42,6 @@ var_dump( compare_stats($old_stat, $new_stat, $affected_members, "<") );
 clearstatcache();
 
 echo "\n--- Done ---";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-rmdir("$file_path/lstat_stat_variation5");
 ?>
 --EXPECT--
 *** Testing stat() for directory after using touch() on the directory ***

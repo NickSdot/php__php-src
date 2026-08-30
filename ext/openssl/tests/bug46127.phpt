@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'bug46127.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";
@@ -45,10 +45,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('bug46127', $certFile);
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'bug46127.pem.tmp');
 ?>
 --EXPECT--
 Sending bug 46127

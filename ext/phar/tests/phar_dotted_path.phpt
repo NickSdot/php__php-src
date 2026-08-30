@@ -9,10 +9,12 @@ phar.require_hash=0
 --FILE--
 <?php
 
-$dir = __DIR__ . '/broken.dirname';
+$directory = TestPath::directory('broken.dirname');
+$dir = $directory->path;
 mkdir($dir, 0777);
 
-$fname = $dir . '/dotted_path.phar';
+$archive = $directory->file('dotted_path.phar');
+$fname = $archive->path;
 $stub = Phar::createDefaultStub();
 $file = $stub;
 
@@ -28,11 +30,6 @@ foreach ($phar as $entry) {
     echo file_get_contents($entry)."\n";
 }
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/broken.dirname/dotted_path.phar');
-rmdir(__DIR__ . '/broken.dirname');
 ?>
 --EXPECT--
 this is a
