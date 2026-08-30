@@ -10,12 +10,11 @@ include('inc/config.inc');
 
 $conn = pg_connect($conn_str);
 
-$file_name = tempnam('.', 'trace.log');
+$file_name = TestPath::file();
 pg_trace($file_name, 'w', $conn);
 pg_query($conn, 'select 1 as a');
 pg_untrace($conn);
 $items = explode("\n", file_get_contents($file_name));
-unlink($file_name);
 echo isset($items[0]) ? 'OK' : 'FAIL';
 
 ?>
