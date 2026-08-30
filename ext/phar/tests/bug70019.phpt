@@ -5,19 +5,14 @@ phar
 zlib
 --FILE--
 <?php
-$dir = __DIR__."/bug70019";
+$dir = TestPath::directory();
+$extracted = $dir->file('ThisIsATestFile.txt');
 $phar = new PharData(__DIR__."/bug70019.zip");
 if(!is_dir($dir)) {
-  mkdir($dir);
+  mkdir($dir->path);
 }
-$phar->extractTo($dir);
-var_dump(file_exists("$dir/ThisIsATestFile.txt"));
-?>
---CLEAN--
-<?php
-$dir = __DIR__."/bug70019";
-unlink("$dir/ThisIsATestFile.txt");
-rmdir($dir);
+$phar->extractTo($dir->path);
+var_dump(file_exists($extracted));
 ?>
 --EXPECT--
 bool(true)

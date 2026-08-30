@@ -13,33 +13,30 @@ if (PHP_OS_FAMILY === 'Windows') {
 ?>
 --FILE--
 <?php
-mkdir(__DIR__ . '/bug81211');
-mkdir(__DIR__ . '/bug81211/foobar');
-mkdir(__DIR__ . '/bug81211/foo');
+$root = TestPath::directory('bug81211');
+$targetDir = $root->directory('foobar');
+$fooDir = $root->directory('foo');
+mkdir($root->path);
+mkdir($targetDir->path);
+mkdir($fooDir->path);
 
-file_put_contents(__DIR__ . '/bug81211/foobar/file', 'this file should NOT be included in the archive!');
-symlink(__DIR__ . '/bug81211/foobar/file', __DIR__ . '/bug81211/foo/symlink');
+$targetFile = $targetDir->file('file');
+$link = $fooDir->file('symlink');
+file_put_contents($targetFile, 'this file should NOT be included in the archive!');
+symlink($targetFile->path, $link->path);
 
-$archive = new PharData(__DIR__ . '/bug81211/archive.tar');
+$archiveFile = $root->file('archive.tar');
+$archive = new PharData($archiveFile->path);
 try {
-    $archive->buildFromDirectory(__DIR__ . '/bug81211/foo');
+    $archive->buildFromDirectory($fooDir->path);
 } catch (UnexpectedValueException $ex) {
     echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
 try {
-    $archive->buildFromIterator(new RecursiveDirectoryIterator(__DIR__ . '/bug81211/foo', FilesystemIterator::SKIP_DOTS), __DIR__ . '/bug81211/foo');
+    $archive->buildFromIterator(new RecursiveDirectoryIterator($fooDir->path, FilesystemIterator::SKIP_DOTS), $fooDir->path);
 } catch (UnexpectedValueException $ex) {
     echo $ex::class, ': ', $ex->getMessage(), PHP_EOL;
 }
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/bug81211/archive.tar');
-@unlink(__DIR__ . '/bug81211/foo/symlink');
-@unlink(__DIR__ . '/bug81211/foobar/file');
-@rmdir(__DIR__ . '/bug81211/foo');
-@rmdir(__DIR__ . '/bug81211/foobar');
-@rmdir(__DIR__ . '/bug81211');
 ?>
 --EXPECTF--
 UnexpectedValueException: Iterator RecursiveIteratorIterator returned a path "%s%ebug81211%efoobar%efile" that is not in the base directory "%s%ebug81211%efoo"

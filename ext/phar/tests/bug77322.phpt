@@ -4,19 +4,16 @@ Bug #77322 (PharData::addEmptyDir('/') Possible integer overflow)
 phar
 --FILE--
 <?php
-$zip = new PharData(__DIR__ . '/bug77322.zip');
+$zipArchive = TestPath::file('archive.zip');
+$zip = new PharData($zipArchive->path);
 $zip->addEmptyDir('/');
 var_dump($zip->count());
 
-$tar = new PharData(__DIR__ . '/bug77322.tar');
+$tarArchive = TestPath::file('archive.tar');
+$tar = new PharData($tarArchive->path);
 $tar->addEmptyDir('/');
 var_dump($tar->count());
 ?>
 --EXPECT--
 int(1)
 int(1)
---CLEAN--
-<?php
-unlink(__DIR__ . '/bug77322.zip');
-unlink(__DIR__ . '/bug77322.tar');
-?>

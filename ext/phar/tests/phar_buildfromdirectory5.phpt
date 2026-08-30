@@ -8,30 +8,26 @@ phar.readonly=0
 --FILE--
 <?php
 
-mkdir(__DIR__.'/testdir5');
+$directory = TestPath::directory('testdir5');
+mkdir($directory->path);
+$files = [];
 foreach(range(1, 4) as $i) {
-    file_put_contents(__DIR__."/testdir5/file$i.txt", "some content for file $i");
+    $files[$i] = $directory->file("file$i.txt");
+    file_put_contents($files[$i], "some content for file $i");
 }
 
 try {
-    $phar = new Phar(__DIR__ . '/buildfromdirectory5.phar');
-    $a = $phar->buildFromDirectory(__DIR__ . '/testdir5', '/\.txt/');
+    $archive = TestPath::file('buildfromdirectory5.phar');
+    $phar = new Phar($archive->path);
+    $a = $phar->buildFromDirectory($directory->path, '/\.txt/');
     asort($a);
     var_dump($a);
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-var_dump(file_exists(__DIR__ . '/buildfromdirectory5.phar'));
+var_dump(file_exists($archive));
 
-?>
---CLEAN--
-<?php
-unlink(__DIR__ . '/buildfromdirectory5.phar');
-foreach(range(1, 4) as $i) {
-    unlink(__DIR__ . "/testdir5/file$i.txt");
-}
-rmdir(__DIR__ . '/testdir5');
 ?>
 --EXPECTF--
 array(4) {
