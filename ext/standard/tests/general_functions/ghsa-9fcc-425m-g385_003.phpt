@@ -13,7 +13,8 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%0%'"
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file_path = __DIR__ . '/ghsa-9fcc-425m-g385_003.bat';
+$batch_file = TestPath::file('ghsa-9fcc-425m-g385_003.bat');
+$batch_file_path = $batch_file->path;
 
 file_put_contents($batch_file_path, $batch_file_content);
 
@@ -544,7 +545,3 @@ Testing 254
 bool(false)
 Testing 255
 bool(false)
---CLEAN--
-<?php
-@unlink(__DIR__ . '/ghsa-9fcc-425m-g385_003.bat');
-?>

@@ -17,7 +17,8 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%0%'"
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file_path = __DIR__ . '/ghsa-9fcc-425m-g385_002.bat';
+$batch_file = TestPath::file('ghsa-9fcc-425m-g385_002.bat');
+$batch_file_path = $batch_file->path;
 
 file_put_contents($batch_file_path, $batch_file_content);
 
@@ -63,7 +64,3 @@ Warning: proc_open(): CreateProcess failed: The system cannot find the file spec
 Warning: proc_open(): CreateProcess failed: The system cannot find the file specified in %s on line %d
 
 Warning: proc_open(): CreateProcess failed: The system cannot find the file specified in %s on line %d
---CLEAN--
-<?php
-@unlink(__DIR__ . '/ghsa-9fcc-425m-g385_002.bat');
-?>

@@ -19,7 +19,7 @@ function writeAndDump($fp, $format, $args)
 echo "*** Testing vfprintf() : basic functionality ***\n";
 
 // Open handle
-$file = 'vfprintf_basic.txt';
+$file = TestPath::file('vfprintf_basic.txt');
 $fp = fopen( $file, "a+" );
 
 // Test vfprintf()
@@ -34,13 +34,6 @@ writeAndDump( $fp, "Testing %b %d %f %s %x %X", array( 9, 6, 2.5502, "foobar", 1
 
 // Close handle
 fclose( $fp );
-
-?>
---CLEAN--
-<?php
-
-$file = 'vfprintf_basic.txt';
-unlink( $file );
 
 ?>
 --EXPECT--

@@ -3,7 +3,7 @@ Bug #41445 (parse_ini_file() function parses octal numbers in section names) - 2
 --FILE--
 <?php
 
-$file = __DIR__."/bug41445_1.ini";
+$file = TestPath::file('bug41445_1.ini');
 
 $data = <<<DATA
 [2454.33]
@@ -20,8 +20,6 @@ file_put_contents($file, $data);
 
 var_dump(parse_ini_file($file, TRUE));
 var_dump(parse_ini_file($file));
-
-@unlink($file);
 
 echo "Done\n";
 ?>
