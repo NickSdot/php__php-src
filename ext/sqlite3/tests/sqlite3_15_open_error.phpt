@@ -16,8 +16,7 @@ if (posix_geteuid() == 0) {
 ?>
 --FILE--
 <?php
-$unreadable = __DIR__ . '/unreadable.db';
-touch($unreadable);
+$unreadable = TestPath::touch();
 chmod($unreadable,  0200);
 try {
     $db = new SQLite3($unreadable);
@@ -25,7 +24,6 @@ try {
     echo $e . "\n";
 }
 echo "Done\n";
-unlink($unreadable);
 ?>
 --EXPECTF--
 Exception: Unable to open database: %s in %ssqlite3_15_open_error.php:%d

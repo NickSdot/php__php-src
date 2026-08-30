@@ -5,14 +5,13 @@ sqlite3
 --FILE--
 <?php
 
-$db_file = __DIR__ . DIRECTORY_SEPARATOR . '私はガラスを食べられます.db';
+$db_file = TestPath::file('私はガラスを食べられます.db');
 $db = new SQLite3($db_file);
 //require_once(__DIR__ . '/new_db.inc');
 
 var_dump($db);
 var_dump($db->close());
 
-unlink($db_file);
 echo "Done\n";
 ?>
 --EXPECTF--
