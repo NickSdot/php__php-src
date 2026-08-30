@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different integer format types with strings ***\n";
 
 // create a file
-$filename = TestPath::file('fscanf_variation6.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

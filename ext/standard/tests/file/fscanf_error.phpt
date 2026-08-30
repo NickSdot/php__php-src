@@ -5,7 +5,7 @@ Test fscanf() function: error conditions
 echo "*** Testing fscanf() for error conditions ***\n";
 $file_path = __DIR__;
 
-$filename = TestPath::file('fscanf_error.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, 'w');
 if ($file_handle == false)
   exit("Error:failed to open file $filename");

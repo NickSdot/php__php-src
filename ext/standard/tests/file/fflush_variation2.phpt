@@ -18,7 +18,7 @@ $file_types = array("empty", "numeric", "text", "text_with_new_line", "alphanume
 $file_modes = array("w", "wb", "wt", "w+", "w+b", "w+t",
                     "a", "ab", "at", "a+","a+b", "a+t");
 
-$file_name = TestPath::file('fflush_variation2.tmp');
+$file_name = TestPath::file();
 $symlink_name = TestPath::file('symlnk_fflush_variation2.tmp');
 
 $count = 1;

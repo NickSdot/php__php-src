@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Testing fscanf(): for its return type without third argument ***\n";
 
 // create a file
-$filename = TestPath::file('fscanf_variation1.tmp');
+$filename = TestPath::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

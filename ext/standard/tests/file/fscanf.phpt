@@ -3,7 +3,7 @@ fscanf() tests
 --FILE--
 <?php
 
-$filename = TestPath::file('fscanf.dat');
+$filename = TestPath::file();
 
 file_put_contents($filename, "data");
 
