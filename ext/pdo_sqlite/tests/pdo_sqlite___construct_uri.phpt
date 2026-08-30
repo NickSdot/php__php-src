@@ -4,8 +4,8 @@ PDO_sqlite: PDO->__construct() - URI
 pdo_sqlite
 --FILE--
 <?php
-$dsnFile = __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite___construct_uri.dsn";
-$dbFile = __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite___construct_uri.db";
+$dsnFile = TestPath::file('database.dsn');
+$dbFile = TestPath::file();
 file_put_contents($dsnFile, "sqlite:{$dbFile}");
 
 clearstatcache();
@@ -32,11 +32,6 @@ try {
 clearstatcache();
 var_dump(file_exists($dbFile));
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite___construct_uri.dsn");
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite___construct_uri.db");
 ?>
 --EXPECTF--
 bool(false)
