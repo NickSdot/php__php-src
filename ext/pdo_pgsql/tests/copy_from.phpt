@@ -29,9 +29,9 @@ for($i=0;$i<3;$i++) {
     $tableRowsWithDifferentNullValues[] = "{$firstParameter};{$secondParameter};NULL";
     $tableRowsWithDifferentNullValuesAndSelectedFields[] = "{$firstParameter};NULL";
 }
-$filename = 'test_pgsqlCopyFromFile.csv';
-$filenameWithDifferentNullValues = 'test_pgsqlCopyFromFileWithDifferentNullValues.csv';
-$filenameWithDifferentNullValuesAndSelectedFields = 'test_pgsqlCopyFromFileWithDifferentNullValuesAndSelectedFields.csv';
+$filename = TestPath::file();
+$filenameWithDifferentNullValues = TestPath::file();
+$filenameWithDifferentNullValuesAndSelectedFields = TestPath::file();
 
 file_put_contents($filename, implode("\n",$tableRows));
 file_put_contents($filenameWithDifferentNullValues, implode("\n",$tableRowsWithDifferentNullValues));
@@ -120,10 +120,6 @@ try {
 }
 $db->rollback();
 
-// Clean up
-foreach (array($filename, $filenameWithDifferentNullValues, $filenameWithDifferentNullValuesAndSelectedFields) as $f) {
-    @unlink($f);
-}
 ?>
 --CLEAN--
 <?php
