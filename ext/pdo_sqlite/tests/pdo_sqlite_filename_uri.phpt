@@ -16,26 +16,19 @@ $db = new PDO('sqlite:file::memory:?cache=shared');
 var_dump($db->exec('SELECT * from test_sqlite_filename_uri'));
 
 // create with default read-write|create mode
-$filename = "file:" . __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite_filename_uri.db";
+$filename = 'file:' . TestPath::file();
 
 $db = new PDO('sqlite:' . $filename);
 
 var_dump($db->exec('CREATE TABLE test_sqlite_filename_uri (id INT);'));
 
 // create with readonly mode
-$filename = "file:" . __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite_filename_uri.db?mode=ro";
+$filename .= '?mode=ro';
 
 $db = new PDO('sqlite:' . $filename);
 
 var_dump($db->exec('CREATE TABLE test_sqlite_filename_uri_2 (id INT);'));
 
-?>
---CLEAN--
-<?php
-$filename = __DIR__ . DIRECTORY_SEPARATOR . "pdo_sqlite_filename_uri.db";
-if (file_exists($filename)) {
-    unlink($filename);
-}
 ?>
 --EXPECTF--
 int(0)
