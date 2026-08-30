@@ -12,7 +12,7 @@ if (PHP_OS_FAMILY === "Windows") {
 WSDL
 --FILE--
 <?php
-$wsdlFile = __DIR__ . '/test_handle_non_existent_wsdl_from_get_query.wsdl';
+$wsdlFile = TestPath::file('test.wsdl');
 
 $wsdl = <<<'WSDL'
 <?xml version="1.0" ?>
@@ -75,11 +75,6 @@ unlink($wsdlFile);
 
 $server->handle();
 
-?>
---CLEAN--
-<?php
-$wsdlFile = __DIR__ . '/test_handle_non_existent_wsdl_from_get_query.wsdl';
-@unlink($wsdlFile);
 ?>
 --EXPECT--
 <?xml version="1.0" encoding="UTF-8"?>
