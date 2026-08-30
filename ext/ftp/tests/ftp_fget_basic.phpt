@@ -15,7 +15,7 @@ if (!$ftp) die("Couldn't connect to the server");
 var_dump(ftp_login($ftp, 'user', 'pass'));
 
 //test simple text transfer
-$fp = tmpfile();
+$fp = fopen(TestPath::file(), 'w+');
 var_dump(ftp_fget($ftp, $fp ,'a story.txt', FTP_ASCII));
 fseek($fp, 0);
 echo fgets($fp);
