@@ -3,12 +3,9 @@ SPL: RecursiveDirectoryIterator::hasChildren() follow symlinks test
 --FILE--
 <?php
 
-TestContext::useRelativeWorkspace();
-$dir = TestPath::directory('symlinktest');
+$dir = TestPath::directory()->create();
 
-if (!mkdir($dir->path)) {
-    die('Failed to create temporary directory for testing');
-} elseif (!symlink(__DIR__, $dir->file('symlink')->path)) {
+if (!symlink(__DIR__, $dir->file('symlink'))) {
     die('Failed to create symbolic link');
 }
 
