@@ -21,15 +21,10 @@ file data
 
 var_dump($_POST, $_FILES);
 
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
+$file_path = TestPath::file('put_multipart_uploaded_file.txt')->path;
 move_uploaded_file($_FILES['file_name']['tmp_name'], $file_path);
 var_dump(file_get_contents($file_path));
 
-?>
---CLEAN--
-<?php
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-@unlink($file_path);
 ?>
 --EXPECTF--
 array(1) {
