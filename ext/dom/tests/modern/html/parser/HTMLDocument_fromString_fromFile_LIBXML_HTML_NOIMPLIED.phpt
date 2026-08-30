@@ -11,10 +11,11 @@ function test(string $html) {
     echo $output, "\n";
 
     // Also test the loadHTMLFile variation. We won't print out the result, just checking the result is the same.
-    $temp = fopen(__DIR__."/DOM_HTMLDocument_loadHTML_LIBXML_HTML_NOIMPLIED_input.tmp", "w");
+    $file = TestPath::file();
+    $temp = fopen($file, "w");
     fwrite($temp, $html);
     fclose($temp);
-    $dom = Dom\HTMLDocument::createFromFile(__DIR__."/DOM_HTMLDocument_loadHTML_LIBXML_HTML_NOIMPLIED_input.tmp", LIBXML_HTML_NOIMPLIED | LIBXML_NOERROR);
+    $dom = Dom\HTMLDocument::createFromFile($file, LIBXML_HTML_NOIMPLIED | LIBXML_NOERROR);
     var_dump($output === $dom->saveHtml());
 }
 
@@ -38,10 +39,6 @@ echo "--- Missing nothing ---\n";
 test("<html><head><title>x</title></head><!-- foo --><body><p>foo</p></body></html>");
 echo "--- Malformed document ---\n";
 test("<!-- start --><body><head><html>foo</html></head></body><!-- end -->");
-?>
---CLEAN--
-<?php
-@unlink(__DIR__."/DOM_HTMLDocument_loadHTML_LIBXML_HTML_NOIMPLIED_input.tmp");
 ?>
 --EXPECT--
 --- Missing html, head, body ---

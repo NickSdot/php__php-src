@@ -25,10 +25,12 @@ echo "=== serialize SimpleXML ===\n";
 
 echo $sxe->saveXML(), "\n";
 echo $sxe->foo->saveXML(), "\n";
-$sxe->asXML(__DIR__ . "/namespace_sxe_interaction1.xml");
-$sxe->foo->asXML(__DIR__ . "/namespace_sxe_interaction2.xml");
-echo file_get_contents(__DIR__ . "/namespace_sxe_interaction1.xml"), "\n";
-echo file_get_contents(__DIR__ . "/namespace_sxe_interaction2.xml"), "\n";
+$output1 = TestPath::file();
+$output2 = TestPath::file();
+$sxe->asXML($output1);
+$sxe->foo->asXML($output2);
+echo file_get_contents($output1), "\n";
+echo file_get_contents($output2), "\n";
 
 echo "=== serialize DOM ===\n";
 
@@ -41,11 +43,6 @@ $new_dom = Dom\XMLDocument::createEmpty();
 $new_dom->append($new_dom->importNode($dom->documentElement, true));
 echo $new_dom->saveXML(), "\n";
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/namespace_sxe_interaction1.xml");
-@unlink(__DIR__ . "/namespace_sxe_interaction2.xml");
 ?>
 --EXPECT--
 namespace c: string(5) "urn:c"

@@ -25,13 +25,10 @@ HTML;
 
 \Dom\HTMLDocument::createFromString($html);
 
-file_put_contents(__DIR__ . '/gh17486.tmp', $html);
-\Dom\HTMLDocument::createFromFile(__DIR__ . '/gh17486.tmp');
+$file = TestPath::file();
+file_put_contents($file, $html);
+\Dom\HTMLDocument::createFromFile($file);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/gh17486.tmp');
 ?>
 --EXPECTF--
 Warning: Dom\HTMLDocument::createFromString(): tokenizer error null-character-reference in Entity, line: 7, column: 9 in %s on line %d
