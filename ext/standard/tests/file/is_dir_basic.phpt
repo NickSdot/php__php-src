@@ -9,7 +9,7 @@ clearstatcache();
 var_dump( is_dir(".") );
 var_dump( is_dir(__FILE__) );  // expected: bool(false)
 
-$dir_name = $file_path."/is_dir_basic";
+$dir_name = TestPath::directory()->path;
 mkdir($dir_name);
 var_dump( is_dir($dir_name) );
 
@@ -18,12 +18,6 @@ var_dump( is_bool( is_dir($file_path) ) );
 var_dump( is_bool( is_dir("/no/such/dir") ) );
 
 echo "*** Done ***";
-?>
---CLEAN--
-<?php
-$file_path = __DIR__;
-$dir_name = $file_path."/is_dir_basic";
-rmdir($dir_name);
 ?>
 --EXPECT--
 *** Testing is_dir(): basic functionality ***

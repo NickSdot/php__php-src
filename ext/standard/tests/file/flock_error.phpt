@@ -11,7 +11,7 @@ Description: PHP supports a portable way of locking complete files
 
 echo "*** Testing error conditions ***\n";
 
-$file = preg_replace("~\.phpt?$~", '.tmp', __FILE__);
+$file = TestPath::file()->path;
 $fp = fopen($file, "w");
 
 /* array of operations */
@@ -46,11 +46,6 @@ try {
 } catch (TypeError $e) {
     echo $e->getMessage(), "\n";
 }
-?>
---CLEAN--
-<?php
-$file = __DIR__."/flock_error.tmp";
-unlink($file);
 ?>
 --EXPECT--
 *** Testing error conditions ***

@@ -9,24 +9,13 @@ if (posix_getpwuid(1000) === false) die('skip no user with uid 1000')
 ?>
 --FILE--
 <?php
-$link = __DIR__ . "/bug74357link";
-$dir = __DIR__ . "bug74357dir";
-
-if (is_link($link)) {
-    unlink($link);
-}
-if (!is_dir($dir)) {
-    mkdir($dir);
-}
-symlink($dir, $link);
+$link = TestPath::file()->path;
+$dir = TestPath::directory();
+mkdir($dir);
+symlink($dir->path, $link);
 lchown($link, 1000);
 var_dump(lstat($link)['uid']);
 
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . "/bug74357link");
-@rmdir(__DIR__ . "bug74357dir");
 ?>
 --EXPECT--
 int(1000)

@@ -24,7 +24,7 @@ $list = array (
   15 => 'aaa"aaa""",bbb',
 );
 
-$file = __DIR__ . '/fputcsv_variation15.csv';
+$file = TestPath::file()->path;
 
 $fp = fopen($file, "w");
 foreach ($list as $v) {
@@ -49,11 +49,6 @@ fclose($fp);
 
 echo '$list = ';var_export($res);echo ";\n";
 
-?>
---CLEAN--
-<?php
-$file = __DIR__ . '/fputcsv_variation15.csv';
-@unlink($file);
 ?>
 --EXPECT--
 $list = array (

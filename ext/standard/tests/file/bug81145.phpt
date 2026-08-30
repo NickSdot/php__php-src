@@ -17,8 +17,8 @@ if (PHP_OS_FAMILY !== "Windows") {
 all
 --FILE--
 <?php
-$src = __DIR__ . "/bug81145_src.bin";
-$dst = __DIR__ . "/bug81145_dst.bin";
+$src = TestPath::file()->path;
+$dst = TestPath::file()->path;
 define('SIZE_4G', 0x100000000);
 
 //Create file and append random content at the 4GB boundary
@@ -46,8 +46,6 @@ fclose($f2);
 ?>
 --CLEAN--
 <?php
-@unlink(__DIR__ . "/bug81145_src.bin");
-@unlink(__DIR__ . "/bug81145_dst.bin");
 ?>
 --EXPECT--
 Identical
