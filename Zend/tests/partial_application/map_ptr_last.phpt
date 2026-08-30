@@ -33,14 +33,15 @@ if ($pid) {
     /* Increment ZSCG(map_ptr_last) enough to mandate a realloc in other processes.
      * We do so by compiling many functions that are guaranteed to allocate a map_ptr. */
 
-    $fd = fopen(TestPath::file('map_ptr_last.inc')->path, 'w');
+    $file = TestPath::file();
+    $fd = fopen($file->path, 'w');
     fwrite($fd, "<?php\n");
     for ($i = 0; $i < 4096; $i++) {
         fprintf($fd, "function pfa_map_ptr_flood_%05d(\$obj) { return \$obj->prop; }\n", $i);
     }
     fclose($fd);
 
-    require TestPath::file('map_ptr_last.inc')->path;
+    require $file->path;
 
     /* Compile a PFA */
     get_pfa()('ReflectionClass');
