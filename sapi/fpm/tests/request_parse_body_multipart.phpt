@@ -26,10 +26,9 @@ $code = <<<'EOT'
 $_POST = ['post_global'];
 $_FILES = ['files_global'];
 [$post, $files] = request_parse_body();
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
+$file_path = '{{FILE_PATH}}';
 move_uploaded_file($files[0]['tmp_name'], $file_path);
 $file_content = file_get_contents($file_path);
-unlink($file_path);
 echo json_encode([
     'post' => $post,
     'files' => $files,
@@ -38,6 +37,9 @@ echo json_encode([
     'files_global' => $_FILES,
 ], JSON_PRETTY_PRINT);
 EOT;
+
+$file_path = TestPath::file();
+$code = str_replace('{{FILE_PATH}}', (string) $file_path, $code);
 
 $tester = new FPM\Tester($cfg, $code);
 $tester->start();
@@ -92,6 +94,4 @@ $tester->close();
 <?php
 require_once "tester.inc";
 FPM\Tester::clean();
-$file_path = __DIR__ . '/put_multipart_uploaded_file.txt';
-@unlink($file_path);
 ?>
