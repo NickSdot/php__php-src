@@ -2,7 +2,7 @@
 convert filters (base64, quoted-printable) with seek to start only
 --FILE--
 <?php
-$file = __DIR__ . '/convert_filters_seek.txt';
+$file = TestPath::file()->path;
 
 $text = 'Hello World! This is a test for convert filter seeking functionality.';
 
@@ -52,10 +52,6 @@ $result = fseek($fp, 20, SEEK_SET);
 echo "Seek to middle: " . ($result === 0 ? "SUCCESS" : "FAILURE") . "\n";
 
 fclose($fp);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/convert_filters_seek.txt');
 ?>
 --EXPECTF--
 Testing convert.base64-encode/decode
