@@ -12,24 +12,20 @@ error_log_mode=0600
 --FILE--
 <?php
 
-const LOG_FILENAME='error_permissions_test.log';
+$logFile = TestPath::file();
+ini_set('error_log', $logFile->path);
+
+$oldMask = umask(0000);
 
 try {
-    if (file_exists(LOG_FILENAME)) {
-        unlink(LOG_FILENAME);
-    }
-    $oldMask = umask(0000);
-
     error_log("hello world");
 
-    assert(file_exists(LOG_FILENAME));
+    assert(file_exists($logFile));
 
-    printf("got permissions=%o\n", fileperms(LOG_FILENAME) & 0777);
-    printf("errorlog contents\n%s", file_get_contents(LOG_FILENAME));
-
-    umask($oldMask);
+    printf("got permissions=%o\n", fileperms($logFile) & 0777);
+    printf("errorlog contents\n%s", file_get_contents($logFile));
 } finally {
-    unlink(LOG_FILENAME);
+    umask($oldMask);
 }
 ?>
 --EXPECTF--
