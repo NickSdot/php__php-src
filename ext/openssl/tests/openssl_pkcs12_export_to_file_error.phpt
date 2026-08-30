@@ -4,7 +4,7 @@ openssl_pkcs12_export_to_file() error tests
 openssl
 --FILE--
 <?php
-$pkcsfile = __DIR__ . "/openssl_pkcs12_export_to_file__pkcsfile.tmp";
+$pkcsfile = TestPath::file();
 
 $cert_file = __DIR__ . "/public.crt";
 $cert = file_get_contents($cert_file);
@@ -18,13 +18,6 @@ $pass = 'test';
 var_dump(openssl_pkcs12_export_to_file($cert, $pkcsfile, null, $pass));
 var_dump(openssl_pkcs12_export_to_file($cert, $pkcsfile, $wrong_priv, $pass));
 var_dump(openssl_pkcs12_export_to_file($cert, '.', $priv, $pass));
-?>
---CLEAN--
-<?php
-$pkcsfile = __DIR__ . "/openssl_pkcs12_export_to_file__pkcsfile.tmp";
-if (file_exists($pkcsfile)) {
-    unlink($pkcsfile);
-}
 ?>
 --EXPECTF--
 Warning: openssl_pkcs12_export_to_file(): Cannot get private key from parameter 3 in %s on line %d

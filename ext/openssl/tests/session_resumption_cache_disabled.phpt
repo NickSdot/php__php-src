@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'session_cache_disabled.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -74,10 +74,6 @@ $certificateGenerator->saveNewCertAsFileWithKey('session_disabled_test', $certFi
 
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'session_cache_disabled.pem.tmp');
 ?>
 --EXPECT--
 No cache connection 1

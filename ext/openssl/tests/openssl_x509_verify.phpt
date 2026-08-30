@@ -5,8 +5,8 @@ openssl
 --FILE--
 <?php
 
-$certFile = __DIR__ . '/openssl-x509-verify-cert.pem.tmp';
-$keyFile = __DIR__ . '/openssl-x509-verify-key.pem.tmp';
+$certFile = TestPath::file();
+$keyFile = TestPath::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator(true);
@@ -30,11 +30,6 @@ var_dump(openssl_x509_verify($cert, ""));
 var_dump(openssl_x509_verify("", ""));
 var_dump(openssl_x509_verify(openssl_x509_read($a), $b));
 var_dump(openssl_x509_verify($cert, $wrongKey));
-?>
---CLEAN--
-<?php
-@unlink(__DIR__ . '/openssl-x509-verify-cert.pem.tmp');
-@unlink(__DIR__ . '/openssl-x509-verify-key.pem.tmp');
 ?>
 --EXPECT--
 int(1)

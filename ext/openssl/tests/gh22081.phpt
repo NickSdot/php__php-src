@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = __DIR__ . DIRECTORY_SEPARATOR . 'gh22081-server-reneg-nonblocking.pem.tmp';
+$certFile = TestPath::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
@@ -63,14 +63,9 @@ $certificateGenerator->saveNewCertAsFileWithKey('gh22081-server-reneg-nonblockin
 include 'ServerClientTestCase.inc';
 ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
 ?>
---CLEAN--
-<?php
-@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'gh22081-server-reneg-nonblocking.pem.tmp');
-?>
 --EXPECT--
 ok 0
 ok 1
 ok 2
 ok 3
 ok 4
-
