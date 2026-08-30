@@ -15,27 +15,27 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $gd1 = TestPath::file();
+    $gd2 = TestPath::file();
+    $png1 = TestPath::file();
+    $png2 = TestPath::file();
 
     echo "PNG to GD1 conversion: ";
-    echo imagegd(imagecreatefrompng($cwd . "/conv_test.png"), $cwd . "/test_png.gd1") ? 'ok' : 'failed';
+    echo imagegd(imagecreatefrompng($cwd . "/conv_test.png"), $gd1->path) ? 'ok' : 'failed';
     echo "\n";
 
     echo "PNG to GD2 conversion: ";
-    echo imagegd2(imagecreatefrompng($cwd . "/conv_test.png"), $cwd . "/test_png.gd2") ? 'ok' : 'failed';
+    echo imagegd2(imagecreatefrompng($cwd . "/conv_test.png"), $gd2->path) ? 'ok' : 'failed';
     echo "\n";
 
     echo "GD1 to PNG conversion: ";
-    echo imagepng(imagecreatefromgd($cwd . "/test_png.gd1"), $cwd . "/test_gd1.png") ? 'ok' : 'failed';
+    echo imagepng(imagecreatefromgd($gd1), $png1->path) ? 'ok' : 'failed';
     echo "\n";
 
     echo "GD2 to PNG conversion: ";
-    echo imagepng(imagecreatefromgd2($cwd . "/test_png.gd2"), $cwd . "/test_gd2.png") ? 'ok' : 'failed';
+    echo imagepng(imagecreatefromgd2($gd2), $png2->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_png.gd1");
-    @unlink($cwd . "/test_png.gd2");
-    @unlink($cwd . "/test_gd1.png");
-    @unlink($cwd . "/test_gd2.png");
 ?>
 --EXPECT--
 PNG to GD1 conversion: ok

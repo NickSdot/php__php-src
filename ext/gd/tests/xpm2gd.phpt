@@ -15,17 +15,17 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $gd1 = TestPath::file();
+    $gd2 = TestPath::file();
 
     echo "XPM to GD1 conversion: ";
-    echo imagegd(imagecreatefromxpm($cwd . "/conv_test.xpm"), $cwd . "/test_xpm.gd1") ? 'ok' : 'failed';
+    echo imagegd(imagecreatefromxpm($cwd . "/conv_test.xpm"), $gd1->path) ? 'ok' : 'failed';
     echo "\n";
 
     echo "XPM to GD2 conversion: ";
-    echo imagegd2(imagecreatefromxpm($cwd . "/conv_test.xpm"), $cwd . "/test_xpm.gd2") ? 'ok' : 'failed';
+    echo imagegd2(imagecreatefromxpm($cwd . "/conv_test.xpm"), $gd2->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_xpm.gd1");
-    @unlink($cwd . "/test_xpm.gd2");
 ?>
 --EXPECT--
 XPM to GD1 conversion: ok

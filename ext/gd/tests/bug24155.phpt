@@ -10,13 +10,12 @@ gd
 ?>
 --FILE--
 <?php
-    $dest = dirname(realpath(__FILE__)) . '/bug24155.png';
-    @unlink($dest);
+    $dest = TestPath::file();
 
     $im = imagecreatetruecolor(30, 50);
     imagefill($im, 0, 0, (16777215 - 255));
     $im = imagerotate($im, 270, 255);
-    imagepng($im, $dest);
+    imagepng($im, $dest->path);
 
     $im2 = imagecreatefrompng($dest);
 
@@ -25,7 +24,6 @@ gd
     // 16777215 - 255 = 16776960
     echo "$col\n";
 
-    @unlink($dest);
 ?>
 --EXPECT--
 16776960

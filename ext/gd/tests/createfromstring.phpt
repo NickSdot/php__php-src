@@ -8,14 +8,15 @@ gd
 ?>
 --FILE--
 <?php
-$dir = __DIR__;
+$truecolor_file = TestPath::file();
+$palette_file = TestPath::file();
 
 $im = imagecreatetruecolor(5,5);
 imagefill($im, 0,0, 0xffffff);
 imagesetpixel($im, 3,3, 0x0);
-imagepng($im, $dir . '/tc.png');
+imagepng($im, $truecolor_file->path);
 
-$im_string = file_get_contents(__DIR__ . '/tc.png');
+$im_string = file_get_contents($truecolor_file);
 $im = imagecreatefromstring($im_string);
 echo 'createfromstring truecolor png: ';
 if (imagecolorat($im, 3,3) != 0x0) {
@@ -24,7 +25,6 @@ if (imagecolorat($im, 3,3) != 0x0) {
     echo 'ok';
 }
 echo "\n";
-unlink($dir . '/tc.png');
 
 
 
@@ -33,9 +33,9 @@ $c1 = imagecolorallocate($im, 255,255,255);
 $c2 = imagecolorallocate($im, 255,0,0);
 imagefill($im, 0,0, $c1);
 imagesetpixel($im, 3,3, $c2);
-imagepng($im, $dir . '/p.png');
+imagepng($im, $palette_file->path);
 
-$im_string = file_get_contents(__DIR__ . '/p.png');
+$im_string = file_get_contents($palette_file);
 $im = imagecreatefromstring($im_string);
 
 echo'createfromstring palette png: ';
@@ -48,7 +48,6 @@ if ($c['red'] != 255 || $c['green'] != 0 || $c['blue'] != 0) {
     echo 'ok';
 }
 echo "\n";
-unlink($dir . '/p.png');
 
 
 //empty string

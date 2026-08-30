@@ -4,12 +4,12 @@ imagewbmp
 gd
 --FILE--
 <?php
-$file = __DIR__ . '/im私はガラスを食べられます.wbmp';
+$file = TestPath::file();
 
 $im = imagecreatetruecolor(6,6);
 imagefill($im, 0,0, 0xffffff);
 imagesetpixel($im, 3,3, 0x0);
-imagewbmp($im, $file);
+imagewbmp($im, $file->path);
 
 $im2 = imagecreatefromwbmp($file);
 echo 'test create wbmp: ';
@@ -22,7 +22,6 @@ foreach ($c as $v) {
 }
 echo !$failed ? 'ok' : 'failed';
 echo "\n";
-unlink($file);
 ?>
 --EXPECT--
 test create wbmp: ok

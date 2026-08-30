@@ -14,12 +14,12 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $output = TestPath::file();
 
     echo "XBM to PNG conversion: ";
-    echo imagepng(imagecreatefromxbm($cwd . "/conv_test.xbm"), $cwd . "/test_xbm.png") ? 'ok' : 'failed';
+    echo imagepng(imagecreatefromxbm($cwd . "/conv_test.xbm"), $output->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_xbm.png");
 ?>
 --EXPECT--
 XBM to PNG conversion: ok

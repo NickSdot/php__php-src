@@ -8,7 +8,7 @@ gd
 ?>
 --FILE--
 <?php
-$filename = __DIR__ . '/_tmp_createfromwbmp2.wbmp';
+$filename = TestPath::file();
 $fp = fopen($filename,"wb");
 if (!$fp) {
     exit("Failed to create <$filename>");
@@ -40,7 +40,6 @@ for ($i=0; $i<10000; $i++) {
 
 fclose($fp);
 $im = imagecreatefromwbmp($filename);
-unlink($filename);
 ?>
 --EXPECTF--
 Warning: imagecreatefromwbmp(): Product of memory allocation multiplication would exceed INT_MAX, failing operation gracefully

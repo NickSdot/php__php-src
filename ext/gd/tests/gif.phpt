@@ -11,9 +11,8 @@ gd
 --FILE--
 <?php
 
-function check_box($r,$g,$b, $error=0) {
-    $cwd = __DIR__;
-    $im2 = imagecreatefromgif($cwd . '/test_gif.gif');
+function check_box($gif, $r,$g,$b, $error=0) {
+    $im2 = imagecreatefromgif($gif);
 
     $c = imagecolorsforindex($im2, imagecolorat($im2, 8,8));
 
@@ -42,12 +41,14 @@ function check_box($r,$g,$b, $error=0) {
     }
 }
 $cwd = __DIR__;
+$gif = TestPath::file();
+$gif2 = TestPath::file();
 
 $im = imagecreate(10,10);
 $c = imagecolorallocate($im, 255,255,255);
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
-if (check_box(255,255,255)) {
+imagegif($im, $gif->path);
+if (check_box($gif, 255,255,255)) {
     echo "<4 cols: ok\n";
 }
 
@@ -56,9 +57,9 @@ for ($i=0; $i<7; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<8 cols: ok\n";
 }
 
@@ -68,9 +69,9 @@ for ($i=0; $i<15; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<16 cols: ok\n";
 }
 
@@ -80,9 +81,9 @@ for ($i=0; $i<31; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<32 cols: ok\n";
 }
 
@@ -92,9 +93,9 @@ for ($i=0; $i<63; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<64 cols: ok\n";
 }
 
@@ -103,9 +104,9 @@ for ($i=0; $i<127; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<128 cols: ok\n";
 }
 
@@ -114,24 +115,22 @@ for ($i=0; $i<255; $i++) {
     $c = imagecolorallocate($im, $i,$i,$i);
 }
 imagefilledrectangle($im, 5,5, 10,10, $c);
-imagegif($im, $cwd . '/test_gif.gif');
+imagegif($im, $gif->path);
 $i--;
-if (check_box($i,$i,$i)) {
+if (check_box($gif, $i,$i,$i)) {
         echo "<256 cols: ok\n";
 }
 
 
 $im = imagecreatefromjpeg($cwd . '/conv_test.jpg');
 imagefilledrectangle($im, 5,5, 10,10, 0xffffff);
-imagegif($im, $cwd . '/test_gif.gif');
-imagegif($im, $cwd . '/test_gif_2.gif');
+imagegif($im, $gif->path);
+imagegif($im, $gif2->path);
 
-if (check_box(255,255,255, 10)) {
+if (check_box($gif, 255,255,255, 10)) {
     echo ">256 cols: ok\n";
 }
 
-@unlink($cwd . "/test_gif.gif");
-@unlink($cwd . "/test_gif_2.gif");
 ?>
 --EXPECT--
 <4 cols: ok

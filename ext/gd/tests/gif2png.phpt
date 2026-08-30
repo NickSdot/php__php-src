@@ -14,12 +14,12 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
+    $output = TestPath::file();
 
     echo "GIF to PNG conversion: ";
-    echo imagepng(imagecreatefromgif($cwd . "/conv_test.gif"), $cwd . "/test_gif.png") ? 'ok' : 'failed';
+    echo imagepng(imagecreatefromgif($cwd . "/conv_test.gif"), $output->path) ? 'ok' : 'failed';
     echo "\n";
 
-    @unlink($cwd . "/test_gif.png");
 ?>
 --EXPECT--
 GIF to PNG conversion: ok
