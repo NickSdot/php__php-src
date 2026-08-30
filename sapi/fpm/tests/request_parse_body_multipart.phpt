@@ -26,9 +26,9 @@ $code = <<<'EOT'
 $_POST = ['post_global'];
 $_FILES = ['files_global'];
 [$post, $files] = request_parse_body();
-$file_path = '{{FILE_PATH}}';
-move_uploaded_file($files[0]['tmp_name'], $file_path);
-$file_content = file_get_contents($file_path);
+$uploadedFilePath = '{{FILE_PATH}}';
+move_uploaded_file($files[0]['tmp_name'], $uploadedFilePath);
+$file_content = file_get_contents($uploadedFilePath);
 echo json_encode([
     'post' => $post,
     'files' => $files,
@@ -38,8 +38,8 @@ echo json_encode([
 ], JSON_PRETTY_PRINT);
 EOT;
 
-$file_path = TestPath::file();
-$code = str_replace('{{FILE_PATH}}', (string) $file_path, $code);
+$uploadedFile = TestPath::file();
+$code = str_replace('{{FILE_PATH}}', $uploadedFile->path, $code);
 
 $tester = new FPM\Tester($cfg, $code);
 $tester->start();

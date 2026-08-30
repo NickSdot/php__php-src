@@ -16,8 +16,7 @@ if (posix_geteuid() == 0) {
 ?>
 --FILE--
 <?php
-$unreadable = TestPath::touch();
-chmod($unreadable,  0200);
+$unreadable = TestPath::touch(permissions: 0200);
 try {
     $db = new SQLite3($unreadable);
 } catch (Exception $e) {
