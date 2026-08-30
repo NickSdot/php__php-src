@@ -17,7 +17,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = TestPath::directory('scandir_variation10')->path;
+$dir = TestPath::directory('scandir_variation10');
 mkdir($dir);
 @create_files($dir, 2);
 

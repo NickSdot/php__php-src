@@ -2,7 +2,7 @@
 Test opendir() function : basic functionality
 --FILE--
 <?php
-$base_dir_path = TestPath::directory('opendir_basic')->path;
+$base_dir_path = TestPath::directory('opendir_basic');
 /*
  * Test basic functionality of opendir() with absolute and relative paths as $path argument
  */

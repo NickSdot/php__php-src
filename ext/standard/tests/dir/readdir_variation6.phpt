@@ -13,7 +13,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory('readdir_variation6')->path;
+$dir_path = TestPath::directory('readdir_variation6');
 mkdir($dir_path);
 
 // create files within the temporary directory

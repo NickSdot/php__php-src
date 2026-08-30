@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = TestPath::directory('opendir_basic-mb')->path;
+$base_dir_path = TestPath::directory('opendir_basic-mb');
 @mkdir($base_dir_path);
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";

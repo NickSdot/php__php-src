@@ -2,7 +2,7 @@
 Test opendir() function : usage variations - open a directory twice
 --FILE--
 <?php
-$path = TestPath::directory('opendir_variation3')->path;
+$path = TestPath::directory('opendir_variation3');
 /*
  * Call opendir() twice with the same directory as $path argument
  */

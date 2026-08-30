@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "*** Testing closedir() : usage variations ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = TestPath::directory('closedir_variation2-mb')->path;
+$directory = TestPath::directory('closedir_variation2-mb');
 mkdir($directory);
 
 $dh = opendir($directory);

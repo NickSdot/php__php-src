@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$path = TestPath::directory('opendir_variation3-mb')->path;
+$path = TestPath::directory('opendir_variation3-mb');
 mkdir($path);
 
 echo "\n-- Open directory first time: --\n";

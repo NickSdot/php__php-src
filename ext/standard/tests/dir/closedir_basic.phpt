@@ -8,7 +8,7 @@ Test closedir() function : basic functionality
 
 echo "*** Testing closedir() : basic functionality ***\n";
 
-$dir_path = TestPath::directory('closedir_basic')->path;
+$dir_path = TestPath::directory('closedir_basic');
 mkdir($dir_path);
 
 echo "\n-- Call closedir() with no arguments: --\n";

@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing rewinddir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('rewinddir_variation2-mb')->path;
+$dir_path = TestPath::directory('rewinddir_variation2-mb');
 mkdir($dir_path);
 
 echo "\n-- Create the directory handle, read and close the directory --\n";

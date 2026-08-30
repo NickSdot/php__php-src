@@ -12,7 +12,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 $workspace = TestPath::directory();
 mkdir($workspace);
 chdir($workspace);
-$base = TestPath::directory(str_repeat('x', max(1, 261 - strlen($workspace->path))));
+$base = TestPath::directory(str_repeat('x', max(1, 261 - strlen($workspace))));
 
 $f0 = "$base/_test/documents/projects/myproject/vendor/name/library/classpath";
 $f1 = "$f0/../../../../../../../../_test/documents/projects/myproject/vendor/name/library/../../../../../../../_test/documents/projects/myproject/vendor/name/library/classpath";

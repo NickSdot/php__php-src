@@ -17,7 +17,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 // create the temporary directories
 $dir_path = TestPath::directory('scandir_variation6');
 $sub_dir_path = $dir_path->directory('sub_dir1');
-$file_path = dirname($dir_path->path);
+$file_path = dirname($dir_path);
 
 mkdir($dir_path);
 mkdir($sub_dir_path);

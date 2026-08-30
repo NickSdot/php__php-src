@@ -30,7 +30,7 @@ echo "-- opening previously removed directory --\n";
 var_dump( dir($dir_path) );
 
 // point to a non-existent directory
-$non_existent_dir = dirname($dir_path->path) . "/non_existent_dir";
+$non_existent_dir = dirname($dir_path) . "/non_existent_dir";
 echo "-- opening non-existent directory --\n";
 $d = dir($non_existent_dir);
 var_dump( $d );

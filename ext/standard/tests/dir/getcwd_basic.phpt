@@ -9,7 +9,7 @@ Test getcwd() function : basic functionality
 echo "*** Testing getcwd() : basic functionality ***\n";
 
 //create temporary directory for test, removed in CLEAN section
-$directory = TestPath::directory('getcwd_basic')->path;
+$directory = TestPath::directory('getcwd_basic');
 mkdir($directory);
 
 var_dump(getcwd());
