@@ -12,7 +12,7 @@ require __DIR__ . '/../skipif_root.inc';
 
 $context = stream_context_create();
 
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 
 echo "\n*** Testing mkdir() and rmdir() by giving stream context as fourth argument ***\n";
 var_dump( mkdir("$file_path/mkdir_variation2/test/", 0777, true, $context) );
@@ -42,11 +42,6 @@ var_dump( mkdir("$file_path/mkdir_variation2/test1", 0777, true) );
 var_dump( chmod("$file_path/mkdir_variation2/", 0777) );  // chmod to enable removing test1 directory
 
 echo "Done\n";
-?>
---CLEAN--
-<?php
-rmdir(__DIR__."/mkdir_variation2/test/");
-rmdir(__DIR__."/mkdir_variation2/");
 ?>
 --EXPECTF--
 *** Testing mkdir() and rmdir() by giving stream context as fourth argument ***

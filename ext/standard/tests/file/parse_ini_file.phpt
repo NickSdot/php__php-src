@@ -2,7 +2,7 @@
 Test parse_ini_file() function
 --FILE--
 <?php
-$file_path = __DIR__;
+$file_path = TestPath::directory();
 
 $parse_string = <<<EOD
 ; Comment starts with semi-colon(;)
@@ -192,25 +192,22 @@ Key18 = null
 ; end of ini file
 EOD;
 /* creating parse.ini file */
-$file_handle = fopen($file_path."/parse.ini", "w");
+$parse_file = TestPath::file('parse.ini');
+$file_handle = fopen($parse_file, "w");
 fwrite($file_handle, $parse_string);
 fclose($file_handle);
 
 echo "*** Test parse_ini_file() function:  with various keys and values given in parse.ini file ***\n";
 echo "-- ini file without process_sections optional arg --\n";
 define('BIRD', 'Humming bird');
-$ini_array = parse_ini_file($file_path."/parse.ini");
+$ini_array = parse_ini_file($parse_file);
 print_r($ini_array);
 
 echo "\n-- ini file with process_sections as TRUE --\n";
-$ini_array = parse_ini_file($file_path."/parse.ini", TRUE);
+$ini_array = parse_ini_file($parse_file, TRUE);
 print_r($ini_array);
 
 echo "*** Done **\n";
-?>
---CLEAN--
-<?php
-unlink(__DIR__."/parse.ini");
 ?>
 --EXPECT--
 *** Test parse_ini_file() function:  with various keys and values given in parse.ini file ***
