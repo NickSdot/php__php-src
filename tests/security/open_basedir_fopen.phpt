@@ -26,10 +26,6 @@ var_dump(fopen("../ok/./ok.txt", "r"));
 test_open_basedir_after("fopen");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [fopen] ***
 bool(true)

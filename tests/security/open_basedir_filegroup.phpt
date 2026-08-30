@@ -8,10 +8,6 @@ require_once "open_basedir.inc";
 test_open_basedir("filegroup");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [filegroup] ***
 bool(true)

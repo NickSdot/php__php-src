@@ -8,10 +8,6 @@ require_once "open_basedir.inc";
 test_open_basedir("glob");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [glob] ***
 bool(true)

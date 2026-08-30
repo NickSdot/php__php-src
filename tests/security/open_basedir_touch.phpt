@@ -26,10 +26,6 @@ var_dump(touch("../ok/./ok.txt"));
 test_open_basedir_after("touch");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [touch] ***
 bool(true)

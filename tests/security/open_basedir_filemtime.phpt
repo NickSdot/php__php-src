@@ -8,10 +8,6 @@ require_once "open_basedir.inc";
 test_open_basedir("filemtime");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [filemtime] ***
 bool(true)

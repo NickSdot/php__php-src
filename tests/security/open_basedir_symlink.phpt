@@ -40,10 +40,6 @@ var_dump(unlink($symlink));
 test_open_basedir_after("symlink");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [symlink] ***
 bool(true)

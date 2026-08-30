@@ -19,10 +19,6 @@ var_dump(ini_set("error_log", $initdir."/test/ok/ok.txt"));
 test_open_basedir_after("error_log");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [error_log] ***
 bool(true)

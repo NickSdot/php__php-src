@@ -17,10 +17,6 @@ var_dump(unlink($initdir."/test/bad/bad.txt"));
 test_open_basedir_after("unlink");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [unlink] ***
 bool(true)

@@ -13,10 +13,6 @@ var_dump(disk_free_space($initdir."/test/ok"));
 test_open_basedir_after("disk_free_space");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [disk_free_space] ***
 bool(true)

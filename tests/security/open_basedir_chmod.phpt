@@ -28,10 +28,6 @@ chmod($initdir."/test/ok/ok.txt", 0777);
 test_open_basedir_after("chmod");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [chmod] ***
 bool(true)

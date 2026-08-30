@@ -33,10 +33,6 @@ var_dump(unlink($file));
 test_open_basedir_after("tempnam");
 ?>
 --CLEAN--
-<?php
-require_once "open_basedir.inc";
-delete_directories();
-?>
 --EXPECTF--
 *** Testing open_basedir configuration [tempnam] ***
 bool(true)
