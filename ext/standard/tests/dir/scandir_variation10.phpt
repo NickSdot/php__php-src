@@ -31,8 +31,6 @@ var_dump(in_array('.', $files));
 var_dump(in_array('..', $files));
 var_dump(in_array('file1.tmp', $files));
 var_dump(in_array('file2.tmp', $files));
-
-delete_files($dir, 2);
 ?>
 --EXPECT--
 SCANDIR_SORT_ASCENDING: 0

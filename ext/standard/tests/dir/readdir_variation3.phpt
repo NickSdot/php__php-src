@@ -13,10 +13,8 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = TestPath::directory();
-$path_sub = $path_top->directory('sub_folder');
-mkdir($path_top);
-mkdir($path_sub);
+$path_top = TestPath::directory()->create();
+$path_sub = $path_top->directory('sub_folder')->create();
 
 create_files($path_top, 2);
 create_files($path_sub, 2);

@@ -43,8 +43,6 @@ try {
     echo $e->getMessage(), "\n";
 }
 
-// delete temp files
-delete_files($dir_path, 3, "私はガラスを食べられますdir_basic", 1, ".tmp");
 echo "Done";
 ?>
 --EXPECTF--

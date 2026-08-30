@@ -10,9 +10,7 @@ is a very common test
 for all languages
 
 EOT;
-$dirname = TestPath::directory('readgzfile_basic2_temp');
-$filename = $dirname.'/readgzfile_basic2.txt';
-mkdir($dirname);
+$filename = TestPath::file();
 $h = fopen($filename, 'w');
 fwrite($h, $plaintxt);
 fclose($h);

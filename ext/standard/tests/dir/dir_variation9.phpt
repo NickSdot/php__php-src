@@ -17,21 +17,15 @@ echo "*** Testing dir() : checking with valid and invalid paths ***\n";
 
 /* create the temporary directories */
 
-$dir_path1 = TestPath::directory('dir_variation91');
-$dir_path2 = TestPath::directory('dir_variation92');
+$dir_path1 = TestPath::directory('dir_variation91')->create();
+$dir_path2 = TestPath::directory('dir_variation92')->create();
 
 // directory dir_variation91 with one sub-directory sub_dir11 and sub-sub-directory sub_dir111
-$sub_dir11 = $dir_path1->directory('sub_dir11');
-$sub_dir111 = $sub_dir11->directory('sub_dir111');
+$sub_dir11 = $dir_path1->directory('sub_dir11')->create();
+$sub_dir11->directory('sub_dir111')->create();
 
 // directory dir_variation92 with one sub-directory sub_dir21
-$sub_dir21 = $dir_path2->directory('sub_dir21');
-
-@mkdir($dir_path1);
-@mkdir($dir_path2);
-@mkdir($sub_dir11);
-@mkdir($sub_dir111);
-@mkdir($sub_dir21);
+$dir_path2->directory('sub_dir21')->create();
 
 // open the directory with valid paths
 echo "\n-- With valid paths --\n";

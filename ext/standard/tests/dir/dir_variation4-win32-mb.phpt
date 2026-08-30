@@ -38,8 +38,6 @@ var_dump( $d->read() ); // with previous handle
 echo "-- reading directory contents with current handle --\n";
 var_dump( $e->read() ); // with current handle
 
-// delete temporary files
-delete_files($dir_path, 3, "私はガラスを食べられますdir_variation4");
 echo "Done";
 ?>
 --EXPECTF--

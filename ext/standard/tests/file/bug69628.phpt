@@ -9,18 +9,15 @@ if (!defined('GLOB_BRACE')) {
 --FILE--
 <?php
 
-$directory = TestPath::directory('bug69628');
-$dirname = $directory->path;
-
 // temp dir created
-mkdir($dirname);
+$directory = TestPath::directory('bug69628')->create();
 
 // temp files created
-file_put_contents($directory->file('image.jPg'), '');
-file_put_contents($directory->file('image.gIf'), '');
-file_put_contents($directory->file('image.png'), '');
+$directory->file('image.jPg')->create();
+$directory->file('image.gIf')->create();
+$directory->file('image.png')->create();
 
-sort_var_dump(glob("$dirname/*.{[jJ][pP][gG],[gG][iI][fF]}", GLOB_BRACE));
+sort_var_dump(glob("$directory/*.{[jJ][pP][gG],[gG][iI][fF]}", GLOB_BRACE));
 
 function sort_var_dump($results) {
    sort($results);

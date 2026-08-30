@@ -19,10 +19,8 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = TestPath::directory();
-$path_sub = $path_top->directory('私はガラスを食べられますsub_folder');
-mkdir($path_top);
-mkdir($path_sub);
+$path_top = TestPath::directory()->create();
+$path_sub = $path_top->directory('私はガラスを食べられますsub_folder')->create();
 
 create_files($path_top, 2);
 create_files($path_sub, 2);
@@ -38,9 +36,6 @@ while(FALSE !== ($file = readdir($dir_handle))) {
 // more important to check that all contents are present than order they are returned in
 sort($contents);
 var_dump($contents);
-
-delete_files($path_top, 2);
-delete_files($path_sub, 2);
 
 closedir($dir_handle);
 ?>

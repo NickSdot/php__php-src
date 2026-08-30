@@ -22,8 +22,6 @@ echo "\n-- scandir() with all arguments --\n";
 $sorting_order = SCANDIR_SORT_DESCENDING;
 $context = stream_context_create();
 var_dump(scandir($directory, $sorting_order, $context));
-
-delete_files($directory, 3);
 ?>
 --EXPECT--
 *** Testing scandir() : basic functionality ***

@@ -11,10 +11,8 @@ echo "*** Testing rewinddir() : basic functionality ***\n";
 // include file.inc for create_files function
 include(__DIR__ . "/../file/file.inc");
 
-$dir_path1 = TestPath::directory();
-$dir_path2 = TestPath::directory();
-mkdir($dir_path1);
-mkdir($dir_path2);
+$dir_path1 = TestPath::directory()->create();
+$dir_path2 = TestPath::directory()->create();
 
 @create_files($dir_path1, 1);
 @create_files($dir_path2, 1, 'numeric', 0755, 1, 'w', 'file', 2);
@@ -47,9 +45,6 @@ var_dump(readdir() == $first);
 
 closedir($dh1);
 closedir($dh2);
-
-delete_files($dir_path1, 1);
-delete_files($dir_path2, 1, 'file', 2);
 ?>
 --EXPECTF--
 *** Testing rewinddir() : basic functionality ***

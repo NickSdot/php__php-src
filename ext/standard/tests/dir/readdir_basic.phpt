@@ -37,7 +37,6 @@ foreach($a as $file) {
     var_dump($file);
 }
 
-delete_files($path, 3);
 closedir($dh);
 ?>
 --EXPECTF--

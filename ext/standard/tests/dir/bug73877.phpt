@@ -10,14 +10,11 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$base = TestPath::directory();
-$dir0 = $base->directory('bug73877');
-$dir1 = $base->directory('Серёжка');
-$junk0 = $base->directory();
+$base = TestPath::directory()->create();
+$dir0 = $base->directory('bug73877')->create();
+$dir1 = $base->directory('Серёжка')->create();
+$junk0 = $base->directory('Серёжка2');
 
-mkdir($base);
-mkdir($dir0);
-mkdir($dir1);
 shell_exec("mklink /J $junk0 $dir0");
 
 var_dump(

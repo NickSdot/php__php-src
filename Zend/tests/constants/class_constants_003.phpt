@@ -23,8 +23,6 @@ include $filename;
 foo();
 foo(5);
 
-unlink($filename);
-
 echo "Done\n";
 ?>
 --EXPECT--

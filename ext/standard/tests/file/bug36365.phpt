@@ -7,9 +7,8 @@ if (getenv("SKIP_SLOW_TESTS")) die('skip slow test');
 ?>
 --FILE--
 <?php
-$testdir = TestPath::directory();
+$testdir = TestPath::directory()->create();
 
-mkdir($testdir);
 for ($i = 0; $i < 70000; $i++) {
     touch(sprintf("$testdir/%05d.txt", $i));
 }

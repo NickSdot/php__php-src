@@ -2,14 +2,11 @@
 stream_resolve_include_path(string path)
 --FILE--
 <?php
-$include_path = TestPath::directory('test_path');
-$include_path_nested = $include_path->directory('nested');
+$include_path = TestPath::directory('test_path')->create();
+$include_path_nested = $include_path->directory('nested')->create();
 
 $include_path_file = $include_path->file('file');
 $include_path_nested_file = $include_path_nested->file('file');
-
-mkdir($include_path);
-mkdir($include_path_nested);
 
 file_put_contents($include_path_file, 'include_path');
 file_put_contents($include_path_nested_file, 'include_path');

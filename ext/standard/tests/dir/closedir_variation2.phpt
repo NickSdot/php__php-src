@@ -2,15 +2,14 @@
 Test closedir() function : usage variations - close directory handle twice
 --FILE--
 <?php
-$directory = TestPath::directory();
 /*
  * close the directory handle twice using closedir() to test behaviour
  */
 
 echo "*** Testing closedir() : usage variations ***\n";
 
-//create temporary directory for test, removed in CLEAN section
-mkdir($directory);
+//create temporary directory for test
+$directory = TestPath::directory()->create();
 
 $dh = opendir($directory);
 

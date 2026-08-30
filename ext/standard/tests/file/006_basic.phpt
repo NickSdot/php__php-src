@@ -9,20 +9,16 @@ require __DIR__ . '/../skipif_root.inc';
 ?>
 --FILE--
 <?php
-$file = TestPath::file();
-$directory = TestPath::directory();
-$path = __DIR__;
-
 echo "*** Testing fileperms(), chmod() with files and dirs ***\n";
-fopen($file->path, "w");
+$file = TestPath::file()->create();
 var_dump( chmod($file, 0755 ) );
-printf("%o", fileperms($file->path) );
+printf("%o", fileperms($file) );
 echo "\n";
 clearstatcache();
 
-mkdir($directory);
+$directory = TestPath::directory()->create();
 var_dump( chmod( $directory, 0777 ) );
-printf("%o", fileperms($directory->path) );
+printf("%o", fileperms($directory) );
 echo "\n";
 clearstatcache();
 

@@ -2,14 +2,13 @@
 Test opendir() function : usage variations - open a directory twice
 --FILE--
 <?php
-$path = TestPath::directory();
 /*
  * Call opendir() twice with the same directory as $path argument
  */
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-mkdir($path);
+$path = TestPath::directory()->create();
 
 echo "\n-- Open directory first time: --\n";
 var_dump($dh1 = opendir($path));

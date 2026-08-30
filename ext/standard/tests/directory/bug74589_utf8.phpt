@@ -16,11 +16,9 @@ internal_encoding=utf-8
 */
 
 $item = "bug74589_新建文件夹"; // utf-8 string
-$dir = TestPath::directory($item);
+$dir = TestPath::directory($item)->create();
 $test_file = $dir->file('test.php');
 $test_file_escaped = escapeshellarg($test_file);
-
-mkdir($dir);
 
 file_put_contents($test_file,
 "<?php

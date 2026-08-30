@@ -50,8 +50,6 @@ foreach ($a as $file) {
     var_dump($file);
 }
 
-// delete temporary files
-delete_files($dir_path, 3, "私はガラスを食べられますreaddir_variation6");
 closedir($dir_handle1);
 closedir();
 ?>
