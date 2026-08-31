@@ -7,7 +7,7 @@ Erwin Poeze <erwin.poeze@gmail.com>
 --FILE--
 <?php
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, 'eerste;tweede;derde');
 
 $fo = new SplFileObject($file);

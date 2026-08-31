@@ -11,12 +11,12 @@ require __DIR__ . '/../skipif_root.inc';
 /* Test copy(): Trying to copy source file to destination file with and without write permissions */
 
 echo "*** Test copy() function: destination with/without write permissions ***\n";
-$src_file_name = TestPath::file()->path;
+$src_file_name = Workspace::file()->path;
 $file_handle =  fopen($src_file_name, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);
 
-$dest_file_name = TestPath::file()->path;
+$dest_file_name = Workspace::file()->path;
 
 
 echo "\n-- With write permissions --\n";

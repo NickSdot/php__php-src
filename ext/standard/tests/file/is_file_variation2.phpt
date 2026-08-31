@@ -10,9 +10,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Creating soft and hard links to a file and applying is_file() on links */
 
-$file = TestPath::file();
-$symlink = TestPath::file();
-$hardlink = TestPath::file();
+$file = Workspace::file();
+$symlink = Workspace::file();
+$hardlink = Workspace::file();
 fclose( fopen($file, "w") );
 
 echo "*** Testing is_file() with links ***\n";

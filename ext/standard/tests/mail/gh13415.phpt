@@ -4,7 +4,7 @@ GH-13415 (Added validation of line breaks \n in $additional_headers of mail())
 sendmail_path={MAIL:gh13415.out}
 --FILE--
 <?php
-$outFile = TestPath::file('gh13415.out');
+$outFile = Workspace::file('gh13415.out');
 chdir($outFile->directory);
 echo "LF only:\n";
 try {

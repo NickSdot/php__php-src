@@ -4,7 +4,7 @@ Bug #53885 (ZipArchive segfault with FL_UNCHANGED on empty archive)
 zip
 --FILE--
 <?php
-$fname = TestPath::file()->create();
+$fname = Workspace::file()->create();
 $nx=new ZipArchive();
 $nx->open($fname);
 $nx->locateName("a",ZIPARCHIVE::FL_UNCHANGED);

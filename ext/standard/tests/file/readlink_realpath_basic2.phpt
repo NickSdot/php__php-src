@@ -9,7 +9,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 /* creating directories, symbolic links and files */
-$file_path = TestPath::directory();
+$file_path = Workspace::directory();
 $root = $file_path->directory('readlink_realpath_basic2');
 $home = $root->directory('home');
 $test = $home->directory('test');

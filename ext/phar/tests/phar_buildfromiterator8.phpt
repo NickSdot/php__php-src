@@ -8,7 +8,7 @@ phar.readonly=0
 <?php
 try {
     chdir(__DIR__);
-    $archive = TestPath::file('buildfromiterator8.phar');
+    $archive = Workspace::file('buildfromiterator8.phar');
     $phar = new Phar($archive->path);
     $a = $phar->buildFromIterator(new RegexIterator(new DirectoryIterator('.'), '/^\d{0,3}\.phpt\\z|^\.\\z|^\.\.\\z/'), __DIR__ . DIRECTORY_SEPARATOR);
     asort($a);

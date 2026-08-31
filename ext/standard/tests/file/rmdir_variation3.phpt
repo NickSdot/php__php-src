@@ -6,8 +6,8 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing rmdir() : variation ***\n";
 
-TestContext::useRelativeWorkspace();
-$workDir = TestPath::directory('rmdirVar3.tmp');
+Workspace::useRelative();
+$workDir = Workspace::directory('rmdirVar3.tmp');
 $workDirName = $workDir->name;
 $subDir = "aSubDir";
 chdir(dirname($workDir->path));

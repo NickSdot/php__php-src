@@ -7,12 +7,12 @@ Test copy() function: usage variations - stat after copy
 require(__DIR__."/file.inc");
 
 echo "*** Test copy() function: stat of file before and after copy ***\n";
-$src_file_name = TestPath::file()->path;
+$src_file_name = Workspace::file()->path;
 $file_handle =  fopen($src_file_name, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);
 
-$dest_file_name = TestPath::file()->path;
+$dest_file_name = Workspace::file()->path;
 
 clearstatcache();
 

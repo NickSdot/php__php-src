@@ -32,7 +32,7 @@ function normalize_output(string $output, string $filename): string {
     return $output;
 }
 
-$const_dim_filename = TestPath::file();
+$const_dim_filename = Workspace::file();
 
 ob_start();
 foreach ($containers as $container_orig) {
@@ -56,9 +56,9 @@ foreach ($containers as $container_orig) {
         $varOutput = normalize_output($varOutput, $var_dim_filename);
 
         if ($constOutput !== $varOutput) {
-            file_put_contents(TestPath::file(), $constOutput);
-            file_put_contents(TestPath::file(), $varOutput);
-            file_put_contents(TestPath::file(), makeTestFile($container_orig, $offset));
+            file_put_contents(Workspace::file(), $constOutput);
+            file_put_contents(Workspace::file(), $varOutput);
+            file_put_contents(Workspace::file(), makeTestFile($container_orig, $offset));
             ++$failuresNb;
             $failures[] = $error;
         }

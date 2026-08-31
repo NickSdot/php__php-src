@@ -3,7 +3,7 @@ testing stream_get_meta_data() "eof" field for a file stream
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $fp = fopen($filename, "w+");
 

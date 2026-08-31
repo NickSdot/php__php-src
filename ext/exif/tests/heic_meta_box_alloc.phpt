@@ -11,7 +11,7 @@ memory_limit=32M
 // allocation exhausts memory_limit before any read is attempted.
 $ftyp = pack("N", 20) . "ftypheic" . str_repeat("\x00", 8);
 $meta = pack("N", 0x08000000) . "meta" . str_repeat("\x00", 8);
-$file = TestPath::file('test.heic');
+$file = Workspace::file('test.heic');
 file_put_contents($file, $ftyp . $meta . "\x00");
 var_dump(exif_read_data($file));
 ?>

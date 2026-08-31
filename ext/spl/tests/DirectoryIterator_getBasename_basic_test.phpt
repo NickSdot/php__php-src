@@ -4,7 +4,7 @@ DirectoryIterator::getBasename() - Basic Test
 PHPNW Testfest 2009 - Adrian Hardy
 --FILE--
 <?php
-   $targetDir = TestPath::directory()->create();
+   $targetDir = Workspace::directory()->create();
    $targetDir->file('getBasename_test.txt')->create();
    $dir = new DirectoryIterator($targetDir);
    while(!$dir->isFile()) {

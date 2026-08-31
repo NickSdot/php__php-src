@@ -59,8 +59,8 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 
 $envelopeData = "Test";
 
-$tmpFileIn = TestPath::file();
-$tmpFileOut = TestPath::file();
+$tmpFileIn = Workspace::file();
+$tmpFileOut = Workspace::file();
 file_put_contents($tmpFileIn, $envelopeData);
 
 openssl_pkcs7_encrypt($tmpFileIn, $tmpFileOut, [$cert], array(), PKCS7_BINARY, OPENSSL_CIPHER_AES_128_CBC);

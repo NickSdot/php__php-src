@@ -4,7 +4,7 @@ zlib.inflate of gzip-encoded stream
 zlib
 --FILE--
 <?php
-$file = TestPath::file('test.txt.gz');
+$file = Workspace::file('test.txt.gz');
 
 $a = gzopen($file, 'w');
 fwrite($a, "This is quite the thing ain't it\n");

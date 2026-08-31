@@ -12,7 +12,7 @@ gd
 <?php
 require __DIR__ . '/func.inc';
 
-$file = TestPath::file();
+$file = Workspace::file('私はガラスを食べられます.gd2');
 $im1 = imagecreatetruecolor(10,100);
 imagefill($im1, 0,0, 0xffffff);
 imagegd2($im1, $file->path);

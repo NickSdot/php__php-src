@@ -4,7 +4,7 @@ GH-23276 (ZipArchive dropping its archive while a stream is open leaves the obje
 zip
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);

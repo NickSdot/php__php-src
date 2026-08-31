@@ -8,8 +8,8 @@ opcache.optimization_level=0x7FFFBFFF
 opcache
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$file = TestPath::file('bug71127.inc');
+Workspace::useRelative();
+$file = Workspace::file('bug71127.inc');
 
 file_put_contents($file, "<?php define('FOO', 'bad'); echo FOO;?>");
 

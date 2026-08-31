@@ -2,7 +2,7 @@
 Bug #76857 (Can read "non-existant" files)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, 'test data');
 $path = "foobar://google.com/../../" . $file->name;
 chdir($file->directory);

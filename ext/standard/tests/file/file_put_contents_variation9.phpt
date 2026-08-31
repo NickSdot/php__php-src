@@ -11,10 +11,10 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$filename = TestPath::file();
-$softlink = TestPath::file();
-$hardlink = TestPath::file();
-$chainlink = TestPath::file();
+$filename = Workspace::file();
+$softlink = Workspace::file();
+$hardlink = Workspace::file();
+$chainlink = Workspace::file();
 
 
 // link files even though it original file doesn't exist yet

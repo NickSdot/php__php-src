@@ -17,8 +17,8 @@ if (PHP_OS_FAMILY !== "Windows") {
 all
 --FILE--
 <?php
-$src = TestPath::file()->path;
-$dst = TestPath::file()->path;
+$src = Workspace::file()->path;
+$dst = Workspace::file()->path;
 define('SIZE_4G', 0x100000000);
 
 //Create file and append random content at the 4GB boundary

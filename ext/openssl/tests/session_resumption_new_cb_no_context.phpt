@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
-$caCertFile = TestPath::file();
+$certFile = Workspace::file();
+$caCertFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;

@@ -2,7 +2,7 @@
 Bug #51800 proc_open on Windows hangs forever, the right way to do it with more data
 --FILE--
 <?php
-$callee = TestPath::file();
+$callee = Workspace::file();
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 $cmd = "$php -n " . escapeshellarg($callee);
 

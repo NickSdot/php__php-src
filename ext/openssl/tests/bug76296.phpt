@@ -4,11 +4,8 @@ Bug #76296 openssl_pkey_get_public does not respect open_basedir
 openssl
 --FILE--
 <?php
-$dir = TestPath::directory();
+$dir = Workspace::directory()->create();
 $pem = 'file://' . __DIR__ . '/public.key';
-if (!is_dir($dir)) {
-    mkdir($dir);
-}
 
 ini_set('open_basedir', $dir->path);
 

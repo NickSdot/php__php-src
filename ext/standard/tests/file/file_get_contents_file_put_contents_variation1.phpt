@@ -7,7 +7,7 @@ Test file_get_contents() and file_put_contents() functions : usage variations - 
 /* Testing variation in all argument values */
 $file_path = __DIR__;
 include($file_path."/file.inc");
-$file = TestPath::file();
+$file = Workspace::file();
 
 echo "*** Testing with variations in the arguments values ***\n";
 

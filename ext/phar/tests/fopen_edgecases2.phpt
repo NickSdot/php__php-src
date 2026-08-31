@@ -7,8 +7,8 @@ phar.readonly=0
 --FILE--
 <?php
 Phar::interceptFileFuncs();
-$fname = TestPath::file('fopen_edgecases2.phar.php')->path;
-$sidecar = TestPath::file('fopen_edgecases2.txt');
+$fname = Workspace::file('fopen_edgecases2.phar.php')->path;
+$sidecar = Workspace::file('fopen_edgecases2.txt');
 $pname = 'phar://' . $fname;
 
 try {

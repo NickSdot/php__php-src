@@ -4,8 +4,7 @@ GH-17787 (ZipArchive stream stops reading early when the archive is freed while 
 zip
 --FILE--
 <?php
-$writeArchive = TestPath::file();
-$name = TestPath::file();
+$name = Workspace::file();
 $data = str_repeat("The quick brown fox jumps over the lazy dog.\n", 4000);
 
 $zip = new ZipArchive;
@@ -42,7 +41,7 @@ var_dump(stream_get_contents($stream) === $data);
 fclose($stream);
 
 // Pending changes are still committed once the last stream is closed
-$name = __DIR__ . '/gh17787_write.zip';
+$name = Workspace::file();
 
 $zip = new ZipArchive;
 var_dump($zip->open($name, ZipArchive::CREATE | ZipArchive::OVERWRITE));

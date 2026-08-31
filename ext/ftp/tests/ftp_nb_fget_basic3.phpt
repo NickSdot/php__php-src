@@ -14,7 +14,7 @@ $ftp = ftp_connect('127.0.0.1', $port);
 ftp_login($ftp, 'user', 'pass');
 if (!$ftp) die("Couldn't connect to the server");
 
-$local_file = TestPath::file();
+$local_file = Workspace::file();
 file_put_contents($local_file, 'ASCIIFoo');
 $handle = fopen($local_file, 'a');
 

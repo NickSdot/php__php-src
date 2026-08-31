@@ -2,7 +2,7 @@
 Bug #69181 (READ_CSV|DROP_NEW_LINE drops newlines within fields)
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 $csv = <<<CSV
 "foo\n\nbar\nbaz",qux
 

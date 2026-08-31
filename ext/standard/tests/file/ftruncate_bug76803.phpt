@@ -3,7 +3,7 @@ Bug #76803 ftruncate changes file pointer
 --FILE--
 <?php
 
-$fn = TestPath::file();
+$fn = Workspace::file();
 
 $f = fopen($fn, "w");
 fwrite($f, "Hello");

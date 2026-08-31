@@ -10,7 +10,7 @@ if (!(imagetypes() & IMG_PNG)) {
 ?>
 --FILE--
 <?php
-$dest = TestPath::file();
+$dest = Workspace::file();
 $im = ImageCreateTrueColor(10, 10);
 imagealphablending($im, true);
 imagesavealpha($im, true);

@@ -10,7 +10,7 @@ if (!(imagetypes() & IMG_PNG)) {
 ?>
 --FILE--
 <?php
-$stream = fopen(TestPath::file(), 'w');
+$stream = fopen(Workspace::file(), 'w');
 $im = imagecreatetruecolor(8, 8);
 var_dump(imagepng($im, $stream));
 var_dump($stream);

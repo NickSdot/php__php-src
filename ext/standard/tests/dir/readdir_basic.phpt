@@ -12,7 +12,7 @@ echo "*** Testing readdir() : basic functionality ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 create_files($path, 3);
 
 echo "\n-- Call readdir() with \$path argument --\n";

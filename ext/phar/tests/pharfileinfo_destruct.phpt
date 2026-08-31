@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar')->path;
+$fname = Workspace::file('archive.phar')->path;
 $pname = 'phar://' . $fname;
 
 $a = new Phar($fname);

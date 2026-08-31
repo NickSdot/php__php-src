@@ -4,7 +4,7 @@ fputcsv(): Deprecation if using default escape arg
 <?php
 $line = "test1,test2";
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 $data = ["test1", "test2"];
 

@@ -20,7 +20,7 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
     require_once 'connect.inc';
 
     // NOTE: documentation is not clear on this: function always return NULL or TRUE
-    $trace_file = TestPath::file();
+    $trace_file = Workspace::file();
     if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s', $trace_file))))
         printf("[002] Expecting boolean/true, got %s/%s\n", gettype($tmp), $tmp);
 

@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('bug48377.2.zip');
+$archive = Workspace::file('bug48377.2.zip');
 $fname = $archive->path;
 
 $phar = new PharData($fname);

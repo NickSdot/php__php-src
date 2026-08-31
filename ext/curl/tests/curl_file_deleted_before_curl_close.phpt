@@ -11,7 +11,7 @@ include 'server.inc';
 $host = curl_cli_server_start();
 $ch = curl_init($host);
 
-$temp_file = TestPath::file();
+$temp_file = Workspace::file();
 if (file_exists($temp_file)) {
     unlink($temp_file); // file should not exist before test
 }

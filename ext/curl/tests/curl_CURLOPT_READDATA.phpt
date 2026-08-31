@@ -14,7 +14,7 @@ $host = curl_cli_server_start();
 $url = $host . '/get.inc?test=post';
 
 // Create a temporary file to read the data from
-$tempname = TestPath::file();
+$tempname = Workspace::file();
 $datalen = file_put_contents($tempname, "hello=world&smurf=blue");
 
 ob_start();

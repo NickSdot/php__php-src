@@ -7,7 +7,7 @@ zip
 --FILE--
 <?php
 $dirname = __DIR__ . '/';
-$file = TestPath::file();
+$file = Workspace::file();
 copy($dirname.'test.zip', $file);
 
 var_dump(md5_file($file));

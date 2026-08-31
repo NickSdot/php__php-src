@@ -454,7 +454,7 @@ foreach ($offsets as $dimension) {
         && !preg_match($EXPECTED_OUTPUT_NULL_OFFSETS_REGEX, $varOutput)
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(TestPath::file(), $varOutput);
+        file_put_contents(Workspace::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }
@@ -483,7 +483,7 @@ foreach ($offsets as $offset) {
         && !preg_match($EXPECTED_OUTPUT_NULL_OFFSETS_REGEX, $varOutput)
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(TestPath::file(), $varOutput);
+        file_put_contents(Workspace::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }

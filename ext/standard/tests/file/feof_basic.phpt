@@ -5,7 +5,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing feof() : basic functionality ***\n";
-$tmpFile1 = TestPath::file();
+$tmpFile1 = Workspace::file();
 $h = fopen($tmpFile1, 'wb');
 $count = 10;
 for ($i = 1; $i <= $count; $i++) {
@@ -28,7 +28,7 @@ echo $previousLine;
 var_dump($lastline); // this should be false
 fclose($h);
 
-$tmpFile2 = TestPath::file();
+$tmpFile2 = Workspace::file();
 $h = fopen($tmpFile2, 'wb+');
 $count = 10;
 echo "*** writing $count lines, testing feof ***\n";

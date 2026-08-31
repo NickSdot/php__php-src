@@ -5,11 +5,9 @@ zip
 --FILE--
 <?php
 
-$directory = TestPath::directory();
+$directory = Workspace::directory()->create();
 $dir = $directory->path;
 $archiveFile = $directory->file('a.zip')->path;
-$down = $directory->directory('down2');
-mkdir($dir);
 $archive = new ZipArchive();
 $archive->open($archiveFile,ZipArchive::CREATE);
 $archive->addEmptyDir("../down2/");

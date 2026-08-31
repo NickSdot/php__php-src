@@ -3,8 +3,8 @@ stream_copy_to_stream() file to file with a partially read destination
 --FILE--
 <?php
 
-$srcFile = TestPath::file();
-$dstFile = TestPath::file();
+$srcFile = Workspace::file();
+$dstFile = Workspace::file();
 
 file_put_contents($srcFile, str_repeat("N", 50));
 file_put_contents($dstFile, str_repeat("O", 3000));

@@ -5,12 +5,11 @@ Test fscanf() function: usage variations - hexa formats with arrays
 
 /* Test fscanf() to scan arrays using different hexa format types */
 
-$file_path = TestPath::directory();
 
 echo "*** Test fscanf(): different hexa format types with arrays ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

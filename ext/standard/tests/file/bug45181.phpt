@@ -2,8 +2,8 @@
 Bug #45181 (chdir() should clear relative entries in stat cache)
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$directory = TestPath::directory()->create();
+Workspace::useRelative();
+$directory = Workspace::directory()->create();
 var_dump(is_dir($directory));
 chdir($directory);
 var_dump(is_dir($directory->name));

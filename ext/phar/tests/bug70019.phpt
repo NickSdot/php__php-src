@@ -5,12 +5,9 @@ phar
 zlib
 --FILE--
 <?php
-$dir = TestPath::directory();
+$dir = Workspace::directory()->create();
 $extracted = $dir->file('ThisIsATestFile.txt');
 $phar = new PharData(__DIR__."/bug70019.zip");
-if(!is_dir($dir)) {
-  mkdir($dir->path);
-}
 $phar->extractTo($dir->path);
 var_dump(file_exists($extracted));
 ?>

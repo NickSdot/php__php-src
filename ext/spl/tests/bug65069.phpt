@@ -2,7 +2,7 @@
 Bug #65069: GlobIterator fails to access files inside an open_basedir restricted dir
 --FILE--
 <?php
-$baseDirectory = TestPath::directory()->create();
+$baseDirectory = Workspace::directory()->create();
 // temp dirname used here
 $childDir = $baseDirectory->directory()->create();
 

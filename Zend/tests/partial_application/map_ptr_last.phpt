@@ -33,7 +33,7 @@ if ($pid) {
     /* Increment ZSCG(map_ptr_last) enough to mandate a realloc in other processes.
      * We do so by compiling many functions that are guaranteed to allocate a map_ptr. */
 
-    $file = TestPath::file();
+    $file = Workspace::file();
     $fd = fopen($file->path, 'w');
     fwrite($fd, "<?php\n");
     for ($i = 0; $i < 4096; $i++) {

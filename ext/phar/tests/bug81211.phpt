@@ -13,12 +13,9 @@ if (PHP_OS_FAMILY === 'Windows') {
 ?>
 --FILE--
 <?php
-$root = TestPath::directory('bug81211');
-$targetDir = $root->directory('foobar');
-$fooDir = $root->directory('foo');
-mkdir($root->path);
-mkdir($targetDir->path);
-mkdir($fooDir->path);
+$root = Workspace::directory('bug81211')->create();
+$targetDir = $root->directory('foobar')->create();
+$fooDir = $root->directory('foo')->create();
 
 $targetFile = $targetDir->file('file');
 $link = $fooDir->file('symlink');

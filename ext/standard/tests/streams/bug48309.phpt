@@ -3,7 +3,7 @@ Bug #48309 (stream_copy_to_stream() and fpasstru() do not update stream position
 --FILE--
 <?php
 
-$tmp = fopen(TestPath::file(), 'w+b');
+$tmp = fopen(Workspace::file(), 'w+b');
 fwrite($tmp, 'test');
 fseek($tmp, 0, SEEK_SET);
 

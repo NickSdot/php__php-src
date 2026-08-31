@@ -10,7 +10,7 @@ is a very common test
 for all languages
 
 EOT;
-$filename = TestPath::file();
+$filename = Workspace::file();
 $h = gzopen($filename, 'w');
 gzwrite($h, $plaintxt);
 gzclose($h);

@@ -10,16 +10,13 @@ if( substr(PHP_OS, 0, 3) == "WIN" )
 
 /* test fflush() with handle of files opened in different modes */
 
-$file_path = __DIR__;
-require $file_path.'/file.inc';
+require __DIR__.'/file.inc';
 
 echo "*** Testing fflush(): with various types of files ***\n";
 $file_types = array("empty", "numeric", "text", "text_with_new_line", "alphanumeric");
 $file_modes = array("w", "wb", "wt", "w+", "w+b", "w+t",
                     "a", "ab", "at", "a+","a+b", "a+t",
                     "x", "xb", "xt", "x+", "x+b", "x+t");
-
-$file_name = TestPath::file();
 
 $count = 1;
 
@@ -28,6 +25,7 @@ foreach( $file_types as $type ) {
   foreach( $file_modes as $mode ) {
     echo "-- File opened in $mode mode --\n";
 
+    $file_name = Workspace::file();
     // creating the file except for x mode
     if( substr($mode, 0, 1) != "x" ) {
       $file_handle = fopen($file_name, "w");
@@ -53,7 +51,6 @@ foreach( $file_types as $type ) {
 
     // reading the contents of the file after flushing
      var_dump( readfile($file_name) );
-     unlink($file_name);
   }
   $count++;
 }

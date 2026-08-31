@@ -9,7 +9,7 @@ Test closedir() function : usage variations - close directory handle twice
 echo "*** Testing closedir() : usage variations ***\n";
 
 //create temporary directory for test
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 
 $dh = opendir($directory);
 

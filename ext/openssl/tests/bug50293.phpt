@@ -24,7 +24,7 @@ $args = array(
     "config" => $config
 );
 
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 chdir($directory);
 
 $certFile = $directory->file();

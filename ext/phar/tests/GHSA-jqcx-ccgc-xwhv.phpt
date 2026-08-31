@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('archive.phar');
+$archive = Workspace::file('archive.phar');
 $phar = new Phar($archive->path);
 $phar->startBuffering();
 $phar->addFromString(str_repeat('A', PHP_MAXPATHLEN - 1), 'This is the content of file 1.');

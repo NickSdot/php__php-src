@@ -7,7 +7,7 @@ bz2
 $input = "AAAAAAAA";
 $param = array('blocks' => $input);
 
-$fp = fopen(TestPath::file(), 'w');
+$fp = fopen(Workspace::file(), 'w');
 stream_filter_append($fp, 'bzip2.compress', STREAM_FILTER_WRITE, $param);
 fclose($fp);
 ?>

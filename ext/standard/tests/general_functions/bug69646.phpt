@@ -21,7 +21,7 @@ var_dump( \$argv );
 
 SCRIPT;
 
-$script = TestPath::file('arginfo.php');
+$script = Workspace::file('arginfo.php');
 file_put_contents($script, $helper_script);
 
 $cmd = getenv('TEST_PHP_EXECUTABLE_ESCAPED') . " " . escapeshellarg($script) . " "  . escapeshellarg($a) . " " . escapeshellarg($b);

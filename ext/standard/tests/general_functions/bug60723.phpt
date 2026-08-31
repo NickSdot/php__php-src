@@ -5,7 +5,7 @@ date.timezone=ASIA/Chongqing
 log_errors=On
 --FILE--
 <?php
-$log = TestPath::file();
+$log = Workspace::file();
 ini_set("error_log", $log->path);
 echo $aa;
 error_log("dummy");

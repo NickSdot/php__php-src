@@ -14,7 +14,7 @@ if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
 --FILE--
 <?php
 
-$fname = TestPath::file('033a.phar.zip');
+$fname = Workspace::file('033a.phar.zip');
 $alias = 'phar://hio';
 
 $phar = new Phar($fname);

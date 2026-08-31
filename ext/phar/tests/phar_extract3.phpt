@@ -9,10 +9,8 @@ phar.readonly=0
 
 $fname   = __DIR__ . '/files/bogus.zip';
 $fname2  = __DIR__ . '/files/notbogus.zip';
-$extractDir = TestPath::directory('test-extract3');
+$extractDir = Workspace::directory('test-extract3');
 $extract = $extractDir->path;
-$extractDir->file('stuff.txt');
-$extractDir->file('nonsense.txt');
 
 $phar = new PharData($fname);
 

@@ -12,7 +12,7 @@ if (!function_exists('imagewebp') || !function_exists('imagecreatefromwebp'))
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $im = imagecreatetruecolor(8, 8);
 $white = imagecolorallocate($im, 255, 255, 255);

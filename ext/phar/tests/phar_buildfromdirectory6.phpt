@@ -8,8 +8,7 @@ phar.readonly=0
 --FILE--
 <?php
 
-$directory = TestPath::directory();
-mkdir($directory->path, 0777);
+$directory = Workspace::directory()->create();
 $files = [];
 foreach(range(1, 4) as $i) {
     $files[$i] = $directory->file("file$i.txt");
@@ -17,19 +16,16 @@ foreach(range(1, 4) as $i) {
 }
 
 try {
-    $archive = TestPath::file('buildfromdirectory6.phar');
+    $archive = Workspace::file('buildfromdirectory6.phar');
     $phar = new Phar($archive->path);
     var_dump($phar->buildFromDirectory($directory->path, '/\.php$/'));
 } catch (Exception $e) {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-var_dump(file_exists(__DIR__ . '/buildfromdirectory6.phar'));
+var_dump(file_exists($archive));
 
 ?>
-<?php
-foreach(range(1, 4) as $i) {
-}
 --EXPECT--
 array(0) {
 }

@@ -14,7 +14,7 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $output = TestPath::file();
+    $output = Workspace::file();
 
     echo "XPM to JPEG conversion: ";
     echo imagejpeg(imagecreatefromxpm($cwd . "/conv_test.xpm"), $output->path) ? 'ok' : 'failed';

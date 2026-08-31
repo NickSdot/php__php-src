@@ -14,7 +14,7 @@ gd
 
 echo "Simple test of imagepolygon() function\n";
 
-$dest = TestPath::file();
+$dest = Workspace::file();
 
 // create a blank image
 $image = imagecreatetruecolor(400, 300);

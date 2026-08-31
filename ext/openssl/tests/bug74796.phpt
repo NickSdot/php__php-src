@@ -14,11 +14,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
-$caFile = TestPath::file();
-$csFile = TestPath::file();
-$ukFile = TestPath::file();
-$usFile = TestPath::file();
-$proxyLog = TestPath::file();
+$caFile = Workspace::file();
+$csFile = Workspace::file();
+$ukFile = Workspace::file();
+$usFile = Workspace::file();
+$proxyLog = Workspace::file();
 $certificateGenerator->saveCaCert($caFile);
 $certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $csFile);
 $certificateGenerator->saveNewCertAsFileWithKey('uk.php.net', $ukFile);

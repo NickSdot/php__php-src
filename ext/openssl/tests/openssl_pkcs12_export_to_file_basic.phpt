@@ -4,7 +4,7 @@ openssl_pkcs12_export_to_file() tests
 openssl
 --FILE--
 <?php
-$pkcsfile = TestPath::file();
+$pkcsfile = Workspace::file();
 
 $cert_file = __DIR__ . "/public.crt";
 $cert = file_get_contents($cert_file);

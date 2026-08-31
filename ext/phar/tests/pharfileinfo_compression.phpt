@@ -8,9 +8,8 @@ bz2
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('pharfileinfo_compression.phar');
+$archive = Workspace::file('pharfileinfo_compression.phar');
 $fname = $archive->path;
-TestPath::file('pharfileinfo_compression.tar');
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);

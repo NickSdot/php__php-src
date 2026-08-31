@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('phar_begin_setstub_commit.phar');
+$archive = Workspace::file('phar_begin_setstub_commit.phar');
 $p = new Phar($archive->path, 0, 'phar_begin_setstub_commit.phar');
 //var_dump($p->getStub());
 var_dump($p->isBuffering());

@@ -4,7 +4,7 @@ imagewbmp
 gd
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file('im私はガラスを食べられます.wbmp');
 
 $im = imagecreatetruecolor(6,6);
 imagefill($im, 0,0, 0xffffff);

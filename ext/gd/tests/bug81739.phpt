@@ -4,7 +4,7 @@ Bug #81739 (OOB read due to insufficient validation in imageloadfont())
 gd
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $s = fopen($file, "w");
 // header without character data
 fwrite($s, "\x01\x00\x00\x00\x20\x00\x00\x00\x08\x00\x00\x00\x08\x00\x00\x00");

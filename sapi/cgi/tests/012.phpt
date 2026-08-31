@@ -7,7 +7,7 @@ display_errors=stdout
 --FILE--
 <?php
 include "include.inc";
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 function run_and_output($cmd) {
     if (!defined("PHP_WINDOWS_VERSION_MAJOR")) {
@@ -25,9 +25,9 @@ function run_and_output($cmd) {
 $php = get_cgi_path();
 reset_env_vars();
 
-$filename_good = TestPath::file('012_good.test.php')->path;
+$filename_good = Workspace::file('012_good.test.php')->path;
 $filename_good_escaped = escapeshellarg($filename_good);
-$filename_bad = TestPath::file('012_bad.test.php')->path;
+$filename_bad = Workspace::file('012_bad.test.php')->path;
 $filename_bad_escaped = escapeshellarg($filename_bad);
 
 $code = '

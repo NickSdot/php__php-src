@@ -11,16 +11,16 @@ if (defined("PHP_WINDOWS_VERSION_MAJOR")) die("skip not for Windows")
 umask(022);
 var_dump(decoct(umask()));
 
-$source = TestPath::file()->create(permissions: 0600);
+$source = Workspace::file()->create(permissions: 0600);
 var_dump(decoct(stat($source)['mode']));
 
 foreach([
-    Phar::TAR => TestPath::file('archive.tar'),
-    Phar::ZIP => TestPath::file('archive.zip'),
+    Phar::TAR => Workspace::file('archive.tar'),
+    Phar::ZIP => Workspace::file('archive.zip'),
 ] as $format => $archive) {
 
-    $fromFile = TestPath::file();
-    $fromString = TestPath::file();
+    $fromFile = Workspace::file();
+    $fromString = Workspace::file();
 
     clearstatcache();
     $phar = new PharData($archive, format: $format);

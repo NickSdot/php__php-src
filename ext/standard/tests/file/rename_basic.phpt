@@ -5,8 +5,8 @@ Test rename() function: basic functionality
 echo "*** Testing rename() on non-existing file ***\n";
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$source = TestPath::file();
-$destination = TestPath::file();
+$source = Workspace::file();
+$destination = Workspace::file();
 
 $src_name = $source;
 $dest_name = $destination;

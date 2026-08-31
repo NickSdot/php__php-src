@@ -8,7 +8,7 @@ Test copy() function: usage variations - non existing src/dest
 $file_path = __DIR__;
 
 echo "*** Test copy() function: Trying to create a copy of non-existing source in existing destination ***";
-$file = TestPath::file()->path;
+$file = Workspace::file()->path;
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);

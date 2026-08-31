@@ -17,8 +17,8 @@ echo "*** Testing dir() : checking with valid and invalid paths ***\n";
 
 /* create the temporary directories */
 
-$dir_path1 = TestPath::directory('dir_variation91')->create();
-$dir_path2 = TestPath::directory('dir_variation92')->create();
+$dir_path1 = Workspace::directory('dir_variation91')->create();
+$dir_path2 = Workspace::directory('dir_variation92')->create();
 
 // directory dir_variation91 with one sub-directory sub_dir11 and sub-sub-directory sub_dir111
 $sub_dir11 = $dir_path1->directory('sub_dir11')->create();

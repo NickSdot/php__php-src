@@ -10,7 +10,7 @@ check_skip('inifile');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$name = TestPath::file();
+$name = Workspace::file();
 
 $db = dba_open($name, 'c', 'inifile');
 

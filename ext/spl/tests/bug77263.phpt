@@ -2,7 +2,7 @@
 Bug #77263 (Segfault when using 2 RecursiveFilterIterator)
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $subdir = $dir->directory()->create();
 $dir->file()->create();
 $subdir->file()->create();

@@ -7,7 +7,7 @@ zip
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('archive.zip');
+$archive = Workspace::file('archive.zip');
 $phar = new PharData($archive, 0, null, Phar::ZIP);
 $phar->addFromString('name', 'contents');
 unset($phar);

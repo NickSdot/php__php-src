@@ -9,7 +9,7 @@ if (!function_exists("proc_open")) echo "skip proc_open() is not available";
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 
-$f = TestPath::file('proc_only_mb1.php');
+$f = Workspace::file('proc_only_mb1.php');
 $f_escaped = escapeshellarg($f);
 file_put_contents($f,'<?php var_dump($argv); ?>');
 

@@ -16,7 +16,7 @@ if (PHP_OS_FAMILY === 'Windows') { die('SKIP Testing file inodes, not available 
 <?php
 
 //file
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 $dirIterator = new DirectoryIterator($directory);
 var_dump(decoct($dirIterator->getInode()));
 

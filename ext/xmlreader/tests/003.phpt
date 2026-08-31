@@ -4,7 +4,7 @@ XMLReader: libxml2 XML Reader, attributes test
 xmlreader
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books><book num="1" idx="2">book1</book></books>';

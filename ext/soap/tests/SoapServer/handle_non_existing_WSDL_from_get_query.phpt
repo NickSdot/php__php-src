@@ -12,7 +12,7 @@ if (PHP_OS_FAMILY === "Windows") {
 WSDL
 --FILE--
 <?php
-$wsdlFile = TestPath::file('test.wsdl');
+$wsdlFile = Workspace::file('test.wsdl');
 
 $wsdl = <<<'WSDL'
 <?xml version="1.0" ?>

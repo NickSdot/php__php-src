@@ -5,8 +5,8 @@ openssl
 --FILE--
 <?php
 
-$certFile = TestPath::file();
-$keyFile = TestPath::file();
+$certFile = Workspace::file();
+$keyFile = Workspace::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator(true);

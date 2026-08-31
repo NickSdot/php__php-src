@@ -12,7 +12,7 @@ if(substr(PHP_OS, 0, 3) == 'WIN' ) {
 <?php
 
 function checkForClosedFilePointer($host, $curl_option, $description) {
-    $fp = fopen(TestPath::file(), 'w+');
+    $fp = fopen(Workspace::file(), 'w+');
 
     $ch = curl_init();
 

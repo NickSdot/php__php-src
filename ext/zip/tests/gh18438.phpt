@@ -24,7 +24,7 @@ class CustomStreamWrapper {
     }
 }
 
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive;
 $zip->open($file, ZIPARCHIVE::CREATE);
 var_dump($zip->addPattern('/nomatches/'));

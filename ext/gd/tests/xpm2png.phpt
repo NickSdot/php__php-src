@@ -14,7 +14,7 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $output = TestPath::file();
+    $output = Workspace::file();
 
     echo "XPM to PNG conversion: ";
     echo imagepng(imagecreatefromxpm($cwd . "/conv_test.xpm"), $output->path) ? 'ok' : 'failed';

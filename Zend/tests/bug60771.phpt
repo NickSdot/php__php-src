@@ -2,7 +2,7 @@
 test of larger than 8kb text file being parsed by require statement
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, str_repeat('passed, ',1024));
 require($file);
 ?>

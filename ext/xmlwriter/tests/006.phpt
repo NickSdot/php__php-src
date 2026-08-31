@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$doc_dest = TestPath::file();
+$doc_dest = Workspace::file();
 $xw = xmlwriter_open_uri($doc_dest);
 xmlwriter_start_dtd($xw, 'foo', NULL, 'urn:bar');
 xmlwriter_end_dtd($xw);

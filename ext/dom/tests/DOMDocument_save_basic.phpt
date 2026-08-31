@@ -17,7 +17,7 @@ $title = $root->appendChild($title);
 $text = $doc->createTextNode('This is the title');
 $text = $title->appendChild($text);
 
-$temp_filename = TestPath::file();
+$temp_filename = Workspace::file();
 
 echo 'Wrote: ' . $doc->save($temp_filename) . ' bytes'; // Wrote: 72 bytes
 ?>

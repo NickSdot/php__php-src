@@ -15,7 +15,7 @@ __HALT_COMPILER(); ?>";
 $manifest = pack('V', 1) . 'a' . pack('VVVVVV', 0, time(), 0, crc32(''), 0x00000000, 0);
 $file .= pack('VVnVV', strlen($manifest), 1, 0x1000, 0x00000000, 3) . 'hio' . pack('V', 0) . $manifest;
 
-$archive = TestPath::file('archive.phar.php');
+$archive = Workspace::file('archive.phar.php');
 file_put_contents($archive, $file);
 try {
 include $archive;

@@ -3,7 +3,7 @@ get_meta_tags() tests
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $data = <<<DATA
 <meta name="author" content="name">

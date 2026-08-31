@@ -6,8 +6,8 @@ openssl
 <?php
 $infile = __DIR__ . "/plain.txt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
-$encrypted = TestPath::file();
-$outfile = TestPath::file();
+$encrypted = Workspace::file();
+$outfile = Workspace::file();
 
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $headers = array("test@test", "testing openssl_cms_encrypt()");

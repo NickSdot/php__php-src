@@ -10,7 +10,7 @@ if (!(imagetypes() & IMG_PNG)) {
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $exp = imagecreate(100, 100);
 imagecolorallocate($exp, 255, 0, 0);

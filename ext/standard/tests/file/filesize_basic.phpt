@@ -4,16 +4,11 @@ Test filesize() function: basic functionaity
 <?php
 echo "*** Testing size of files and directories with filesize() ***\n";
 
-$file_path = TestPath::directory()->path;
-mkdir($file_path);
-
 var_dump( filesize(__FILE__) );
 var_dump( filesize(".") );
 
 /* Empty file */
-$file_name = $file_path."/filesize_basic.tmp";
-$file_handle = fopen($file_name, "w");
-fclose($file_handle);
+$file_name = Workspace::file()->create();
 var_dump( filesize($file_name) );
 
 echo "*** Done ***\n";

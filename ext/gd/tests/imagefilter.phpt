@@ -27,7 +27,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     foreach ($no_arg_filters as $filt) {
         $im = imagecreatefrompng($SOURCE_IMG);
         if (imagefilter($im, constant($filt))) {
-            $output = TestPath::file();
+            $output = Workspace::file();
             imagepng($im, $output->path);
             echo "$filt success\n";
         } else {
@@ -38,7 +38,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_SMOOTH, -1924.124)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_SMOOTH success\n";
     } else {
@@ -48,7 +48,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_COLORIZE, -127, -127, 127)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_COLORIZE success\n";
     } else {
@@ -58,7 +58,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_CONTRAST, -90)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_CONTRAST success\n";
     } else {
@@ -68,7 +68,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_BRIGHTNESS, 98)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_BRIGHTNESS success\n";
     } else {
@@ -78,7 +78,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_PIXELATE, 5, true)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_PIXELATE success\n";
     } else {
@@ -88,7 +88,7 @@ $SOURCE_IMG = $SAVE_DIR . "/test.png";
     $im = imagecreatefrompng($SOURCE_IMG);
 
     if (imagefilter($im, IMG_FILTER_SCATTER, 3, 5)) {
-        $output = TestPath::file();
+        $output = Workspace::file();
         imagepng($im, $output->path);
         echo "IMG_FILTER_SCATTER success\n";
     } else {

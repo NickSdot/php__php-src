@@ -8,7 +8,7 @@ opcache.validate_timestamps=1
 --FILE--
 <?php
 
-$fname = TestPath::file('archive.phar.zip.php');
+$fname = Workspace::file('archive.phar.zip.php');
 $pname = 'phar://' . $fname;
 
 file_put_contents($pname . '/a.php', "brand new!\n");

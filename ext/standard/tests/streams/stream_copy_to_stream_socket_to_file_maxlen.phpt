@@ -24,7 +24,7 @@ CODE;
 
 $clientCode = <<<'CODE'
     $source = stream_socket_client("tcp://{{ ADDR }}", $errno, $errstr, 10);
-    $tmp = fopen(TestPath::file(), 'w+b');
+    $tmp = fopen(Workspace::file(), 'w+b');
 
     /* Only 4096 of the 10000 available bytes must be copied. */
     $copied = stream_copy_to_stream($source, $tmp, 4096);

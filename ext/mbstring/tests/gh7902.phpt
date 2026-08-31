@@ -11,7 +11,7 @@ sendmail_path={MAIL:mail.eml}
 internal_encoding=UTF-8
 --FILE--
 <?php
-$mail = TestPath::file('mail.eml');
+$mail = Workspace::file('mail.eml');
 chdir($mail->directory);
 mb_language("uni");
 $to = "omittedvalidaddress@example.com";

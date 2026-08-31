@@ -11,7 +11,7 @@ $ftp = ftp_connect('127.0.0.1', $port);
 ftp_login($ftp, 'user', 'pass');
 $ftp or die("Couldn't connect to the server");
 
-$local = TestPath::file();
+$local = Workspace::file();
 
 $expected = "line1\nba\rre\nend" . str_repeat("X", 4078) . "\r" . str_repeat("Y", 10);
 

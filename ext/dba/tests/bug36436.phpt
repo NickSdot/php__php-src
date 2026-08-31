@@ -10,7 +10,7 @@ check_skip('db4');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 $db = set_up_db_ex('db4', $db_name, LockFlag::DbLock, persistent: true);
 

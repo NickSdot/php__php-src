@@ -3,24 +3,19 @@ Test rename() function: basic functionality
 --FILE--
 <?php
 echo "\n*** Testing rename() by giving stream context as third argument ***\n";
-$file_path = TestPath::directory();
-
 $context = stream_context_create();
 
 // on directory
-$dir_name = $file_path->directory();
-$new_dir_name = $file_path->directory();
-
-mkdir($file_path);
-mkdir($dir_name);
+$dir_name = Workspace::directory()->create();
+$new_dir_name = Workspace::directory();
 
 var_dump( rename($dir_name, $new_dir_name, $context) );
 var_dump( file_exists($dir_name) );  // expecting flase
 var_dump( file_exists($new_dir_name) ); // expecting true
 
 //on file
-$src_name = $file_path->file();
-$dest_name = $file_path->file();
+$src_name = Workspace::file();
+$dest_name = Workspace::file();
 
 // create the file
 $fp = fopen($src_name, "w");

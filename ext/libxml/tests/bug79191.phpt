@@ -12,7 +12,7 @@ try {
 
 $dom = new DOMDocument;
 $dom->loadxml('<?xml version="1.0" ?><root />');
-$file = TestPath::file();
+$file = Workspace::file();
 var_dump($dom->save($file));
 ?>
 --EXPECTF--

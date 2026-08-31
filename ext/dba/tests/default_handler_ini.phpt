@@ -12,7 +12,7 @@ dba.default_handler=flatfile
 --FILE--
 <?php
 $handler = "flatfile";
-$db_filename = TestPath::file()->path;
+$db_filename = Workspace::file()->path;
 echo "database handler: $handler\n";
 
 echo "Test 1\n";

@@ -4,19 +4,14 @@ Test disk_total_space() function : basic functionality
 disk_total_space
 --FILE--
 <?php
-$directory = TestPath::directory();
-$file = $directory->file();
-$file_path = __DIR__;
-
 echo "*** Testing with normal directory ***\n";
-var_dump( disk_total_space($file_path) );
+var_dump( disk_total_space(Workspace::path()) );
 
 echo "*** Testing with newly created directory ***\n";
-$dir = $directory;
+$dir = Workspace::directory()->create();
 
-mkdir($dir);
 var_dump( disk_total_space($dir) );
-$fh = fopen($file->path, "w");
+$fh = fopen($dir->file(), "w");
 fwrite($fh, "Garbage Data Garbage Data Garbage Data Garbage Data Garbage Data Garbage Data Garbage Data");
 
 fclose($fh);

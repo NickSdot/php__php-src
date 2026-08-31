@@ -4,7 +4,7 @@ setCompressionName and setCompressionIndex methods
 zip
 --FILE--
 <?php
-$tmpfile = TestPath::file();
+$tmpfile = Workspace::file();
 
 if (file_exists($tmpfile)) {
     unlink($tmpfile);

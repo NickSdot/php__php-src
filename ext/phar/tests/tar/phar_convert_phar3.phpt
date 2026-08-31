@@ -9,10 +9,8 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('archive.phar');
-$archiveTar = TestPath::file('archive.phar.tar');
-$compressed = TestPath::file('archive.phar.bz2');
-$archive2 = TestPath::file('archive-copy.phar');
+$archive = Workspace::file('archive.phar');
+$archive2 = Workspace::file('archive-copy.phar');
 $fname = $archive->path;
 $fname2 = $archive2->path;
 

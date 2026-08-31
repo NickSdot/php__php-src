@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__ . "/file.inc";
 
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");  // temp file
 fclose($file_handle);
 

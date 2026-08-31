@@ -4,7 +4,7 @@ multiple files syntax check
 <?php include "skipif.inc"; ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 function run_and_output($cmd) {
     exec($cmd, $output, $exit_code);
@@ -14,9 +14,9 @@ function run_and_output($cmd) {
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 
-$filename_good = TestPath::file("024_good.test.php")->path;
+$filename_good = Workspace::file("024_good.test.php")->path;
 $filename_good_escaped = escapeshellarg($filename_good);
-$filename_bad = TestPath::file("024_bad.test.php")->path;
+$filename_bad = Workspace::file("024_bad.test.php")->path;
 $filename_bad_escaped = escapeshellarg($filename_bad);
 
 $code = '

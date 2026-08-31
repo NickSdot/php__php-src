@@ -2,7 +2,7 @@
 Bug #46147 (after stream seek, appending stream filter reads incorrect data)
 --FILE--
 <?php
-$fp = fopen(TestPath::file(), 'w+b');
+$fp = fopen(Workspace::file(), 'w+b');
 fwrite($fp, "this is a lowercase string.\n");
 fseek($fp, 5);
 stream_filter_append($fp, "string.toupper");

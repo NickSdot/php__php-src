@@ -4,7 +4,7 @@ Phar::mapPhar truncated manifest (not enough for manifest length)
 phar
 --FILE--
 <?php
-$archive = TestPath::file('archive.phar.php');
+$archive = Workspace::file('archive.phar.php');
 $file = "<?php
 Phar::mapPhar('hio');
 __HALT_COMPILER(); ?>";

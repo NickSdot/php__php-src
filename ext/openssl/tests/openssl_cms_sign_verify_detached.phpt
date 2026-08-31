@@ -5,8 +5,8 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = TestPath::file();
-$vout = TestPath::file();
+$outfile = Workspace::file();
+$vout = Workspace::file();
 
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $single_cert = "file://" . __DIR__ . "/cert.crt";
@@ -63,11 +63,11 @@ readfile($vout);
 if (file_exists($outfile)) {
     echo "true\n";
 }
-$outfile = TestPath::file();
+$outfile = Workspace::file();
 if (file_exists($vout)) {
     echo "true\n";
 }
-$vout = TestPath::file();
+$vout = Workspace::file();
 
 // S/MIME next
 print("\nS/MIME Detached (an error):\n");

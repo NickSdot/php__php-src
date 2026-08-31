@@ -8,12 +8,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_tar.phar');
+$archive = Workspace::file('phar_convert_tar.phar');
 $fname = $archive->path;
 $pname = 'phar://' . $fname;
-$converted = TestPath::file('phar_convert_tar.phar.tar');
+$converted = Workspace::file('phar_convert_tar.phar.tar');
 $fname2 = $converted->path;
-$copy = TestPath::file('phar_convert_tar.2.phar.tar');
+$copy = Workspace::file('phar_convert_tar.2.phar.tar');
 $fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;

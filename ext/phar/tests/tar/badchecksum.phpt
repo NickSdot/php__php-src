@@ -4,7 +4,7 @@ Phar: tar with bad checksum
 phar
 --FILE--
 <?php
-$fname = TestPath::file('badchecksum.tar')->path;
+$fname = Workspace::file('badchecksum.tar')->path;
 $pname = 'phar://' . $fname;
 
 include __DIR__ . '/files/corrupt_tarmaker.php.inc';

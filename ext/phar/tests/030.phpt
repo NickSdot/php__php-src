@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.php')->path;
+$fname = Workspace::file('archive.phar.php')->path;
 $pname = 'phar://' . $fname;
 $file = '<?php include "' . $pname . '/a.php"; __HALT_COMPILER(); ?>';
 

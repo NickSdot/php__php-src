@@ -86,7 +86,7 @@ $xml = <<<XML
 </definitions>
 XML;
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $xml);
 $client = new SoapClient($file);
 

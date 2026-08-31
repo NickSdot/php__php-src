@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 $xw = xmlwriter_open_uri($file);
 

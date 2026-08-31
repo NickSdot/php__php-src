@@ -12,7 +12,7 @@ if (!$ftp) die("Couldn't connect to the server");
 
 var_dump(ftp_login($ftp, 'anonymous', 'IEUser@'));
 
-$local_file = TestPath::file();
+$local_file = Workspace::file();
 $fout = fopen($local_file, "w");
 
 // This requests more data, but we don't do the loop to fetch it.

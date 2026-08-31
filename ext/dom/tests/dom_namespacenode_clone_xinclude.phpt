@@ -4,7 +4,7 @@ DOMNameSpaceNode clone after xinclude does not use a dangling parent
 dom
 --FILE--
 <?php
-$included = TestPath::file();
+$included = Workspace::file();
 file_put_contents($included, '<?xml version="1.0"?><included/>');
 $href = 'file:///' . ltrim(str_replace('\\', '/', $included), '/');
 

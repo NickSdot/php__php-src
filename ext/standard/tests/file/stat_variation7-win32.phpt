@@ -14,12 +14,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__ . "/file.inc";
 
 
-/* create temp file and directory */
-$dirname = TestPath::directory();
-mkdir($dirname);  // temp dir
+$filename_a = Workspace::file();
+$filename_b = Workspace::file();
 
-$filename = TestPath::file();
-$file_handle = fopen($filename, "w");  // temp file
+$file_handle = fopen($filename_a, "w");  // temp file
 fclose($file_handle);
 
 
@@ -34,27 +32,27 @@ $this->var_name = $name;
   }
 }
 
+/* create directories */
+$dirname_a = Workspace::directory()->create();
+$dirname_b = Workspace::directory()->create();
+
 // directory as member
-$dirname_a = TestPath::directory();
-$obj1 = new object_temp($dirname);
-$obj2 = new object_temp($dirname_a);
+$obj1 = new object_temp($dirname_a . '/');
+$obj2 = new object_temp($dirname_b . '/');
 
 // file as member
-$filename_a = TestPath::file();
-$obj3 = new object_temp($filename);
-$obj4 = new object_temp($filename_a);
+$obj3 = new object_temp($filename_a->path);
+$obj4 = new object_temp($filename_b->path);
 
 echo "\n-- Testing stat() on filename stored inside an object --\n";
 var_dump( stat($obj3->var_name) );
 
-$file_handle = fopen($filename_a, "w");
+$file_handle = fopen($filename_b, "w");
 fclose($file_handle);
 var_dump( stat($obj4->var_name) );
 
 echo "\n-- Testing stat() on directory name stored inside an object --\n";
 var_dump( stat($obj1->var_name) );
-
-mkdir($dirname_a);
 var_dump( stat($obj2->var_name) );
 
 echo "\n*** Done ***";

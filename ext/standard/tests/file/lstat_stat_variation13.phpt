@@ -10,7 +10,7 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$file = TestPath::file();
+$file = Workspace::file();
 
 
 $filename = $file->path;

@@ -13,7 +13,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path_top = TestPath::directory()->create();
+$path_top = Workspace::directory()->create();
 $path_sub = $path_top->directory('sub_folder')->create();
 
 create_files($path_top, 2);

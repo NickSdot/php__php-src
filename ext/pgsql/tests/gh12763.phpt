@@ -10,7 +10,7 @@ include('inc/config.inc');
 
 $conn = pg_connect($conn_str);
 
-$file_name = TestPath::file();
+$file_name = Workspace::file();
 pg_trace($file_name, 'w', $conn);
 pg_query($conn, 'select 1 as a');
 pg_untrace($conn);

@@ -2,8 +2,8 @@
 Test fileowner() function: basic functionality
 --FILE--
 <?php
-$file = TestPath::file();
-$directory = TestPath::directory();
+$file = Workspace::file();
+$directory = Workspace::directory();
 echo "*** Testing fileowner(): basic functionality ***\n";
 
 echo "-- Testing with the file or directory created by owner --\n";

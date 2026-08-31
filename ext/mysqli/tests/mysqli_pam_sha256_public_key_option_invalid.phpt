@@ -118,7 +118,7 @@ echo "nocache";
     $public_key_result->free();
     $public_key_link->close();
 
-    $file = TestPath::file();
+    $file = Workspace::file();
     $fp = fopen($file, "w");
     fwrite($fp, $public_key);
     fclose($fp);
@@ -127,7 +127,7 @@ echo "nocache";
     sha_connect(100, $host, $db, $port, $socket, $file);
 
     /* invalid key */
-    $file_wrong = TestPath::file();
+    $file_wrong = Workspace::file();
 
     $key = file_get_contents($file);
     $key = str_replace("A", "a", $key);
@@ -141,7 +141,7 @@ echo "nocache";
     }
 
     /* empty file */
-    $file_wrong = TestPath::file();
+    $file_wrong = Workspace::file();
     if (!($fp = fopen($file_wrong, "w"))) {
         printf("[003] Can't write public key file.");
     } else {
@@ -151,7 +151,7 @@ echo "nocache";
     }
 
     /* file does not exist */
-    $file_wrong = TestPath::file();
+    $file_wrong = Workspace::file();
     sha_connect(400, $host, $db, $port, $socket, $file_wrong);
 
     print "done!";

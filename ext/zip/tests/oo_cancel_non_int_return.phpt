@@ -11,8 +11,7 @@ if (!method_exists('ZipArchive', 'registerCancelCallback')) die('skip libzip too
 date.timezone=UTC
 --FILE--
 <?php
-$dirname = dirname(__FILE__) . '/';
-$file = TestPath::file();
+$file = Workspace::file();
 
 $zip = new ZipArchive;
 if (!$zip->open($file, ZIPARCHIVE::CREATE)) {
@@ -31,7 +30,6 @@ try {
 }
 var_dump($zip->status == ZipArchive::ER_CANCELLED);
 var_dump($zip->getStatusString());
-@unlink($file);
 ?>
 Done
 --EXPECTF--

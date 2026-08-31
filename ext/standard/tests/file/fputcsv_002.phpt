@@ -3,7 +3,7 @@ fputcsv(): Checking data after calling the function
 --FILE--
 <?php
 
-$file = TestPath::file('fgetcsv-test.csv')->path;
+$file = Workspace::file('fgetcsv-test.csv')->path;
 
 $data = array(1, 2, 'foo', 'haha', array(4, 5, 6), 1.3, null);
 

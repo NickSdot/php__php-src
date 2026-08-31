@@ -2,7 +2,7 @@
 SplFileObject::fwrite function - writing with two parameters, length > input string length
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $obj = New SplFileObject($file,'w');
 $obj->fwrite('test_write',12);
 var_dump(file_get_contents($file));

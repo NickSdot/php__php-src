@@ -5,7 +5,7 @@ fileinfo
 --FILE--
 <?php
 
-$fname = TestPath::file();
+$fname = Workspace::file();
 file_put_contents($fname, "foo");
 var_dump(finfo_file(finfo_open(FILEINFO_MIME_TYPE), $fname));
 

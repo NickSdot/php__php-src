@@ -20,7 +20,7 @@ var_dump(session_module_name(''));
 var_dump(session_module_name("blah"));
 var_dump(session_module_name("foo"));
 
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 session_save_path($path);
 session_set_save_handler("open", "close", "read", "write", "destroy", "gc");
 

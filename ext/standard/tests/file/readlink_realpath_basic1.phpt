@@ -10,7 +10,7 @@ if (PHP_OS_FAMILY === 'Windows') {
 --FILE--
 <?php
 /* creating directories, symbolic links and files */
-$file_path = TestPath::directory();
+$file_path = Workspace::directory();
 $root = $file_path->directory('readlink_realpath_basic1');
 $home = $root->directory('home');
 $test = $home->directory('test');

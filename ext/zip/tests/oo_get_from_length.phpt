@@ -4,11 +4,7 @@ ZipArchive::getFrom*() rejects an entry with an inconsistent uncompressed size
 zip
 --FILE--
 <?php
-$directory = TestPath::directory();
-$dirname = $directory->path;
-$file = $directory->file('inconsistent.zip')->path;
-$entry = $directory->file('a.txt');
-mkdir($dirname);
+$file = Workspace::file('inconsistent.zip');
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);

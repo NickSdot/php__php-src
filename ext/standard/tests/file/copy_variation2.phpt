@@ -12,8 +12,7 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 */
 
 echo "*** Test copy() function: destination file names containing special characters ***\n";
-$file_path = __DIR__;
-$src_file_name = TestPath::file()->path;
+$src_file_name = Workspace::file();
 $file_handle = fopen($src_file_name, "w");
 fwrite( $file_handle, str_repeat("Hello2World...\n", 100) );
 fclose($file_handle);
@@ -52,7 +51,7 @@ echo "\n--- Now applying copy() on source file to create copies ---";
 $count = 1;
 foreach($dest_files as $dest_file) {
   echo "\n-- Iteration $count --\n";
-  $dest_file_name = $file_path."/$dest_file";
+  $dest_file_name = Workspace::file($dest_file);
 
   echo "Copy operation => ";
   var_dump( copy($src_file_name, $dest_file_name) );
@@ -71,8 +70,6 @@ foreach($dest_files as $dest_file) {
   echo "Size of destination file => ";
   var_dump( filesize($dest_file_name) );
   clearstatcache();
-
-  unlink($dest_file_name);
 
   $count++;
 }

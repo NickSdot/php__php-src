@@ -9,27 +9,21 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-$file_path = __DIR__;
-require "$file_path/file.inc";
-$directory = TestPath::directory();
-$subdirectory = $directory->directory();
-$file = $directory->file();
+require __DIR__ . "/file.inc";
 
 /* test the effects on stats with creating file/subdir in a dir
 */
 
 /* create temp file */
-mkdir($directory);  // temp dir
+$dirname = Workspace::directory()->create();  // temp dir
 
 // creating and deleting subdir and files in the dir
 echo "*** Testing stat() on dir after subdir and file is created in it ***\n";
-$dirname = $directory->path;
 $old_stat = stat($dirname);
 clearstatcache();
 sleep(1);
-mkdir($subdirectory);
-$file_handle = fopen($file->path, "w");
-fclose($file_handle);
+$dirname->directory()->create();
+$dirname->file()->create();
 $new_stat = stat($dirname);
 
 // compare self stats

@@ -115,7 +115,7 @@ unlink($file);
 
     $db = MySQLPDOTest::factory();
     $blob = 'I am a mighty BLOB!' . chr(0) . "I am a binary thingie!";
-    $file = TestPath::file();
+    $file = Workspace::file();
 
     try {
 

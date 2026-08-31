@@ -12,7 +12,7 @@ require __DIR__ . '/../skipif_root.inc';
 
 $context = stream_context_create();
 
-$file_path = TestPath::directory();
+$file_path = Workspace::directory()->create();
 
 echo "\n*** Testing mkdir() and rmdir() by giving stream context as fourth argument ***\n";
 var_dump( mkdir("$file_path/mkdir_variation2/test/", 0777, true, $context) );

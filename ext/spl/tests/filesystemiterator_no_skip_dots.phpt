@@ -3,7 +3,7 @@ FileSystemIterator without SKIP_DOTS
 --FILE--
 <?php
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file('file')->create();
 
 $it = new FileSystemIterator($dir, 0);

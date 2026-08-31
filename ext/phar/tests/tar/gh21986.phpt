@@ -24,7 +24,7 @@ function tar_symlink($name, $target) {
     return substr_replace($h, sprintf("%06o\0 ", $sum), 148, 8);
 }
 
-$archive = TestPath::file('archive.tar');
+$archive = Workspace::file('archive.tar');
 $tar = $archive->path;
 file_put_contents(
     $tar,

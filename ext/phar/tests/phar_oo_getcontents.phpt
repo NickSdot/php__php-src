@@ -6,7 +6,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('phar_oo_getcontents.phar.php');
+$archive = Workspace::file('phar_oo_getcontents.phar.php');
 $fname = $archive->path;
 
 $phar = new Phar($fname);

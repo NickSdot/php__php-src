@@ -4,7 +4,7 @@ GH-16359 - curl_setopt with CURLOPT_WRITEFUNCTION and no user fn
 curl
 --FILE--
 <?php
-$log_file = TestPath::file();
+$log_file = Workspace::file();
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");
 $ch = curl_init();

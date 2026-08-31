@@ -8,16 +8,14 @@ phar.readonly = 0
 <?php
 // put our test fixtures into a far
 $inDir = __DIR__.DIRECTORY_SEPARATOR.'bug54289'.DIRECTORY_SEPARATOR.'in';
-$archive = TestPath::file('archive.phar');
+$archive = Workspace::file('archive.phar');
 $phar  = $archive->path;
 $pharA = new Phar($phar);
 $pharA->buildFromDirectory($inDir);
 
 // we should be able to pull out a directory that's there, but none that share
 // the same prefix
-$output = TestPath::directory();
-$outDir = $output->path;
-mkdir($outDir);
+$outDir = Workspace::directory()->create();
 $pharB = new Phar($phar);
 $pharB->extractTo($outDir, 'dirA/', true);
 var_dump(file_exists($outDir.DIRECTORY_SEPARATOR.'dirA'.DIRECTORY_SEPARATOR.'fileA'));

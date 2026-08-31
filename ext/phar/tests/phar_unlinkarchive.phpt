@@ -14,9 +14,9 @@ Phar::unlinkArchive("");
 echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-$archive = TestPath::file('phar_unlinkarchive.phar');
+$archive = Workspace::file('phar_unlinkarchive.phar');
 $fname = $archive->path;
-$invalid = TestPath::file('phar_unlinkarchive.phar.tar');
+$invalid = Workspace::file('phar_unlinkarchive.phar.tar');
 $pdname = $invalid->path;
 
 try {
@@ -37,9 +37,9 @@ try {
 }
 
 $pname = 'phar://' . $fname;
-$converted = TestPath::file('phar_unlinkarchive.phar.zip');
+$converted = Workspace::file('phar_unlinkarchive.phar.zip');
 $fname2 = $converted->path;
-$copy = TestPath::file('phar_unlinkarchive.2.phar.zip');
+$copy = Workspace::file('phar_unlinkarchive.2.phar.zip');
 $fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;

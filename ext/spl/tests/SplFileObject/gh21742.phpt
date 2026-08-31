@@ -2,7 +2,7 @@
 GH-21742 (SplFileObject::fgets() throws at EOF in while (!$spl->eof()) loop)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, "Line 0\nLine 1\nLine 2\nLine 3\nLine 4\n");
 
 $spl = new SplFileObject($file, 'r');
@@ -11,7 +11,7 @@ while (!$spl->eof()) {
 }
 echo "clean exit\n";
 
-$empty = TestPath::file();
+$empty = Workspace::file();
 file_put_contents($empty, '');
 $spl2 = new SplFileObject($empty, 'r');
 $iter = 0;

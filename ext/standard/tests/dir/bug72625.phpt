@@ -9,7 +9,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$workspace = TestPath::directory()->create();
+$workspace = Workspace::directory()->create();
 $base = $workspace->directory(str_repeat('x', max(1, 260 - strlen($workspace) - 1)));
 
 $f0 = "$base/_test/documents/projects/myproject/vendor/name/library/classpath";

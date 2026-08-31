@@ -66,7 +66,7 @@ if (($row = $stmt->fetch(PDO::FETCH_ASSOC)) && ($row['value'] != '')) {
     $filename = $row['value'] . DIRECTORY_SEPARATOR  . "pdo_mysql_exec_load_data.csv";
     $cleanup = true;
 } else {
-    $filename = TestPath::file();
+    $filename = Workspace::file();
     $cleanup = false;
 }
 

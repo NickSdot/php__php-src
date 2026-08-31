@@ -12,7 +12,7 @@ curl_setopt($ch, CURLOPT_SAFE_UPLOAD, 1);
 curl_setopt($ch, CURLOPT_URL, "{$host}/get.php?test=file");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-$filename = TestPath::file('АБВ.txt');
+$filename = Workspace::file('АБВ.txt');
 file_put_contents($filename, "Test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);

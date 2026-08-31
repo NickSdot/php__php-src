@@ -8,7 +8,7 @@ phar.require_hash=1
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_offset_get_error.phar.php');
+$archive = Workspace::file('phar_offset_get_error.phar.php');
 $fname = $archive->path;
 $pname = 'phar://'.$fname;
 $iname = '/file.txt';

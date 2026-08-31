@@ -13,7 +13,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$file = TestPath::file();
+$file = Workspace::file();
 
 
 /* create temp file */

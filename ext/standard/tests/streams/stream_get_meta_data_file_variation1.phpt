@@ -9,7 +9,7 @@ $filemodes = array('r', 'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+',
                    'rt', 'rt+', 'wt', 'wt+', 'at', 'at+', 'xt', 'xt+');
 
 //create a file
-$filename = TestPath::file('stream.tmp');
+$filename = Workspace::file('stream.tmp');
 $fp = fopen($filename, 'w+');
 fclose($fp);
 

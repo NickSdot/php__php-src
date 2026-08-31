@@ -17,7 +17,7 @@ $batch_file_content = <<<EOT
 powershell -Command "Write-Output '%0%'"
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file = TestPath::file('ghsa-9fcc-425m-g385_002.bat');
+$batch_file = Workspace::file('ghsa-9fcc-425m-g385_002.bat');
 
 file_put_contents($batch_file, $batch_file_content);
 

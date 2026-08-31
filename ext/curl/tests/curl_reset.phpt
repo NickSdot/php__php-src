@@ -5,8 +5,8 @@ curl
 --FILE--
 <?php
 
-$test_file = TestPath::file();
-$log_file = TestPath::file();
+$test_file = Workspace::file();
+$log_file = Workspace::file();
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");

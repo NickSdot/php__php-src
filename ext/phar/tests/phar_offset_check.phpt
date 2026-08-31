@@ -8,7 +8,7 @@ phar.require_hash=1
 --FILE--
 <?php
 
-$fname = TestPath::file('phar_offset_check.phar.php')->path;
+$fname = Workspace::file('phar_offset_check.phar.php')->path;
 $pname = 'phar://'.$fname;
 
 $phar = new Phar($fname);

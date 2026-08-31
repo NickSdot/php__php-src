@@ -6,9 +6,7 @@ if (!strncasecmp(PHP_OS, 'WIN', 3)) die("skip. Do not run on Windows");
 ?>
 --FILE--
 <?php
-$socket = TestPath::file();
-chdir($socket->directory);
-$socket_path = $socket->name;
+$socket_path = Workspace::file();
 
 $socket = stream_socket_server('unix://' . $socket_path);
 var_dump(feof($socket));

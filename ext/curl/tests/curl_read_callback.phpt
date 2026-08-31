@@ -17,8 +17,8 @@ function custom_readfunction($oCurl, $hReadHandle, $iMaxOut)
   return $sData;
 }
 
-$sReadFile  = TestPath::file();
-$sWriteFile = TestPath::file();
+$sReadFile  = Workspace::file();
+$sWriteFile = Workspace::file();
 $sWriteUrl  = 'file://'.$sWriteFile;
 
 file_put_contents($sReadFile,'contents of tempfile');

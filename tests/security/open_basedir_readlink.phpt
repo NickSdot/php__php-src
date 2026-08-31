@@ -8,7 +8,7 @@ if(PHP_OS_FAMILY === "Windows") {
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 chdir(__DIR__);
 ini_set("open_basedir", ".");
 require_once "open_basedir.inc";

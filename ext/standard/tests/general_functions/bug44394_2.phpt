@@ -11,7 +11,7 @@ url_rewriter.tags="a=href,area=href,frame=src,form="
 --FILE--
 <?php
 
-$session_dir = TestPath::directory()->create();
+$session_dir = Workspace::directory()->create();
 session_save_path($session_dir);
 session_start();
 

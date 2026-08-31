@@ -14,7 +14,7 @@ $host = curl_cli_server_start();
 // start testing
 echo "*** Testing curl_setopt with CURLOPT_STDERR\n";
 
-$temp_file = TestPath::file();
+$temp_file = Workspace::file();
 
 $handle = fopen($temp_file, 'w');
 

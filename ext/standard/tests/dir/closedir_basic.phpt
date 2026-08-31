@@ -8,7 +8,7 @@ Test closedir() function : basic functionality
 
 echo "*** Testing closedir() : basic functionality ***\n";
 
-$dir_path = TestPath::directory()->create();
+$dir_path = Workspace::directory()->create();
 
 echo "\n-- Call closedir() with no arguments: --\n";
 $dh1 = opendir($dir_path);

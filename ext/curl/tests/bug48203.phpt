@@ -5,7 +5,7 @@ curl
 --FILE--
 <?php
 include 'server.inc';
-$fp = fopen(TestPath::file(), 'w');
+$fp = fopen(Workspace::file(), 'w');
 
 $ch = curl_init();
 

@@ -5,12 +5,10 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing parse_ini_file() : variation ***\n";
-$pwd = (string) TestPath::directory();
-mkdir($pwd);
 $f = "parse_ini_file_variation3";
-$dir1 = $pwd."/".$f.".dir1";
-$dir2 = $pwd."/".$f.".dir2";
-$dir3 = $pwd."/".$f.".dir3";
+$dir1 = Workspace::directory($f.".dir1");
+$dir2 = Workspace::directory($f.".dir2");
+$dir3 = Workspace::directory($f.".dir3");
 $iniFile = "php.ini";
 
 $newdirs = array($dir1, $dir2, $dir3);
@@ -20,7 +18,7 @@ if(substr(PHP_OS, 0, 3) == 'WIN' ) {
    $pathSep = ";";
 }
 foreach($newdirs as $newdir) {
-   mkdir($newdir);
+   $newdir->create();
    $newIncludePath .= $newdir.$pathSep;
 }
 
@@ -28,7 +26,7 @@ set_include_path($newIncludePath);
 $path = get_include_path();
 echo "New include path is : " . $path . "\n";
 
-$output_file = $dir2."/".$iniFile;
+$output_file = $dir2->file($iniFile);
 $iniContent = <<<FILE
 error_reporting  =  E_ALL
 display_errors = On

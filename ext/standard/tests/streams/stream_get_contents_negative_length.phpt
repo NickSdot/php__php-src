@@ -3,7 +3,7 @@ stream_get_contents() with negative max length
 --FILE--
 <?php
 
-$tmp = fopen(TestPath::file(), 'w+b');
+$tmp = fopen(Workspace::file(), 'w+b');
 fwrite($tmp, "abcd");
 var_dump(stream_get_contents($tmp, 2, 1));
 

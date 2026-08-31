@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : basic functionality ***\n";
 
-$base_dir_path = TestPath::directory()->create();
+$base_dir_path = Workspace::directory()->create();
 
 $level_one_dir_name = "私はガラスを食べられますlevel_one";
 $level_one_dir_path = $base_dir_path->directory($level_one_dir_name)->create();

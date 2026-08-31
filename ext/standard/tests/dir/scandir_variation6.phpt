@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 echo "*** Testing scandir() : usage variations ***\n";
 
 // create the temporary directories
-$dir_path = TestPath::directory('scandir_variation6')->create();
+$dir_path = Workspace::directory('scandir_variation6')->create();
 $dir_path->directory('sub_dir1')->create();
 $file_path = dirname($dir_path);
 

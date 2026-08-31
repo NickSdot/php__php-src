@@ -8,7 +8,7 @@ zlib
  * stream's read/write position, not the filter pipeline state. This ensures
  * seeking a stream with write filters does not disrupt the filter state. */
 
-$file = TestPath::file('zlib_filter_seek_deflate.zlib');
+$file = Workspace::file('zlib_filter_seek_deflate.zlib');
 
 $text = 'Hello, World!';
 

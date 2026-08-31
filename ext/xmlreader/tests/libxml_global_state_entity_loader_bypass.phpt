@@ -21,7 +21,7 @@ $reader = XMLReader::xml($xml);
 $reader->read();
 
 echo "--- File test ---\n";
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $xml);
 $reader = XMLReader::open($file);
 $reader->read();

@@ -2,8 +2,8 @@
 Test fileatime(), filemtime(), filectime() & touch() functions : basic functionality
 --FILE--
 <?php
-$file = TestPath::file();
-$directory_path = TestPath::file();
+$file = Workspace::file();
+$directory_path = Workspace::file();
 
 echo "*** Testing the basic functionality with file ***\n";
 print( @date('Y:M:D:H:i:s', fileatime(__FILE__)) )."\n";

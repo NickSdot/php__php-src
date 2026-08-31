@@ -5,8 +5,7 @@ phar
 zlib
 --FILE--
 <?php
-$archive = TestPath::file('archive.tar');
-$compressed = TestPath::file('archive.tar.gz');
+$archive = Workspace::file('archive.tar');
 $filename = $archive->path;
 $resBefore = count(get_resources());
 $arch = new PharData($filename);

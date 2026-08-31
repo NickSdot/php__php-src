@@ -13,17 +13,13 @@ if(!defined("GLOB_BRACE")) die ('skip');
 --FILE--
 <?php
 include __DIR__ . '/utils.inc';
-TestContext::useRelativeWorkspace();
-$directory = TestPath::directory();
+$directory = Workspace::directory()->create();
 $dirname = $directory->path . '/';
 $file = $directory->file('tmp.zip');
-$foo = $directory->file('foo.txt');
-$bar = $directory->file('bar.baz');
 
-@mkdir($dirname);
 copy(__DIR__ . '/test.zip', $file);
-touch($foo);
-touch($bar);
+$directory->file('foo.txt')->create();
+$directory->file('bar.baz')->create();
 
 $zip = new ZipArchive();
 if (!$zip->open($file)) {

@@ -20,10 +20,8 @@ if (!$dbh) {
 pg_close($dbh);
 
 require_once dirname(__DIR__, 2) . '/dba/tests/setup/setup_dba_tests.inc';
-TestContext::useRelativeWorkspace();
-$name = TestPath::file('bug14383.db')->path;
-TestPath::file('bug14383.db.lck');
-TestPath::file('bug14383.db-lock');
+Workspace::useRelative();
+$name = Workspace::file('bug14383.db')->path;
 
 $handler = get_any_handler($name);
 run_standard_tests($handler, $name);

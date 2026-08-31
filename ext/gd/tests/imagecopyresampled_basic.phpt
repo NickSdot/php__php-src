@@ -13,8 +13,8 @@ if (!(imagetypes() & IMG_PNG)) {
 
 echo "Simple test of imagecopyresampled() function\n";
 
-$dest_lge = TestPath::file();
-$dest_sml = TestPath::file();
+$dest_lge = Workspace::file();
+$dest_sml = Workspace::file();
 
 // create a blank image
 $image_lge = imagecreatetruecolor(400, 300);

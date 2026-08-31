@@ -9,7 +9,7 @@ OPENSSL_CONF=
 --FILE--
 <?php
 // Create a minimal openssl.cnf without default_bits (simulates OpenSSL 3.6 default config)
-$conf = TestPath::file();
+$conf = Workspace::file();
 file_put_contents($conf, "[req]\ndistinguished_name = req_dn\n[req_dn]\n");
 
 // EC key - size is determined by the curve, private_key_bits should not be required

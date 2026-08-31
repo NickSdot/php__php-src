@@ -4,7 +4,7 @@ ZipArchive::addFromString() buffers are released when the archive is closed
 zip
 --FILE--
 <?php
-$filename = TestPath::file('archive.zip');
+$filename = Workspace::file('archive.zip');
 $blob = str_repeat('q', 200000);
 
 $zip = new ZipArchive;

@@ -5,8 +5,6 @@ Test fscanf() function: usage variations - empty file
 
 /* Test fscanf() to scan an empty file */
 
-$file_path = __DIR__;
-
 echo "*** Test fscanf(): to read an empty file ***\n";
 
 // various formats
@@ -25,12 +23,7 @@ $counter = 1;
 foreach($modes as $mode) {
 
   // create an empty file
-  $filename = "$file_path/fscanf_variation52.tmp";
-  $file_handle = fopen($filename, "w");
-  if($file_handle == false)
-    exit("Error:failed to open file $filename");
-  //closing the file
-  fclose($file_handle);
+  $filename = Workspace::file()->create();
 
   // opening file in $mode mode
   $file_handle = fopen($filename, $mode);
@@ -45,7 +38,6 @@ foreach($modes as $mode) {
   }
   $counter++;
   fclose($file_handle);
-  unlink($filename);
 }
 
 echo "\n*** Done ***";

@@ -10,7 +10,7 @@ var_dump($dom->charset);
 $dom->documentElement->firstChild->nextElementSibling->textContent = "é";
 $output = $dom->saveHtml();
 echo $output, "\n";
-$outputFile = TestPath::file();
+$outputFile = Workspace::file();
 $dom->saveHtmlFile($outputFile);
 var_dump(file_get_contents($outputFile) === $output);
 

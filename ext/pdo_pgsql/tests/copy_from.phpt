@@ -29,9 +29,9 @@ for($i=0;$i<3;$i++) {
     $tableRowsWithDifferentNullValues[] = "{$firstParameter};{$secondParameter};NULL";
     $tableRowsWithDifferentNullValuesAndSelectedFields[] = "{$firstParameter};NULL";
 }
-$filename = TestPath::file();
-$filenameWithDifferentNullValues = TestPath::file();
-$filenameWithDifferentNullValuesAndSelectedFields = TestPath::file();
+$filename = Workspace::file();
+$filenameWithDifferentNullValues = Workspace::file();
+$filenameWithDifferentNullValuesAndSelectedFields = Workspace::file();
 
 file_put_contents($filename, implode("\n",$tableRows));
 file_put_contents($filenameWithDifferentNullValues, implode("\n",$tableRowsWithDifferentNullValues));

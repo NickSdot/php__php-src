@@ -10,7 +10,7 @@ $filter = stream_filter_append($stream, 'convert.base64-encode');
 echo "memoryStream = " . stream_get_contents($stream).PHP_EOL;
 
 
-$fileStream = fopen(TestPath::file()->path,'w+');
+$fileStream = fopen(Workspace::file()->path,'w+');
 fwrite($fileStream , $testString);
 rewind($fileStream );
 $filter = stream_filter_append($fileStream , 'convert.base64-encode');

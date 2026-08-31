@@ -10,7 +10,7 @@ check_skip('lmdb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 $value = str_repeat('*', 0x100000);
 $lmdb_h = dba_open($db_name, 'c', 'lmdb', 0644, 5*1048576);

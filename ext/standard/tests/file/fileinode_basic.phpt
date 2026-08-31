@@ -5,7 +5,7 @@ Test fileinode() function: Basic functionality
 echo "*** Testing fileinode() with file, directory ***\n";
 
 /* Getting inode of created file */
-$file = TestPath::file();
+$file = Workspace::file();
 $file_path = $file->directory;
 fopen($file->path, "w");
 print( fileinode($file) )."\n";

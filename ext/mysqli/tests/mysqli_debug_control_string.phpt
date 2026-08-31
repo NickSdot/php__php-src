@@ -53,7 +53,7 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
         unlink($trace_file);
     }
 
-    $trace_file = TestPath::file();
+    $trace_file = Workspace::file();
     try_control_string($link, 't:,,:o,' . $trace_file, $trace_file, 10);
     try_control_string($link, ':' . chr(0) . 'A,' . $trace_file, $trace_file, 20);
     try_control_string($link, 't:o,' . $trace_file . ':abc', $trace_file, 30);

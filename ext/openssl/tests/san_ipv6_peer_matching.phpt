@@ -13,7 +13,7 @@ if (@stream_socket_client('udp://[::1]:8888') === false)
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 $san = 'IP:2001:db8:85a3:8d3:1319:8a2e:370:7348';
 
 $serverCode = <<<'CODE'

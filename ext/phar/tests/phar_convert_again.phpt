@@ -10,19 +10,10 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_again.phar');
+$archive = Workspace::file('phar_convert_again.phar');
 $fname = $archive->path;
-$copy = TestPath::file('phar_convert_again2.tbz');
+$copy = Workspace::file('phar_convert_again2.tbz');
 $fname2 = $copy->path;
-TestPath::file('phar_convert_again.zip');
-TestPath::file('phar_convert_again.tar.gz');
-TestPath::file('phar_convert_again.tar.bz2');
-TestPath::file('phar_convert_again2.phar');
-TestPath::file('phar_convert_again2.phar.tar');
-TestPath::file('phar_convert_again2.tar');
-TestPath::file('phar_convert_again2.phar.zip');
-TestPath::file('phar_convert_again2.zip');
-TestPath::file('phar_convert_again2.phar.tar.gz');
 $pname = 'phar://' . $fname;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;

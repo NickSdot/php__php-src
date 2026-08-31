@@ -8,7 +8,7 @@ Test fscanf() function: usage variations - char formats with resource
 echo "*** Test fscanf(): different char format types with resource ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

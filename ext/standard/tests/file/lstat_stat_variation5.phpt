@@ -13,14 +13,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$directory = TestPath::directory();
 
 
 /* create temp directory */
 
-$dir_name = $directory->path;
-@rmdir($dir_name);  //ensure that dir doesn't exists
-mkdir($dir_name);  // temp dir
+$dir_name = Workspace::directory()->create();  // temp dir
 
 // touch a directory and check stat, there should be difference in atime
 echo "*** Testing stat() for directory after using touch() on the directory ***\n";

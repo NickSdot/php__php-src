@@ -3,7 +3,7 @@ Bug #46426 (3rd parameter offset of stream_get_contents not works for "0")
 --FILE--
 <?php
 
-$tmp = fopen(TestPath::file(), 'w+b');
+$tmp = fopen(Workspace::file(), 'w+b');
 
 fwrite($tmp, "12345");
 

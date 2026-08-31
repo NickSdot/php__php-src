@@ -12,17 +12,17 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Creating soft and hard links to a file and applying fileinode() on links */
 
-$file = TestPath::file()->create();
+$file = Workspace::file()->create();
 
 echo "*** Testing fileinode() with links ***\n";
 /* With symlink */
-$symlink = TestPath::file();
+$symlink = Workspace::file();
 symlink($file, $symlink);
 var_dump( fileinode($symlink) ); //expected true
 clearstatcache();
 
 /* With hardlink */
-$link = TestPath::file();
+$link = Workspace::file();
 link($file, $link);
 var_dump( fileinode($link) );  // expected: true
 clearstatcache();

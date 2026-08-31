@@ -13,7 +13,7 @@ $to = 'user@example.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 $additional_headers = 'KHeaders';
-$outFile = TestPath::file('mailBasic.out');
+$outFile = Workspace::file('mailBasic.out');
 chdir($outFile->directory);
 
 echo "-- All Mail Content Parameters --\n";

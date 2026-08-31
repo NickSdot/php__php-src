@@ -7,7 +7,7 @@ phar.readonly=0
 phar.require_hash=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar')->path;
+$fname = Workspace::file('archive.phar')->path;
 $phar = new Phar($fname);
 $phar->addFromString('index.php', '<?php echo "ok"; ?>');
 unset($phar);

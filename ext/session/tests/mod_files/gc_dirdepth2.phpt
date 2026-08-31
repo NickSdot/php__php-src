@@ -10,7 +10,7 @@ session.gc_maxlifetime=10
 session.use_strict_mode=0
 --FILE--
 <?php
-$base = TestPath::directory()->create();
+$base = Workspace::directory()->create();
 $level1 = $base->directory('a')->create();
 $level2 = $level1->directory('b')->create();
 

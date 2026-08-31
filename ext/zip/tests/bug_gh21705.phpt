@@ -4,7 +4,7 @@ ZipArchive::getFromIndex() honors FL_UNCHANGED for deleted entries
 zip
 --FILE--
 <?php
-$name = TestPath::file();
+$name = Workspace::file();
 @unlink($name);
 $zip = new ZipArchive;
 $zip->open($name, ZipArchive::CREATE);

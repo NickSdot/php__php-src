@@ -15,8 +15,8 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $gd1 = TestPath::file();
-    $gd2 = TestPath::file();
+    $gd1 = Workspace::file();
+    $gd2 = Workspace::file();
 
     echo "XPM to GD1 conversion: ";
     echo imagegd(imagecreatefromxpm($cwd . "/conv_test.xpm"), $gd1->path) ? 'ok' : 'failed';

@@ -4,7 +4,7 @@ Hash: hash_update_stream() test
 marcosptf - <marcosptf@yahoo.com.br> - @phpsp - sao paulo - br
 --FILE--
 <?php
-$fp = fopen(TestPath::file(), 'w+');
+$fp = fopen(Workspace::file(), 'w+');
 fwrite($fp, 'The quick brown fox jumped over the lazy dog.');
 rewind($fp);
 

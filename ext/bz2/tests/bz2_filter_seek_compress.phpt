@@ -7,7 +7,7 @@ bz2
 /* Write filters are not reset on stream seek; seeking only affects the
  * stream's read/write position, not the filter pipeline state. */
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 $text = 'Hello, World!';
 

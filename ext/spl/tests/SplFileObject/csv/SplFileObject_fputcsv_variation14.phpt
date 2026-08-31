@@ -8,7 +8,7 @@ Test fputcsv() : usage variations - with enclosure & delimiter of two chars
 
 echo "*** Testing fputcsv() : with enclosure & delimiter of two chars and file opened in read mode ***\n";
 
-$file = TestPath::file();
+$file = Workspace::file();
 $fo = new SplFileObject($file, 'w');
 
 try {

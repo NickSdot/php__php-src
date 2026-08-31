@@ -10,7 +10,7 @@ zip
 
 $dirname = __DIR__ . '/';
 $arch = new ZipArchive;
-$arch->open(TestPath::file(),ZIPARCHIVE::CREATE);
+$arch->open(Workspace::file(),ZIPARCHIVE::CREATE);
 var_dump($arch->getStatusString());
 //delete an index that does not exist - trigger error
 $arch->deleteIndex(2);

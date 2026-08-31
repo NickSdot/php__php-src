@@ -15,7 +15,7 @@ ftp_login($ftp, 'user', 'pass');
 if (!$ftp) die("Couldn't connect to the server");
 ftp_set_option($ftp, FTP_AUTOSEEK, false);
 
-$local_file = TestPath::file();
+$local_file = Workspace::file();
 $handle = fopen($local_file, 'w');
 
 var_dump(ftp_nb_fget($ftp, $handle, 'fget.txt', FTP_ASCII, FTP_AUTORESUME));

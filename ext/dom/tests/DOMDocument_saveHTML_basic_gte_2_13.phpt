@@ -11,7 +11,7 @@ if (LIBXML_VERSION < 21300) die("skip see https://gitlab.gnome.org/GNOME/libxml2
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 $doc = new DOMDocument('1.0');
 $root = $doc->createElement('html');
 $root = $doc->appendChild($root);

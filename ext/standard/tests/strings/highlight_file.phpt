@@ -11,7 +11,7 @@ allow_url_fopen=1
 --FILE--
 <?php
 
-$filename = TestPath::file('highlight_file.dat');
+$filename = Workspace::file('highlight_file.dat');
 
 var_dump(highlight_file($filename));
 

@@ -25,7 +25,7 @@ HTML;
 
 \Dom\HTMLDocument::createFromString($html);
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $html);
 \Dom\HTMLDocument::createFromFile($file);
 

@@ -61,7 +61,7 @@ function good_write($id, $data) {
     return file_put_contents($handler->path . $id, $data);
 }
 
-$save_path = TestPath::directory()->create();
+$save_path = Workspace::directory()->create();
 session_save_path($save_path);
 $handler = new MySession2;
 

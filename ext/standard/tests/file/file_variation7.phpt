@@ -3,7 +3,7 @@ file() on a file with blank lines
 --WHITESPACE_SENSITIVE--
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $fd = fopen($file, "w+");
 fwrite($fd, "Line 1\n\n \n  \n\Line 3");

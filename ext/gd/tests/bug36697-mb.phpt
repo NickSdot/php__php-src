@@ -4,7 +4,7 @@ Bug #36697 (TrueColor transparency with GIF palette output).
 gd
 --FILE--
 <?php
-$dest = TestPath::file();
+$dest = Workspace::file('私はガラスを食べられます.gif');
 
 $im = imagecreatetruecolor(192, 36);
 $trans_color = imagecolorallocate($im, 255, 0, 0);

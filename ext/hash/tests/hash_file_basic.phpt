@@ -7,7 +7,7 @@ Felix De Vliegher <felix.devliegher@gmail.com>
 echo "*** Testing hash_file() : basic functionality ***\n";
 
 // Set up file
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents( $filename, 'The quick brown fox jumped over the lazy dog.' );
 
 var_dump( hash_file( 'md5', $filename ) );

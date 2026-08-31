@@ -16,7 +16,7 @@ if (!$ftp) die("Couldn't connect to the server");
 
 var_dump(ftp_login($ftp, 'anonymous', 'IEUser@'));
 
-$local_file = TestPath::file();
+$local_file = Workspace::file();
 
 foreach ([12345678910, 9223372036854775807] as $size) {
     $handle = fopen($local_file, 'w');

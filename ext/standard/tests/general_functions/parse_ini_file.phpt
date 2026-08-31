@@ -3,7 +3,7 @@ parse_ini_file() multiple calls
 --FILE--
 <?php
 
-$filename = TestPath::file('parse_ini_file.dat');
+$filename = Workspace::file('parse_ini_file.dat');
 
 var_dump(parse_ini_file($filename));
 var_dump(parse_ini_file($filename, true));
@@ -115,10 +115,10 @@ var_dump(parse_ini_file($filename, true));
 echo "Done\n";
 ?>
 --EXPECTF--
-Warning: parse_ini_file(): Failed to open stream: No such file or directory in %sparse_ini_file.php on line %d
+Warning: parse_ini_file(): Failed to open stream: No such file or directory in %sparse_ini_file.%d.php on line %d
 bool(false)
 
-Warning: parse_ini_file(): Failed to open stream: No such file or directory in %sparse_ini_file.php on line %d
+Warning: parse_ini_file(): Failed to open stream: No such file or directory in %sparse_ini_file.%d.php on line %d
 bool(false)
 array(1) {
   ["test"]=>
@@ -126,11 +126,11 @@ array(1) {
 }
 
 Warning: syntax error, unexpected '='%sparse_ini_file.dat on line 2
- in %sparse_ini_file.php on line %d
+ in %sparse_ini_file.%d.php on line %d
 bool(false)
 
 Warning: syntax error, unexpected '='%sparse_ini_file.dat on line 2
- in %sparse_ini_file.php on line %d
+ in %sparse_ini_file.%d.php on line %d
 bool(false)
 array(1) {
   ["test"]=>

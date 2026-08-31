@@ -72,7 +72,7 @@ pg_exec ($db, "COMMIT");
 
 echo "import/export LO\n";
 $path = __DIR__ . '/';
-$exported = TestPath::file();
+$exported = Workspace::file();
 pg_query($db, 'BEGIN');
 $oid = pg_lo_import($db, $path . 'php.gif');
 pg_query($db, 'COMMIT');

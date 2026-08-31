@@ -7,11 +7,11 @@ require(__DIR__ . '/file.inc');
 $data_array = array( "Garbage data", "Gar\nba\nge d\nata", "Gar\n\nbage \n\n data" );
 echo "*** Using various flags values with different data in a file\n";
 $count=1;
-$file = TestPath::file();
-$file1Directory = TestPath::directory()->create();
+$file = Workspace::file();
+$file1Directory = Workspace::directory()->create();
 $file1 = $file1Directory->file();
-$file2 = TestPath::file();
-$file3 = TestPath::file();
+$file2 = Workspace::file();
+$file3 = Workspace::file();
 foreach( $data_array as $data ) {
    echo "--Iteration $count --\n";
    $fh  = fopen($file, "w");

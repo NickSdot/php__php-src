@@ -9,7 +9,7 @@ Test readdir() function : usage variations - different file names
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$dir_path = TestPath::directory()->create();
+$dir_path = Workspace::directory()->create();
 
 // heredoc string
 $heredoc = <<<EOT

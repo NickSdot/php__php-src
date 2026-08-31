@@ -12,8 +12,8 @@ opcache
 --FILE--
 <?php
 
-$file1 = TestPath::file();
-$file2 = TestPath::file();
+$file1 = Workspace::file();
+$file2 = Workspace::file();
 file_put_contents($file1, <<<CODE
 <?php
 class A {

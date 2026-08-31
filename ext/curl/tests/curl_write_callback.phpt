@@ -16,7 +16,7 @@ function curl_callback($curl_handle, $received_data)
     return strlen($received_data);
 }
 
-$log_file = TestPath::file();
+$log_file = Workspace::file();
 
 $fp = fopen($log_file, 'w+');
 fwrite($fp, "test");

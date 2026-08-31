@@ -3,7 +3,7 @@ iptcembed() and wrong file
 --FILE--
 <?php
 
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, "w");
 fwrite($fp, "-1-1");
 fclose($fp);

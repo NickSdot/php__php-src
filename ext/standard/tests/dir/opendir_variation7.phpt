@@ -16,7 +16,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing opendir() : usage variations ***\n";
 
 // create the temporary directory
-$dir_path = TestPath::directory()->create();
+$dir_path = Workspace::directory()->create();
 
 /* different values for directory permissions */
 $permission_values = array(

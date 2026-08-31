@@ -4,7 +4,7 @@ Bug #66660 (Composer.phar install/update fails)
 <?php __CLASS__ ?>
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, "<?php __CLASS__ ?>");
 echo php_strip_whitespace($file);
 ?>

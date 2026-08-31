@@ -5,7 +5,7 @@ sendmail_path={MAIL:gh8086.out}
 mail.mixed_lf_and_crlf=on
 --FILE--
 <?php
-$outFile = TestPath::file('gh8086.out');
+$outFile = Workspace::file('gh8086.out');
 chdir($outFile->directory);
 var_dump(mail('user@example.com', 'Test Subject', 'A Message', 'KHeaders'));
 $mail = file_get_contents($outFile);

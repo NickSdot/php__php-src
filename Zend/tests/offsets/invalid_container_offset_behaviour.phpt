@@ -74,7 +74,7 @@ OUTPUT;
         );
 
         if ($EXPECTED_OUTPUT !== $varOutput) {
-            file_put_contents(TestPath::file(), $varOutput);
+            file_put_contents(Workspace::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }
@@ -95,7 +95,7 @@ OUTPUT;
         );
 
         if ($EXPECTED_OUTPUT !== $varOutput) {
-            file_put_contents(TestPath::file(), $varOutput);
+            file_put_contents(Workspace::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }

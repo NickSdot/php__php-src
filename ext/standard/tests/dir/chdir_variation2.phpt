@@ -8,7 +8,7 @@ Test chdir() function : usage variations - relative paths
 
 echo "*** Testing chdir() : usage variations ***\n";
 
-$base_dir_path = TestPath::directory()->create();
+$base_dir_path = Workspace::directory()->create();
 
 $level2_one_dir_name = "level2_one";
 $level2_one_dir_path = $base_dir_path->directory($level2_one_dir_name)->create();

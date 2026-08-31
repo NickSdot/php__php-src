@@ -43,7 +43,7 @@ class MySession2 implements SessionHandlerInterface {
     }
 }
 
-$save_path = TestPath::directory()->create();
+$save_path = Workspace::directory()->create();
 session_save_path($save_path);
 $handler = new MySession2;
 session_set_save_handler(array($handler, 'open'), array($handler, 'close'),

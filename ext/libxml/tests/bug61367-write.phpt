@@ -21,7 +21,7 @@ class StreamExploiter {
     }
 }
 
-$directory = TestPath::directory();
+$directory = Workspace::directory();
 $base = $directory->directory();
 $bad = $directory->file('bad');
 var_dump(mkdir($directory));

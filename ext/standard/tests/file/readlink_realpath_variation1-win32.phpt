@@ -12,7 +12,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 echo "*** Testing readlink() and realpath() : usage variations ***\n";
-$name_prefix = TestPath::directory();
+$name_prefix = Workspace::directory();
 $root = $name_prefix->directory('readlink_realpath_variation1');
 $home = $root->directory('home');
 $tests = $home->directory('tests');
@@ -58,10 +58,6 @@ var_dump( realpath($obj1->linkname) );
 var_dump( link($filename, $obj2->linkname) );
 var_dump( readlink($obj2->linkname) );   // invalid because readlink doesn't work with hardlink
 var_dump( realpath($obj2->linkname) );
-
-// delete the links
-unlink($obj1->linkname);
-unlink($obj2->linkname);
 
 echo "Done\n";
 ?>

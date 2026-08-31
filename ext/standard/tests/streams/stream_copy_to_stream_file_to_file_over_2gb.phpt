@@ -11,10 +11,9 @@ if (disk_free_space(sys_get_temp_dir()) < 4 * 1024 * 1024 * 1024) {
 ?>
 --FILE--
 <?php
-TestContext::useSystemWorkspace();
 $size = 3 * 1024 * 1024 * 1024; // exceeds the ~2GB per-call kernel copy limit
-$src = TestPath::file();
-$dst = TestPath::file();
+$src = Workspace::file();
+$dst = Workspace::file();
 
 // Create a sparse 3GB source so the copy loop runs without using 3GB of data.
 $fh = fopen($src, "wb");

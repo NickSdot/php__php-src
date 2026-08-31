@@ -7,7 +7,7 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('gh19038.phar');
+$archive = Workspace::file('gh19038.phar');
 $phar = new Phar($archive->path);
 $phar->addFromString("file", "123");
 $file = $phar["file"]->openFile();

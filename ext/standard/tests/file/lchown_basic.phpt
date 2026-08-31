@@ -8,8 +8,8 @@ if (!function_exists("posix_getuid")) die("skip no posix_getuid()");
 --FILE--
 <?php
 echo "*** Testing lchown() : basic functionality ***\n";
-$filename = TestPath::file()->path;
-$symlink = TestPath::file()->path;
+$filename = Workspace::file()->path;
+$symlink = Workspace::file()->path;
 
 $uid = posix_getuid();
 

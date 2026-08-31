@@ -53,7 +53,7 @@ function dump_openssl_errors($name) {
 }
 
 // common output file
-$output_file = TestPath::file();
+$output_file = Workspace::file();
 // invalid file for read is something that does not exist in current directory
 $invalid_file_for_read = __DIR__ . "/invalid_file_for_read_operation.txt";
 // invalid file for is the test dir as writing file to existing dir should always fail

@@ -13,7 +13,7 @@ if(substr(PHP_OS, 0, 3) != 'WIN' ) {
 $sysroot = exec('echo %systemroot%');
 $icacls = "$sysroot\\System32\\icacls.exe";
 $user = get_current_user();
-$unreadable = TestPath::file()->create();
+$unreadable = Workspace::file()->create();
 
 $cmd = $icacls . ' ' . $unreadable . ' /inheritance:r /deny ' . $user . ':(F,M,R,RX,W)';
 exec($cmd);

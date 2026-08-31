@@ -9,8 +9,7 @@ curl
 ?>
 --FILE--
 <?php
-$fn = TestPath::file()->path;
-@unlink($fn);
+$fn = Workspace::file();
 $fh = fopen($fn, 'xb');
 $ch = curl_init('http://www.yahoo.com/');
 var_dump(curl_setopt($ch, CURLOPT_FILE, $fh));

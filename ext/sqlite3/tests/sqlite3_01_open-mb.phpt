@@ -5,7 +5,7 @@ sqlite3
 --FILE--
 <?php
 
-$db_file = TestPath::file('私はガラスを食べられます.db');
+$db_file = Workspace::file('私はガラスを食べられます.db');
 $db = new SQLite3($db_file);
 //require_once(__DIR__ . '/new_db.inc');
 

@@ -7,7 +7,7 @@ User Group: PHP-WVL & PHPGent #PHPTestFest
 gd
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 // End of file while reading header
 $bin = "\x41\x41\x41\x41\x00\x00\x00\x00\x00\x00";

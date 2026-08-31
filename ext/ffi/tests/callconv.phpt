@@ -14,7 +14,7 @@ void __cdecl cdecl_func(int arg1, double arg2, char arg3);
 void __stdcall stdcall_func(int arg1, double arg2, char arg3);
 void __fastcall fastcall_func(int arg1, double arg2, char arg3);
 HEADER;
-$headername = TestPath::file('callconv.h');
+$headername = Workspace::file('callconv.h');
 $dllname = __DIR__ . "/callconv_x86.dll";
 
 $ffi1 = FFI::cdef($header, $dllname);

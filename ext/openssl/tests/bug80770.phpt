@@ -9,11 +9,11 @@ if (OPENSSL_VERSION_NUMBER < 0x10101000) die("skip OpenSSL v1.1.1 required");
 ?>
 --FILE--
 <?php
-$clientCertFile = TestPath::file();
-$caCertFile = TestPath::file();
-$csFile = TestPath::file();
-$ukFile = TestPath::file();
-$usFile = TestPath::file();
+$clientCertFile = Workspace::file();
+$caCertFile = Workspace::file();
+$csFile = Workspace::file();
+$ukFile = Workspace::file();
+$usFile = Workspace::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();

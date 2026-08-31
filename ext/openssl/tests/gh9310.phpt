@@ -10,11 +10,11 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 <?php
 include 'ServerClientTestCase.inc';
 
-$baseDir = TestPath::directory()->create();
+$baseDir = Workspace::directory('gh9310')->create();
 $baseDirCertFile = $baseDir->file('cert.crt');
 $baseDirPkFile = $baseDir->file('private.key');
-$certFile = TestPath::file('gh9310.crt');
-$pkFile = TestPath::file('gh9310.key');
+$certFile = Workspace::file('gh9310.crt');
+$pkFile = Workspace::file('gh9310.key');
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
@@ -23,12 +23,12 @@ $certificateGenerator->saveNewCertAndKey('gh9310', $certFile, $pkFile);
 copy($certFile, $baseDirCertFile);
 copy($pkFile, $baseDirPkFile);
 
-$sniCaFile = TestPath::file();
-$sniCsFile = TestPath::file('gh9310_sni_cs.pem.tmp');
-$sniUkCertFile = TestPath::file('gh9310_sni_uk_cert.pem.tmp');
-$sniUkKeyFile = TestPath::file('gh9310_sni_uk_key.pem.tmp');
-$sniUsCertFile = TestPath::file('gh9310_sni_us_cert.pem.tmp');
-$sniUsKeyFile = TestPath::file('gh9310_sni_us_key.pem.tmp');
+$sniCaFile = Workspace::file();
+$sniCsFile = Workspace::file('gh9310_sni_cs.pem.tmp');
+$sniUkCertFile = Workspace::file('gh9310_sni_uk_cert.pem.tmp');
+$sniUkKeyFile = Workspace::file('gh9310_sni_uk_key.pem.tmp');
+$sniUsCertFile = Workspace::file('gh9310_sni_us_cert.pem.tmp');
+$sniUsKeyFile = Workspace::file('gh9310_sni_us_key.pem.tmp');
 $baseDirSniUkCertFile = $baseDir->file();
 
 $certificateGenerator->saveCaCert($sniCaFile);

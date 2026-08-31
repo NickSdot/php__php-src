@@ -4,21 +4,13 @@ Test glob() function: basic functions
 <?php
 echo "*** Testing glob() : basic functions ***\n";
 
-$file_path = TestPath::directory();
-
 // temp dirname used here
-$dirname = TestPath::directory('glob_basic');
-
-// temp dir created
-mkdir($dirname);
+$dirname = Workspace::directory('glob_basic')->create();
 
 // temp files created
-$fp = fopen("$dirname/wonder12345", "w");
-fclose($fp);
-$fp = fopen("$dirname/wonder.txt", "w");
-fclose($fp);
-$fp = fopen("$dirname/file.text", "w");
-fclose($fp);
+$dirname->file('wonder12345')->create();
+$dirname->file('wonder.txt')->create();
+$dirname->file('file.text')->create();
 
 // glob() with default arguments
 sort_var_dump( glob($dirname."/*") );

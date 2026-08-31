@@ -15,9 +15,7 @@ opcache.protect_memory=1
 // Checks that JITed code does not crash in --repeat 2 after the ModelInterface
 // interface is recompiled and Model is re-linked.
 
-$incfile = TestPath::file();
-file_put_contents($incfile, file_get_contents(__DIR__ . '/gh8591-001.inc'));
-require $incfile;
+require __DIR__ . '/gh8591-001.inc';
 
 class Model implements ModelInterface
 {
@@ -40,7 +38,7 @@ class Model implements ModelInterface
 new Model();
 
 // mark the file as changed (important)
-touch($incfile);
+touch(__DIR__ . '/gh8591-001.inc');
 
 var_dump($x);
 

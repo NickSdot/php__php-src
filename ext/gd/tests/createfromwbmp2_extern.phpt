@@ -4,7 +4,7 @@ imagecreatefromwbmp with invalid wbmp
 gd
 --FILE--
 <?php
-$filename = TestPath::file('_tmp_createfromwbmp2_extern.wbmp');
+$filename = Workspace::file('_tmp_createfromwbmp2_extern.wbmp');
 $fp = fopen($filename,"wb");
 if (!$fp) {
     exit("Failed to create <$filename>");

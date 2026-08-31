@@ -13,7 +13,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 require __DIR__.'/file.inc';
 echo "*** Testing is_executable(): usage variations ***\n";
 
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 $file = $directory->file('bar.tmp');
 $filename = $file->name;
 

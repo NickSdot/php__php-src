@@ -5,8 +5,9 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing fopen() : variation ***\n";
-$absfile = TestPath::file();
-$relfile = "fopen_variation6.tmp";
+chdir(Workspace::path());
+$absfile = Workspace::file();
+$relfile = Workspace::file()->name;
 
 $h = fopen($absfile, "w");
 fwrite($h, "This is an absolute file");
@@ -26,9 +27,6 @@ $h = fopen($relfile, "r", true, $ctx);
 fpassthru($h);
 fclose($h);
 echo "\n";
-
-unlink($absfile);
-unlink($relfile);
 ?>
 --EXPECT--
 *** Testing fopen() : variation ***

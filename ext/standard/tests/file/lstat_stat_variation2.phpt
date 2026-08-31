@@ -4,18 +4,12 @@ Test lstat() and stat() functions: usage variations - effects of rename() on dir
 <?php
 /* test the effects of rename() on stats of dir */
 
-$file_path = __DIR__;
 require("file.inc");
-$old_directory = TestPath::directory();
-$new_directory = TestPath::directory();
-
-/* create temp directory */
-mkdir($old_directory);  // temp dir
 
 // renaming a directory and check stat
 echo "*** Testing stat() for directory after being renamed ***\n";
-$old_dirname = $old_directory->path;
-$new_dirname = $new_directory->path;
+$old_dirname = Workspace::directory()->create();  // temp dir
+$new_dirname = Workspace::directory();
 $old_stat = stat($old_dirname);
 clearstatcache();
 var_dump( rename($old_dirname, $new_dirname) );

@@ -11,9 +11,9 @@ if ($codepage !== '932' && $codepage !== '936' && $codepage !== '950') die("skip
 --FILE--
 <?php
 include 'include.inc';
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
-$filename = TestPath::file("GHSA-3qgc-jrrr-25jv_tmp.php")->path;
+$filename = Workspace::file("GHSA-3qgc-jrrr-25jv_tmp.php")->path;
 $script = '<?php echo "hello "; echo "world"; ?>';
 file_put_contents($filename, $script);
 

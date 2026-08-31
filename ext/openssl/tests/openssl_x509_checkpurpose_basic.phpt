@@ -8,7 +8,7 @@ openssl
 <?php
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();
-$sanCert = TestPath::file();
+$sanCert = Workspace::file();
 $certificateGenerator->saveCaCert($sanCert);
 
 $cert = "file://" . __DIR__ . "/cert.crt";

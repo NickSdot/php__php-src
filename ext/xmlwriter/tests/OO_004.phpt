@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$doc_dest = TestPath::file();
+$doc_dest = Workspace::file();
 $xw = new XMLWriter();
 $xw->openUri($doc_dest);
 $xw->startDocument('1.0', 'UTF-8');

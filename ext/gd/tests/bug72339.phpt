@@ -17,7 +17,7 @@ if (!GD_BUNDLED) {
 ?>
 --FILE--
 <?php
-$fname = TestPath::file('bug72339.gd');
+$fname = Workspace::file('bug72339.gd');
 
 $fh = fopen($fname, "w");
 fwrite($fh, "gd2\x00");
@@ -36,6 +36,6 @@ $im = imagecreatefromgd2($fname);
 ?>
 --EXPECTF--
 Warning: imagecreatefromgd2(): Product of memory allocation multiplication would exceed INT_MAX, failing operation gracefully
- in %sbug72339.php on line %d
+ in %sbug72339.%d.php on line %d
 
-Warning: imagecreatefromgd2(): "%sbug72339.gd" is not a valid GD2 file in %sbug72339.php on line %d
+Warning: imagecreatefromgd2(): "%sbug72339.gd" is not a valid GD2 file in %sbug72339.%d.php on line %d

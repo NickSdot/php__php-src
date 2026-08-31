@@ -17,7 +17,7 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 $dir = new DirectoryIterator($directory);
 $expected = fileowner($directory);
 $actual = $dir->getOwner();

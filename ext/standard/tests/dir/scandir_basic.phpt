@@ -12,7 +12,7 @@ echo "*** Testing scandir() : basic functionality ***\n";
 include (__DIR__ . '/../file/file.inc');
 
 // set up directory
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 create_files($directory, 3);
 
 echo "\n-- scandir() with mandatory arguments --\n";

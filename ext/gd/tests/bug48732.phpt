@@ -14,7 +14,7 @@ gd
 <?php
 $cwd = __DIR__;
 $font = "$cwd/Tuffy.ttf";
-$output = TestPath::file();
+$output = Workspace::file();
 $g = imagecreate(100, 50);
 $bgnd  = imagecolorallocate($g, 255, 255, 255);
 $black = imagecolorallocate($g, 0, 0, 0);

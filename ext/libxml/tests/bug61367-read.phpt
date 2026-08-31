@@ -36,7 +36,7 @@ XML
     }
 }
 
-$directory = TestPath::directory('test_bug_61367-read');
+$directory = Workspace::directory('test_bug_61367-read');
 $base = $directory->directory();
 $bad = $directory->file('bad');
 var_dump(mkdir($directory));

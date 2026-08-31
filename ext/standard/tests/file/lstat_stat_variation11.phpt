@@ -8,7 +8,7 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 <?php
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$file = TestPath::file();
+$file = Workspace::file();
 
 /* test the effects of is_file() on stats of a file */
 

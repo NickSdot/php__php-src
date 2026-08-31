@@ -4,7 +4,7 @@ imageloadfont() function crashes
 gd
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 $bin = "\x41\x41\x41\x41\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00";
 $fp = fopen($filename, 'wb');
 fwrite($fp, $bin);
@@ -17,6 +17,6 @@ imagestring($image, $font, 0, 0, "Hello", $black);
 ?>
 --EXPECTF--
 Warning: imageloadfont(): Product of memory allocation multiplication would exceed INT_MAX, failing operation gracefully
- in %simageloadfont_invalid.php on line %d
+ in %simageloadfont_invalid.%d.php on line %d
 
-Warning: imageloadfont(): Error reading font, invalid font header in %simageloadfont_invalid.php on line %d
+Warning: imageloadfont(): Error reading font, invalid font header in %simageloadfont_invalid.%d.php on line %d

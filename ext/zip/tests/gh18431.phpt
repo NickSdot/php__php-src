@@ -4,7 +4,7 @@ GH-18431 (Registering ZIP progress callback twice doesn't work)
 zip
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $callback = var_dump(...);
 $zip = new ZipArchive;
 $zip->open($file, ZIPARCHIVE::CREATE);

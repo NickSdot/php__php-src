@@ -19,9 +19,9 @@ if (!file_exists($php)) {
 
 $php = dirname(getenv('TEST_PHP_EXECUTABLE')) . DIRECTORY_SEPARATOR . "php-win.exe";
 
-$out_fl = TestPath::file("argv_bug77111.txt")->path;
+$out_fl = Workspace::file("argv_bug77111.txt")->path;
 
-$argv_fl = TestPath::file("argv_bug77111_test.php")->path;
+$argv_fl = Workspace::file("argv_bug77111_test.php")->path;
 file_put_contents($argv_fl, "<?php file_put_contents('$out_fl', implode(' ', array_slice(\$argv, 1))); ?>");
 
 shell_exec("$php -n $argv_fl Ästhetik Æstetik Esthétique Estética Эстетика");

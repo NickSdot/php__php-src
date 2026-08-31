@@ -6,8 +6,8 @@ Test lstat() and stat() functions: usage variations - effects of rename() on fil
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$old_file = TestPath::file();
-$new_file = TestPath::file();
+$old_file = Workspace::file();
+$new_file = Workspace::file();
 
 /* create temp file */
 $fp = fopen($old_file->path, "w");  // temp file

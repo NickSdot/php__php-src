@@ -17,7 +17,7 @@ gd
     require_once __DIR__ . '/func.inc';
 
     $infile = __DIR__  . '/girl.avif';
-    $outfile = TestPath::file();
+    $outfile = Workspace::file();
 
     echo 'Decoding AVIF image: ';
     $img = imagecreatefromavif($infile);

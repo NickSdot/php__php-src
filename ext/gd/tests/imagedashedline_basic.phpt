@@ -14,7 +14,7 @@ gd
 
 echo "Simple test of imagedashedline() function\n";
 
-$dest = TestPath::file();
+$dest = Workspace::file();
 
 // create a blank image
 $image = imagecreatetruecolor(250, 250);

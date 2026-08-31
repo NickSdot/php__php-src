@@ -10,7 +10,7 @@ check_skip_any();
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$name = TestPath::file()->path;
+$name = Workspace::file()->path;
 
 $db = get_any_db($name);
 

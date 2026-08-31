@@ -7,7 +7,7 @@ if (PHP_OS_FAMILY === "Windows") die("skip non-Windows tests (popen cannot delet
 --FILE--
 <?php
 
-$tempnam = TestPath::file()->create();
+$tempnam = Workspace::file()->create();
 
 $stream = popen('echo 1; echo 2; rm ' . escapeshellarg($tempnam), 'r');
 

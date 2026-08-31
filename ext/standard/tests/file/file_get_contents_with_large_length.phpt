@@ -5,7 +5,7 @@ memory_limit=128M
 --FILE--
 <?php
 
-$file_path = TestPath::file();
+$file_path = Workspace::file();
 $file_content = str_repeat('a', 50000);
 file_put_contents($file_path, $file_content);
 

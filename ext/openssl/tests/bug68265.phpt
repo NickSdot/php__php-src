@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 $san = 'DNS:debs.ak-online.be., DNS:debs.ak-online.net.';
 
 $serverCode = <<<'CODE'

@@ -14,7 +14,7 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $output = TestPath::file();
+    $output = Workspace::file();
 
     echo "GIF to JPEG conversion: ";
     echo imagejpeg(imagecreatefromgif($cwd . "/conv_test.gif"), $output->path) ? 'ok' : 'failed';

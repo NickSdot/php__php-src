@@ -31,7 +31,7 @@ mysqli.allow_local_infile=0
     if (!$link->query("CREATE TABLE test (dump1 INT UNSIGNED NOT NULL PRIMARY KEY) ENGINE=" . $engine)) {
         printf("[003] [%d] %s\n", $link->errno, $link->error);
     }
-    $file = TestPath::file();
+    $file = Workspace::file();
     if (FALSE == file_put_contents($file, "waa? meukee!"))
         printf("[004] Failed to create CVS file\n");
     if (!$link->query("SELECT 1 FROM DUAL"))

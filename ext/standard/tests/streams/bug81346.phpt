@@ -6,7 +6,7 @@ The test expectation is due to bug #81345.
 bz2
 --FILE--
 <?php
-$s = fopen("compress.bzip2://" . TestPath::file(), "w");
+$s = fopen("compress.bzip2://" . Workspace::file(), "w");
 fwrite($s, str_repeat("hello world", 100));
 fflush($s);
 var_dump(ftell($s));

@@ -7,8 +7,8 @@ if (!function_exists("posix_getgid")) die("skip no posix_getgid()");
 ?>
 --FILE--
 <?php
-$filename = TestPath::file()->path;
-$symlink = TestPath::file()->path;
+$filename = Workspace::file()->path;
+$symlink = Workspace::file()->path;
 
 $gid = posix_getgid();
 

@@ -8,7 +8,7 @@ if (!in_array('inifile', dba_handlers())) die('skip inifile handler not availabl
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $db = dba_open($filename, 'c', 'inifile');
 

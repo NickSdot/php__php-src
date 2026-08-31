@@ -6,8 +6,8 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.php');
-$fname2 = TestPath::file();
+$fname = Workspace::file('archive.phar.php');
+$fname2 = Workspace::file();
 $a = new Phar($fname);
 $a->setStub('<?php
 Phar::mapPhar();

@@ -5,7 +5,7 @@ dom
 --FILE--
 <?php
 function test(string $html) {
-    $file = TestPath::file();
+    $file = Workspace::file();
     echo "Testing: $html\n";
     $dom = Dom\HTMLDocument::createFromString($html, LIBXML_HTML_NOIMPLIED | LIBXML_NOERROR);
     $output = $dom->saveHtml();

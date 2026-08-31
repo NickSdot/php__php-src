@@ -9,7 +9,7 @@ xmlreader
 // Set up test data in a new file
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books><book num="1" idx="2">book1</book></books>';
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents($filename, $xmlstring);
 
 // Load test data into a new XML Reader

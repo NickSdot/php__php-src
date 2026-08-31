@@ -8,15 +8,10 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('phar_decompress.phar.php');
+$archive = Workspace::file('phar_decompress.phar.php');
 $fname = $archive->path;
-$copy = TestPath::file('phar_decompress2.phar.gz');
+$copy = Workspace::file('phar_decompress2.phar.gz');
 $fname2 = $copy->path;
-TestPath::file('phar_decompress.zip');
-TestPath::file('phar_decompress.hooba.phar');
-TestPath::file('phar_decompress.phar');
-TestPath::file('phar_decompress.phar.gz');
-TestPath::file('phar_decompress2.phar');
 $pname = 'phar://' . $fname;
 $file = '<?php __HALT_COMPILER(); ?>';
 

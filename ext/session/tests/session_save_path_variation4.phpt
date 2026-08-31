@@ -15,7 +15,7 @@ session.name=PHPSESSID
 ob_start();
 
 echo "*** Testing session_save_path() : variation ***\n";
-$initdir = TestPath::directory()->create();
+$initdir = Workspace::directory()->create();
 $sessions = $initdir->directory();
 
 chdir($initdir);

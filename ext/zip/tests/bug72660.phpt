@@ -8,7 +8,7 @@ if(!PHP_ZTS) { die('skip ZTS required'); }
 ?>
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive();
 $zip->open($file, ZIPARCHIVE::CREATE);
 $zip->addPattern("/noexists/");

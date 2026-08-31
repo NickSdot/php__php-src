@@ -13,7 +13,7 @@ require($file_path."/file.inc");
 echo "*** Testing popen() and pclose() with different processes ***\n";
 
 echo "-- Testing popen(): reading from the pipe --\n";
-$dirpath = TestPath::directory()->create();
+$dirpath = Workspace::directory()->create();
 $dirpath->file('popen_basic.tmp')->create();
 define('CMD', "ls " . escapeshellarg($dirpath));
 $file_handle = popen(CMD, 'r');
@@ -30,7 +30,6 @@ $return_value =  fpassthru($file_handle);
 echo "\n";
 var_dump($return_value);
 pclose($file_handle);
-delete_files($dirpath, 1);
 
 echo "*** Testing popen(): writing to the pipe ***\n";
 $arr = array("ggg", "ddd", "aaa", "sss");

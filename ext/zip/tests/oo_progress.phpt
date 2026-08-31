@@ -11,7 +11,7 @@ if (!method_exists('ZipArchive', 'registerProgressCallback')) die('skip libzip t
 date.timezone=UTC
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $zip = new ZipArchive;
 if (!$zip->open($file, ZIPARCHIVE::CREATE)) {
@@ -26,7 +26,6 @@ var_dump($zip->registerProgressCallback(0.5, function ($r) {
 var_dump($zip->addFromString('foo', 'entry #1'));
 
 var_dump($zip->close());
-unlink($file);
 ?>
 Done
 --EXPECT--

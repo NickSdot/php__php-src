@@ -12,7 +12,7 @@ $to = 'user@company.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-$outFile = TestPath::file('mailBug69874_2.out');
+$outFile = Workspace::file('mailBug69874_2.out');
 chdir($outFile->directory);
 
 var_dump( mail($to, $subject, $message, '') );
@@ -24,6 +24,6 @@ echo file_get_contents($outFile);
 bool(true)
 To: user@company.com
 Subject: Test Subject
-X-PHP-Originating-Script: %d:bug69874_2.php
+X-PHP-Originating-Script: %d:bug69874_2.%d.php
 
 A Message

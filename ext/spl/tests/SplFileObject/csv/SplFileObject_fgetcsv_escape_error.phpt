@@ -2,7 +2,7 @@
 SplFileObject::fgetcsv() escape error
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, 'w+');
 fwrite($fp, '"aaa","b""bb","ccc"');
 fclose($fp);

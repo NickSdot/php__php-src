@@ -10,7 +10,7 @@ var_dump($dom->charset);
 $dom->documentElement->firstChild->nextElementSibling->textContent .= "é"; // Note: won't show up in Windows 1251 because it doesn't exist there
 $output = $dom->saveHtml();
 echo $output, "\n";
-$outputFile = TestPath::file();
+$outputFile = Workspace::file();
 $dom->saveHtmlFile($outputFile);
 var_dump(file_get_contents($outputFile) === $output);
 

@@ -7,7 +7,7 @@ Felix De Vliegher <felix.devliegher@gmail.com>
 echo "*** Testing hash_file() : error conditions ***\n";
 
 // Set up file
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents( $filename, 'The quick brown fox jumped over the lazy dog.' );
 
 

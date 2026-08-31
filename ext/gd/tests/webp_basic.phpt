@@ -14,7 +14,7 @@ if (!function_exists('imagewebp') || !function_exists('imagecreatefromwebp'))
 <?php
 require_once __DIR__ . '/func.inc';
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $im1 = imagecreatetruecolor(75, 75);
 $white = imagecolorallocate($im1, 255, 255, 255);

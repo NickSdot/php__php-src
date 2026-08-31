@@ -56,7 +56,7 @@ function runRedirectedTests(array $testFiles): array
     return [proc_close($process), str_replace("\r", "\n", $output)];
 }
 
-$root = TestPath::directory()->create();
+$root = Workspace::directory()->create();
 $targets = $root->directory()->create();
 
 writeRedirectedTest($targets->file('one.phpt'), 'redirected one');

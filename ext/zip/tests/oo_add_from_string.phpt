@@ -10,10 +10,7 @@ zip
 <?php
 
 include __DIR__ . '/utils.inc';
-$dirname = TestPath::directory();
-$file = $dirname . 'tmp.zip';
-
-@mkdir($dirname);
+$file = Workspace::file();
 copy(__DIR__ . '/test.zip', $file);
 
 $zip = new ZipArchive();

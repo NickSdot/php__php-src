@@ -9,12 +9,12 @@ if (PHP_OS_FAMILY === 'Windows' && PHP_ZTS) {
 --FILE--
 <?php
 // create temp $filename and create link $linkname to it
-$filename = TestPath::file();
+$filename = Workspace::file();
 $fp = fopen($filename, "w");  // create temp file
 fclose($fp);
 
 // linkname used to create soft/hard link
-$linkname = TestPath::file();
+$linkname = Workspace::file();
 
 echo "*** Testing link() for error conditions ***\n";
 

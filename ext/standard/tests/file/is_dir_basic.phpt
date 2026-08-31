@@ -9,7 +9,7 @@ clearstatcache();
 var_dump( is_dir(".") );
 var_dump( is_dir(__FILE__) );  // expected: bool(false)
 
-$dir_name = TestPath::directory()->create();
+$dir_name = Workspace::directory()->create();
 var_dump( is_dir($dir_name) );
 
 echo "*** Testing is_dir() for its return value type ***\n";

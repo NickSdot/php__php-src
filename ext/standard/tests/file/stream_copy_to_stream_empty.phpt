@@ -2,7 +2,7 @@
 stream_copy_to_stream() from empty file
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 file_put_contents($file, "");
 

@@ -12,8 +12,8 @@ unlink($probe);
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$tmp_file = TestPath::file()->create();
+Workspace::useRelative();
+$tmp_file = Workspace::file()->create();
 var_dump(file_exists($tmp_file)); //exists
 var_dump(file_exists($tmp_file."nosuchfile")); //doesn't exist
 

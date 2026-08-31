@@ -4,8 +4,8 @@ PDO_sqlite: PDO->__construct() - URI
 pdo_sqlite
 --FILE--
 <?php
-$dsnFile = TestPath::file();
-$dbFile = TestPath::file();
+$dsnFile = Workspace::file();
+$dbFile = Workspace::file();
 file_put_contents($dsnFile, 'sqlite:' . $dbFile);
 
 clearstatcache();

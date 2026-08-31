@@ -11,7 +11,7 @@ if (!isset($support['WebP Support']) || $support['WebP Support'] === false) {
 ?>
 --FILE--
 <?php
-$empty_webp = TestPath::file();
+$empty_webp = Workspace::file();
 file_put_contents($empty_webp, "");
 $im = imagecreatefromwebp($empty_webp);
 var_dump($im);

@@ -1,7 +1,7 @@
 <?php
     /* Utility function for mysqli_set_local_infile*.phpt tests */
-    if (!class_exists('TestPath', false)) {
-        require_once __DIR__ . '/../../../testing/Context/bootstrap-file.php';
+    if (!class_exists('Workspace', false)) {
+        require_once __DIR__ . '/../../../testing/Context/prepend.php';
     }
 
     function check_local_infile_allowed_by_server($link) {
@@ -55,7 +55,7 @@
 
     function create_standard_csv($offset, $verbose = true) {
         // create a CVS file
-        $file = TestPath::file();
+        $file = Workspace::file();
         if (!$fp = fopen($file, 'w')) {
             if ($verbose)
                 printf("[%03d + 1] Cannot create CVS file '%s'\n", $offset, $file);

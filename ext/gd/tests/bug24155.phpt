@@ -10,7 +10,7 @@ gd
 ?>
 --FILE--
 <?php
-    $dest = TestPath::file();
+    $dest = Workspace::file();
 
     $im = imagecreatetruecolor(30, 50);
     imagefill($im, 0, 0, (16777215 - 255));

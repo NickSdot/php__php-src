@@ -4,8 +4,8 @@ ZipArchive::extractTo() and getFrom*() fail on a CRC-corrupted entry
 zip
 --FILE--
 <?php
-$archive = TestPath::file('corrupt.zip');
-$entry = TestPath::file('a.txt');
+$archive = Workspace::file('corrupt.zip');
+$entry = Workspace::file('a.txt');
 $payload = str_repeat('A', 64) . 'PAYLOAD-END';
 
 $zip = new ZipArchive();

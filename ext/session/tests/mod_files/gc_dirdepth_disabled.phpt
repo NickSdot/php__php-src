@@ -11,7 +11,7 @@ session.use_strict_mode=0
 --FILE--
 <?php
 
-$base = TestPath::directory()->create();
+$base = Workspace::directory()->create();
 $level1 = $base->directory('a')->create();
 
 // ── Part 1: dirdepth=1

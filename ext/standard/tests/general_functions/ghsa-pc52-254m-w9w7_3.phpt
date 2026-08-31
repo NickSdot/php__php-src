@@ -12,7 +12,7 @@ $batch_file_content = <<<EOT
 @echo off
 powershell -Command "Write-Output '%1%'"
 EOT;
-$batch_file = TestPath::file('batch.bat');
+$batch_file = Workspace::file('batch.bat');
 
 file_put_contents($batch_file, $batch_file_content);
 

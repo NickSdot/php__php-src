@@ -2,7 +2,7 @@
 Bug #46347 (parse_ini_file() doesn't support * in keys)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $str = <<< EOF
 [section]

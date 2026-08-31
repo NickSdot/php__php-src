@@ -59,7 +59,7 @@ var_dump(imagesy($im_crop));
 echo "IMG_CROP_THRESHOLD\n";
 $im = imagecreatefrompng(__DIR__ . "/logo_noise.png");
 $im_crop = imagecropauto($im, IMG_CROP_THRESHOLD, 0.1, 0x0);
-$output = TestPath::file();
+$output = Workspace::file();
 imagepng($im_crop, $output->path);
 var_dump(imagesx($im_crop));
 var_dump(imagesy($im_crop));

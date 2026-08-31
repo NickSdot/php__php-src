@@ -8,7 +8,7 @@ echo "Test 7: Transform To Uri";
 include("prepare.inc");
 $proc->importStylesheet($xsl);
 print "\n";
-$file = TestPath::file();
+$file = Workspace::file();
 $doc = $proc->transformToUri($dom, "file://".$file);
 print file_get_contents($file);
 print "\n";

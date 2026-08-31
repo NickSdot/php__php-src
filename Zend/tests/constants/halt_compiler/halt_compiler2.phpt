@@ -2,8 +2,8 @@
 __HALT_COMPILER(); 2 files
 --FILE--
 <?php
-$file1 = TestPath::file('test1.php');
-$file2 = TestPath::file('test2.php');
+$file1 = Workspace::file('test1.php');
+$file2 = Workspace::file('test2.php');
 $text = "<?php echo 'test'; var_dump(__COMPILER_HALT_OFFSET__); __HALT_COMPILER(); ?>
 hi there";
 file_put_contents($file1, $text);

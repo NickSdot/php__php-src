@@ -10,9 +10,10 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 
 /* creating directory */
-$file_path = TestPath::directory();
+$file_path = Workspace::directory()->create();
 $source_dir = $file_path->directory();
-$dest_dir = $file_path->directory();
+// create the $dest_dir
+$dest_dir = $file_path->directory()->create();
 $new_dir = $dest_dir->directory();
 
 // rename dirs across directories
@@ -28,17 +29,13 @@ $src_dirs = array (
   "$file_path//{$source_dir->name}//",
 );
 
-// create the $dest_dir
-mkdir($file_path);
-mkdir($dest_dir);
-
 $counter = 1;
 /* loop through each $src_dirs and rename it to  $dest_dir */
 foreach($src_dirs as $src_dir) {
   echo "-- Iteration $counter --\n";
 
   // create the src dir
-  mkdir($source_dir);
+  $source_dir->create();
   // rename the src dir to a new dir in dest dir
   var_dump( rename($src_dir, $new_dir) );
   // ensure that dir was renamed

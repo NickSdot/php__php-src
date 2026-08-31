@@ -3,7 +3,7 @@ GH-16604 (Memory leaks in SPL constructors) - SplFileObject
 --FILE--
 <?php
 
-$file = TestPath::file('gh16604_2.tmp')->path;
+$file = Workspace::file('gh16604_2.tmp')->path;
 file_put_contents($file, 'hello');
 
 $obj = new SplFileObject($file);

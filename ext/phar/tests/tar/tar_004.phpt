@@ -10,7 +10,7 @@ opcache.validate_timestamps=1
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';
 
-$archive = TestPath::file('tar_004.phar.tar');
+$archive = Workspace::file('tar_004.phar.tar');
 $fname = $archive->path;
 $alias = 'phar://' . $fname;
 

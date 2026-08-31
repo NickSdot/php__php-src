@@ -15,7 +15,7 @@ $contents = array(
    );
 
 foreach ($contents as $content) {
-    $file = TestPath::file();
+    $file = Workspace::file();
     $h = fopen($file, "w");
     fwrite($h, $content);
     fclose($h);

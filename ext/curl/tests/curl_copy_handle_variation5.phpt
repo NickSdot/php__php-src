@@ -12,7 +12,7 @@ curl_setopt($ch1, CURLOPT_SAFE_UPLOAD, 1);
 curl_setopt($ch1, CURLOPT_URL, "{$host}/get.php?test=file");
 curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
 
-$filename = TestPath::file('abc.txt');
+$filename = Workspace::file('abc.txt');
 file_put_contents($filename, "Test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);
@@ -20,7 +20,7 @@ var_dump(curl_setopt($ch1, CURLOPT_POSTFIELDS, $params));
 
 $ch2 = curl_copy_handle($ch1);
 
-$filename = TestPath::file('def.txt');
+$filename = Workspace::file('def.txt');
 file_put_contents($filename, "Other test.");
 $file = curl_file_create($filename);
 $params = array('file' => $file);

@@ -12,7 +12,7 @@ error_log_mode=0600
 --FILE--
 <?php
 
-$logFile = TestPath::file();
+$logFile = Workspace::file();
 ini_set('error_log', $logFile->path);
 
 $oldMask = umask(0000);

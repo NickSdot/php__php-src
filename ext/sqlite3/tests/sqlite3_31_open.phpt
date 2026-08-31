@@ -7,7 +7,7 @@ Jelle Lampaert
 sqlite3
 --FILE--
 <?php
-$db_file = TestPath::file();
+$db_file = Workspace::file();
 
 try {
   $db = new SQLite3($db_file);

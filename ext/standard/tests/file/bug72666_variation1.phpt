@@ -2,7 +2,7 @@
 Bug #72666 (stat cache clearing inconsistent - touch)
 --FILE--
 <?php
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 
 touch($filename);
 var_dump(filemtime($filename) > 2);

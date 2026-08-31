@@ -13,7 +13,7 @@ if (getenv("GITHUB_ACTIONS") && PHP_OS_FAMILY === "Darwin") {
 ?>
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.php');
+$fname = Workspace::file('archive.phar.php');
 $pname = 'phar://hio';
 $file = '<?php include "' . $pname . '/a.php"; __HALT_COMPILER(); ?>';
 

@@ -4,7 +4,7 @@ openssl_x509_export_to_file() tests
 openssl
 --FILE--
 <?php
-$outfilename = TestPath::file();
+$outfilename = Workspace::file();
 $cert_file = __DIR__ . "/cert.crt";
 
 $a = file_get_contents($cert_file);

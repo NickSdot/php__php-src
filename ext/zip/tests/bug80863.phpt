@@ -4,7 +4,7 @@ Bug #80863 (ZipArchive::extractTo() ignores references)
 zip
 --FILE--
 <?php
-$archive = TestPath::file();
+$archive = Workspace::file();
 
 $zip = new ZipArchive();
 $zip->open($archive, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -12,9 +12,7 @@ $zip->addFromString("file1.txt", "contents");
 $zip->addFromString("file2.txt", "contents");
 $zip->close();
 
-$targetDirectory = TestPath::directory();
-$target = $targetDirectory->path;
-mkdir($target);
+$target = Workspace::directory()->create();
 
 $files = [
     "file1.txt",

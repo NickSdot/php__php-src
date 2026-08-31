@@ -4,15 +4,10 @@ Bug #77978 (Dirname ending in colon unzips to wrong dir)
 zip
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$archive = TestPath::file();
-$targetDirectory = TestPath::directory();
+Workspace::useRelative();
+$archive = Workspace::file();
+$targetDirectory = Workspace::directory()->create();
 $target = $targetDirectory->path;
-$dir = $targetDirectory->directory('dir');
-$colon = $dir->directory('test:');
-$extracted = $colon->file('filename.txt');
-
-mkdir($target);
 
 $zip = new ZipArchive();
 $zip->open($archive, ZipArchive::CREATE|ZipArchive::OVERWRITE);

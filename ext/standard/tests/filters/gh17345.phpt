@@ -2,7 +2,7 @@
 GH-17345 (Bug #35916 was not completely fixed)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 class strtoupper_filter extends php_user_filter
 {

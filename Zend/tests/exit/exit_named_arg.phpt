@@ -2,14 +2,14 @@
 Using exit()/die() as function call with a named argument
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 $values = [
     12,
     "Goodbye!",
 ];
 
-$file = TestPath::file('exit.php');
+$file = Workspace::file('exit.php');
 const FILE_CONTENT = <<<'TEMPLATE'
 <?php
 try {

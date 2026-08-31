@@ -8,7 +8,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('phar_oo_compressallgz.phar.php')->path;
+$fname = Workspace::file('phar_oo_compressallgz.phar.php')->path;
 $pname = 'phar://' . $fname;
 $file = '<?php __HALT_COMPILER(); ?>';
 

@@ -2,7 +2,7 @@
 SplFileObject::fputcsv(): functionality tests
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fo = new SplFileObject($file, 'w');
 // Suppress deprecation notice
 @$fo->setCsvControl(escape: '\\');

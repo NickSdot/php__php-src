@@ -7,7 +7,7 @@ xmlreader
 
 $xmlstring = '<TEI.2>hello</TEI.2>';
 $relaxngfile = __DIR__ . '/relaxNG.rng';
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $xmlstring);
 
 $reader = new XMLReader();

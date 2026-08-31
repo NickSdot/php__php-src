@@ -6,7 +6,7 @@ zip
 <?php
 include __DIR__ . '/utils.inc';
 
-$file = TestPath::file()->create();
+$file = Workspace::file()->create();
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);

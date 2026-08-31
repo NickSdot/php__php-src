@@ -9,7 +9,7 @@ opcache.enable_cli=1
 --FILE--
 <?php
 
-$incfile = TestPath::file();
+$incfile = Workspace::file();
 
 // Generate enough classes so that the out of bound access will cause a crash
 // without relying on assertion

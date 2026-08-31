@@ -15,7 +15,7 @@ if (!$ftp) die("Couldn't connect to the server");
 var_dump(ftp_login($ftp, 'user', 'pass'));
 
 //test simple text transfer
-$fp = fopen(TestPath::file(), 'w+');
+$fp = fopen(Workspace::file(), 'w+');
 var_dump(ftp_fget($ftp, $fp ,'a story.txt', FTP_ASCII));
 fseek($fp, 0);
 echo fgets($fp);
@@ -39,4 +39,4 @@ For sale: baby shoes, never worn.
 bool(true)
 "BINARYFoo\u0000Bar\r\n"
 
-Warning: ftp_fget(): a warning: No such file or directory  in %sftp_fget_basic.php on line %d
+Warning: ftp_fget(): a warning: No such file or directory  in %sftp_fget_basic.%d.php on line %d

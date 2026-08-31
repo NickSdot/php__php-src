@@ -10,9 +10,9 @@ oid_file = %s
 default_bits = 1024
 CONFIG;
 
-$configFile = TestPath::file();
+$configFile = Workspace::file();
 file_put_contents($configFile, sprintf($configCode,  __DIR__ . '/' . str_repeat('a', 9000)));
-openssl_pkey_new([ 'config' => $configFile ]);
+openssl_pkey_new([ 'config' => $configFile->path ]);
 ?>
 --EXPECTF--
 

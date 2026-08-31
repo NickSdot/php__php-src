@@ -21,7 +21,7 @@ class TestStream {
         return $this->s >= 2;
     }
 }
-$tmp = TestPath::file()->create();
+$tmp = Workspace::file()->create();
 stream_wrapper_register("test", "TestStream");
 $f = fopen("test://", "r");
 try {

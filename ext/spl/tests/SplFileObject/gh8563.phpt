@@ -2,7 +2,7 @@
 GH-8563 (Different results for seek() on SplFileObject and SplTempFileObject)
 --FILE--
 <?php
-$path = TestPath::file();
+$path = Workspace::file();
 $file_01 = new SplFileObject($path, 'w+');
 $file_02 = new SplTempFileObject();
 

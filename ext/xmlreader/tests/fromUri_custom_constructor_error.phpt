@@ -16,7 +16,7 @@ try {
     echo $e::class, ': ', $e->getMessage(), "\n";
 }
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $xmlstring = '<?xml version="1.0" encoding="UTF-8"?>
 <books></books>';
 file_put_contents($filename, $xmlstring);

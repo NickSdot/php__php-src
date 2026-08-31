@@ -6,7 +6,7 @@ com_dotnet
 <?php
 
 $text= "Xin chào cộng đồng PHP";
-$fpath = str_replace("/", "\\", TestPath::file());
+$fpath = str_replace("/", "\\", Workspace::file());
 
 $fso = new COM("Scripting.FileSystemObject");
 $fh = $fso->OpenTextFile($fpath, 2, true);

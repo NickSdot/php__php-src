@@ -7,7 +7,7 @@ H�vard Eide <nucleuz at gmail.com>
 include_path=.
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, "foobar");
 
 $s = new SplFileObject( $file );

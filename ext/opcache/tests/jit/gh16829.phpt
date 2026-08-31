@@ -6,7 +6,7 @@ opcache.jit_buffer_size=32M
 opcache
 --FILE--
 <?php
-$fixtureDir = TestPath::directory()->create();
+$fixtureDir = Workspace::directory()->create();
 $fixture = $fixtureDir->file('gh16829_1.inc');
 $dependency = $fixtureDir->file('gh16829_2.inc');
 file_put_contents($fixture, file_get_contents(__DIR__ . '/gh16829_1.inc'));

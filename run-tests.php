@@ -1517,7 +1517,7 @@ function run_all_tests(array $test_files, array $env, ?string $redir_tested = nu
         $testEnvironment['PHP_TEST_CONTEXT'] = $testContext->stateFile;
 
         try {
-            $result = run_test($php, $name, $testEnvironment, $testContext->id);
+            $result = run_test($php, $name, $testEnvironment, $testContext);
         } finally {
             $runnerContext->finishTest($testContext);
         }
@@ -2021,13 +2021,26 @@ function skip_test(string $tested, string $tested_file, string $shortname, strin
     return 'SKIPPED';
 }
 
+function reload_test_context(
+    \TestSuite\Context\TestContext $context,
+    string $testFile,
+): \TestSuite\Context\TestContext {
+    $context = \TestSuite\Context\TestContext::load($context->stateFile);
+
+    if (null !== $message = $context->failureMessage) {
+        throw new TestHarnessError("$message [$testFile]");
+    }
+
+    return $context;
+}
+
 //
 //  Run an individual test case.
 //
 /**
  * @param string|array $file
  */
-function run_test(string $php, $file, array $env, string $testContextId): string
+function run_test(string $php, $file, array $env, \TestSuite\Context\TestContext $testContext): string
 {
     global $log_format, $ini_overwrites, $PHP_FAILED_TESTS;
     global $pass_option_args, $DETAILED, $IN_REDIRECT, $test_cnt, $test_idx;
@@ -2165,7 +2178,9 @@ TEST $file
         $temp_dir = str_replace($temp_source, $temp_target, $temp_dir);
     }
 
-    $main_file_name = $testContextId . '.';
+    $main_file_name = (is_array($IN_REDIRECT)
+        ? basename($testContext->stateFile, '.state')
+        : $testContext->id) . '.';
 
     $diff_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'diff';
     $log_filename = $temp_dir . DIRECTORY_SEPARATOR . $main_file_name . 'log';
@@ -2236,6 +2251,8 @@ TEST $file
     $env['CONTENT_TYPE'] = '';
     $env['CONTENT_LENGTH'] = '';
     $env['TZ'] = '';
+    unset($env['PHP_TEST_CONTEXT_SETUP']);
+    unset($env['PHP_TEST_CONTEXT_RESTORE_VARIABLES']);
 
     if ($test->hasSection('SETUP')) {
 
@@ -2248,11 +2265,12 @@ TEST $file
 
         settings2array($ini_overwrites, $setupIniSettings);
 
-        $setupAutoPrependFile = \TestSuite\Context\Bootstrap::installSetup($setupIniSettings);
+        $setupAutoPrependFile = \TestSuite\Context\Bootstrap::install($setupIniSettings);
 
         $setupEnvironment = $env;
+        $setupEnvironment['PHP_TEST_CONTEXT_SETUP'] = '1';
 
-        \TestSuite\Context\Bootstrap::configureEnvironment(
+        \TestSuite\Context\Bootstrap::forwardAutoPrepend(
             $setupEnvironment,
             $setupAutoPrependFile,
         );
@@ -2277,6 +2295,8 @@ TEST $file
             @unlink($temp_setup);
         }
 
+        $updatedContext = reload_test_context($testContext, $file);
+
         if ($setupResult !== '') {
 
             show_result('BORK', $setupResult, $tested_file, 'reason: invalid output from SETUP');
@@ -2293,6 +2313,17 @@ TEST $file
 
             return 'BORKED';
         }
+
+        $workspaceIniSettings = $updatedContext->ini;
+
+        if ($workspaceIniSettings !== [] && $test->hasSection('INI')) {
+            throw new TestHarnessError("Workspace::ini() cannot be used together with --INI-- [$file]");
+        }
+
+        $restoreSharedVariables = $updatedContext->var !== [];
+    } else {
+        $restoreSharedVariables = false;
+        $workspaceIniSettings = [];
     }
 
     if ($test->sectionNotEmpty('ENV')) {
@@ -2304,6 +2335,12 @@ TEST $file
                 $env[$e[0]] = $e[1];
             }
         }
+    }
+
+    if ($restoreSharedVariables) {
+        $env['PHP_TEST_CONTEXT_RESTORE_VARIABLES'] = '1';
+    } else {
+        unset($env['PHP_TEST_CONTEXT_RESTORE_VARIABLES']);
     }
 
     // Default ini settings
@@ -2359,7 +2396,7 @@ TEST $file
     //$ini_overwrites[] = 'setting=value';
     settings2array($ini_overwrites, $ini_settings);
 
-    $orig_ini_settings_args = settings2arguments($ini_settings);
+    $orig_ini_settings = $ini_settings;
     if ($file_cache !== null) {
         $ini_settings['opcache.file_cache'] = get_file_cache_dir();
         // Make sure warnings still show up on the second run.
@@ -2405,7 +2442,20 @@ TEST $file
         }
     }
 
-    $testAutoPrependFile = \TestSuite\Context\Bootstrap::installFile($ini_settings);
+    if ($workspaceIniSettings !== []) {
+        foreach ($workspaceIniSettings as $name => $value) {
+            if (in_array($name, ['extension', 'zend_extension'], true)) {
+                $ini_settings[$name] = [
+                    ...($ini_settings[$name] ?? []),
+                    ...array_map(quote_ini_argument_value(...), (array) $value),
+                ];
+            } else {
+                $ini_settings[$name] = quote_ini_argument_value($value);
+            }
+        }
+    }
+
+    $testAutoPrependFile = \TestSuite\Context\Bootstrap::install($ini_settings);
 
     $test_ini_settings = $ini_settings;
     $ini_settings = settings2params($ini_settings);
@@ -2419,7 +2469,17 @@ TEST $file
 
     if ($test->sectionNotEmpty('SKIPIF')) {
         show_file_block('skip', $test->getSection('SKIPIF'));
+
+        $skipIniSettings = $orig_ini_settings;
+        $skipAutoPrependFile = \TestSuite\Context\Bootstrap::install($skipIniSettings);
+
         $skip_env = $env;
+
+        \TestSuite\Context\Bootstrap::forwardAutoPrepend(
+            $skip_env,
+            $skipAutoPrependFile,
+        );
+
         if (!IS_WINDOWS) {
             unset(
                 $skip_env['REQUEST_METHOD'],
@@ -2443,7 +2503,7 @@ TEST $file
             ...$pass_option_args,
             ...$extra_option_args,
             '-q',
-            ...$orig_ini_settings_args,
+            ...settings2arguments($skipIniSettings),
             '-d',
             'opcache.file_cache=',
             '-d',
@@ -2460,6 +2520,8 @@ TEST $file
             $temp_skipif,
             $skip_env,
         );
+
+        reload_test_context($testContext, $file);
 
         $time = microtime(true) - $startTime;
         $junit->stopTimer($shortname);
@@ -2781,7 +2843,7 @@ TEST $file
         );
     }
 
-    \TestSuite\Context\Bootstrap::configureEnvironment(
+    \TestSuite\Context\Bootstrap::forwardAutoPrepend(
         $env,
         $testAutoPrependFile,
     );
@@ -2838,6 +2900,8 @@ COMMAND $orig_cmd
         ];
     }
 
+    reload_test_context($testContext, $file);
+
     // Remember CLEAN output to report borked test if it otherwise passes.
     $clean_output = null;
     if ((!$no_clean || $cfg['keep']['clean']) && $test->sectionNotEmpty('CLEAN')) {
@@ -2849,7 +2913,7 @@ COMMAND $orig_cmd
                 $php,
                 ...$pass_option_args,
                 '-q',
-                ...$orig_ini_settings_args,
+                ...settings2arguments($orig_ini_settings),
                 '-d',
                 'opcache.file_cache=',
                 '-d',
@@ -3334,6 +3398,10 @@ function error(string $message): void
     exit(1);
 }
 
+final class TestHarnessError extends Error
+{
+}
+
 function settings2array(array $settings, array &$ini_settings): void
 {
     foreach ($settings as $setting) {
@@ -3396,6 +3464,11 @@ function settings2arguments(array $ini_settings): array
     }
 
     return $arguments;
+}
+
+function quote_ini_argument_value(string $value): string
+{
+    return '"' . addcslashes($value, '\\"') . '"';
 }
 
 function escaped_shell_string_from(array $arguments): string
@@ -4610,4 +4683,16 @@ class DiffOutputBuilder
     }
 }
 
-main();
+try {
+    main();
+} catch (TestHarnessError $error) {
+    if (getenv('TEST_PHP_WORKER')) {
+        send_message($GLOBALS['workerSock'], [
+            'type' => 'error',
+            'msg' => $error->getMessage(),
+        ]);
+        exit(1);
+    }
+
+    error($error->getMessage());
+}

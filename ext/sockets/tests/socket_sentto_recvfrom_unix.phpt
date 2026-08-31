@@ -19,9 +19,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
         die('Unable to set nonblocking mode for socket');
     }
     var_dump(socket_recvfrom($socket, $buf, 12, 0, $from, $port)); //false (EAGAIN, no warning)
-    $socket_path = TestPath::file();
-    chdir($socket_path->directory);
-    $address = $socket_path->name;
+    $address = Workspace::file();
     if (!socket_bind($socket, $address)) {
         die("Unable to bind to $address");
     }

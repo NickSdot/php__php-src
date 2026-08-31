@@ -30,7 +30,7 @@ class Loader {
 stream_wrapper_register('Loader', 'Loader');
 $fp = fopen ('Loader://qqq.php', 'r');
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $fp1 = fopen($filename, "w");
 fwrite($fp1, "<"."?php blah blah?".">");
 fclose($fp1);

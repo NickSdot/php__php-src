@@ -6,7 +6,7 @@ dom
 <?php
 
 $dom = Dom\XMLDocument::createFromString('<?xml version="1.0"?><container/>');
-$file = TestPath::file();
+$file = Workspace::file();
 var_dump($dom->saveXmlFile($file));
 echo file_get_contents($file);
 

@@ -4,7 +4,7 @@ SPL: SplFileObject::setCsvControl variation 001
 Erwin Poeze <erwin.poeze at gmail.com>
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file,
 <<<CDATA
 "groene appelen",10

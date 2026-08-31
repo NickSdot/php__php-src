@@ -14,8 +14,8 @@ if (PHP_OS_FAMILY === 'Windows') {
 $file_path = __DIR__;
 require "$file_path/file.inc";
 
-$tmp_file = TestPath::file();
-$tmp_link = TestPath::file();
+$tmp_file = Workspace::file();
+$tmp_link = Workspace::file();
 $fp = fopen($tmp_file, "w");  // temp file
 fclose($fp);
 

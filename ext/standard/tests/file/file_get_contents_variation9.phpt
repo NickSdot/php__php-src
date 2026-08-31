@@ -10,10 +10,10 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 --FILE--
 <?php
 echo "*** Testing file_get_contents() : variation ***\n";
-$filename = TestPath::file();
-$softlink = TestPath::file();
-$hardlink = TestPath::file();
-$chainlink = TestPath::file();
+$filename = Workspace::file();
+$softlink = Workspace::file();
+$hardlink = Workspace::file();
+$chainlink = Workspace::file();
 
 // create file
 $h = fopen($filename,"w");

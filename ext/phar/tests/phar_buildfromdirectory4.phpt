@@ -9,8 +9,7 @@ open_basedir=
 --FILE--
 <?php
 
-$directory = TestPath::directory('testdir4');
-mkdir($directory->path);
+$directory = Workspace::directory('testdir4')->create();
 $files = [];
 foreach(range(1, 4) as $i) {
     $files[$i] = $directory->file("file$i.txt");
@@ -18,7 +17,7 @@ foreach(range(1, 4) as $i) {
 }
 
 try {
-    $archive = TestPath::file('buildfromdirectory4.phar');
+    $archive = Workspace::file('buildfromdirectory4.phar');
     $phar = new Phar($archive->path);
     $a = $phar->buildFromDirectory($directory->path);
     asort($a);

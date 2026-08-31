@@ -7,9 +7,9 @@ if (substr(PHP_OS, 0, 3) == "WIN") die("skip non windows test");
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 $php = getenv("TEST_PHP_EXECUTABLE_ESCAPED");
-$ini_file = TestPath::file("bug74600.ini")->path;
+$ini_file = Workspace::file("bug74600.ini")->path;
 $ini_file_escaped = escapeshellarg($ini_file);
 file_put_contents($ini_file, <<<INI
 [PHP]\n;\rs=\000\000=\n;\r[PATH\000]\000\376 =\n

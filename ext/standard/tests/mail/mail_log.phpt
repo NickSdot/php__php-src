@@ -7,8 +7,8 @@ mail.log = mail.log
 <?php
 date_default_timezone_set("UTC");
 
-$logfile = TestPath::file('mail.log')->create();
-$outFile = TestPath::file('mail.out');
+$logfile = Workspace::file('mail.log')->create();
+$outFile = Workspace::file('mail.out');
 chdir($logfile->directory);
 clearstatcache();
 
@@ -32,5 +32,5 @@ Done
 bool(true)
 bool(true)
 bool(true)
-[%d-%s-%d %d:%d:%d UTC] mail() on [%smail_log.php:%d]: To: test@example.com -- Headers: X-Test: 1 -- Subject: mail.log test
+[%d-%s-%d %d:%d:%d UTC] mail() on [%smail_log.%d.php:%d]: To: test@example.com -- Headers: X-Test: 1 -- Subject: mail.log test
 Done

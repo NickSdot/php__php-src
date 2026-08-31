@@ -14,7 +14,7 @@ gd
 
 echo "Simple test of imagefilledpolygon() function\n";
 
-$dest = TestPath::file();
+$dest = Workspace::file();
 
 $points = array(
             40,  50,

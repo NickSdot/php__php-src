@@ -5,7 +5,7 @@ Test realpath() with relative paths
 echo "\n*** Testing basic functions of realpath() with files ***\n";
 
 /* creating directories and files */
-$file_path = TestPath::directory();
+$file_path = Workspace::directory();
 $root = $file_path->directory('realpath_basic3');
 $home = $root->directory('home');
 $test = $home->directory('test');

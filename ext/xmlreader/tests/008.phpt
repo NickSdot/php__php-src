@@ -21,11 +21,11 @@ $xmlstring = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 </MOVIE>
 </LIST>';
 
-TestContext::useRelativeWorkspace();
-$dtd = TestPath::file('dtdexample.dtd');
+Workspace::useRelative();
+$dtd = Workspace::file('dtdexample.dtd');
 copy(__DIR__ . '/dtdexample.dtd', $dtd);
 $dtdfile = rawurlencode($dtd->directory) . '/dtdexample.dtd';
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $xmlstring);
 
 

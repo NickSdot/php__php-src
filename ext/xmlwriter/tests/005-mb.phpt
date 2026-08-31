@@ -5,7 +5,7 @@ xmlwriter
 --FILE--
 <?php
 
-$doc_dest = TestPath::file('私はガラスを食べられます.xml');
+$doc_dest = Workspace::file('私はガラスを食べられます.xml');
 $xw = xmlwriter_open_uri($doc_dest);
 xmlwriter_start_document($xw, '1.0', 'UTF-8');
 xmlwriter_start_element($xw, "tag1");

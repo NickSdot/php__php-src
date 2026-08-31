@@ -13,7 +13,7 @@ $doc->loadHTML("<p>foo\0bar</p>");
 $html = $doc->saveHTML();
 var_dump(strpos($html, '<p>foo</p>') !== false);
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents($filename, "<p>foo\0bar</p>");
 $doc = new DOMDocument;
 $doc->loadHTMLFile($filename);

@@ -17,7 +17,7 @@ memory_limit="5G"
 --FILE--
 <?php
 
-$path = TestPath::file();
+$path = Workspace::file();
 $file = fopen($path, 'w+');
 
 // Write over 4GB

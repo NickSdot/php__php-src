@@ -4,18 +4,13 @@ Test lstat() and stat() functions: usage variations - dir/file names in array
 <?php
 /* test for stats of dir/file when their names are stored in an array */
 
-$file_path = __DIR__;
-require "$file_path/file.inc";
-$directory = TestPath::directory();
-$file = $directory->file();
+require __DIR__ . "/file.inc";
 
 
 /* create temp file, link and directory */
-@rmdir($directory->path);  // ensure that dir doesn't exists
-mkdir($directory);  // temp dir
+$directory = Workspace::directory()->create();  // temp dir
 
-$fp = fopen($file->path, "w");  // temp file
-fclose($fp);
+$file = Workspace::file()->create();  // temp file
 
 echo "*** Testing stat() with filename & directory name stored inside an array ***\n";
 

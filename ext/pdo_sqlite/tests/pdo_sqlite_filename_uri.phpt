@@ -16,7 +16,7 @@ $db = new PDO('sqlite:file::memory:?cache=shared');
 var_dump($db->exec('SELECT * from test_sqlite_filename_uri'));
 
 // create with default read-write|create mode
-$filename = 'file:' . TestPath::file();
+$filename = 'file:' . Workspace::file();
 
 $db = new PDO('sqlite:' . $filename);
 

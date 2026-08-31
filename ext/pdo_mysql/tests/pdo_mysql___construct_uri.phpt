@@ -13,7 +13,7 @@ MySQLPDOTest::skip();
 
     try {
 
-        $file = TestPath::file();
+        $file = Workspace::file();
         $dsn = MySQLPDOTest::getDSN();
         $user = PDO_MYSQL_TEST_USER;
         $pass = PDO_MYSQL_TEST_PASS;

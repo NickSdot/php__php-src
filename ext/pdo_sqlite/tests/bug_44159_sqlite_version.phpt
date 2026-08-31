@@ -4,7 +4,7 @@ PDO Common: Bug #44159: SQLite variant
 pdo_sqlite
 --FILE--
 <?php
-$pdo = new PDO("sqlite:" . TestPath::file());
+$pdo = new PDO("sqlite:" . Workspace::file());
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
 try {

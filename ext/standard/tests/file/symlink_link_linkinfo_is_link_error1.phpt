@@ -8,8 +8,8 @@ if (substr(PHP_OS, 0, 3) == 'SUN') {
 ?>
 --FILE--
 <?php
-$file = TestPath::file();
-$link = TestPath::file();
+$file = Workspace::file();
+$link = Workspace::file();
 // create temp $filename and create link $linkname to it
 $filename = $file;
 $fp = fopen($filename, "w");  // create temp file

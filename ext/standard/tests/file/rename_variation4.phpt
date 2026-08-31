@@ -9,11 +9,8 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 
-$file_path = TestPath::directory();
-$source = $file_path->file();
-$numeric = $file_path->file('12345');
-$source_dir = $file_path->directory();
-mkdir($file_path);
+$source = Workspace::file();
+$numeric = Workspace::file('12345');
 
 require __DIR__.'/file.inc';
 
@@ -29,7 +26,7 @@ var_dump( file_exists($numeric) );  // expecting true
 // remove the file
 unlink($numeric);
 
-mkdir($source_dir);
+$source_dir = Workspace::directory()->create();
 
 // renaming a directory to numeric name
 var_dump( rename($source_dir . '/', $numeric) );

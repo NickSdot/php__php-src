@@ -25,7 +25,7 @@ if ($is_oci) {
 }
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$fp = fopen(TestPath::file(), 'w+');
+$fp = fopen(Workspace::file(), 'w+');
 fwrite($fp, "I am the LOB data");
 rewind($fp);
 

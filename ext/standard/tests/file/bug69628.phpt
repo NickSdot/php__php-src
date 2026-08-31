@@ -10,7 +10,7 @@ if (!defined('GLOB_BRACE')) {
 <?php
 
 // temp dir created
-$directory = TestPath::directory('bug69628')->create();
+$directory = Workspace::directory('bug69628')->create();
 
 // temp files created
 $directory->file('image.jPg')->create();

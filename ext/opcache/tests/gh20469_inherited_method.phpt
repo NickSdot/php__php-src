@@ -6,8 +6,8 @@ opcache
 server
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$dir = TestPath::directory()->create();
+Workspace::useRelative();
+$dir = Workspace::directory()->create();
 $classes = $dir->directory('classes')->create();
 $autoload = $dir->file('autoload.php');
 $test1 = $dir->file('test1.php');

@@ -16,7 +16,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): different float format types with integer values ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

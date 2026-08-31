@@ -5,7 +5,7 @@ phar
 zlib
 --FILE--
 <?php
-$archive = TestPath::file('bug70091.zip');
+$archive = Workspace::file('bug70091.zip');
 $phar = new PharData($archive->path);
 $phar->addFromString('föö', '');
 $phar->addFromString('foo', '');

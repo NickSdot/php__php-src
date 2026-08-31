@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$name = TestPath::file();
+$name = Workspace::file();
 
 echo "== Set\n";
 $zip = new ZipArchive;

@@ -2,7 +2,7 @@
 SplFileObject::fgetcsv with default escape character
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, 'w+');
 fwrite($fp, '"aa\"","bb","\"c"');
 fclose($fp);

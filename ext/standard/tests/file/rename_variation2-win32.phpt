@@ -10,12 +10,9 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 <?php
 require __DIR__.'/file.inc';
 
-$file_path = TestPath::directory();
-$dest_dir = $file_path->directory();
-$source = $file_path->file();
-$numeric = $file_path->file('12346');
-mkdir($file_path);
-mkdir($dest_dir);
+$dest_dir = Workspace::directory()->create();
+$source = Workspace::file();
+$numeric = Workspace::file('12346');
 
 /* Renaming a file and directory to numeric name */
 echo "\n*** Testing rename() by renaming a file and directory to numeric name ***\n";

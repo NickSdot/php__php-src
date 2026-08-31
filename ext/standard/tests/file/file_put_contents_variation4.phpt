@@ -6,7 +6,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 require_once('fopen_include_path.inc');
 
-$thisTestDir = TestPath::directory()->create();
+$thisTestDir = Workspace::directory()->create();
 chdir($thisTestDir);
 
 $filename = $thisTestDir->file()->name;

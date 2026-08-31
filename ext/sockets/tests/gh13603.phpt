@@ -4,7 +4,7 @@ GH-13603 -  socket_getsockname - invalid characters
 sockets
 --FILE--
 <?php
-$path = TestPath::file('sn.socp');
+$path = Workspace::file('sn.socp');
 chdir($path->directory);
 $address = $path->name;
         $socket = socket_create(AF_UNIX, SOCK_STREAM, 0);

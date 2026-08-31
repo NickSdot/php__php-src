@@ -21,7 +21,7 @@ file data
 
 var_dump($_POST, $_FILES);
 
-$file_path = TestPath::file();
+$file_path = Workspace::file();
 move_uploaded_file($_FILES['file_name']['tmp_name'], $file_path);
 var_dump(file_get_contents($file_path));
 

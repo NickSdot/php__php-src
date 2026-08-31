@@ -17,8 +17,8 @@ echo "*** Testing rewinddir() : basic functionality ***\n";
 // include file.inc for create_files function
 include(__DIR__ . "/../file/file.inc");
 
-$dir_path1 = TestPath::directory('私はガラスを食べられますrewinddir_basic_dir1')->create();
-$dir_path2 = TestPath::directory('私はガラスを食べられますrewinddir_basic_dir2')->create();
+$dir_path1 = Workspace::directory('私はガラスを食べられますrewinddir_basic_dir1')->create();
+$dir_path2 = Workspace::directory('私はガラスを食べられますrewinddir_basic_dir2')->create();
 
 @create_files($dir_path1, 1, "numeric", 0755, 1, "w", "私はガラスを食べられますfile");
 @create_files($dir_path2, 1, 'numeric', 0755, 1, 'w', "私はガラスを食べられますfile", 2);

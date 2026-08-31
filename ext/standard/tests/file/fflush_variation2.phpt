@@ -10,16 +10,12 @@ if( substr(PHP_OS, 0, 3) == 'WIN')
 
 /* test fflush() with handle to symbollic link */
 
-$file_path = __DIR__;
-require $file_path.'/file.inc';
+require __DIR__.'/file.inc';
 
 echo "*** Testing fflush(): with soft links to files opened in diff modes ***\n";
 $file_types = array("empty", "numeric", "text", "text_with_new_line", "alphanumeric");
 $file_modes = array("w", "wb", "wt", "w+", "w+b", "w+t",
                     "a", "ab", "at", "a+","a+b", "a+t");
-
-$file_name = TestPath::file();
-$symlink_name = TestPath::file();
 
 $count = 1;
 
@@ -29,6 +25,7 @@ foreach( $file_types as $type ) {
     echo "-- link opened in $mode mode --\n";
 
     //creating the file
+    $file_name = Workspace::file();
     $file_handle = fopen($file_name, "w");
     if($file_handle == false)
       exit("Error:failed to open file $file_name");
@@ -41,6 +38,7 @@ foreach( $file_types as $type ) {
     fclose($file_handle);
 
     // creating the sym link
+    $symlink_name = Workspace::file();
     var_dump( symlink($file_name, $symlink_name) );
     $file_handle = fopen($symlink_name, $mode);
     if($file_handle == false)
@@ -53,9 +51,6 @@ foreach( $file_types as $type ) {
 
     // reading the data from the file
     var_dump( readfile($symlink_name) );
-
-    unlink($symlink_name);
-    unlink($file_name);
   }
   $count++;
 }

@@ -14,7 +14,7 @@ ob_start();
 echo "*** Testing session_module_name() : variation ***\n";
 
 require_once "save_handler.inc";
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 session_save_path($path);
 session_module_name("files");
 

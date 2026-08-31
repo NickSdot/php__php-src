@@ -25,11 +25,9 @@ $str2 = ob_get_clean();
 var_dump(imagecreatefromstring($str2));
 
 /* file */
-$file = TestPath::file();
-$file_path = $file->path;
-unset($file);
-imagegd2($res, $file_path);
-$str2 = file_get_contents($file_path);
+$file = Workspace::file();
+imagegd2($res, $file);
+$str2 = file_get_contents($file);
 var_dump(imagecreatefromstring($str2));
 
 echo "Done\n";
@@ -37,6 +35,6 @@ echo "Done\n";
 --EXPECT--
 object(GdImage)#2 (0) {
 }
-object(GdImage)#2 (0) {
+object(GdImage)#4 (0) {
 }
 Done

@@ -13,7 +13,7 @@ echo "*** Testing mkdir() and rmdir() for different permissions ***\n";
 
 $context = stream_context_create();
 
-$file_path = TestPath::directory();
+$file_path = Workspace::directory()->create();
 $counter = 1;
 
 for($mode = 0000; $mode <= 0777; $mode++) {

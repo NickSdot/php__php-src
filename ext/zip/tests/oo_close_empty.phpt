@@ -8,7 +8,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$name = TestPath::file();
+$name = Workspace::file();
 
 function run($name, $keep) {
     copy(__DIR__ . '/test.zip', $name);

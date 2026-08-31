@@ -2,21 +2,15 @@
 
 namespace TestSuite\Context;
 
+use function getenv;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Share.php';
+
 final class Bootstrap
 {
-    public static function installFile(array &$iniSettings): ?string
+    public static function install(array &$iniSettings): ?string
     {
-        return self::install($iniSettings, 'bootstrap-file.php');
-    }
-
-    public static function installSetup(array &$iniSettings): ?string
-    {
-        return self::install($iniSettings, 'bootstrap-setup.php');
-    }
-
-    private static function install(array &$iniSettings, string $file): ?string
-    {
-        $bootstrapFile = __DIR__ . DIRECTORY_SEPARATOR . $file;
+        $bootstrapFile = __DIR__ . DIRECTORY_SEPARATOR . 'prepend.php';
 
         $autoPrependFile = $iniSettings['auto_prepend_file'] ?? null;
 
@@ -29,7 +23,7 @@ final class Bootstrap
         return $autoPrependFile;
     }
 
-    public static function configureEnvironment(array &$environment, ?string $autoPrependFile = null): void
+    public static function forwardAutoPrepend(array &$environment, ?string $autoPrependFile): void
     {
         if ($autoPrependFile === null || $autoPrependFile === '') {
             unset($environment['PHP_TEST_CONTEXT_AUTO_PREPEND_FILE']);
@@ -37,5 +31,21 @@ final class Bootstrap
         }
 
         $environment['PHP_TEST_CONTEXT_AUTO_PREPEND_FILE'] = $autoPrependFile;
+    }
+
+    public static function restoreVariables(): void
+    {
+        if (getenv('PHP_TEST_CONTEXT_RESTORE_VARIABLES') === '1') {
+            Share::set();
+        }
+    }
+
+    public static function originalAutoPrependFile(): ?string
+    {
+        $autoPrependFile = getenv('PHP_TEST_CONTEXT_AUTO_PREPEND_FILE');
+
+        return $autoPrependFile === false || $autoPrependFile === ''
+            ? null
+            : $autoPrependFile;
     }
 }

@@ -2,8 +2,8 @@
 Bug #78862 (link() silently truncates after a null byte on Windows)
 --FILE--
 <?php
-$target = TestPath::file()->path;
-$link = TestPath::file()->path;
+$target = Workspace::file()->path;
+$link = Workspace::file()->path;
 file_put_contents($target, 'foo');
 var_dump(link($target . "\0more", $link . "\0more"));
 var_dump(file_exists($link));

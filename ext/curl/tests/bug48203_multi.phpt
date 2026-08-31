@@ -13,7 +13,7 @@ if (curl_version()['version_number'] === 0x080a00) {
 <?php
 include 'server.inc';
 function checkForClosedFilePointer($target_url, $curl_option, $description) {
-    $fp = fopen(TestPath::file(), 'w');
+    $fp = fopen(Workspace::file(), 'w');
 
     $ch1 = curl_init();
     $ch2 = curl_init();

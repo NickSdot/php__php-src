@@ -5,7 +5,7 @@ pdo_sqlite
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 // Default open flag is read-write|create
 $db = new PDO('sqlite:' . $filename, null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);

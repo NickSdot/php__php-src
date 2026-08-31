@@ -23,7 +23,7 @@ function noisy_gc($maxlifetime) {
 echo "*** Testing session_set_save_handler() : variation ***\n";
 
 require_once "save_handler.inc";
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 var_dump(session_save_path($path));
 
 echo "*** Without lazy_write ***\n";

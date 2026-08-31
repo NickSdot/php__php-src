@@ -10,7 +10,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 echo "*** Testing readlink() and realpath() : usage variations ***\n";
 // create temp dir
-$name_prefix = TestPath::directory();
+$name_prefix = Workspace::directory();
 $root = $name_prefix->directory('readlink_realpath_variation2');
 $home = $root->directory('home');
 $tests = $home->directory('tests');

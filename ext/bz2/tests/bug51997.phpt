@@ -7,7 +7,7 @@ bz2
 
 error_reporting(E_ALL);
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $str = "This is a test string.\n";
 $bz = bzopen($filename, "w");
 bzwrite($bz, $str);

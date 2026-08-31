@@ -14,7 +14,7 @@ WSDL
 disable_functions=readfile
 --FILE--
 <?php
-$wsdlFile = TestPath::file('test.wsdl');
+$wsdlFile = Workspace::file('test.wsdl');
 
 $wsdl = <<<'WSDL'
 <?xml version="1.0" ?>

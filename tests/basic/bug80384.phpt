@@ -3,7 +3,7 @@ Bug #80384 large reads cause filters to internally buffer large amounts of memor
 --FILE--
 <?php
 /* First, create a file to read */
-$tmp_filename = TestPath::file();
+$tmp_filename = Workspace::file();
 $fp = fopen($tmp_filename, 'w');
 for ($i=0; $i<1024; $i++) {
     fwrite($fp, str_repeat('ABCDEFGH', 1024));

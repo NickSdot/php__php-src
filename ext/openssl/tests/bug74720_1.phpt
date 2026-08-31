@@ -57,12 +57,12 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 -----END PRIVATE KEY-----
 ";
 
-$tmpPath = TestPath::file();
+$tmpPath = Workspace::file();
 
 $content = "A simple \x1a test.";
 file_put_contents($tmpPath, $content);
 
-$outPath = TestPath::file();
+$outPath = Workspace::file();
 
 openssl_pkcs7_sign(
     $tmpPath,

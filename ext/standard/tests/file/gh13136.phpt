@@ -34,8 +34,8 @@ class CustomStream {
     }
 }
 
-$source = TestPath::file();
-$output = TestPath::file();
+$source = Workspace::file();
+$output = Workspace::file();
 file_put_contents($source, str_repeat("a", 1024 * 1024 * 8));
 
 stream_wrapper_register("up", CustomStream::class, STREAM_IS_URL);

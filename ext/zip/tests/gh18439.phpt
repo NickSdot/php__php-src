@@ -10,7 +10,7 @@ function &cb() {
     return $test;
 }
 
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive;
 $zip->open($file, ZIPARCHIVE::CREATE);
 $zip->registerCancelCallback(cb(...));

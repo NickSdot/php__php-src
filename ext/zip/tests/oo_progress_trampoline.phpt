@@ -11,7 +11,7 @@ if (!method_exists('ZipArchive', 'registerProgressCallback')) die('skip libzip t
 date.timezone=UTC
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 class TrampolineTest {
     public function __call(string $name, array $arguments): void {
@@ -60,7 +60,6 @@ try {
 } catch (Throwable $e) {
     echo $e::class, ': ', $e->getMessage(), PHP_EOL;
 }
-unlink($file);
 unset($zip);
 ?>
 Done

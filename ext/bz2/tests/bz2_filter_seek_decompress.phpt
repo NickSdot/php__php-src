@@ -4,7 +4,7 @@ bzip2.decompress filter with seek to start
 bz2
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $text = 'I am the very model of a modern major general, I\'ve information vegetable, animal, and mineral.';
 

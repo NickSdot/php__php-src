@@ -14,10 +14,10 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $jpeg = TestPath::file();
-    $jpng = TestPath::file();
-    $png = TestPath::file();
-    $pjpeg = TestPath::file();
+    $jpeg = Workspace::file();
+    $jpng = Workspace::file();
+    $png = Workspace::file();
+    $pjpeg = Workspace::file();
 
     echo "PNG to JPEG conversion: ";
     echo imagejpeg(imagecreatefrompng($cwd . "/conv_test.png"), $jpeg->path) ? 'ok' : 'failed';

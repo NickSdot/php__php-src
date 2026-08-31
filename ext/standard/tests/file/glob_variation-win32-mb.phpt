@@ -10,7 +10,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 <?php
 echo "*** Testing glob() : usage variations ***\n";
 
-$directory = TestPath::directory('glob_variation私はガラスを食べられます');
+$directory = Workspace::directory('glob_variation私はガラスを食べられます');
 $wonder = $directory->directory('wonder');
 $first = $directory->file('wonder12345');
 $second = $directory->file('wonder;123456');

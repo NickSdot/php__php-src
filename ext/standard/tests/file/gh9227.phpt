@@ -6,7 +6,7 @@ if (PHP_OS_FAMILY !== "Windows") die("skip for Windows only");
 ?>
 --FILE--
 <?php
-$file = TestPath::file('gh9227.txt');
+$file = Workspace::file('gh9227.txt');
 var_dump(realpath($file . "."));
 var_dump(file_put_contents($file, "bar"));
 var_dump(realpath($file . "."));

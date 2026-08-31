@@ -9,7 +9,7 @@ if (!method_exists('ZipArchive', 'setEncryptionName')) die('skip encryption not 
 --FILE--
 <?php
 
-$name = TestPath::file('encrypted.zip');
+$name = Workspace::file('encrypted.zip');
 $pass = 'secret';
 
 echo "== Write\n";

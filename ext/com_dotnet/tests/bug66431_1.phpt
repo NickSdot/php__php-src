@@ -15,7 +15,7 @@ try {
 <?php
 
 $text= "Xin chào cộng đồng PHP";
-$fpath = str_replace("/", "\\", TestPath::file('document.docx'));
+$fpath = str_replace("/", "\\", Workspace::file('document.docx'));
 
 com_load_typelib('Word.Application');
 

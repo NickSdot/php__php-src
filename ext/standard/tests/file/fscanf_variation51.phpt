@@ -10,7 +10,7 @@ $file_path = __DIR__;
 echo "*** Test fscanf(): to read from a file opened in write only mode ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

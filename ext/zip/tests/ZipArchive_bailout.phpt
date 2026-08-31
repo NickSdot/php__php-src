@@ -7,7 +7,7 @@ zip
 
 function &cb() {}
 
-$file = TestPath::file();
+$file = Workspace::file();
 $zip = new ZipArchive;
 $zip->open($file, ZIPARCHIVE::CREATE);
 $zip->registerCancelCallback(cb(...));

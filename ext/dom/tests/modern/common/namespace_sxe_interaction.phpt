@@ -25,8 +25,8 @@ echo "=== serialize SimpleXML ===\n";
 
 echo $sxe->saveXML(), "\n";
 echo $sxe->foo->saveXML(), "\n";
-$output1 = TestPath::file();
-$output2 = TestPath::file();
+$output1 = Workspace::file();
+$output2 = Workspace::file();
 $sxe->asXML($output1);
 $sxe->foo->asXML($output2);
 echo file_get_contents($output1), "\n";

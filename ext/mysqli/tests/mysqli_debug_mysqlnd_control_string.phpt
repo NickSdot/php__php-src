@@ -57,7 +57,7 @@ if (defined('MYSQLI_DEBUG_TRACE_ENABLED') && !MYSQLI_DEBUG_TRACE_ENABLED)
         return trim(substr(file_get_contents($trace_file), 0, 100024));
     }
 
-    $trace_file = TestPath::file();
+    $trace_file = Workspace::file();
 
     $trace = try_control_string($link, 't:O,' . $trace_file, $trace_file, 10);
     if (!strstr($trace, 'SELECT * FROM test') && !strstr($trace, 'mysql_real_query'))

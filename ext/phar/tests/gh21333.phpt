@@ -9,7 +9,7 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$phar = TestPath::file('gh21333.phar');
+$phar = Workspace::file('gh21333.phar');
 $phar_path = $phar->path;
 $phar = new Phar($phar_path);
 $phar->addFromString("file", "initial_content");
@@ -17,7 +17,7 @@ $phar->addEmptyDir("dir");
 
 $phar2 = $phar->compress(Phar::GZ);
 
-$tmp_src = TestPath::file();
+$tmp_src = Workspace::file();
 file_put_contents($tmp_src, str_repeat("A", 100));
 
 foreach ($phar2 as $item) {

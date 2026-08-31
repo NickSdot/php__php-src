@@ -7,7 +7,7 @@ Test readfile() function: usage variation - include path
 // include file.inc
 require("file.inc");
 
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 
 echo "*** Testing readfile(): checking second argument, include path ***\n";
 // temp file name used here

@@ -4,14 +4,14 @@ Test copy() function: usage variations - existing dir as destination
 <?php
 /* Test copy(): Trying to copy the file to a destination, where destination is an existing dir */
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 echo "*** Test copy() function: Trying to create a copy of source file as a dir ***\n";
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello, world...", 20));
 fclose($file_handle);
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 
 echo "Size of source before copy operation => ";
 var_dump( filesize($file) );  //size of source before copy

@@ -15,7 +15,7 @@ dba
 
 $handler = 'cdb';
 require_once(__DIR__ .'/test.inc');
-$db_filename = TestPath::file('test0.dbm');
+$db_filename = Workspace::file('test0.dbm');
 
 echo "Test 0\n";
 
@@ -77,12 +77,12 @@ bool(true)
 bool(true)
 Test 1
 
-Warning: dba_open(): Driver initialization failed for handler: cdb: Update operations are not supported in %sdba_cdb_001.php on line %d
+Warning: dba_open(): Driver initialization failed for handler: cdb: Update operations are not supported in %sdba_cdb_001.%d.php on line %d
 Failed to open DB
 Test 2
 
-Warning: dba_insert(): Cannot perform a modification on a readonly database in %sdba_cdb_001.php on line %d
+Warning: dba_insert(): Cannot perform a modification on a readonly database in %sdba_cdb_001.%d.php on line %d
 Test 3
 
-Warning: dba_open(): Driver initialization failed for handler: cdb: Update operations are not supported in %sdba_cdb_001.php on line %d
+Warning: dba_open(): Driver initialization failed for handler: cdb: Update operations are not supported in %sdba_cdb_001.%d.php on line %d
 Failed to open DB

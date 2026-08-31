@@ -9,8 +9,8 @@ if (posix_getpwuid(1000) === false) die('skip no user with uid 1000')
 ?>
 --FILE--
 <?php
-$link = TestPath::file()->path;
-$dir = TestPath::directory()->create();
+$link = Workspace::file()->path;
+$dir = Workspace::directory()->create();
 symlink($dir->path, $link);
 lchown($link, 1000);
 var_dump(lstat($link)['uid']);

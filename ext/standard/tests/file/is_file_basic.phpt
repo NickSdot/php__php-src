@@ -2,7 +2,7 @@
 Test is_file() function: basic functionality
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 echo "*** Testing is_file(): basic functionality ***\n";
 
 /* Checking with current file */

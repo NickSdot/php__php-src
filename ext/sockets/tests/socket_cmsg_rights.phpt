@@ -16,8 +16,7 @@ die('skip not for AIX');
 <?php
 include __DIR__."/mcast_helpers.php.inc";
 
-$path = TestPath::file();
-chdir($path->directory);
+$path = Workspace::file();
 
 echo "creating send socket\n";
 $sends1 = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");
@@ -27,12 +26,12 @@ socket_set_nonblock($sends1) or die("Could not put in non-blocking mode");
 echo "creating receive socket\n";
 $s = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");
 var_dump($s);
-$br = socket_bind($s, $path->name) or die("err");
+$br = socket_bind($s, $path) or die("err");
 var_dump($br);
 socket_set_nonblock($s) or die("Could not put in non-blocking mode");
 
 $r = socket_sendmsg($sends1, [
-  "name" => [ "path" => $path->name ],
+  "name" => [ "path" => $path->path ],
   "iov" => ["test ", "thing", "\n"],
   "control" => [
     [

@@ -10,7 +10,7 @@ check_skip('db3');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 $handler = 'db3';
 run_standard_tests($handler, $db_name);

@@ -24,7 +24,7 @@ blah blah blah blah blah blah blah
 
 EOD;
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $fp = gzopen($filename, "wb");
 gzwrite($fp, $original);

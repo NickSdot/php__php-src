@@ -2,7 +2,7 @@
 GH-15653 (fgetcsv overflow on length argument)
 --FILE--
 <?php
-$filename = TestPath::file()->create();
+$filename = Workspace::file()->create();
 $fp = fopen ($filename, "r");
 
 try {

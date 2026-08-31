@@ -11,12 +11,12 @@ require __DIR__ . '/../skipif_root.inc';
 /* Test copy(): Trying to create a copy of file in a dir which doesn't have write permissions */
 
 echo "*** Test copy() function: Trying to create a copy of file in a dir which doesn't have write permissions ***";
-$file = TestPath::file();
+$file = Workspace::file();
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello, world...", 20));
 fclose($file_handle);
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 
 $old_perms = fileperms($dir);
 

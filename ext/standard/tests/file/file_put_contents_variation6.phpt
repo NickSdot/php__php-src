@@ -8,7 +8,7 @@ echo "*** Testing file_put_contents() : variation ***\n";
 
 require_once('fopen_include_path.inc');
 
-$thisTestDir = TestPath::directory()->create();
+$thisTestDir = Workspace::directory()->create();
 chdir($thisTestDir);
 
 $filename = $thisTestDir->file()->name;

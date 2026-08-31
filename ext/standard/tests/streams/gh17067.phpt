@@ -2,7 +2,7 @@
 GH-17067 (glob:// wrapper doesn't cater to CWD for ZTS builds)
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file('foo')->create();
 
 chdir($dir);

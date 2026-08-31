@@ -10,7 +10,7 @@ if (!method_exists(ZipArchive::class, 'registerProgressCallback')) {
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $zip = new ZipArchive;
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);

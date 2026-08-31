@@ -2,7 +2,7 @@
 exit(false);
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 function zend_test_var_export($value) {
     if ($value === PHP_INT_MIN) {
@@ -38,7 +38,7 @@ $values = [
     new stdClass(),
 ];
 
-$file = TestPath::file('exit.php');
+$file = Workspace::file('exit.php');
 const FILE_CONTENT = <<<'TEMPLATE'
 <?php
 try {

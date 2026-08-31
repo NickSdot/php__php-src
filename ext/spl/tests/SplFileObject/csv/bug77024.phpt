@@ -10,7 +10,7 @@ $file->rewind();
 $file->setFlags(SplFileObject::READ_CSV);
 echo $file . "\n";
 
-$tmp = TestPath::file();
+$tmp = Workspace::file();
 file_put_contents($tmp, "line1\nline2\nline3\n");
 $file = new SplFileObject($tmp);
 $file->rewind();

@@ -2,7 +2,7 @@
 Bug #78863 (DirectoryIterator class silently truncates after a null byte)
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file('bad')->create();
 $dir->directory('sub')->create()->file('good')->create();
 

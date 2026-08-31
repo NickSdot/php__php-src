@@ -4,7 +4,7 @@ Test lstat() and stat() functions: usage variations - writing data into file
 <?php
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$file = TestPath::file();
+$file = Workspace::file();
 
 /* test the effects on stats with writing data into a  file */
 

@@ -18,7 +18,7 @@ if ($privkey === false) {
 }
 
 $passphrase = "banana";
-$key_file_name = TestPath::file();
+$key_file_name = Workspace::file();
 if ($key_file_name === false) {
     die("failed to get a temporary filename!");
 }

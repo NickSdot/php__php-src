@@ -10,7 +10,7 @@ zip
 <?php
 
 include __DIR__ . '/utils.inc';
-$file = TestPath::file();
+$file = Workspace::file();
 $zip = new ZipArchive;
 if (!$zip->open($file, ZipArchive::CREATE)) {
     exit('failed');

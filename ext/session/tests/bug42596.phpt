@@ -17,7 +17,7 @@ session.serialize_handler=php
 session.save_handler=files
 --FILE--
 <?php
-$sessdir = TestPath::directory()->create();
+$sessdir = Workspace::directory()->create();
 $save_path = '0;0777;'.$sessdir;
 umask(0);
 session_save_path($save_path);

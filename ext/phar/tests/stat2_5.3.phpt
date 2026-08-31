@@ -10,9 +10,9 @@ phar.require_hash=0
 Phar::interceptFileFuncs();
 var_dump(is_file(__FILE__));
 
-$source = TestPath::file('stat2_5.3.tar');
+$source = Workspace::file('stat2_5.3.tar');
 $fname2 = $source->path;
-$converted = TestPath::file('stat2_5.3.phar.tar');
+$converted = Workspace::file('stat2_5.3.phar.tar');
 $fname3 = $converted->path;
 copy(__DIR__ . '/tar/files/links.tar', $fname2);
 $a = new PharData($fname2);

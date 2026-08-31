@@ -7,7 +7,7 @@ Pawel Krynicki <pawel [dot] krynicki [at] xsolve [dot] pl>
 <?php
 $depth1 = "depth1";
 $depth2 = "depth2";
-$root = TestPath::directory()->create();
+$root = Workspace::directory()->create();
 $level1 = $root->directory($depth1)->create();
 $targetDir = $level1->directory($depth2)->create();
 $targetDir->file('getSubPathname_test_2.tmp')->create();

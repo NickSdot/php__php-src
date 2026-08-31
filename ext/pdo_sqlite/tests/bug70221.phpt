@@ -4,7 +4,7 @@ Bug #70221 (persistent sqlite connection + custom function segfaults)
 pdo_sqlite
 --FILE--
 <?php
-$dbfile = TestPath::file();
+$dbfile = Workspace::file();
 $db = new PDO('sqlite:'.$dbfile, null, null, array(PDO::ATTR_PERSISTENT => true));
 function _test() { return 42; }
 $db->sqliteCreateFunction('test', '_test', 0);

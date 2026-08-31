@@ -7,7 +7,7 @@ zip
 <?php
 // create the ZIP to be tested
 $zip = new ZipArchive;
-$archive = TestPath::file('73809.zip');
+$archive = Workspace::file('73809.zip');
 $zip->open($archive->path, ZipArchive::CREATE);
 $zip->addFromString('73809.txt', 'yada yada');
 $zip->addFromString('.phar/signature.bin', str_repeat('*', 64 * 1024 + 1));

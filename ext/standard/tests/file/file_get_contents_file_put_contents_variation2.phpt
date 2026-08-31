@@ -7,7 +7,7 @@ Test file_get_contents() and file_put_contents() functions : usage variations - 
 include(__DIR__."/file.inc");
 
 echo "*** Testing with variation in use_include_path argument ***\n";
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $filename = $dir->file()->path;
 
 ini_set( 'include_path',$dir->path );

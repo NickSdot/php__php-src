@@ -10,7 +10,7 @@ require __DIR__ . '/../skipif_root.inc';
 require __DIR__.'/file.inc';
 echo "*** Testing is_writable(): usage variations ***\n";
 
-$directory = TestPath::directory()->create();
+$directory = Workspace::directory()->create();
 $file = $directory->file('bar.tmp');
 $filename = $file->name;
 

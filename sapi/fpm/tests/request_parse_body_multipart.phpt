@@ -21,7 +21,7 @@ pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 EOT;
 
-$uploadedFile = TestPath::file();
+$uploadedFile = Workspace::file();
 $code = sprintf(<<<'EOT'
 <?php
 $_POST = ['post_global'];

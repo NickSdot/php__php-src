@@ -126,8 +126,8 @@ $files = array(
 );
 
 // Create Phar with the filenames above
-$archive = TestPath::file('bug65028.phar');
-$copy = TestPath::file('bug65028-copy.phar');
+$archive = Workspace::file('bug65028.phar');
+$copy = Workspace::file('bug65028-copy.phar');
 $phar = new Phar($archive->path);
 foreach($files as $file)
 {

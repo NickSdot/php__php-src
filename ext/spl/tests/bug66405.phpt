@@ -4,7 +4,7 @@ SPL: RecursiveDirectoryIterator with CURRENT_AS_PATHNAME flag
 Paul Garvin pgarvin76@gmail.com
 --FILE--
 <?php
-$td = TestPath::directory('bug66405')->create();
+$td = Workspace::directory('bug66405')->create();
 $td->file('file1.txt')->create();
 $td->file('file2.md')->create();
 $td->directory('testsubdir')->create()->file('file3.csv')->create();

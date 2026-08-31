@@ -8,7 +8,7 @@ opcache.file_update_protection=2
 opcache
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, '<?php return 1;');
 $var = include $file;
 var_dump($var);

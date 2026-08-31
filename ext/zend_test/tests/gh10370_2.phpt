@@ -14,7 +14,7 @@ zend_test.limit_copy_file_range=4096
 <?php
 /* Note: the value 4096 is chosen so that the mmap in _php_stream_copy_to_stream_ex() will mmap
  *       at an offset of a multiple of 4096, which is the standard page size in most Linux systems. */
-$output_file = TestPath::file();
+$output_file = Workspace::file();
 $input_file = fopen(__DIR__ . DIRECTORY_SEPARATOR . 'gh10370.tar', 'r');
 file_put_contents($output_file, $input_file);
 fclose($input_file);

@@ -10,15 +10,11 @@ session.gc_maxlifetime=10
 session.use_strict_mode=0
 --FILE--
 <?php
-$base = TestPath::directory()->create();
-$a = $base->directory('a');
-$b = $base->directory('b');
-$c = $base->directory('c');
-$d = $base->directory('d');   // empty subdir
-mkdir($a);
-mkdir($b);
-mkdir($c);
-mkdir($d);
+$base = Workspace::directory()->create();
+$a = $base->directory('a')->create();
+$b = $base->directory('b')->create();
+$c = $base->directory('c')->create();
+$base->directory('d')->create();   // empty subdir
 
 session_save_path("1;$base");
 

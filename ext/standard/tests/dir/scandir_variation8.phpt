@@ -9,7 +9,7 @@ Test scandir() function : usage variations - different file names
 
 echo "*** Testing scandir() : usage variations ***\n";
 
-$dir_path = TestPath::directory()->create();
+$dir_path = Workspace::directory()->create();
 
 // heredoc string
 $heredoc = <<<EOT

@@ -4,7 +4,7 @@ GH-22649 (setCommentName/Index after addFromString should not segfault)
 zip
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 @unlink($file);
 

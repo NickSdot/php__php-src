@@ -9,7 +9,7 @@ if (PHP_OS_FAMILY === 'Solaris') {
 --FILE--
 <?php
 
-$file = TestPath::file()->path;
+$file = Workspace::file()->path;
 
 $fp1 = fopen($file, "w");
 var_dump(flock($fp1, LOCK_SH));

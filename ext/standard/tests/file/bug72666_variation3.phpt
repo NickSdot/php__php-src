@@ -2,7 +2,7 @@
 Bug #72666 (stat cache clearing inconsistent - plain wrapper)
 --FILE--
 <?php
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 
 file_put_contents($filename, "test");
 $mtime1 = filemtime($filename);

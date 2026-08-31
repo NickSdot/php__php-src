@@ -8,10 +8,10 @@ phar.require_hash=0
 --FILE--
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';
-$archive = TestPath::file('tar_nostub.phar.tar');
+$archive = Workspace::file('tar_nostub.phar.tar');
 $fname = $archive->path;
 $alias = 'phar://' . $fname;
-$archive2 = TestPath::file('tar_nostub.tar');
+$archive2 = Workspace::file('tar_nostub.tar');
 $fname2 = $archive2->path;
 
 $tar = new tarmaker($fname, 'none');

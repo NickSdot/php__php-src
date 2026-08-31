@@ -4,7 +4,7 @@ Test ftruncate() function : error conditions
 <?php
 echo "*** Testing ftruncate() : error conditions ***\n";
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w" );
 fwrite($file_handle, "Testing ftruncate error conditions \n");
 fflush($file_handle);

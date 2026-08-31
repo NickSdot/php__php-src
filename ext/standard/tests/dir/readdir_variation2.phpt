@@ -8,7 +8,7 @@ Test readdir() function : usage variations - empty directories
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 $dir_handle = opendir($path);
 
 echo "\n-- Pass an empty directory to readdir() --\n";

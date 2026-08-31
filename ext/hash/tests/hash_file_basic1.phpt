@@ -5,7 +5,7 @@ Hash: hash_file() function : basic functionality
 
 echo "*** Testing hash_file() : basic functionality ***\n";
 
-$file = TestPath::file();
+$file = Workspace::file();
 /* Creating a temporary file file */
 if (($fp = fopen( $file, "w+")) == FALSE) {
     echo "Cannot create file ($file)";

@@ -5,7 +5,7 @@ Nikita Sveshnikov (Positive Technologies)
 --FILE--
 <?php
 // Minimal PoC: corruption/uninitialized memory leak when reading APP1 via php://filter
-$file = TestPath::file();
+$file = Workspace::file();
 
 // Make APP1 large enough so it is read in multiple chunks
 $chunk = 8192;

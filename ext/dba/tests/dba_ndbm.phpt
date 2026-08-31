@@ -10,7 +10,7 @@ check_skip('ndbm');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 $handler = 'ndbm';
 set_up_db($handler, $db_name, false /* Locking done by the library */);

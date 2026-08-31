@@ -4,7 +4,7 @@ Bug #78650 (new COM Crash)
 com_dotnet
 --FILE--
 <?php
-$parent = TestPath::directory();
+$parent = Workspace::directory();
 $fname = $parent->directory();
 mkdir($fname, 0777, true);
 

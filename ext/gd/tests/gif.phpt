@@ -41,8 +41,8 @@ function check_box($gif, $r,$g,$b, $error=0) {
     }
 }
 $cwd = __DIR__;
-$gif = TestPath::file();
-$gif2 = TestPath::file();
+$gif = Workspace::file();
+$gif2 = Workspace::file();
 
 $im = imagecreate(10,10);
 $c = imagecolorallocate($im, 255,255,255);

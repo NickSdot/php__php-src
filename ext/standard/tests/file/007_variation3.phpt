@@ -9,7 +9,7 @@ Test fopen and fclose() functions - usage variations - "w" mode
    checking for the file truncation when trying to open an existing file in "w" mode,
    and fclose function
 */
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, "");
 $string = "abcdefghij\nmnopqrst\tuvwxyz\n0123456789";
 

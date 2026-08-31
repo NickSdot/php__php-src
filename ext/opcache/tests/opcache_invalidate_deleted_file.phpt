@@ -9,7 +9,7 @@ opcache.validate_timestamps=0
 --FILE--
 <?php
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, <<<PHP
 <?php
 return 42;

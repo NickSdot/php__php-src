@@ -8,8 +8,8 @@ phar.require_hash=0
 --FILE--
 <?php
 
-$fname = TestPath::file('exists_as_phar.phar');
-$tname = TestPath::file('exists_as_phar.phar.zip');
+$fname = Workspace::file('exists_as_phar.phar');
+$tname = Workspace::file('exists_as_phar.phar.zip');
 $alias = 'phar://hio';
 
 $phar = new Phar($fname);

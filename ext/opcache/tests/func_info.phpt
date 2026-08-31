@@ -20,7 +20,7 @@ foreach (get_defined_functions()["internal"] as $function) {
 }
 $contents .= "}\n";
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $contents);
 
 require_once($file);

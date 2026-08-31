@@ -2,22 +2,20 @@
 SPL: glob wrapper interactions with DirectoryIterator
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$file = TestPath::file('bug.51068')->create();
-chdir($file->directory);
-$dir = TestPath::directory('bug.51068.dir')->create();
-$nested = $dir->file('lvl2.bug.51068')->create();
-$iter = new DirectoryIterator('glob://*.51068');
+$file = Workspace::file('bug.51068')->create();
+$dir = Workspace::directory('bug.51068.dir')->create();
+$dir->file('lvl2.bug.51068')->create();
+$iter = new DirectoryIterator("glob://{$file->directory}/*.51068");
 foreach ($iter as $f) {
     var_dump($f->getFilename());
     var_dump($f->getSize());
 }
-$iter = new DirectoryIterator('glob://bug.51068.dir/*.51068');
+$iter = new DirectoryIterator("glob://$dir/*.51068");
 foreach ($iter as $f) {
   var_dump($f->getFilename());
   var_dump($f->getSize());
 }
-$iter = new DirectoryIterator('glob://bug.51068.dir');
+$iter = new DirectoryIterator("glob://$dir");
 foreach ($iter as $f) {
   var_dump($f->getFilename());
   var_dump($f->getSize() >= 0);

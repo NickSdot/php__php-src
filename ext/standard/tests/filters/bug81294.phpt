@@ -4,7 +4,7 @@ Bug #81294 (Segfault when removing a filter)
 zlib
 --FILE--
 <?php
-$f = fopen(TestPath::file(), "wb+");
+$f = fopen(Workspace::file(), "wb+");
 $flt1 = stream_filter_append($f, "zlib.deflate", STREAM_FILTER_WRITE);
 $flt2 = stream_filter_append($f, "string.rot13", STREAM_FILTER_WRITE);
 fwrite($f, "test");

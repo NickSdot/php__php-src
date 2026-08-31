@@ -13,7 +13,7 @@ if (getenv('SKIP_REPEAT')) die("skip Not repeatable");
 ?>
 --FILE--
 <?php
-$tmp = TestPath::file();
+$tmp = Workspace::file();
 
 file_put_contents($tmp, '<?php return function(){ return "a";};');
 $f = require $tmp;

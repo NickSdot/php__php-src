@@ -5,7 +5,7 @@ Test is_dir() function: usage variations - dir/subdir
 /* Testing is_dir() with base and sub dirs */
 
 echo "-- Testing is_dir() with an empty dir --\n";
-$dirname = TestPath::directory()->create();
+$dirname = Workspace::directory()->create();
 var_dump( is_dir($dirname) );
 clearstatcache();
 

@@ -14,7 +14,7 @@ function convert($x) {
     return chr($x);
 }
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, implode('', array_map(convert(...), $bytearray)));
 
 var_dump(exif_read_data($file));

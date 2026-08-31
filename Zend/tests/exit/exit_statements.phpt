@@ -2,9 +2,9 @@
 Using exit/die as a statement/constant
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
-$file = TestPath::file('exit.php');
+$file = Workspace::file('exit.php');
 const FILE_CONTENT = <<<'TEMPLATE'
 <?php
 echo "Before FUNCTION";

@@ -20,9 +20,9 @@ function create_directories($selectWorkspace = TRUE) {
     global $testDirectory;
 
     if ($selectWorkspace) {
-        TestContext::useRelativeWorkspace();
+        Workspace::useRelative();
     }
-    $testDirectory = TestPath::directory('test');
+    $testDirectory = Workspace::directory('test');
     var_dump(mkdir($testDirectory));
     $okDirectory = $testDirectory->directory('ok');
     var_dump(mkdir($okDirectory));

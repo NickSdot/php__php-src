@@ -85,7 +85,7 @@ echo "nocache";
     $public_key_result->free();
     $public_key_link->close();
 
-    $file = TestPath::file();
+    $file = Workspace::file();
     $fp = fopen($file, "w");
     fwrite($fp, $public_key);
     fclose($fp);

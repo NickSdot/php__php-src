@@ -11,7 +11,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "\n*** Testing basic functions of realpath() with files ***\n";
 
 /* creating directories and files */
-$file_path = TestPath::directory();
+$file_path = Workspace::directory();
 $root = $file_path->directory('realpath_basic');
 $home = $root->directory('home');
 $test = $home->directory('test');

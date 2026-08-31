@@ -17,7 +17,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 include(__DIR__ . '/../file/file.inc');
 
 // create directory and files
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 @create_files($dir, 2);
 
 // Deterministic tests.

@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "*** Testing getcwd() : basic functionality ***\n";
 
 //create temporary directory for test
-$directory = TestPath::directory('私はガラスを食べられますgetcwd_basic')->create();
+$directory = Workspace::directory('私はガラスを食べられますgetcwd_basic')->create();
 
 var_dump(getcwd());
 chdir($directory);

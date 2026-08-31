@@ -13,10 +13,10 @@ dba
 --FILE--
 <?php
     require_once(__DIR__ .'/test.inc');
-    $db_file = TestPath::file('test0.dbm');
+    $db_file = Workspace::file('test0.dbm');
     echo "database handler: $handler\n";
-    $db_file1 = $db_filename1 = TestPath::file('test1.dbm');
-    $db_file2 = $db_filename2 = TestPath::file('test2.dbm');
+    $db_file1 = Workspace::file('test1.dbm');
+    $db_file2 = Workspace::file('test2.dbm');
     if (($db_file=dba_open($db_file, "n", $handler))!==FALSE) {
         echo "database file created\n";
     } else {

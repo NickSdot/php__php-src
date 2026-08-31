@@ -4,11 +4,11 @@ openssl_pkcs7_verify() tests
 openssl
 --FILE--
 <?php
-$outfile = TestPath::file();
+$outfile = Workspace::file();
 
-$contentfile = TestPath::file();
+$contentfile = Workspace::file();
 
-$pkcsfile = TestPath::file();
+$pkcsfile = Workspace::file();
 $eml = __DIR__ . "/signed.eml";
 $wrong = "wrong";
 $empty = "";

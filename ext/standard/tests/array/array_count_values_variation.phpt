@@ -2,7 +2,7 @@
 Test array_count_values() function : Test all normal parameter variations
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 /*
  * Test behaviour with parameter variations
  */
@@ -17,7 +17,7 @@ class A {
 
 $ob = new A();
 
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, "w+");
 
 $arrays = array ("bobk" => "bobv", "val", 6 => "val6",  $fp, $ob);

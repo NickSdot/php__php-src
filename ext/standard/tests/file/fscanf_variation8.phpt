@@ -5,12 +5,11 @@ Test fscanf() function: usage variations - float formats with float values
 
 /* Test fscanf() to scan different float values using different format types */
 
-$file_path = TestPath::directory();
 
 echo "*** Test fscanf(): different float format types with different float values ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

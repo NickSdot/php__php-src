@@ -7,12 +7,12 @@ include "skipif.inc";
 --FILE--
 <?php
 include "include.inc";
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 $php = get_cgi_path();
 reset_env_vars();
 
-$test_file = TestPath::file("apache_response_headers.test.php")->path;
+$test_file = Workspace::file("apache_response_headers.test.php")->path;
 
 $code  = '<?php';
 $code .= '

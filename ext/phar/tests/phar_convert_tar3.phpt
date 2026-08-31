@@ -9,12 +9,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_tar3.phar.php');
+$archive = Workspace::file('phar_convert_tar3.phar.php');
 $fname = $archive->path;
 $pname = 'phar://' . $fname;
-$converted = TestPath::file('phar_convert_tar3.phar.tar.bz2');
+$converted = Workspace::file('phar_convert_tar3.phar.tar.bz2');
 $fname2 = $converted->path;
-$copy = TestPath::file('phar_convert_tar3.2.phar.tar');
+$copy = Workspace::file('phar_convert_tar3.2.phar.tar');
 $fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;

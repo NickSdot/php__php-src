@@ -3,7 +3,7 @@ SPL: DirectoryIterator and clone
 --FILE--
 <?php
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file()->create();
 $dir->file()->create();
 $dir->file()->create();

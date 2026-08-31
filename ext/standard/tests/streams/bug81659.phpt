@@ -2,7 +2,7 @@
 Bug #81659 (stream_get_contents() may unnecessarily overallocate)
 --FILE--
 <?php
-$stream = fopen(TestPath::file(), "w+");
+$stream = fopen(Workspace::file(), "w+");
 
 for ($i = 0; $i < 1024; $i++) {
     fwrite($stream, str_repeat("*", 1024));

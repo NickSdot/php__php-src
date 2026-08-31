@@ -17,7 +17,7 @@ imagecolorallocate($im, 255, 255, 255);
 $red = imagecolorallocate($im, 255, 0, 0);
 imagefilledrectangle($im, 3,3, 7,7, $red);
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 imagepalettetotruecolor($im);
 imagepng($im, $filename->path);
 

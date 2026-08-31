@@ -7,14 +7,8 @@ if (substr(PHP_OS, 0, 3) != 'WIN') die('skip..  for Windows');
 --FILE--
 <?php
 echo "\n*** Testing rename() on non-existing file ***\n";
-$file_path = TestPath::directory();
-$src_name = $file_path->file();
-$dest_name = $file_path->file();
-$dir_name = $file_path->directory();
-$new_dir_name = $file_path->directory();
-$non_existent_dir_name = $file_path->directory();
-$new_dir_name2 = $file_path->directory();
-mkdir($file_path);
+$src_name = Workspace::file();
+$dest_name = Workspace::file();
 
 // try renaming a non existing file
 var_dump( rename($src_name, $dest_name) );
@@ -25,7 +19,8 @@ var_dump( file_exists($dest_name) ); // expecting false
 
 // rename a existing dir to new name
 echo "\n*** Testing rename() on existing directory ***\n";
-mkdir($dir_name);
+$dir_name = Workspace::directory()->create();
+$new_dir_name = Workspace::directory();
 var_dump( rename($dir_name, $new_dir_name) );
 //ensure that $new_dir_name got created
 var_dump( file_exists($dir_name) );  // expecting false
@@ -33,10 +28,12 @@ var_dump( file_exists($new_dir_name) );  // expecting true
 
 // try to rename an non_existing dir
 echo "\n*** Testing rename() on non-existing directory ***\n";
-var_dump( rename($non_existent_dir_name, $new_dir_name2) );
+$non_existent_dir_name = Workspace::directory();
+$new_dir_name = Workspace::directory();
+var_dump( rename($non_existent_dir_name, $new_dir_name) );
 // ensure that $new_dir_name didn't get created
 var_dump( file_exists($non_existent_dir_name) );  // expecting flase
-var_dump( file_exists($new_dir_name2) );  // expecting false
+var_dump( file_exists($new_dir_name) );  // expecting false
 
 echo "Done\n";
 ?>

@@ -8,7 +8,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";

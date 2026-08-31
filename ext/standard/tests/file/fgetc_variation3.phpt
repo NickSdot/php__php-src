@@ -17,10 +17,10 @@ include ("file.inc");
 echo "*** Testing fgetc() with file opened in write only mode ***\n";
 
 $file_modes = array("w", "wb", "wt", "a", "ab", "at", "x", "xb", "xt");
-$filename = TestPath::file();
 foreach ($file_modes as $file_mode ) {
   echo "-- File opened in mode : $file_mode --\n";
 
+  $filename = Workspace::file(); // always fresh to safe unlink
   $file_handle = fopen($filename, $file_mode);
   if(!$file_handle) {
     echo "Error: failed to open file $filename!\n";
@@ -41,9 +41,6 @@ foreach ($file_modes as $file_mode ) {
 
   // close the file
   fclose($file_handle);
-
-  // delete the file
-  unlink($filename);
 }
 
 echo "Done\n";

@@ -9,9 +9,7 @@ phar.require_hash=0
 --FILE--
 <?php
 
-$directory = TestPath::directory('broken.dirname');
-$dir = $directory->path;
-mkdir($dir, 0777);
+$directory = Workspace::directory('broken.dirname')->create();
 
 $archive = $directory->file('dotted_path.phar');
 $fname = $archive->path;

@@ -22,7 +22,7 @@ blah blah blah blah blah blah blah
 blah blah blah blah blah blah blah
 EOD;
 
-$name = TestPath::file();
+$name = Workspace::file();
 $fp = fopen($name, "w");
 fwrite($fp, $data);
 fclose($fp);

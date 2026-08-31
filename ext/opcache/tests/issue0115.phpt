@@ -15,9 +15,9 @@ $stub = '<?php
 Phar::interceptFileFuncs();
 require "phar://this/index.php";
 __HALT_COMPILER(); ?>';
-TestContext::useRelativeWorkspace();
-$archive1 = TestPath::file('archive1.phar.php');
-$archive2 = TestPath::file('archive2.phar.php');
+Workspace::useRelative();
+$archive1 = Workspace::file('archive1.phar.php');
+$archive2 = Workspace::file('archive2.phar.php');
 $archive1Url = str_replace(__DIR__ . '/', '', $archive1->path);
 $archive2Url = str_replace(__DIR__ . '/', '', $archive2->path);
 $p = new Phar($archive1, 0, 'this');

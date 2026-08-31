@@ -146,7 +146,7 @@ function prepareUnaryLine($op, $cmp, $operator) {
     return $line;
 }
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file = fopen($filename, "w");
 
 fwrite($file, "<?php\n");

@@ -4,11 +4,10 @@ ZipArchive::addPattern() uses the default options when none are supplied
 zip
 --FILE--
 <?php
-$directory = TestPath::directory();
+$directory = Workspace::directory()->create();
 $dir = $directory->path;
 $src = $directory->file('data.txt');
 $archive = $directory->file('test.zip');
-@mkdir($dir);
 file_put_contents($src, str_repeat('The quick brown fox. ', 3000));
 
 function stat_first(string $archive): array

@@ -10,8 +10,8 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 /* Test copy(): Trying to create a copy of an existing dir */
 
 echo "*** Test copy() function: Trying to create a copy of an existing dir ***\n";
-$src_dir = TestPath::directory()->create();
-$dest = TestPath::file();
+$src_dir = Workspace::directory()->create();
+$dest = Workspace::file('copy_copy_variation12');
 
 var_dump( copy($src_dir, $dest) );
 
@@ -25,11 +25,11 @@ echo "*** Done ***\n";
 --EXPECTF--
 *** Test copy() function: Trying to create a copy of an existing dir ***
 
-Warning: copy(): The first argument to copy() function cannot be a directory in %scopy_variation12.php on line %d
+Warning: copy(): The first argument to copy() function cannot be a directory in %scopy_variation12.%d.php on line %d
 bool(false)
 bool(false)
 int(%d)
 
-Warning: filesize(): stat failed for %scopy_copy_variation12 in %scopy_variation12.php on line %d
+Warning: filesize(): stat failed for %scopy_copy_variation12 in %scopy_variation12.%d.php on line %d
 bool(false)
 *** Done ***

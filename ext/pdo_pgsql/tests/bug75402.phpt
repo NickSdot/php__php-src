@@ -42,7 +42,7 @@ $db->query('CREATE TABLE bug75402 (
 
 
 $db->query("INSERT INTO bug75402 (\"id\", \"group_id\", \"submitter\", \"operation\", \"description\", \"stage\", \"status\", \"progress\", \"insert_datetime\", \"begin_datetime\", \"end_datetime\", \"life_hours\", \"family\", \"parallelism_group\", \"max_parallelism\", \"hidden\", \"abort\", \"order_folder_pathname\", \"worker\") VALUES
-('20171016083645_5337',	'G_20171016083645_5337',	'TESTPetunia',	'IMPORT',	'',	'DON',	'Completed',	100,	'2017-10-16 08:36:45',	'2017-10-16 08:36:46',	'2017-10-16 08:36:46',	96,	'IMPORT',	'',	-1,	'f',	'f',	'C:\ProgramData\TestPath\TestApp\Jobs\Jobs\\20171016083645_5337',	'MainService')");
+('20171016083645_5337',	'G_20171016083645_5337',	'TESTPetunia',	'IMPORT',	'',	'DON',	'Completed',	100,	'2017-10-16 08:36:45',	'2017-10-16 08:36:46',	'2017-10-16 08:36:46',	96,	'IMPORT',	'',	-1,	'f',	'f',	'C:\ProgramData\Workspace\TestApp\Jobs\Jobs\\20171016083645_5337',	'MainService')");
 
 
 

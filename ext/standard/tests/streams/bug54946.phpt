@@ -2,18 +2,18 @@
 Bug#54946 stream_get_contents infinite loop
 --FILE--
 <?php
-$filename = TestPath::file()->create();
+$filename = Workspace::file()->create();
 $stream = fopen($filename, "w"); // w or a
 $retval = stream_get_contents($stream, 1, 1);
 fclose($stream);
 var_dump($retval);
-$filename = TestPath::file()->create();
+$filename = Workspace::file()->create();
 
 $stream = fopen($filename, "a");
 $retval = stream_get_contents($stream, 1, 1);
 var_dump($retval);
 fclose($stream);
-$filename = TestPath::file()->create();
+$filename = Workspace::file()->create();
 
 $stream = fopen($filename, "a");
 fseek($stream, 1);

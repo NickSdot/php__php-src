@@ -6,8 +6,8 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname1 = TestPath::file('029.1.phar.php')->path;
-$fname2 = TestPath::file('029.2.phar.php')->path;
+$fname1 = Workspace::file('029.1.phar.php')->path;
+$fname2 = Workspace::file('029.2.phar.php')->path;
 $fname = $fname1;
 $alias = '';
 $pname = 'phar://hio';

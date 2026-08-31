@@ -8,7 +8,7 @@ if (!(imagetypes() & IMG_JPEG)) die('skip JPEG support not available');
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $exp = imagecreate(100, 100);
 imagecolorallocate($exp, 255, 0, 0);

@@ -11,41 +11,41 @@ if(substr(PHP_OS, 0, 3) != "WIN")
 <?php
 echo "*** Testing rmdir() : variation ***\n";
 
-TestContext::useRelativeWorkspace();
-$workDir = TestPath::directory('rmdirVar3Win32.tmp');
-$workDirName = $workDir->name;
+$directory = Workspace::directory('rmdirVar3Win32.tmp')->create();
+$workDir = $directory->name;
+
 $subDir = "aSubDir";
-chdir(dirname($workDir->path));
-mkdir($workDir);
+$subDirectory = $directory->directory($subDir);
+chdir(dirname($directory->path));
 $cwd = getcwd();
 
 $unixifiedDir = '/'.substr(str_replace('\\','/',$cwd).'/'.$workDir.'/'.$subDir, 3);
 
 $dirs = array(
              // relative
-             $workDirName.'\\'.$subDir,
-             '.\\'.$workDirName.'\\'.$subDir,
-             $workDirName.'\\..\\'.$workDirName.'\\'.$subDir,
+             $workDir.'\\'.$subDir,
+             '.\\'.$workDir.'\\'.$subDir,
+             $workDir.'\\..\\'.$workDir.'\\'.$subDir,
 
              // relative bad path
-             $workDirName.'\\..\\BADDIR\\'.$subDir,
+             $workDir.'\\..\\BADDIR\\'.$subDir,
              'BADDIR\\'.$subDir,
 
              //absolute
-             $cwd.'\\'.$workDirName.'\\'.$subDir,
-             $cwd.'\\.\\'.$workDirName.'\\'.$subDir,
-             $cwd.'\\'.$workDirName.'\\..\\'.$workDirName.'\\'.$subDir,
+             $cwd.'\\'.$workDir.'\\'.$subDir,
+             $cwd.'\\.\\'.$workDir.'\\'.$subDir,
+             $cwd.'\\'.$workDir.'\\..\\'.$workDir.'\\'.$subDir,
 
              //absolute bad path
              $cwd.'\\BADDIR\\'.$subDir,
 
              //trailing separators
-             $workDirName.'\\'.$subDir.'\\',
-             $cwd.'\\'.$workDirName.'\\'.$subDir.'\\',
+             $workDir.'\\'.$subDir.'\\',
+             $cwd.'\\'.$workDir.'\\'.$subDir.'\\',
 
              // multiple separators
-             $workDirName.'\\\\'.$subDir,
-             $cwd.'\\\\'.$workDirName.'\\\\'.$subDir,
+             $workDir.'\\\\'.$subDir,
+             $cwd.'\\\\'.$workDir.'\\\\'.$subDir,
 
              // Unixified Dir
              $unixifiedDir,
@@ -54,14 +54,14 @@ $dirs = array(
 
 
 foreach($dirs as $dir) {
-   mkdir($workDir . '/' . $subDir);
+   $subDirectory->create();
    echo "-- removing $dir --\n";
    $res = rmdir($dir);
    if ($res === true) {
       echo "Directory removed\n";
    }
    else {
-      rmdir($workDir . '/' . $subDir);
+      rmdir($subDirectory);
    }
 }
 

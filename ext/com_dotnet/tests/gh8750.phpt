@@ -22,7 +22,7 @@ $catalog = null;
 ?>
 --FILE--
 <?php
-$filename = str_replace("/", "\\", TestPath::file('database.mdb'));
+$filename = str_replace("/", "\\", Workspace::file('database.mdb'));
 
 $catalog = new com("ADOX.Catalog");
 $catalog->Create("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=$filename");

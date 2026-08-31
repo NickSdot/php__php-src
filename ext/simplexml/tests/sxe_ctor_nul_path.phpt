@@ -4,7 +4,7 @@ SimpleXMLElement constructor rejects NUL bytes in $data
 simplexml
 --FILE--
 <?php
-$tmp = TestPath::file();
+$tmp = Workspace::file();
 file_put_contents($tmp, '<r/>');
 $path = $tmp . "\0evil";
 

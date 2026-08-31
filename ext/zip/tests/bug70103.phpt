@@ -4,12 +4,11 @@ Bug #70103 (ZipArchive::addGlob ignores remove_all_path option)
 zip
 --FILE--
 <?php
-$directory = TestPath::directory();
+$directory = Workspace::directory()->create(permissions: 0777);
 $dir = $directory->path;
 $foo = $directory->file('foo.txt')->path;
 $archive = $directory->file('test.zip')->path;
 
-mkdir($dir); chmod($dir, 0777);
 file_put_contents($foo, 'foo');
 
 $zip = new ZipArchive();

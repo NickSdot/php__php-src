@@ -8,7 +8,7 @@ sendmail_path={MAIL:mail.eml}
 mail.mixed_lf_and_crlf=on
 --FILE--
 <?php
-$mail = TestPath::file('mail.eml');
+$mail = Workspace::file('mail.eml');
 chdir($mail->directory);
 mb_language("uni");
 $to = "omittedvalidaddress@example.com";

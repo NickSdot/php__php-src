@@ -10,7 +10,7 @@ if (!function_exists('libxml_set_external_entity_loader')) die('skip xinclude no
 ?>
 --FILE--
 <?php
-$included = TestPath::file();
+$included = Workspace::file();
 file_put_contents($included, '<?xml version="1.0"?><included/>');
 $href = 'file:///' . ltrim(str_replace('\\', '/', $included), '/');
 

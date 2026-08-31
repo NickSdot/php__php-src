@@ -91,7 +91,7 @@ foreach ($numeric_string_cases as $name => $value) {
 $cases["fractional numeric-string within int range"] = occurrence_schema("maxOccurs", "3.141");
 
 foreach ($cases as $name => $schema) {
-    $file = TestPath::file();
+    $file = Workspace::file();
     file_put_contents($file, wsdl_with_schema($schema));
 
     try {

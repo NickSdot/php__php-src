@@ -9,7 +9,7 @@ if (!function_exists("posix_access")) {
 --FILE--
 <?php
 
-$testfile = TestPath::file();
+$testfile = Workspace::file();
 
 // Create a temporary file for valid access tests
 file_put_contents($testfile, "hello");

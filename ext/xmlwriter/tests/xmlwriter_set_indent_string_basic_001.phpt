@@ -4,7 +4,7 @@ xmlwriter_set_indent_string passing xmlwriter resource
 xmlwriter
 --FILE--
 <?php
-$temp_filename = TestPath::file();
+$temp_filename = Workspace::file();
     $fp = fopen($temp_filename, "w");
     fwrite ($fp, "Hi");
     fclose($fp);

@@ -4,7 +4,7 @@ iconv stream filter with seek to start
 iconv
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $text = 'Hello, this is a test for iconv stream filter seeking functionality.';
 

@@ -30,7 +30,7 @@ var_dump(stream_get_contents($pipes[1]));
 proc_close($proc);
 
 echo "\nWith filename:\n";
-$fileName = TestPath::file();
+$fileName = Workspace::file();
 $proc = proc_open($cmd, [1 => ['file', $fileName, 'w'], 2 => ['redirect', 1]], $pipes);
 var_dump($pipes);
 proc_close($proc);
@@ -58,7 +58,7 @@ Warning: proc_open(): Redirection target 42 not found in %s
 With pipe:
 array(1) {
   [1]=>
-  resource(4) of type (stream)
+  resource(%d) of type (stream)
 }
 string(10) "Test
 Error"

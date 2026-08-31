@@ -7,9 +7,7 @@ if (!strncasecmp(PHP_OS, 'WIN', 3)) echo "skip Unix Only";
 --FILE--
 <?php
 
-$socket = TestPath::file();
-chdir($socket->directory);
-$sock = $socket->name;
+$sock = Workspace::file();
 $s = stream_socket_server("unix://$sock");
 $c = stream_socket_client("unix://$sock");
 

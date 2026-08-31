@@ -5,11 +5,11 @@ zip
 --FILE--
 <?php
 $zip = new ZipArchive();
-$archive = TestPath::file();
-$destination = TestPath::directory();
+$archive = Workspace::file();
+$destination = Workspace::directory();
 $zip->open($archive, ZipArchive::CREATE|ZipArchive::OVERWRITE);
 $zip->addFromString("", "yada yada");
-mkdir($destination->path);
+$destination->create();
 $zip->open($archive);
 $zip->extractTo($destination, "");
 ?>

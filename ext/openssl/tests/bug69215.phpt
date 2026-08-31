@@ -8,9 +8,9 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$caCertFile = TestPath::file();
-$clientCertFile = TestPath::file();
-$serverCertFile = TestPath::file();
+$caCertFile = Workspace::file();
+$clientCertFile = Workspace::file();
+$serverCertFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";

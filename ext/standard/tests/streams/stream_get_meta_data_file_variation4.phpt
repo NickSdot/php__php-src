@@ -4,7 +4,7 @@ stream_get_meta_data() with a relative file path
 <?php
 
 echo "Create a file:\n";
-$filename = TestPath::file('stream_get_meta_data_file_variation4.php.tmp');
+$filename = Workspace::file('stream_get_meta_data_file_variation4.php.tmp');
 $fp = fopen('File://' . $filename, 'w+');
 
 var_dump(stream_get_meta_data($fp));

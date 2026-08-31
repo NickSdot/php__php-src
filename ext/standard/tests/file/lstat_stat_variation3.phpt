@@ -15,9 +15,9 @@ $file_path = __DIR__;
 require "$file_path/file.inc";
 
 /* create temp file & link */
-$tmp_file = TestPath::file();
-$old_linkname = TestPath::file();
-$new_linkname = TestPath::file();
+$tmp_file = Workspace::file();
+$old_linkname = Workspace::file();
+$new_linkname = Workspace::file();
 $fp = fopen($tmp_file, "w");  // temp file
 fclose($fp);
 

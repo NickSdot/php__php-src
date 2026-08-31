@@ -8,7 +8,7 @@ if (!method_exists('ZipArchive', 'registerProgressCallback')) die('skip libzip t
 ?>
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive;
 $zip->open($file, ZipArchive::CREATE);
 $zip->registerProgressCallback(0.5, function ($r) {

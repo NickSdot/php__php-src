@@ -8,7 +8,7 @@ Test opendir() function : usage variations - open a directory twice
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$path = TestPath::directory()->create();
+$path = Workspace::directory()->create();
 
 echo "\n-- Open directory first time: --\n";
 var_dump($dh1 = opendir($path));

@@ -12,12 +12,9 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 /* test rename() by trying to rename an existing file/dir/link to the same name
   and one another */
 // create a dir
-$file_path = TestPath::directory();
-$dirname = $file_path->directory();
-$filename = $file_path->file();
-$linkname = $file_path->file();
-mkdir($file_path);
-mkdir($dirname);
+$dirname = Workspace::directory()->create();
+$filename = Workspace::file();
+$linkname = Workspace::file();
 //create a file
 $fp = fopen($filename, "w");
 fclose($fp);

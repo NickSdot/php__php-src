@@ -12,7 +12,7 @@ if (!function_exists("posix_mkfifo")) {
 --FILE--
 <?php
 
-$pipe = TestPath::file();
+$pipe = Workspace::file();
 
 // Create named pipe (FIFO)
 if (!file_exists($pipe)) {

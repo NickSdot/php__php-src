@@ -21,7 +21,7 @@ if (!empty($host)) {
     $url = "{$host}/get.inc?test=get";
 } else {
     // Create a temporary file for the test
-    $tempname = TestPath::file();
+    $tempname = Workspace::file();
     $url = 'file://'. $tempname;
     // add the test data to the file
     file_put_contents($tempname, "Hello World!\nHello World!");

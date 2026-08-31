@@ -8,7 +8,7 @@ phar.readonly=0
 phar.require_hash=0
 --FILE--
 <?php
-$archive = TestPath::file('gh16406.phar');
+$archive = Workspace::file('gh16406.phar');
 $fname = $archive->path;
 @unlink($fname . '.tar');
 @unlink($fname . '.gz');

@@ -2,7 +2,7 @@
 Bug #42364 (Crash when using getRealPath with DirectoryIterator)
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file()->create();
 
 $count = 0;

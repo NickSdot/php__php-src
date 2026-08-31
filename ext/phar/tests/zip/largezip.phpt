@@ -7,8 +7,8 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.zip.php');
-$fname2 = TestPath::file('archive.2.phar.zip.php');
+$fname = Workspace::file('archive.phar.zip.php');
+$fname2 = Workspace::file('archive.2.phar.zip.php');
 $pname = 'phar://' . $fname;
 $pname2 = 'phar://' . $fname2;
 

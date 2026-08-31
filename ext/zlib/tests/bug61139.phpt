@@ -4,7 +4,7 @@ Bug #61139 (gzopen leaks when specifying invalid mode)
 zlib
 --FILE--
 <?php
-$file = TestPath::file('someFile');
+$file = Workspace::file('someFile');
 
 gzopen($file, 'c');
 ?>

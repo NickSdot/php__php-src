@@ -9,11 +9,7 @@ if (version_compare(ZipArchive::LIBZIP_VERSION, '1.10.0', '<')) die('skip libzip
 ?>
 --FILE--
 <?php
-$directory = TestPath::directory();
-$dirname = $directory->path;
-mkdir($dirname);
-$empty = $directory->file('empty.txt');
-$file = $directory->file('corrupt.zip')->path;
+$file = Workspace::file('corrupt.zip');
 
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);

@@ -13,12 +13,10 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$directory = TestPath::directory();
 
 // checking stat() on directory
 echo "*** Testing lstat() on a dir after changing its access permission ***\n";
-$dirname = $directory->path;
-mkdir($dirname);
+$dirname = Workspace::directory()->create();
 
 $old_stat = stat($dirname);
 sleep(1);

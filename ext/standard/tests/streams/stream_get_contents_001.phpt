@@ -3,7 +3,7 @@ stream_get_contents() - Testing offset out of range
 --FILE--
 <?php
 
-$tmp = fopen(TestPath::file(), 'w+b');
+$tmp = fopen(Workspace::file(), 'w+b');
 
 fwrite($tmp, "12345");
 

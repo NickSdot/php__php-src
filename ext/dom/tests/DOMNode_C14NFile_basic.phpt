@@ -18,7 +18,7 @@ $xml = <<< XML
 </books>
 XML;
 
-$output = TestPath::file();
+$output = Workspace::file();
 $doc = new DOMDocument();
 $doc->loadXML($xml);
 $node = $doc->getElementsByTagName('title')->item(0);

@@ -11,7 +11,7 @@ if (function_exists('openssl_sign')) die('skip requires openssl disabled for moc
 phar.require_hash=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.tar')->path;
+$fname = Workspace::file('archive.tar')->path;
 
 function openssl_sign() {
     return str_repeat('foobar', random_int(1, 1));

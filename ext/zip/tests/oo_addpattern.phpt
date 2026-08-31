@@ -10,17 +10,13 @@ zip
 <?php
 include __DIR__ . '/utils.inc';
 
-TestContext::useRelativeWorkspace();
-$directory = TestPath::directory();
+$directory = Workspace::directory()->create();
 $dirname = $directory->path . '/';
 $file = $directory->file('tmp.zip');
-$foo = $directory->file('foo.txt');
-$bar = $directory->file('bar.txt');
 
-@mkdir($dirname);
 copy(__DIR__ . '/test.zip', $file);
-touch($foo);
-touch($bar);
+$directory->file('foo.txt')->create();
+$directory->file('bar.txt')->create();
 
 $zip = new ZipArchive();
 if (!$zip->open($file)) {

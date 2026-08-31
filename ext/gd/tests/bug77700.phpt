@@ -4,7 +4,7 @@ Bug #77700 (Writing truecolor images as GIF ignores interlace flag)
 gd
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $im = imagecreatetruecolor(10, 10);
 imagefilledrectangle($im, 0, 0, 9, 9, imagecolorallocate($im, 255, 255, 255));
 imageinterlace($im, true);

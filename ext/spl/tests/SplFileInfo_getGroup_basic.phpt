@@ -10,7 +10,7 @@ Jacopo Romei <jacopo@sviluppoagile.it>
 #Test Fest Cesena (Italy) on 2009-06-20
 --FILE--
 <?php
-$filename = TestPath::file()->create();
+$filename = Workspace::file()->create();
 $fileInfo = new SplFileInfo($filename);
 $expected = filegroup($filename);
 $actual = $fileInfo->getGroup();

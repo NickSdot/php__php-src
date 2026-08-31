@@ -5,11 +5,11 @@ openssl
 --FILE--
 <?php
 $inFile =  __DIR__ . "/plain.txt";
-$outFile = TestPath::file();
-$signersFile = TestPath::file();
-$keyFile = TestPath::file();
-$certFile = TestPath::file();
-$cacertFile = TestPath::file();
+$outFile = Workspace::file();
+$signersFile = Workspace::file();
+$keyFile = Workspace::file();
+$certFile = Workspace::file();
+$cacertFile = Workspace::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();

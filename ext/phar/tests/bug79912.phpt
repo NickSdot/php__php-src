@@ -7,11 +7,10 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('bug79912.phar');
+$archive = Workspace::file('bug79912.phar');
 $phar = new Phar($archive->path);
-$output = TestPath::directory();
+$output = Workspace::directory()->create();
 $outputFile = $output->file('test.txt');
-mkdir($output->path);
 $phar->addFromString("test.txt", "This is a test file.This is a test file.This is a test file.");
 $file = $phar["test.txt"];
 var_dump($file->compress(Phar::GZ)); //true (success)

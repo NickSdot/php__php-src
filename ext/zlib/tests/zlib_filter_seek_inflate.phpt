@@ -4,7 +4,7 @@ zlib.inflate filter with seek to start
 zlib
 --FILE--
 <?php
-$file = TestPath::file('zlib_filter_seek_inflate.zlib');
+$file = Workspace::file('zlib_filter_seek_inflate.zlib');
 
 $text = 'I am the very model of a modern major general, I\'ve information vegetable, animal, and mineral.';
 

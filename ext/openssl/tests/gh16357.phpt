@@ -5,7 +5,7 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/cert.crt";
-$outfile = TestPath::file();
+$outfile = Workspace::file();
 $certs = [123];
 var_dump(openssl_pkcs7_encrypt($infile, $outfile, $certs, null));
 var_dump($certs);

@@ -9,7 +9,7 @@ phar.require_hash=0
 <?php
 include __DIR__ . '/files/tarmaker.php.inc';
 
-$archive = TestPath::file('archive.phar.tar');
+$archive = Workspace::file('archive.phar.tar');
 $fname = $archive->path;
 $alias = 'phar://' . $fname;
 

@@ -21,7 +21,7 @@ if (PHP_OS_FAMILY === 'Solaris')
 
     $fds = [];
     for ($i = 0; $i < 1023; $i++) {
-        $fds[] = @fopen(TestPath::file(), 'w');
+        $fds[] = @fopen(Workspace::file(), 'w');
     }
 
     require_once 'connect.inc';

@@ -4,7 +4,7 @@ Bug #70018 (exec does not strip all whitespace)
 <?php
 $output = array();
 
-$test_fl = TestPath::file();
+$test_fl = Workspace::file();
 $test_fl_escaped = escapeshellarg($test_fl);
 file_put_contents($test_fl, '<?php echo "abc\f\n \n";');
 

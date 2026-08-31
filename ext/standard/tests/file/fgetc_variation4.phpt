@@ -12,10 +12,10 @@ $file_modes = array( "a+", "a+b", "a+t",
                      "x+", "x+b", "x+t",
                      "w+", "w+b", "w+t" );
 
-$filename = TestPath::file();
 foreach ($file_modes as $file_mode ) {
   echo "-- File opened in mode : $file_mode --\n";
 
+  $filename = Workspace::file(); // always fresh to safe unlink
   $file_handle = fopen($filename, $file_mode);
   if(!$file_handle) {
     echo "Error: failed to open file $filename!\n";
@@ -38,9 +38,6 @@ foreach ($file_modes as $file_mode ) {
 
   // close the file
   fclose($file_handle);
-
-  // delete the file
-  unlink($filename);
 }
 
 echo "Done\n";

@@ -15,10 +15,9 @@ require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-$old_dirname = TestPath::directory();
-mkdir($old_dirname);  // temp dir
+$old_dirname = Workspace::directory()->create();  // temp dir
 
-$old_filename = TestPath::file();
+$old_filename = Workspace::file();
 $file_handle = fopen($old_filename, "w");  // temp file
 fclose($file_handle);
 

@@ -24,7 +24,7 @@ if(!empty($host)) {
 } else {
 
     // Create a temporary file for the test
-    $tempname = TestPath::file();
+    $tempname = Workspace::file();
     $url = 'file://'. $tempname;
 
     // add the test data to the file
@@ -32,7 +32,7 @@ if(!empty($host)) {
 }
 
 
-$tempfile	= TestPath::file()->create();
+$tempfile	= Workspace::file()->create();
 $fp = fopen($tempfile, "r"); // Opening 'fubar' with the incorrect readonly flag
 
 $ch = curl_init($url);

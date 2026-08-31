@@ -124,7 +124,7 @@ foreach (['A', 'B'] as $class) {
         );
 
         if ($varOutput !== $expected_output) {
-            file_put_contents(TestPath::file(), $varOutput);
+            file_put_contents(Workspace::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }
@@ -155,7 +155,7 @@ foreach (['A', 'B'] as $class) {
         );
 
         if ($varOutput !== $expected_output) {
-            file_put_contents(TestPath::file(), $varOutput);
+            file_put_contents(Workspace::file(), $varOutput);
             ++$failuresNb;
             $failures[] = $error;
         }

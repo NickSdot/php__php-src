@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing scandir() : usage variations ***\n";
 
-$dir_path = TestPath::directory('私はガラスを食べられますscandir_variation8')->create();
+$dir_path = Workspace::directory('私はガラスを食べられますscandir_variation8')->create();
 
 // heredoc string
 $heredoc = <<<EOT

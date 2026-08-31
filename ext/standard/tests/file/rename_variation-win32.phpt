@@ -11,10 +11,10 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__.'/file.inc';
 
 /* create directory */
-$root = TestPath::directory()->create();
+$root = Workspace::directory()->create();
 $source = $root->file();
-$dest = TestPath::file();
-$file_path = $root->directory;
+$dest = Workspace::file();
+$file_path = dirname($root);
 
 /* rename files across directories */
 echo "*** Testing rename() : rename files across directories ***\n";

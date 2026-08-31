@@ -11,13 +11,13 @@ if(substr(PHP_OS, 0, 3) == "WIN")
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$mainDir = TestPath::directory('filePutContentsVar7.dir')->create();
-$subDir = $mainDir->directory('filePutContentsVar7Sub')->create();
-$absMainDir = $mainDir;
-$absSubDir = $subDir;
+$absMainDir = Workspace::directory()->create();
+$absSubDir = $absMainDir->directory('subdir')->create();
+$mainDir = $absMainDir->name;
+$subDir = $absSubDir->name;
 
 $old_dir_path = getcwd();
-chdir(dirname($mainDir->path));
+chdir(dirname($absMainDir));
 
 
 // Note invalid dirs in p8 result in (The system cannot find the path specified.)
@@ -25,30 +25,30 @@ chdir(dirname($mainDir->path));
 $allDirs = array(
   // absolute paths
   "$absSubDir/",
-  "$absSubDir/../".$subDir->name,
-  "$absSubDir//.././".$subDir->name,
-  "$absSubDir/../../".$mainDir->name."/./".$subDir->name,
-  "$absSubDir/..///".$subDir->name."//..//../".$subDir->name,
+  "$absSubDir/../".$subDir,
+  "$absSubDir//.././".$subDir,
+  "$absSubDir/../../".$mainDir."/./".$subDir,
+  "$absSubDir/..///".$subDir."//..//../".$subDir,
   "$absSubDir/BADDIR",
 
   // relative paths
-  $mainDir->name."/".$subDir->name,
-  $mainDir->name."//".$subDir->name,
-   $mainDir->name."///".$subDir->name,
-  "./".$mainDir->name."/../".$mainDir->name."/".$subDir->name,
+  $mainDir."/".$subDir,
+  $mainDir."//".$subDir,
+   $mainDir."///".$subDir,
+  "./".$mainDir."/../".$mainDir."/".$subDir,
   "BADDIR",
 
 );
 
-$filename = $subDir->file();
-$absFile = $filename;
+$absFile = $absSubDir->file();
+$filename = $absFile->name;
 $data = "This was the written data";
 
 for($i = 0; $i<count($allDirs); $i++) {
   $j = $i+1;
   $dir = $allDirs[$i];
   echo "\n-- Iteration $j --\n";
-  $res = file_put_contents($dir."/".$filename->name, ($data . $i));
+  $res = file_put_contents($dir."/".$filename, ($data . $i));
   if ($res !== false) {
       $in = file_get_contents($absFile);
       if ($in == ($data . $i)) {
@@ -57,7 +57,7 @@ for($i = 0; $i<count($allDirs); $i++) {
       else {
          echo "Data not written correctly or to correct place\n";
       }
-      unlink($dir."/".$filename->name);
+      unlink($dir."/".$filename);
   }
   else {
      echo "No data written\n";

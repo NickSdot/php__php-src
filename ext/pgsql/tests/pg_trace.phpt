@@ -10,7 +10,7 @@ pgsql
 include('inc/config.inc');
 
 $db = pg_connect($conn_str);
-$tracefile = TestPath::file();
+$tracefile = Workspace::file();
 
 try {
 	pg_trace($tracefile, 'w', $db, 56432);

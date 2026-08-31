@@ -11,16 +11,15 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 /* Testing is_dir() with dir, soft & hard link to dir,
      and with file, soft & hard link to file */
 
-$dirname = TestPath::directory();
-$dir_symlink = TestPath::file();
-$dir_hardlink = TestPath::file();
-$filename = TestPath::file();
-$file_symlink = TestPath::file();
-$file_hardlink = TestPath::file();
+$dir_symlink = Workspace::file();
+$dir_hardlink = Workspace::file();
+$filename = Workspace::file();
+$file_symlink = Workspace::file();
+$file_hardlink = Workspace::file();
 
 echo "*** Testing is_dir() with dir and links to dir ***\n";
 echo "-- With dir --\n";
-mkdir($dirname);
+$dirname = Workspace::directory()->create();
 var_dump( is_dir($dirname) );
 clearstatcache();
 

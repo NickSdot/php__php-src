@@ -14,7 +14,7 @@ $arg2 = array(65,66);
 $arg3 = array(65,66,67);
 
 /* creating dumping file */
-$data_file = TestPath::file();
+$data_file = Workspace::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 

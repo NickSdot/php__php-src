@@ -2,7 +2,7 @@
 Test fpassthru() function: Basic functionality
 --FILE--
 <?php
-$file_name = TestPath::file();
+$file_name = Workspace::file();
 $write_handle = fopen($file_name, "w");
 
 $string = "Hello, world\n, abcdefg\tadsdsfdf\n8u2394723947\t$%$%#$%#$%#^#%^

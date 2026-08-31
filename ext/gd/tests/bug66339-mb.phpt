@@ -4,16 +4,14 @@ Bug #66339 (PHP segfaults in imagexbm)
 gd
 --FILE--
 <?php
-$file = TestPath::file('bug66339私はガラスを食べられます.xbm');
-chdir($file->directory);
-$filename = './' . $file->name;
+$filename = Workspace::file('bug66339私はガラスを食べられます.xbm');
 $im = imagecreate(8, 8);
 imagecolorallocate($im, 0, 0, 0); // background
 $white = imagecolorallocate($im, 255, 255, 255);
 imagefilledrectangle($im, 2, 2, 6, 6, $white);
 imagexbm($im, NULL);
 echo "------------\n";
-imagexbm($im, $filename);
+imagexbm($im, $filename->path);
 echo file_get_contents($filename);
 ?>
 --EXPECTF--

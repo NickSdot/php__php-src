@@ -9,7 +9,7 @@ in_array('compress.zlib', stream_get_wrappers()) || die('skip No zlib wrapper');
 --FILE--
 <?php declare(strict_types=1);
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $thisfile = file_get_contents(__FILE__);
 
 function write_at_level(mixed $level) {

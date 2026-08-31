@@ -16,7 +16,7 @@ if (!$dbh) {
     die ('Could not connect to the server');
 }
 
-$tracefile = TestPath::file();
+$tracefile = Workspace::file();
 
 @unlink($tracefile);
 var_dump(file_exists($tracefile));

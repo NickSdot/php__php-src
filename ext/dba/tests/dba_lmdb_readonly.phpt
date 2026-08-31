@@ -10,7 +10,7 @@ dba
 --FILE--
 <?php
 $handler = 'lmdb';
-$db_filename = TestPath::file();
+$db_filename = Workspace::file();
 
 // Create DB
 $db_file = dba_open($db_filename, "c", $handler);

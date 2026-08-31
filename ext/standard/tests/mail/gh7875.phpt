@@ -19,8 +19,8 @@ sendmail_path={MAIL:gh7875.mail.out}
 mail.log=gh7875.mail.log
 --FILE--
 <?php
-$logFile = TestPath::file('gh7875.mail.log')->create(permissions: 0444);
-$outFile = TestPath::file('gh7875.mail.out');
+$logFile = Workspace::file('gh7875.mail.log')->create(permissions: 0444);
+$outFile = Workspace::file('gh7875.mail.out');
 chdir($logFile->directory);
 
 function exception_error_handler($severity, $message, $file, $line) {

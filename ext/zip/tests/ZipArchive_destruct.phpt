@@ -4,7 +4,7 @@ Leaking ZipArchive destructor
 zip
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 
 class MyZipArchive extends ZipArchive {
     public function __destruct() {

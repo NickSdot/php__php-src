@@ -59,8 +59,8 @@ RV9sQOlB9gNlMOOw/0R3ABEWDoSRCcrLhb6Z5Y72WVnZvpTPO0cDw2i1hyaEM6d+
 
 $originalEnvelopeData = "any string with \x1a is cut at this point.";
 
-$tmpFileIn = TestPath::file();
-$tmpFileOut = TestPath::file();
+$tmpFileIn = Workspace::file();
+$tmpFileOut = Workspace::file();
 file_put_contents($tmpFileIn, $originalEnvelopeData);
 
 
@@ -68,7 +68,7 @@ var_dump(filesize($tmpFileIn) === strlen($originalEnvelopeData));
 
 openssl_pkcs7_encrypt($tmpFileIn, $tmpFileOut, [$cert], array(), PKCS7_BINARY, OPENSSL_CIPHER_AES_128_CBC);
 
-$tmpFileOut2 = TestPath::file();
+$tmpFileOut2 = Workspace::file();
 openssl_pkcs7_decrypt($tmpFileOut, $tmpFileOut2, $cert, $pkey);
 
 $envelopeData = file_get_contents($tmpFileOut2);

@@ -4,7 +4,7 @@ bzip2.compress write filter: write_seek_mode parameter
 bz2
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $text1 = 'First message that will be discarded.';
 $text2 = 'Second message that replaces the first.';

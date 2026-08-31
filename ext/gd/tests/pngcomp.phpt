@@ -11,7 +11,7 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $output = TestPath::file();
+    $output = Workspace::file();
 
 
         $im = imagecreatetruecolor(20,20);

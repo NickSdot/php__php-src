@@ -37,7 +37,7 @@ open_basedir=
         printf("[003] [%d] %s\n", $link->errno, $link->error);
     }
 
-    $file = TestPath::file();
+    $file = Workspace::file();
     if (FALSE == file_put_contents($file, "1\n2\n3\n"))
         printf("[004] Failed to create CVS file\n");
 

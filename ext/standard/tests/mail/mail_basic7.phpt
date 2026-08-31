@@ -24,7 +24,7 @@ $additional_headers = array(
         "bar\r\n\t fuga",
     ),
 );
-$outFile = TestPath::file('mailBasic7.out');
+$outFile = Workspace::file('mailBasic7.out');
 chdir($outFile->directory);
 
 echo "-- All Mail Content Parameters --\n";

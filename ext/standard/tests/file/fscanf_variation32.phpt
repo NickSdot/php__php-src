@@ -8,7 +8,7 @@ Test fscanf() function: usage variations - octal formats with boolean
 echo "*** Test fscanf(): different octal format types with boolean data ***\n";
 
 // create a file
-$filename = TestPath::file();
+$filename = Workspace::file();
 $file_handle = fopen($filename, "w");
 if($file_handle == false)
   exit("Error:failed to open file $filename");

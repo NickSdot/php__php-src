@@ -9,7 +9,7 @@ precision=14
 echo "*** Testing vfprintf() : variation functionality ***\n";
 
 // Open handle
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen( $file, 'a+' );
 
 $funset = fopen( __FILE__, 'r' );

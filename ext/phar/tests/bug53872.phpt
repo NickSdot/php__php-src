@@ -7,7 +7,7 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('bug53872-phar.phar');
+$archive = Workspace::file('bug53872-phar.phar');
 $p=new Phar($archive);
 $p->buildFromDirectory(__DIR__ . "/bug53872/");
 $p->setStub('<?php __HALT_COMPILER();?\>');

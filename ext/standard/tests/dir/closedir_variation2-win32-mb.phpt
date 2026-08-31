@@ -15,7 +15,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 echo "*** Testing closedir() : usage variations ***\n";
 
 //create temporary directory for test
-$directory = TestPath::directory('私はガラスを食べられますclosedir_variation2')->create();
+$directory = Workspace::directory('私はガラスを食べられますclosedir_variation2')->create();
 
 $dh = opendir($directory);
 

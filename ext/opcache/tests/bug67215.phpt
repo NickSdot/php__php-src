@@ -9,8 +9,8 @@ opcache
 --FILE--
 <?php
 
-$file_c = TestPath::file('bug67215.c.php');
-$file_p = TestPath::file('bug67215.p.php');
+$file_c = Workspace::file('bug67215.c.php');
+$file_p = Workspace::file('bug67215.p.php');
 file_put_contents($file_c, "<?php require '$file_p'; class c extends p {} ?>");
 file_put_contents($file_p, '<?php class p { protected $var = ""; } ?>');
 require $file_c;

@@ -14,8 +14,8 @@ $securityLevel = 2;
 // Security level 2 refuses certs signed by keys with length of less than 2048 bits
 $keyLength = 1024;
 
-$certFile = TestPath::file();
-$cacertFile = TestPath::file();
+$certFile = Workspace::file();
+$cacertFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $serverUri = "ssl://127.0.0.1:0";

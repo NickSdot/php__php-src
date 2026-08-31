@@ -44,7 +44,7 @@ $combinations = [
     [$wsdl_without_ns, $xsd_without_ns],
 ];
 
-$workspace = TestPath::directory()->create();
+$workspace = Workspace::directory()->create();
 $wsdlFile = $workspace->file('bug62900.wsdl');
 $xsdFile = $workspace->file('bug62900.xsd');
 

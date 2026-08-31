@@ -23,7 +23,7 @@ EOXML;
 $dom = new DOMDocument();
 $dom->loadXML($xml);
 $root = $dom->documentElement;
-$filename = TestPath::file();
+$filename = Workspace::file();
 var_dump($dom->save($filename));
 $result = file_get_contents($filename);
 var_dump($result == $dom->saveXML());

@@ -49,7 +49,7 @@ mysqli.allow_local_infile=1
         printf("[014] Expecting null, got %s/%s\n", gettype($tmp), $tmp);
 
     // NOTE: no LOAD DATA INFILE test
-    $file = TestPath::file();
+    $file = Workspace::file();
     do {
         if (!$fp = fopen($file, 'w'))
             /* ignore this error */

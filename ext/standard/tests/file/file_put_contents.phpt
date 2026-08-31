@@ -7,7 +7,7 @@ class foo {
         return __METHOD__;
     }
 }
-$file = TestPath::file();
+$file = Workspace::file();
 
 $context = stream_context_create();
 

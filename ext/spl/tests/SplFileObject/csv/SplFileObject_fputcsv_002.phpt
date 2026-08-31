@@ -2,7 +2,7 @@
 SplFileObject::fputcsv(): Checking data after calling the function
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fo = new SplFileObject($file, 'w');
 $fo->setCsvControl(escape: '');
 

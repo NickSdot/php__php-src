@@ -8,7 +8,7 @@ if (!method_exists('ZipArchive', 'registerCancelCallback')) die('skip libzip too
 ?>
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive;
 $zip->open($file, ZipArchive::CREATE);
 $zip->registerCancelCallback(function () {

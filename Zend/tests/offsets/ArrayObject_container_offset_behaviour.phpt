@@ -544,7 +544,7 @@ foreach ($offsets as $dimension) {
         && $varOutput !== EXPECTED_OUTPUT_NULL_OFFSET
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(TestPath::file(), $varOutput);
+        file_put_contents(Workspace::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }
@@ -577,7 +577,7 @@ foreach ($offsets as $offset) {
         && $varOutput !== EXPECTED_OUTPUT_NULL_OFFSET
         && $varOutput !== EXPECTED_OUTPUT_RESOURCE_STDERR_OFFSETS
     ) {
-        file_put_contents(TestPath::file(), $varOutput);
+        file_put_contents(Workspace::file(), $varOutput);
         ++$failuresNb;
         $failures[] = $error;
     }

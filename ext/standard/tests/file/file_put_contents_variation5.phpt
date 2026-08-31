@@ -6,11 +6,11 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 
 
-$thisTestDir = TestPath::directory()->create();
+$thisTestDir = Workspace::directory()->create();
 chdir($thisTestDir);
 
-$filename = $thisTestDir->file()->name;
-$scriptLocFile = TestPath::file($filename);
+$filename = basename(__FILE__, ".php") . ".tmp";
+$scriptLocFile = __DIR__."/".$filename;
 
 $newpath = "rubbish";
 set_include_path($newpath);
@@ -23,7 +23,7 @@ runtest();
 set_include_path(";;  ; ;c:\\rubbish");
 runtest();
 
-chdir(dirname($thisTestDir->path));
+chdir(__DIR__);
 
 
 function runtest() {

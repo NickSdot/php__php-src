@@ -8,7 +8,7 @@ Test opendir() function : usage variations - different relative paths
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$base_dir_path = TestPath::directory()->create();
+$base_dir_path = Workspace::directory()->create();
 
 $level_one_dir_name = "level_one";
 $level_one_dir_path = $base_dir_path->directory($level_one_dir_name)->create();

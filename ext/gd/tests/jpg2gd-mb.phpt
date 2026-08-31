@@ -15,10 +15,10 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $gd1 = TestPath::file('test私はガラスを食べられます.gd1');
-    $gd2 = TestPath::file('test私はガラスを食べられます.gd2');
-    $jpeg1 = TestPath::file();
-    $jpeg2 = TestPath::file();
+    $gd1 = Workspace::file('test私はガラスを食べられます.gd1');
+    $gd2 = Workspace::file('test私はガラスを食べられます.gd2');
+    $jpeg1 = Workspace::file();
+    $jpeg2 = Workspace::file();
 
     echo "JPEG to GD1 conversion: ";
     echo imagegd(imagecreatefromjpeg($cwd . "/conv_test私はガラスを食べられます.jpg"), $gd1) ? 'ok' : 'failed';

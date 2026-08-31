@@ -7,7 +7,7 @@ session
 --FILE--
 <?php
 ob_start();
-$save_path = TestPath::directory()->create();
+$save_path = Workspace::directory()->create();
 ini_set('session.save_path', $save_path->path);
 $path = $save_path . '/sess_';
 session_start();

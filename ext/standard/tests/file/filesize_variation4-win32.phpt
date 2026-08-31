@@ -8,8 +8,8 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 ?>
 --FILE--
 <?php
-$filename = TestPath::file()->path;
-require($file_path."/file.inc");
+$filename = Workspace::file();
+require(__DIR__ . "/file.inc");
 
 echo "*** Testing filesize(): usage variations ***\n";
 echo "\n*** Testing filesize() with data written using different file modes and by creating holes in file ***\n";
@@ -65,7 +65,7 @@ var_dump( filesize($filename) );  //0 bytes
 clearstatcache();
 
 echo "-- with empty file --\n";
-$filename = TestPath::file()->path;
+$filename = Workspace::file();
 fclose( fopen($filename, "w") );
 var_dump( filesize($filename) );  //0 bytes
 

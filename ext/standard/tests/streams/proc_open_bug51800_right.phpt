@@ -8,7 +8,7 @@ if (strpos(PHP_OS, 'FreeBSD') !== false) {
 ?>
 --FILE--
 <?php
-$callee = TestPath::file();
+$callee = Workspace::file();
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 $cmd = "$php -n " . escapeshellarg($callee);
 

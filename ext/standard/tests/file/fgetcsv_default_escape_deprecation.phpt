@@ -4,7 +4,7 @@ fgetcsv(): Deprecation if using default escape arg
 <?php
 $line = "test1,test2";
 
-$file = TestPath::file()->path;
+$file = Workspace::file()->path;
 
 $fp = fopen($file, "w");
 fwrite($fp, $line);

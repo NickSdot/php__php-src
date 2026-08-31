@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = TestPath::file('metadata_read.phar.php')->path;
+$fname = Workspace::file('metadata_read.phar.php')->path;
 $pname = 'phar://' . $fname;
 $file = "<?php __HALT_COMPILER(); ?>";
 

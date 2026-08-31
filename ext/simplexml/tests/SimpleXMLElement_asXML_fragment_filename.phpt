@@ -13,7 +13,7 @@ $sxe = simplexml_load_string(<<<XML
     </container2>
 </container>
 XML);
-$file = TestPath::file();
+$file = Workspace::file();
 $sxe->container2->asXML($file);
 
 // Note: the strange indent is correct: the indent text node preceding container2 is not emitted.

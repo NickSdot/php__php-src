@@ -2,7 +2,7 @@
 SplFileObject::fgetcsv() delimiter error
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, 'w+');
 fputcsv(
     $fp,

@@ -10,7 +10,7 @@ if (PHP_OS_FAMILY === 'Windows') {
 TEST_PHP_FORK_SERVER=0
 --FILE--
 <?php
-$root = TestPath::directory()->create();
+$root = Workspace::directory()->create();
 $bin = $root->directory()->create();
 $tests = $root->directory()->create();
 

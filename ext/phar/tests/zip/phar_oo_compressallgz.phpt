@@ -7,7 +7,7 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.zip.php')->path;
+$fname = Workspace::file('archive.phar.zip.php')->path;
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);

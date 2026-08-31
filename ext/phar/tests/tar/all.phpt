@@ -7,9 +7,9 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = TestPath::file('archive.phar.tar.php');
+$fname = Workspace::file('archive.phar.tar.php');
 $pname = 'phar://' . $fname;
-$fname2 = TestPath::file('archive.2.phar.tar.php');
+$fname2 = Workspace::file('archive.2.phar.tar.php');
 $pname2 = 'phar://' . $fname2;
 
 $phar = new Phar($fname);

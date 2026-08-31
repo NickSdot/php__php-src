@@ -11,7 +11,7 @@ rewind($src);
 /* Read-ahead on the inner stream moves its fd offset past the position. */
 var_dump(strlen(fread($src, 2000)));
 
-$dst = fopen(TestPath::file(), 'w+b');
+$dst = fopen(Workspace::file(), 'w+b');
 $copied = stream_copy_to_stream($src, $dst);
 var_dump($copied);
 

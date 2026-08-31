@@ -3,7 +3,7 @@ Testing stream_get_meta_data() "unread_bytes" field
 --FILE--
 <?php
 
-$filename = TestPath::file('stream.tmp');
+$filename = Workspace::file('stream.tmp');
 
 $fp = fopen($filename, "w+");
 

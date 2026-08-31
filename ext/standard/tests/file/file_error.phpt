@@ -2,7 +2,7 @@
 Test file() function : error conditions
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 echo "\n*** Testing error conditions ***\n";
 $file_handle = fopen($file, "w");
 

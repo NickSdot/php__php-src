@@ -3,7 +3,7 @@ php_strip_whitespace() tests
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 var_dump(php_strip_whitespace($filename));
 

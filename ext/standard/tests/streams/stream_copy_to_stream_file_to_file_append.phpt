@@ -3,8 +3,8 @@ stream_copy_to_stream() file to file with an append-mode destination
 --FILE--
 <?php
 
-$srcFile = TestPath::file();
-$dstFile = TestPath::file();
+$srcFile = Workspace::file();
+$dstFile = Workspace::file();
 
 file_put_contents($srcFile, str_repeat("b", 3000));
 file_put_contents($dstFile, "PREFIX-");

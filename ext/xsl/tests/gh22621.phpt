@@ -7,7 +7,7 @@ xsl
 ExPatch-LLC
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, '<root xmlns:custom="urn:custom"><data>secret</data></root>');
 $uri = 'file://' . $file;
 

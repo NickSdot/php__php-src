@@ -10,7 +10,7 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 default_socket_timeout=-1
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;

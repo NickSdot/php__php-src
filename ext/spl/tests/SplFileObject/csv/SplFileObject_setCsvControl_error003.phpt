@@ -6,7 +6,7 @@ Erwin Poeze <erwin.poeze at gmail.com>
 include_path=.
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file,
 <<<CDATA
 'groene appelen'|10

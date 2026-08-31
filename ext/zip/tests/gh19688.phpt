@@ -7,7 +7,7 @@ zip
 $dir = __DIR__ . '/';
 $testfile = $dir . '001.phpt';
 $zip = new ZipArchive();
-$filename = TestPath::file();
+$filename = Workspace::file();
 $zip->open($filename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 $options = array('remove_path' => $dir . 'a very long string here that will overrun');
 $zip->addGlob($testfile, 0, $options);

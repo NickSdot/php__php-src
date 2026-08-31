@@ -8,7 +8,7 @@ opcache.file_update_protection=0
 opcache
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, <<<PHP
 <?php
 \$a = new class() { public \$testvar = "Foo\n"; };

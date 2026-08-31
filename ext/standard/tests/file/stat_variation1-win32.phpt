@@ -15,10 +15,9 @@ require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-$old_dirname = TestPath::directory();
-mkdir($old_dirname);  // temp dir
+$old_dirname = Workspace::directory()->create();  // temp dir
 
-$old_filename = TestPath::file();
+$old_filename = Workspace::file();
 $file_handle = fopen($old_filename, "w");  // temp file
 fclose($file_handle);
 
@@ -27,7 +26,7 @@ echo "*** Testing stat(): on file and directory ater renaming them ***\n";
 
 // renaming a file
 echo "-- Testing stat() for files after being renamed --\n";
-$new_filename = TestPath::file();
+$new_filename = Workspace::file();
 $old_stat = stat($old_filename);
 clearstatcache();
 sleep(1);
@@ -45,7 +44,7 @@ clearstatcache();
 
 // renaming a directory
 echo "-- Testing stat() for directory after being renamed --\n";
-$new_dirname = TestPath::directory();
+$new_dirname = Workspace::directory();
 $old_stat = stat($old_dirname);
 clearstatcache();
 sleep(2);

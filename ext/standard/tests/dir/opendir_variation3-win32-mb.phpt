@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing opendir() : usage variation ***\n";
 
-$path = TestPath::directory('私はガラスを食べられますopendir_variation3')->create();
+$path = Workspace::directory('私はガラスを食べられますopendir_variation3')->create();
 
 echo "\n-- Open directory first time: --\n";
 var_dump($dh1 = opendir($path));

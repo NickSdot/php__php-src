@@ -4,8 +4,8 @@ libxml_set_external_entity_loader() variation: restore original handler; returni
 dom
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$file = TestPath::file('foobar.dtd');
+Workspace::useRelative();
+$file = Workspace::file('foobar.dtd');
 chdir($file->directory);
 $xml = <<<XML
 <!DOCTYPE foo PUBLIC "-//FOO/BAR" "foobar.dtd">

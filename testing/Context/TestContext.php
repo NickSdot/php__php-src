@@ -1,37 +1,49 @@
 <?php
 
+namespace TestSuite\Context;
+
+use LogicException;
+use RuntimeException;
+use TestSuite\Context\Filesystem\Directory;
+use TestSuite\Context\Filesystem\File;
 use TestSuite\Context\Filesystem\Path;
+
+use function basename;
+use function dirname;
+use function file_get_contents;
+use function file_put_contents;
+use function getenv;
+use function is_file;
+use function is_string;
+use function mkdir;
+use function serialize;
+use function strlen;
+use function unserialize;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Filesystem' . DIRECTORY_SEPARATOR . 'File.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'Filesystem' . DIRECTORY_SEPARATOR . 'Directory.php';
 
 final class TestContext
 {
     private static ?self $instance = null;
 
+    public private(set) ?string $workspaceDirectory = null;
+
+    public private(set) array $ini = [];
+
+    public private(set) array $var = [];
+
     private array $paths = [];
 
-    public private(set) ?string $workspaceDirectory = null;
+    public private(set) ?string $failureMessage = null;
 
     private function __construct(
         public readonly string $id,
         public readonly string $stateFile,
     ) {}
 
-    public static function init(string $testFile): self
+    public static function init(string $id, string $stateFile): self
     {
-        $suiteDirectory = dirname(__DIR__, 2)
-            . DIRECTORY_SEPARATOR
-            . '.suite';
-
-        if (!@mkdir($suiteDirectory, 0777) && !is_dir($suiteDirectory)) {
-            throw new RuntimeException("Cannot create directory: $suiteDirectory");
-        }
-
-        $id = self::createId($testFile);
-
-        $stateFile = $suiteDirectory
-            . DIRECTORY_SEPARATOR
-            . $id
-            . '.state';
-
         $context = new self($id, $stateFile);
         $context->persist();
 
@@ -52,7 +64,7 @@ final class TestContext
 
         $context = @unserialize(
             $serializedContext,
-            ['allowed_classes' => [self::class]],
+            ['allowed_classes' => [self::class, File::class, Directory::class]],
         );
 
         if (!$context instanceof self || $context->stateFile !== $stateFile) {
@@ -77,14 +89,12 @@ final class TestContext
         return self::$instance = self::load($stateFile);
     }
 
-    public static function allocatePath(?string $name, string $default, ?string $directory = null): string
+    public function allocatePath(?string $name, string $default, ?string $directory = null): string
     {
         Path::validateName($name);
 
-        $context = self::instance();
-
         if ($directory === null) {
-            $directory = $context->workspaceDirectory();
+            $directory = $this->workspaceDirectory();
         }
 
         $path = $directory . DIRECTORY_SEPARATOR . ($name ?? $default);
@@ -93,49 +103,41 @@ final class TestContext
             return $path;
         }
 
-        $count = ($context->paths[$path] ?? 0) + 1;
+        $count = ($this->paths[$path] ?? 0) + 1;
 
-        $context->paths[$path] = $count;
-        $context->persist();
+        $this->paths[$path] = $count;
+        $this->persist();
 
         return "$path-$count";
     }
 
-    public static function useRelativeWorkspace(): void
+    public function useRelativeWorkspace(): void
     {
-        $context = self::instance();
-
-        if ($context->workspaceDirectory !== null) {
+        if ($this->workspaceDirectory !== null) {
             throw new LogicException('Workspace directory is already set');
         }
 
-        $context->workspaceDirectory(self::scriptDirectory());
-    }
+        $scriptFile = $_SERVER['SCRIPT_FILENAME'] ?? null;
 
-    public static function useSystemWorkspace(): void
-    {
-        $context = self::instance();
-
-        if ($context->workspaceDirectory !== null) {
-            throw new LogicException('Workspace directory is already set');
+        if (!is_string($scriptFile) || $scriptFile === '') {
+            throw new RuntimeException('Script file path is not available');
         }
 
-        $context->workspaceDirectory(sys_get_temp_dir());
+        $this->workspaceDirectory(dirname($scriptFile));
     }
 
-    private function workspaceDirectory(?string $root = null): string
+    public function workspaceDirectory(?string $root = null): string
     {
         if ($this->workspaceDirectory !== null) {
             return $this->workspaceDirectory;
         }
 
-        $root ??= dirname($this->stateFile);
-
-        $directory = $root
+        $directory = ($root ?? dirname($this->stateFile))
             . DIRECTORY_SEPARATOR
-            . basename($this->stateFile, '.state');
+            . basename($this->stateFile, '.state')
+            . '_ws';
 
-        if (!@mkdir($directory) && !is_dir($directory)) {
+        if (!@mkdir($directory)) {
             throw new RuntimeException("Cannot create directory: $directory");
         }
 
@@ -145,29 +147,26 @@ final class TestContext
         return $directory;
     }
 
-    private static function createId(string $testFile): string
+    public function allocateIni(array $ini): void
     {
-        if (false === $resolvedTestFile = realpath($testFile)) {
-            throw new RuntimeException("Test file does not exist: $testFile");
-        }
-
-        return basename($resolvedTestFile)
-            . '.h'
-            . substr(sha1($resolvedTestFile), 0, 12)
-            . '.r'
-            . getmypid()
-            . '-' . bin2hex(random_bytes(8));
+        $this->ini = $ini;
+        $this->persist();
     }
 
-    private static function scriptDirectory(): string
+    public function allocateVar(array $var): void
     {
-        $scriptFile = $_SERVER['SCRIPT_FILENAME'] ?? null;
+        $this->var = $var;
+        $this->persist();
+    }
 
-        if (!is_string($scriptFile) || $scriptFile === '') {
-            throw new RuntimeException('Script file path is not available');
+    public function recordFailure(string $message): void
+    {
+        if ($this->failureMessage !== null) {
+            return;
         }
 
-        return dirname($scriptFile);
+        $this->failureMessage = $message;
+        $this->persist();
     }
 
     private function persist(): void

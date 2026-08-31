@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar')->path;
+$fname = Workspace::file('archive.phar')->path;
 
 $phar = new Phar($fname);
 $phar['long/path/name.txt'] = 'hi';

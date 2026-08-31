@@ -1,7 +1,8 @@
 <?php
     require_once dirname(__FILE__) .'/skipif.inc';
-    $lock_flag = 'l';
-    $db_filename = $db_file = dirname(__FILE__) .'/test0.dbm';
-    @unlink($db_filename);
-    @unlink($db_filename.'.lck');
+    // since cleanup is removed this feels even more
+    // awkward than it already is, but the impact to
+    // clean it up now in an unrelated task would be
+    // too big. Hence, marking this as TODO. Handler
+    // loading and skipif handling should be split.
 ?>

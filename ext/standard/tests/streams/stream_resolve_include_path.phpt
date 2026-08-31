@@ -2,7 +2,7 @@
 stream_resolve_include_path(string path)
 --FILE--
 <?php
-$include_path = TestPath::directory('test_path')->create();
+$include_path = Workspace::directory('test_path')->create();
 $include_path_nested = $include_path->directory('nested')->create();
 
 $include_path_file = $include_path->file('file');

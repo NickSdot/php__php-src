@@ -10,7 +10,7 @@ check_skip('cdb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 set_up_cdb_db_and_run($db_name);
 

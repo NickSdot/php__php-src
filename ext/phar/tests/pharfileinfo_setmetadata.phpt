@@ -6,9 +6,8 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('pharfileinfo_setmetadata.phar');
+$archive = Workspace::file('pharfileinfo_setmetadata.phar');
 $fname = $archive->path;
-TestPath::file('pharfileinfo_setmetadata.tar');
 $pname = 'phar://' . $fname;
 
 $phar = new Phar($fname);

@@ -5,7 +5,7 @@ Test is_dir() function: usage variations - diff. path notations
 /* Passing dir names with different notations, using slashes, wild-card chars */
 
 echo "*** Testing is_dir() with different notations of dir names ***";
-$directory = TestPath::directory('is_dir_variation4')->create();
+$directory = Workspace::directory('is_dir_variation4')->create();
 $file_path = dirname($directory->path);
 $dir_name = "/" . $directory->name;
 

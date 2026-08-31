@@ -17,11 +17,11 @@ if (strlen("#!".getenv('TEST_PHP_EXECUTABLE')) > 127) {
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 $php = getenv('TEST_PHP_EXECUTABLE');
 
-$filename = TestPath::file('021.tmp.php')->path;
+$filename = Workspace::file('021.tmp.php')->path;
 
 $script = "#!$php -n\n".
           "ola\n".

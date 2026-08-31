@@ -10,7 +10,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 --FILE--
 <?php
 
-$base = TestPath::directory()->create();
+$base = Workspace::directory()->create();
 $dir0 = $base->directory('bug73877')->create();
 $dir1 = $base->directory('Серёжка')->create();
 $junk0 = $base->directory('Серёжка2');

@@ -2,7 +2,7 @@
 Bug #72666 (stat cache clearing inconsistent - exec)
 --FILE--
 <?php
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 
 touch($filename, 1);
 var_dump(filemtime($filename));

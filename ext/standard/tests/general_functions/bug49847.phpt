@@ -5,7 +5,7 @@ Bug #49847 (exec() fails on lines larger then 4095 bytes)
 $iswin =  substr(PHP_OS, 0, 3) == "WIN";
 
 if ($iswin) {
-    $f = TestPath::file();
+    $f = Workspace::file();
     $s = str_repeat(' ', 4097);
     $s .= '1';
     file_put_contents($f, $s);

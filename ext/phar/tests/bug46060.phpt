@@ -8,8 +8,8 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$archive = TestPath::file('archive.tar');
-$archive2 = TestPath::file('archive-copy.tar');
+$archive = Workspace::file('archive.tar');
+$archive2 = Workspace::file('archive-copy.tar');
 $fname = $archive->path;
 $fname2 = $archive2->path;
 

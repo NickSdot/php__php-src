@@ -8,12 +8,12 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_zip.phar');
+$archive = Workspace::file('phar_convert_zip.phar');
 $fname = $archive->path;
 $pname = 'phar://' . $fname;
-$converted = TestPath::file('phar_convert_zip.phar.zip');
+$converted = Workspace::file('phar_convert_zip.phar.zip');
 $fname2 = $converted->path;
-$copy = TestPath::file('phar_convert_zip.2.phar.zip');
+$copy = Workspace::file('phar_convert_zip.2.phar.zip');
 $fname3 = $copy->path;
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;

@@ -13,7 +13,7 @@ if (!function_exists("mb_send_mail") || !mb_language("japanese")) {
 ?>
 --FILE--
 <?php
-$mail = TestPath::file('mail.eml');
+$mail = Workspace::file('mail.eml');
 chdir($mail->directory);
 try {
 	$a = '';

@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive;
 $res = $zip->open($file, ZipArchive::CREATE);
 if ($res === TRUE) {

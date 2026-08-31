@@ -17,7 +17,7 @@ umask(0);
 Phar::interceptFileFuncs();
 var_dump(stat(""));
 
-$fname = TestPath::file('stat.phar.php');
+$fname = Workspace::file('stat.phar.php');
 $fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.tar';
 $fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
 $a = new Phar($fname);

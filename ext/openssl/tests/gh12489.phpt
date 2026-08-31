@@ -5,8 +5,8 @@ openssl
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = TestPath::file();
-$vout = TestPath::file();
+$outfile = Workspace::file();
+$vout = Workspace::file();
 
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $single_cert = "file://" . __DIR__ . "/cert.crt";

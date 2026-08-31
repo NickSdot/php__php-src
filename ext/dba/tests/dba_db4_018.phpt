@@ -15,7 +15,7 @@ die("info $HND handler used");
 
 $handler = "db4";
 require_once(__DIR__ .'/test.inc');
-$db_filename = TestPath::file();
+$db_filename = Workspace::file();
 echo "database handler: $handler\n";
 
 echo "Test 1\n";

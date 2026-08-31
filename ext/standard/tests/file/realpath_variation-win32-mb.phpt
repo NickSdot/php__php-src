@@ -11,7 +11,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 require __DIR__.'/file.inc';
 
 echo "*** Testing realpath(): usage variations ***\n";
-$name_prefix = TestPath::directory();
+$name_prefix = Workspace::directory();
 $root = $name_prefix->directory('realpath_variation_私はガラスを食べられます');
 $home = $root->directory('home');
 $tests = $home->directory('tests');

@@ -3,7 +3,7 @@ fwrite() tests
 --FILE--
 <?php
 
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 
 $fp = fopen($filename, "w");
 var_dump(fwrite($fp, ""));

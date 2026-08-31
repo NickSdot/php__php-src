@@ -8,7 +8,7 @@ if (PHP_OS_FAMILY !== "Windows") die("skip only for Windows");
 ?>
 --FILE--
 <?php
-$cmd_file = TestPath::file('cmd.exe');
+$cmd_file = Workspace::file('cmd.exe');
 chdir($cmd_file->directory);
 copy(__DIR__ . "/../helpers/bad_cmd.exe", $cmd_file);
 $spec = [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]];

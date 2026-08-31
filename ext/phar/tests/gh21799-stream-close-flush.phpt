@@ -10,7 +10,7 @@ phar.require_hash=0
 // Regression baseline: fclose() on a phar file handle succeeds on the
 // normal code path. phar_stream_close now returns the phar_stream_flush
 // result instead of always returning 0.
-$fname = TestPath::file('archive.phar')->path;
+$fname = Workspace::file('archive.phar')->path;
 
 $phar = new Phar($fname);
 $phar->addFromString('hello.txt', 'hello');

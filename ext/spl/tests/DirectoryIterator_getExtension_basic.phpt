@@ -2,7 +2,7 @@
 SPL: DirectoryIterator::getExtension() basic test
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 
 $files = array('test.txt', 'test.extension', 'test');
 foreach ($files as $file) {

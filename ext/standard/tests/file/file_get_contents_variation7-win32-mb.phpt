@@ -10,39 +10,37 @@ if(substr(PHP_OS, 0, 3) != "WIN")
 --FILE--
 <?php
 echo "*** Testing file_get_contents() : variation ***\n";
-$mainDir = TestPath::directory('fileGetContentsVar7私はガラスを食べられます.dir');
-$absMainDir = $mainDir;
-mkdir($absMainDir);
-$subDir = $mainDir->directory('fileGetContentsVar7Sub私はガラスを食べられます');
-$absSubDir = $subDir;
-mkdir($absSubDir);
+$absMainDir = Workspace::directory('fileGetContentsVar7私はガラスを食べられます.dir')->create();
+$absSubDir = $absMainDir->directory('fileGetContentsVar7Sub私はガラスを食べられます')->create();
+$mainDir = $absMainDir->name;
+$subDir = $absSubDir->name;
 
 $old_dir_path = getcwd();
-chdir(dirname($mainDir->path));
+chdir(dirname($absMainDir));
 $unixifiedDir = '/'.substr(str_replace('\\','/',$absSubDir),3);
 
 $allDirs = array(
   // absolute paths
   "$absSubDir\\",
-  "$absSubDir\\..\\".$subDir->name,
-  "$absSubDir\\\\..\\.\\".$subDir->name,
-  "$absSubDir\\..\\..\\".$mainDir->name."\\.\\".$subDir->name,
-  "$absSubDir\\..\\\\\\".$subDir->name."\\\\..\\\\..\\".$subDir->name,
+  "$absSubDir\\..\\".$subDir,
+  "$absSubDir\\\\..\\.\\".$subDir,
+  "$absSubDir\\..\\..\\".$mainDir."\\.\\".$subDir,
+  "$absSubDir\\..\\\\\\".$subDir."\\\\..\\\\..\\".$subDir,
   "$absSubDir\\BADDIR",
 
   // relative paths
-  $mainDir->name."\\".$subDir->name,
-  $mainDir->name."\\\\".$subDir->name,
-   $mainDir->name."\\\\\\".$subDir->name,
-  ".\\".$mainDir->name."\\..\\".$mainDir->name."\\".$subDir->name,
+  $mainDir."\\".$subDir,
+  $mainDir."\\\\".$subDir,
+   $mainDir."\\\\\\".$subDir,
+  ".\\".$mainDir."\\..\\".$mainDir."\\".$subDir,
   "BADDIR",
 
   // unixifed path
   $unixifiedDir,
 );
 
-$filename = $subDir->file();
-$absFile = $filename;
+$absFile = $absSubDir->file();
+$filename = $absFile->name;
 $h = fopen($absFile,"w");
 fwrite($h, "contents read");
 fclose($h);
@@ -51,7 +49,7 @@ for($i = 0; $i<count($allDirs); $i++) {
   $j = $i+1;
   $dir = $allDirs[$i];
   echo "\n-- Iteration $j --\n";
-  var_dump(file_get_contents($dir."\\".$filename->name));
+  var_dump(file_get_contents($dir."\\".$filename));
 }
 
 chdir($old_dir_path);

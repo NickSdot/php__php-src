@@ -18,7 +18,7 @@ curl
 
   include 'server.inc';
   $host = curl_cli_server_start();
-  $temp_file = TestPath::file();
+  $temp_file = Workspace::file();
   $url = "{$host}/get.inc?test=getpost";
   $ch = curl_init();
   $f_file = fopen($temp_file, "w") or die("failed to open file\n");

@@ -9,7 +9,7 @@ if (!defined('STREAM_CRYPTO_METHOD_TLSv1_3_SERVER')) die("skip TLS 1.3 not avail
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 
 $serverCode = <<<'CODE'
     $early = '';

@@ -12,7 +12,7 @@ function uint32($value) {
     return pack('V', $value);
 }
 
-$filename = TestPath::file('zip_extra_underflow.zip')->path;
+$filename = Workspace::file('zip_extra_underflow.zip')->path;
 $entry = 'test.txt';
 $contents = 'hello';
 $crc = crc32($contents);

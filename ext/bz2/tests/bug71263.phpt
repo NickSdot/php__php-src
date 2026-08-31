@@ -7,7 +7,7 @@ bz2
 
 function test($case) {
     $plain = "The quick brown fox jumps over the lazy dog.";
-    $fn = TestPath::file();
+    $fn = Workspace::file();
     $compressed = (string) bzcompress($plain);
     echo "Compressed len = ", strlen($compressed), "\n";
 

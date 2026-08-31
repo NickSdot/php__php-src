@@ -20,7 +20,7 @@ posix_setrlimit(POSIX_RLIMIT_FSIZE, -1, -1);
 <?php
 
 // Create new file to ensure that it's not cached accross test runs
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, '<?php echo "OK";');
 touch($file, time() - 3600);
 

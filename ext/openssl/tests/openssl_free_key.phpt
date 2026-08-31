@@ -20,7 +20,7 @@ if ($privkey === false)
     die("failed to create private key");
 
 $passphrase = "banana";
-$key_file_name = TestPath::file();
+$key_file_name = Workspace::file();
 
 echo "Export key to file\n";
 

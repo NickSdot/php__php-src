@@ -4,7 +4,7 @@ namespace TestSuite\Context\Filesystem;
 
 use RuntimeException;
 use Stringable;
-use TestContext;
+use TestSuite\Context\TestContext;
 
 use function basename;
 use function chmod;
@@ -23,12 +23,12 @@ final readonly class Directory implements Stringable
 
     public function file(?string $name = null): File
     {
-        return new File(TestContext::allocatePath($name, 'file', $this->path));
+        return new File(TestContext::instance()->allocatePath($name, 'file', $this->path));
     }
 
     public function directory(?string $name = null): self
     {
-        return new self(TestContext::allocatePath($name, 'directory', $this->path));
+        return new self(TestContext::instance()->allocatePath($name, 'directory', $this->path));
     }
 
     public function create(?int $permissions = null): self

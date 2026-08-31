@@ -8,17 +8,9 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_repeated.phar');
+$archive = Workspace::file('phar_convert_repeated.phar');
 $fname = $archive->path;
-TestPath::file('phar_convert_repeated.phar.zip');
-TestPath::file('phar_convert_repeated.phar.tar');
-TestPath::file('phar_convert_repeated.2.2.phar.zip');
-TestPath::file('phar_convert_repeated.2.2.2.phar.tar');
-TestPath::file('phar_convert_repeated.2.phar');
-TestPath::file('phar_convert_repeated.2.2.2.3.phar.zip');
 $pname = 'phar://' . $fname;
-$fname2 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.zip';
-$fname3 = __DIR__ . '/' . basename(__FILE__, '.php') . '.phar.tar';
 $stub = '<?php echo "first stub\n"; __HALT_COMPILER(); ?>';
 $file = $stub;
 

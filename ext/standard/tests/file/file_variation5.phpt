@@ -9,12 +9,11 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 --FILE--
 <?php
 
-$filepath = TestPath::file();
-$script_directory = dirname($filepath->path);
+$script_directory = Workspace::directory()->create();
 chdir($script_directory);
-$testDir = TestPath::directory()->create();
-$test_dirname = $testDir->name;
+$test_dirname = $script_directory->directory()->create()->name;
 
+$filepath = $script_directory->file();
 $filename = $filepath->name;
 $fd = fopen($filepath, "w+");
 fwrite($fd, "Line 1\nLine 2\nLine 3");
@@ -27,13 +26,13 @@ echo "\nfile() on a path containing .. with invalid directories\n";
 var_dump(file("./$test_dirname/bad_dir/../../$filename"));
 
 echo "\nfile() on a linked file\n";
-$linkname = TestPath::file();
+$linkname = $script_directory->file()->name;
 var_dump(symlink($filepath, $linkname));
 var_dump(file($linkname));
 var_dump(unlink($linkname));
 
 echo "\nfile() on a relative path from a different working directory\n";
-chdir($testDir);
+chdir($test_dirname);
 var_dump(file("../$filename"));
 chdir($script_directory);
 

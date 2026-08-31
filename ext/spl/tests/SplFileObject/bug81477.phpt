@@ -2,8 +2,8 @@
 Bug #81477 (LimitIterator + SplFileObject regression in 8.0.1)
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$filename = TestPath::file();
+Workspace::useRelative();
+$filename = Workspace::file();
 
 $s = fopen($filename, 'w+');
 fwrite($s, "foo,bar\nbaz,bat\nmore,data\n");

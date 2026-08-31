@@ -24,7 +24,7 @@ echo "*** Testing scandir() : usage variations ***\n";
  *      |-> child_dir  ( child dir)
  */
 
-$parent_dir_path = TestPath::directory()->create(permissions: 0777);
+$parent_dir_path = Workspace::directory()->create(permissions: 0777);
 
 // create sub_dir
 $sub_dir_path = $parent_dir_path->directory()->create(permissions: 0777);

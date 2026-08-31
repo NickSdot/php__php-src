@@ -9,7 +9,7 @@ if (!defined('STREAM_CRYPTO_METHOD_TLSv1_3_SERVER')) die("skip TLS 1.3 not avail
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 
 /* Server does NOT enable early data, so a resumed session must not carry a
  * 0-RTT limit and the client must fall back to a normal handshake. */

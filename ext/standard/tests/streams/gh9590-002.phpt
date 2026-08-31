@@ -17,7 +17,7 @@ posix_setrlimit(POSIX_RLIMIT_NOFILE, 2048, -1);
 
 $fds = [];
 for ($i = 0; $i < 1023; $i++) {
-    $fds[] = @fopen(TestPath::file(), 'w');
+    $fds[] = @fopen(Workspace::file(), 'w');
 }
 
 list($a, $b) = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);

@@ -8,7 +8,7 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('gh17225.phar.zip')->path;
+$fname = Workspace::file('gh17225.phar.zip')->path;
 $phar = new Phar($fname);
 class HasDestructor {
     public function __destruct() {

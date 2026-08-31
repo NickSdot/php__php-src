@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$archive = TestPath::file('009.phar.php');
+$archive = Workspace::file('009.phar.php');
 $file = "<?php
 Phar::mapPhar('hio');
 __HALT_COMPILER(); ?>";

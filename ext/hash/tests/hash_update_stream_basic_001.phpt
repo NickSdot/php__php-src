@@ -14,7 +14,7 @@ for ($j=0; $j<3; $j++)
     $hash   = sha1(bin2hex($bytes));
 
     // Create temp file with hash
-    $fp = fopen(TestPath::file(), 'w+');
+    $fp = fopen(Workspace::file(), 'w+');
     fwrite($fp, $hash);
     rewind($fp);
 

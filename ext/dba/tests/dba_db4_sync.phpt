@@ -14,7 +14,7 @@ die("info $HND handler used");
 <?php
 $handler = "db4";
 require_once(__DIR__ .'/test.inc');
-$db_filename = TestPath::file();
+$db_filename = Workspace::file();
 echo "database handler: $handler\n";
 if (($db_file=dba_open($db_filename, "n", $handler))!==FALSE) {
     dba_insert("key1", "Content String 1", $db_file);

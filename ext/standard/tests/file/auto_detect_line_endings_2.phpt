@@ -6,7 +6,7 @@ ini_set auto_detect_line_endings bool
 ini_set("auto_detect_line_endings", "on");
 var_dump(ini_get("auto_detect_line_endings"));
 
-$filePath = TestPath::file()->path;
+$filePath = Workspace::file()->path;
 file_put_contents($filePath, "fooBar1\rfooBar2\rfooBar3");
 
 $stdin = fopen($filePath, "r");

@@ -4,7 +4,7 @@ memory allocation on stream_get_contents()
 memory_limit=32M
 --FILE--
 <?php
-$f = fopen(TestPath::file(), 'w+b');
+$f = fopen(Workspace::file(), 'w+b');
 fwrite($f, '.');
 
 $chunks = array();

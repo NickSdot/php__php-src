@@ -13,7 +13,7 @@ obscure_filename
 <?php
 echo "*** Testing file_put_contents() : usage variation ***\n";
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 chdir($dir);
 
 /* An array of filenames */

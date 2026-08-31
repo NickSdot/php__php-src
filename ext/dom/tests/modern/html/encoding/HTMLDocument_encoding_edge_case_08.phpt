@@ -6,7 +6,7 @@ dom
 <?php
 
 function test(string $str) {
-    $file = TestPath::file();
+    $file = Workspace::file();
     $dom = Dom\HTMLDocument::createFromString($str);
     var_dump($dom->body->textContent);
 

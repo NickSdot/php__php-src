@@ -6,8 +6,7 @@ zlib
 --FILE--
 <?php
 $phar = new PharData(__DIR__ . '/bug69279a.zip');
-$output = TestPath::directory();
-mkdir($output->path);
+$output = Workspace::directory()->create();
 $file1 = $output->file('1.txt');
 $file2 = $output->file('2.txt');
 $file3 = $output->file('3.txt');

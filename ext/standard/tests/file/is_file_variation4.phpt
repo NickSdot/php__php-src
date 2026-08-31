@@ -5,12 +5,9 @@ Test is_file() function: usage variations - diff. path notations (Bug #42027)
 /* Passing file names with different notations, using slashes, wild-card chars */
 
 echo "*** Testing is_file() with different notations of file names ***\n";
-$directory = TestPath::directory('is_file_variation4');
+$directory = Workspace::directory('is_file_variation4')->create();
 $file = $directory->file('is_file_variation4.tmp');
-mkdir($directory);
-$file_path = dirname($directory->path);
-$dir_name = $directory;
-mkdir($dir_name);
+$file_path = dirname($directory);
 $file_handle = fopen($file, "w");
 fclose($file_handle);
 

@@ -13,7 +13,7 @@ echo "*** Testing readdir() : usage variations ***\n";
 include( __DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory()->create();
+$dir_path = Workspace::directory()->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "readdir_variation6");

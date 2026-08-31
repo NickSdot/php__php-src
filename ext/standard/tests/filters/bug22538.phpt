@@ -10,8 +10,8 @@ function my_stream_copy_to_stream($fin, $fout) {
 
 $size = 65536;
 
-$path1 = TestPath::file();
-$path2 = TestPath::file();
+$path1 = Workspace::file();
+$path2 = Workspace::file();
 
 $fp = fopen($path1, "w") or die("Cannot open $path1\n");
 $str = "abcdefghijklmnopqrstuvwxyz\n";

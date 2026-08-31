@@ -6,7 +6,7 @@ zip
 <?php
 $dirname = __DIR__ . '/';
 include $dirname . 'utils.inc';
-$file = TestPath::file();
+$file = Workspace::file();
 
 @unlink($file);
 

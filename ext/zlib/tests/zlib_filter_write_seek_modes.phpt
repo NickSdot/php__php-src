@@ -4,7 +4,7 @@ zlib.deflate write filter: write_seek_mode parameter
 zlib
 --FILE--
 <?php
-$file = TestPath::file('zlib_filter_write_seek_modes.zlib');
+$file = Workspace::file('zlib_filter_write_seek_modes.zlib');
 
 $text1 = 'First message that will be discarded.';
 $text2 = 'Second message that replaces the first.';

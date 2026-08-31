@@ -6,8 +6,8 @@ intl
 <?php
 require_once "resourcebundle.inc";
 
-TestContext::useRelativeWorkspace();
-$fixture = TestPath::directory()->create();
+Workspace::useRelative();
+$fixture = Workspace::directory()->create();
 $rootBundle = $fixture->file('root.res');
 copy(BUNDLE . '/root.res', $rootBundle);
 

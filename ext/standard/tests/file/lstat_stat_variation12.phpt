@@ -14,8 +14,8 @@ if (PHP_OS_FAMILY === 'Windows') {
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$file = TestPath::file();
-$link = TestPath::file();
+$file = Workspace::file();
+$link = Workspace::file();
 
 
 /* create temp file, link */

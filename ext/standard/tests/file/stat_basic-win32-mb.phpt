@@ -15,14 +15,14 @@ echo "*** Testing stat() : basic functionality ***\n";
 /* creating temp directory and file */
 
 // creating dir
-$dirname = TestPath::directory()->create();
+$dirname = Workspace::directory('私はガラスを食べられます')->create();
 // stat of the dir created
 $dir_stat = stat($dirname);
 clearstatcache();
 sleep(1);
 
 // creating file
-$filename = $dirname->file();
+$filename = $dirname->file('私はガラスを食べられます.tmp');
 $file_handle = fopen($filename, "w");
 fclose($file_handle);
 // stat of the file created

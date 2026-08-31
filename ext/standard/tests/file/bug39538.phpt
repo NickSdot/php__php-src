@@ -2,7 +2,7 @@
 Bug #39538 (fgetcsv can't handle starting newlines and trailing odd number of backslashes)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 $line = "\"\nthis is a test\", \"next data\", \"p\narsed\"";
 $expectation = [

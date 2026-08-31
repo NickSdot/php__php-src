@@ -10,12 +10,10 @@ if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
 
 $file_path = __DIR__;
 require "$file_path/file.inc";
-$directory = TestPath::directory();
 
 
 /* create temp file, link and directory */
-$dirname = $directory->path;
-mkdir($dirname);  // temp dir
+$dirname = Workspace::directory()->create();  // temp dir
 
 // is_dir() on a directory
 echo "*** Testing stat() on directory after using is_dir() on it ***\n";

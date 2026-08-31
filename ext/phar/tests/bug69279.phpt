@@ -7,8 +7,8 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('bug69279.phar.zip');
-$extracted = TestPath::file('bug69279.txt');
+$archive = Workspace::file('bug69279.phar.zip');
+$extracted = Workspace::file('bug69279.txt');
 $w = new Phar($archive->path);
 $w["bug69279.txt"] = "Sample content.";
 $w->compressFiles(Phar::GZ);

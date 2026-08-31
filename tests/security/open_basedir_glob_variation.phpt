@@ -4,11 +4,9 @@ Test open_basedir configuration for glob
 open_basedir=.
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$dir = TestPath::directory('globtest1');
-$dir2 = TestPath::directory('globtest2');
-mkdir($dir);
-mkdir($dir2);
+Workspace::useRelative();
+$dir = Workspace::directory('globtest1')->create();
+Workspace::directory('globtest2')->create();
 chdir($dir);
 var_dump(glob("../globtest*"));
 ?>

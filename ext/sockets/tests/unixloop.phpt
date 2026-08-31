@@ -11,9 +11,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-    $socket_path = TestPath::file();
-    chdir($socket_path->directory);
-    $sock_path = $socket_path->name;
+    $sock_path = Workspace::file();
 
     if (file_exists($sock_path))
         die('Temporary socket already exists.');

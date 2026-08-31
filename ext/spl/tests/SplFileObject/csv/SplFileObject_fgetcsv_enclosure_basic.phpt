@@ -2,7 +2,7 @@
 SplFileObject::fgetcsv with alternative enclosure
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, 'w+');
 fputcsv(
     $fp,

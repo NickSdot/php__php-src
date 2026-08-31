@@ -2,7 +2,7 @@
 Bug #68557 (SplFileInfo::getPathname() may be broken)
 --FILE--
 <?php
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 $dir->file()->create();
 $dir->file()->create();
 

@@ -6,7 +6,7 @@ xsl
 <?php
 include("prepare.inc");
 
-$outputfile = TestPath::file('bug54446test_with_ini.txt');
+$outputfile = Workspace::file('bug54446test_with_ini.txt');
 
 $sXsl = <<<EOT
 <xsl:stylesheet version="1.0"

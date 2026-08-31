@@ -14,12 +14,11 @@ phar.readonly=0
 open_basedir=
 --FILE--
 <?php
-$directory = TestPath::directory();
-mkdir($directory->path);
+$directory = Workspace::directory()->create();
 $file = $directory->file('1.php');
 file_put_contents($file, str_repeat(' ', 1455));
 
-$archive = TestPath::file('compressed.phar');
+$archive = Workspace::file('compressed.phar');
 $phar = new Phar($archive->path);
 $phar->buildFromDirectory($directory->path, '/\.php$/');
 $phar->setSignatureAlgorithm(Phar::SHA1);

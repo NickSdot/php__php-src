@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$archive = TestPath::file('gh20302.phar');
+$archive = Workspace::file('gh20302.phar');
 $fname = $archive->path;
 $pname = 'phar://' . $fname;
 $file = "<?php
@@ -17,8 +17,7 @@ include __DIR__.'/files/phar_test.inc';
 $b = new PharFileInfo($pname . '/here');
 
 // Create new phar with same alias and open it
-$directory = TestPath::directory('gh20302');
-@mkdir($directory->path);
+$directory = Workspace::directory('gh20302')->create();
 $archive2 = $directory->file('gh20302.phar');
 $fname = $archive2->path;
 $pname = 'phar://' . $fname;

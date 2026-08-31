@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('phar_convert_metadata_leak.zip')->path;
+$fname = Workspace::file('phar_convert_metadata_leak.zip')->path;
 
 $phar = new PharData($fname);
 $phar->setMetadata("foobar");

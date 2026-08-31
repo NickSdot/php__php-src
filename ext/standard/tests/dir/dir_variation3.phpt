@@ -17,7 +17,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing dir() : different directory permissions ***";
 
 // create the temporary directory
-$dir_path = TestPath::directory('dir_variation3')->create();
+$dir_path = Workspace::directory('dir_variation3')->create();
 
 /* different values for directory permissions */
 $permission_values = array(

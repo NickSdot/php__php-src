@@ -9,7 +9,7 @@ sendmail_path={MAIL:gh19188_os_mode.out}
 mail.cr_lf_mode=os
 --FILE--
 <?php
-$outFile = TestPath::file('gh19188_os_mode.out');
+$outFile = Workspace::file('gh19188_os_mode.out');
 chdir($outFile->directory);
 var_dump(mail('user@example.com', 'Test Subject', 'A Message', 'X-Test: os'));
 $mail = file_get_contents($outFile);

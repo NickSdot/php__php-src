@@ -2,7 +2,7 @@
 Bug #63741 (Crash when autoloading from spl)
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file,
 <<<'EOT'
 <?php

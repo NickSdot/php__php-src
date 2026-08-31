@@ -12,7 +12,7 @@ $to = 'user@company.com';
 $subject = 'Test Subject';
 $message = 'A Message';
 
-$outFile = TestPath::file('mailBug69874.out');
+$outFile = Workspace::file('mailBug69874.out');
 chdir($outFile->directory);
 
 var_dump( mail($to, $subject, $message) );

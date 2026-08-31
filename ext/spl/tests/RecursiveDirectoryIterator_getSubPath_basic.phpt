@@ -5,7 +5,7 @@ Pawel Krynicki <pawel [dot] krynicki [at] xsolve [dot] pl>
 #testfest AmsterdamPHP 2012-06-23
 --FILE--
 <?php
-$root = TestPath::directory()->create();
+$root = Workspace::directory()->create();
 $depth1 = 'depth1';
 $depth2 = 'depth2';
 $level1 = $root->directory($depth1)->create();

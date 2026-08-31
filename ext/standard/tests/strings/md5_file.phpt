@@ -4,12 +4,12 @@ Test md5_file() function with ASCII output and raw binary output
 <?php
 
 /* Creating an empty file */
-$emptyFile = TestPath::file();
+$emptyFile = Workspace::file();
 if (($handle = fopen($emptyFile, "w+")) == FALSE)
 return false;
 
 /* Creating a data file */
-$dataFile = TestPath::file();
+$dataFile = Workspace::file();
 if (($handle2 = fopen($dataFile, "w+")) == FALSE)
 return false;
 

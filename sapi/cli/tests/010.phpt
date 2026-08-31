@@ -9,13 +9,13 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
 $php = getenv('TEST_PHP_EXECUTABLE_ESCAPED');
 
-$filename = TestPath::file("010.test.php")->path;
+$filename = Workspace::file("010.test.php")->path;
 $filename_escaped = escapeshellarg($filename);
-$filename_txt = TestPath::file("010-F.test.txt")->path;
+$filename_txt = Workspace::file("010-F.test.txt")->path;
 $filename_txt_escaped = escapeshellarg($filename_txt);
 
 $code = '

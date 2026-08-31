@@ -10,7 +10,7 @@ check_skip('tcadb');
 --FILE--
 <?php
 require_once __DIR__ . '/setup/setup_dba_tests.inc';
-$db_name = TestPath::file()->path;
+$db_name = Workspace::file()->path;
 
 $handler = 'tcadb';
 set_up_db($handler, $db_name);

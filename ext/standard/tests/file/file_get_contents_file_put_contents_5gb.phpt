@@ -45,8 +45,7 @@ if (disk_free_space($directory) < 10 * 1024 * 1024 * 1024) {
 memory_limit=6G
 --FILE--
 <?php
-TestContext::useSystemWorkspace();
-$tmpfile = TestPath::file();
+$tmpfile = Workspace::file();
 $large_string_len = 5 * 1024 * 1024 * 1024;
 
 $large_string = str_repeat('a', $large_string_len);

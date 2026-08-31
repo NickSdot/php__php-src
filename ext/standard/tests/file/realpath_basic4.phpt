@@ -2,7 +2,7 @@
 Test realpath() with relative paths
 --FILE--
 <?php
-$file_path = TestPath::directory();
+$file_path = Workspace::directory();
 $root = $file_path->directory('realpath_basic4');
 $home = $root->directory('home');
 $test = $home->directory('test');

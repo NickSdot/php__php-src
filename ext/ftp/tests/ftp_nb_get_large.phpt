@@ -20,7 +20,7 @@ $ftp = ftp_connect('127.0.0.1', $port);
 ftp_login($ftp, 'user', 'pass');
 if (!$ftp) die("Couldn't connect to the server");
 
-$local_file = TestPath::file()->create();
+$local_file = Workspace::file()->create();
 ftp_nb_get($ftp, $local_file, 'fget_large.txt', FTP_BINARY, 5368709119);
 $fp = fopen($local_file, 'r');
 fseek($fp, 5368709119);

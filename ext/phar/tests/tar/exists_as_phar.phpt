@@ -8,8 +8,8 @@ phar.require_hash=0
 --FILE--
 <?php
 
-$archive = TestPath::file('exists_as_phar.phar');
-$tarArchive = TestPath::file('exists_as_phar.phar.tar');
+$archive = Workspace::file('exists_as_phar.phar');
+$tarArchive = Workspace::file('exists_as_phar.phar.tar');
 $fname = $archive->path;
 $tname = $tarArchive->path;
 $alias = 'phar://hio';

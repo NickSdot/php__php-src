@@ -13,7 +13,7 @@ if(substr(PHP_OS, 0, 3) == 'WIN') {
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
+$certFile = Workspace::file();
 
 /**
  * This test uses the openssl binary directly to initiate renegotiation. At this time it's not

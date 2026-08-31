@@ -4,7 +4,7 @@ Bug #61948 (CURLOPT_COOKIEFILE '' raises open_basedir restriction)
 curl
 --FILE--
 <?php
-  $base_dir = TestPath::directory('bug61948');
+  $base_dir = Workspace::directory('bug61948');
   $foo_dir = $base_dir->directory('foo');
   mkdir($foo_dir, 0755, true);
 
@@ -19,5 +19,5 @@ curl
 %a
 bool(true)
 
-Warning: curl_setopt(): open_basedir restriction in effect. File(c:/xxx/bar) is not within the allowed path(s): (%sbug61948) in %sbug61948.php on line %d
+Warning: curl_setopt(): open_basedir restriction in effect. File(c:/xxx/bar) is not within the allowed path(s): (%sbug61948) in %sbug61948.%d.php on line %d
 bool(false)

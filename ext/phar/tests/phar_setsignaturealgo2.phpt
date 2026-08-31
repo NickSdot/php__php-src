@@ -13,7 +13,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('phar_setsignaturealgo2.phar')->path;
+$fname = Workspace::file('phar_setsignaturealgo2.phar')->path;
 $p = new Phar($fname);
 $p['file1.txt'] = 'hi';
 

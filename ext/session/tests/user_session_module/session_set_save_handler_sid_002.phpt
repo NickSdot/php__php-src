@@ -49,7 +49,7 @@ class MySession2 implements SessionHandlerInterface, SessionIdInterface {
 	}
 }
 
-$save_path = TestPath::directory()->create();
+$save_path = Workspace::directory()->create();
 session_save_path($save_path);
 session_set_save_handler(new MySession2());
 

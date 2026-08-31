@@ -6,7 +6,7 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 <?php
 echo "*** Testing file_put_contents() : variation ***\n";
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $data = "The first string to write";
 $extra = ", followed by this";

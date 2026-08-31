@@ -19,7 +19,7 @@ function writeAndDump($fp, $format, $args)
 echo "*** Testing vfprintf() : basic functionality ***\n";
 
 // Open handle
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen( $file, "a+" );
 
 // Test vfprintf()

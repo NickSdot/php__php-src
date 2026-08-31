@@ -9,7 +9,7 @@ echo "*** Testing the basic functionality of file_put_contents() and file_get_co
 
 echo "-- Testing with simple valid data file --\n";
 
-$file_name = TestPath::file()->path;
+$file_name = Workspace::file()->path;
 fill_buffer($text_buffer, "text", 100);
 file_put_contents( $file_name, $text_buffer );
 
@@ -17,7 +17,7 @@ var_dump( file_get_contents($file_name) );
 
 echo "\n-- Testing with empty file --\n";
 
-$file_name = TestPath::file()->path;
+$file_name = Workspace::file()->path;
 file_put_contents( $file_name, "");
 var_dump( file_get_contents( $file_name ) );
 

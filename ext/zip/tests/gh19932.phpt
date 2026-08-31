@@ -6,7 +6,7 @@ zip
 <?php if (!method_exists('ZipArchive', 'setEncryptionName')) die('skip encryption not supported'); ?>
 --FILE--
 <?php
-$file = TestPath::file('archive.zip');
+$file = Workspace::file('archive.zip');
 $zip = new ZipArchive();
 $zip->open($file, ZipArchive::CREATE);
 $zip->addFromString("test.txt", "test");

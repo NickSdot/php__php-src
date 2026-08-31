@@ -5,7 +5,7 @@ zlib
 --FILE--
 <?php
 $original = str_repeat("hallo php",4096);
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 $fp = fopen($filename, "wb");
 fwrite($fp, $original);

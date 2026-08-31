@@ -8,7 +8,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 ?>
 --FILE--
 <?php
-$base = TestPath::directory()->create();
+$base = Workspace::directory()->create();
 $filename = $base->directory(str_repeat('テスト', 48)); // 144 glyph here, less than 256
 
 mkdir($filename); // created correctly

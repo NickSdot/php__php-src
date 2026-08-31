@@ -9,7 +9,7 @@ if(! in_array( "string.rot13", $filters )) die( "skip rot13 filter not available
 <?php
 echo "*** Testing stream_filter_remove() : basic functionality ***\n";
 
-$file = TestPath::file()->create();
+$file = Workspace::file()->create();
 
 $fp = fopen( $file, 'w+' );
 

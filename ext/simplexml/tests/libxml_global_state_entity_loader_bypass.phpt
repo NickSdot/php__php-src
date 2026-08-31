@@ -21,7 +21,7 @@ simplexml_load_string($xml);
 echo "--- Constructor test ---\n";
 new SimpleXMLElement($xml);
 echo "--- File test ---\n";
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $xml);
 simplexml_load_file($file);
 

@@ -11,8 +11,8 @@ check_skip('db4');
 <?php
 $handler = "db4";
 echo "database handler: $handler\n";
-$db_file1 = TestPath::file('test1.dbm');
-$db_file2 = TestPath::file('test2.dbm');
+$db_file1 = Workspace::file('test1.dbm');
+$db_file2 = Workspace::file('test2.dbm');
 $db_file1 = dba_open($db_file1, "n", $handler);
 $db_file2 = dba_open($db_file2, "n", $handler);
 var_dump(dba_list());

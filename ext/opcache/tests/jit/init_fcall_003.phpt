@@ -14,16 +14,14 @@ opcache.jit_hot_side_exit=8
 opcache
 --FILE--
 <?php
-$incfile = TestPath::file();
-file_put_contents($incfile, file_get_contents(__DIR__ . '/init_fcall_003.inc'));
-include($incfile);
+include(__DIR__ . '/init_fcall_003.inc');
 for($a=1; $a<100; $a++){
     f('1');
     f('1');
     f('1');
 }
-touch($incfile);
-opcache_invalidate($incfile, true);
+touch(__DIR__ . '/init_fcall_003.inc');
+opcache_invalidate(__DIR__ . '/init_fcall_003.inc', true);
 ?>
 DONE
 --EXPECT--

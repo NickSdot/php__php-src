@@ -9,8 +9,8 @@ if (OPENSSL_VERSION_NUMBER < 0x30000000) die('skip For OpenSSL >= 3.0');
 --FILE--
 <?php
 $infile = __DIR__ . "/plain.txt";
-$outfile = TestPath::file();
-$outfile2 = TestPath::file();
+$outfile = Workspace::file();
+$outfile2 = Workspace::file();
 $single_cert = "file://" . __DIR__ . "/cert.crt";
 $privkey = "file://" . __DIR__ . "/private_rsa_1024.key";
 $headers = array("test@test", "testing openssl_cms_encrypt()");

@@ -14,7 +14,7 @@ if (substr(PHP_OS, 0, 3) != 'WIN') {
 
 echo "*** Testing readdir() : usage variations ***\n";
 
-$path = TestPath::directory('私はガラスを食べられますreaddir_variation2')->create();
+$path = Workspace::directory('私はガラスを食べられますreaddir_variation2')->create();
 $dir_handle = opendir($path);
 
 echo "\n-- Pass an empty directory to readdir() --\n";

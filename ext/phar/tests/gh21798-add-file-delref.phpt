@@ -9,7 +9,7 @@ phar.require_hash=0
 <?php
 // Regression baseline: verify addFile and addFromString succeed and
 // phar_entry_delref is not skipped on the happy path.
-$fname = TestPath::file('archive.phar')->path;
+$fname = Workspace::file('archive.phar')->path;
 
 $phar = new Phar($fname);
 $phar->addFromString('hello.txt', 'hello world');

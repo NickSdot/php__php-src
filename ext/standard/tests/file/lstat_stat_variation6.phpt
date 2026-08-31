@@ -21,8 +21,8 @@ if (PHP_OS_FAMILY === 'Windows') {
 /* test the effects of touch() on stats of link */
 
 $file_path = __DIR__;
-$file = TestPath::file();
-$link = TestPath::file();
+$file = Workspace::file();
+$link = Workspace::file();
 require "$file_path/file.inc";
 
 

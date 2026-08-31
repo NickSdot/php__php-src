@@ -7,9 +7,9 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('bug48377.phar');
+$archive = Workspace::file('bug48377.phar');
 $fname = $archive->path;
-$converted = TestPath::file('bug48377.zip');
+$converted = Workspace::file('bug48377.zip');
 $fname2 = $converted->path;
 
 touch($fname2);

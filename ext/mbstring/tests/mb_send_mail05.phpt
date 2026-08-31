@@ -16,7 +16,7 @@ sendmail_path={MAIL:mail.eml}
 mail.add_x_header=off
 --FILE--
 <?php
-$mail = TestPath::file("mail.eml");
+$mail = Workspace::file("mail.eml");
 chdir($mail->directory);
 $to = 'example@example.com';
 

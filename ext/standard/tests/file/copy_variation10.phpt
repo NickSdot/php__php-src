@@ -5,7 +5,7 @@ Test copy() function: usage variations - identical names
 /* Test copy(): Try copying source file to desntination file, where destination file name is identical to source name */
 
 echo "*** Test copy(): Trying to create a copy of file with the same source name ***\n";
-$file = TestPath::file()->path;
+$file = Workspace::file()->path;
 $file_handle =  fopen($file, "w");
 fwrite($file_handle, str_repeat("Hello2world...\n", 100));
 fclose($file_handle);

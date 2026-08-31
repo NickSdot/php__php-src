@@ -5,14 +5,10 @@ sockets
 --SKIPIF--
 <?php
 
-$filename = tempnam(sys_get_temp_dir(), 'php-sockets-root-check-');
-$fp = fopen($filename, 'w');
-fclose($fp);
+$filename = Workspace::file()->create();
 if (fileowner($filename) == 0) {
-    unlink($filename);
     die('SKIP Test cannot be run as root.');
 }
-unlink($filename);
 if (@socket_create_listen(80)) {
     die('SKIP Test cannot be run in environment that will allow binding to port 80 (azure)');
 }

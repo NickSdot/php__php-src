@@ -3,7 +3,7 @@ Bug #40752 (parse_ini_file() segfaults when a scalar setting is redeclared as an
 --FILE--
 <?php
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, '
 foo   = 1;
 foo[] = 1;

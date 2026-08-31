@@ -11,7 +11,7 @@ class test {
 ?>
 DATA;
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents($filename, $class_data);
 
 function foo($v = test::val) {

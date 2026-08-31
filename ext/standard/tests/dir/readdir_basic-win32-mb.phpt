@@ -18,7 +18,7 @@ echo "*** Testing readdir() : basic functionality ***\n";
 chdir(__DIR__);
 include(__DIR__."/../file/file.inc");
 
-$path = TestPath::directory('私はガラスを食べられますreaddir_basic')->create();
+$path = Workspace::directory('私はガラスを食べられますreaddir_basic')->create();
 create_files($path, 3);
 
 echo "\n-- Call readdir() with \$path argument --\n";

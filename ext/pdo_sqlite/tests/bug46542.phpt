@@ -7,7 +7,7 @@ pdo_sqlite
 class A extends PDO
 { function __call($m, $p) {print __CLASS__."::$m\n";} }
 
-$dbFile = TestPath::file();
+$dbFile = Workspace::file();
 $a = new A('sqlite:' . $dbFile);
 
 $a->truc();

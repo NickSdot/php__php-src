@@ -8,8 +8,8 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$certFile = TestPath::file();
-$cacertFile = TestPath::file();
+$certFile = Workspace::file();
+$cacertFile = Workspace::file();
 
 // the server code is doing many readings in a short interval which is
 // not really reliable on more powerful machine but cover different

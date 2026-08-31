@@ -12,8 +12,8 @@ opcache.protect_memory=1
 opcache
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$file = TestPath::file();
+Workspace::useRelative();
+$file = Workspace::file();
 file_put_contents($file, "");
 include $file;
 

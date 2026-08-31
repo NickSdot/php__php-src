@@ -3,8 +3,8 @@ Bug GH-9779 (stream_copy_to_stream doesn't work anymore with resource opened in 
 --FILE--
 <?php
 
-$src = TestPath::file();
-$dest = TestPath::file();
+$src = Workspace::file();
+$dest = Workspace::file();
 
 file_put_contents($src, "bar");
 file_put_contents($dest, "foo");

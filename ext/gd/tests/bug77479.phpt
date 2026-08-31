@@ -13,7 +13,7 @@ memory_limit=-1
 <?php
 $im = imagecreate(40000, 20000);
 imagecolorallocate($im, 0, 0, 0);
-$output = TestPath::file();
+$output = Workspace::file();
 imagewbmp($im, $output->path);
 ?>
 --EXPECTF--

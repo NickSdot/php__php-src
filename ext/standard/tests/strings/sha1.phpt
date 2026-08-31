@@ -3,7 +3,7 @@ sha1() with ASCII output
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 $a = array(
     "abc",
     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",

@@ -9,7 +9,7 @@ if (PHP_INT_SIZE != 8) die('skip this test is for 64bit platforms only');
 date.timezone=UTC
 --FILE--
 <?php
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 for ($i = 2037; $i <= 2040; $i++) {
   $t = mktime(1, 1 , 1, 1, 1, $i);
   echo 'Date: '.date('D, d M Y H:i:s', $t), PHP_EOL;

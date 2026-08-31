@@ -8,13 +8,13 @@ if (!function_exists("proc_open")) die("skip no proc_open");
 ?>
 --FILE--
 <?php
-$caFile = TestPath::file();
-$csCertFile = TestPath::file();
-$csKeyFile = TestPath::file();
-$ukCertFile = TestPath::file();
-$ukKeyFile = TestPath::file();
-$usCertFile = TestPath::file();
-$usKeyFile = TestPath::file();
+$caFile = Workspace::file();
+$csCertFile = Workspace::file();
+$csKeyFile = Workspace::file();
+$ukCertFile = Workspace::file();
+$ukKeyFile = Workspace::file();
+$usCertFile = Workspace::file();
+$usKeyFile = Workspace::file();
 
 include 'CertificateGenerator.inc';
 $certificateGenerator = new CertificateGenerator();

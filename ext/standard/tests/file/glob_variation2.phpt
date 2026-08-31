@@ -3,11 +3,8 @@ Test glob() function with relative path
 --FILE--
 <?php
 // temp dirname used here
-$directory = TestPath::directory('glob_test');
+$directory = Workspace::directory('glob_test')->create();
 $file = $directory->file('file.text');
-
-// create temp directory
-mkdir($directory);
 
 // create temp file
 $fp = fopen($file, "w");
@@ -19,7 +16,7 @@ chdir($directory);
 var_dump( glob("./*") );
 var_dump( glob("../$directory->name/*"));
 
-chdir($file->directory);
+chdir(dirname($directory));
 var_dump( glob("$directory->name/*"));
 var_dump( glob("$directory->name"));
 

@@ -12,9 +12,7 @@ if (!str_contains(PHP_OS, 'FreeBSD')) {
 --FILE--
 <?php
 include __DIR__."/mcast_helpers.php.inc";
-$socket_path = TestPath::file();
-chdir($socket_path->directory);
-$path = $socket_path->name;
+$path = Workspace::file();
 
 echo "creating send socket\n";
 $sends1 = socket_create(AF_UNIX, SOCK_DGRAM, 0) or die("err");

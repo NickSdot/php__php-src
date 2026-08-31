@@ -818,7 +818,7 @@ mysqli.allow_local_infile=1
     $info = $new_info;
 
 
-    $file = TestPath::file();
+    $file = Workspace::file();
     if ($fp = fopen($file, 'w')) {
         @fwrite($fp, '1;"a"');
         fclose($fp);

@@ -7,10 +7,10 @@ if (substr(PHP_OS, 0, 3) == "WIN") die("skip non windows test");
 ?>
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 $php = getenv("TEST_PHP_EXECUTABLE_ESCAPED");
 $cwd = getcwd();
-$ini_file = TestPath::file("023.ini")->path;
+$ini_file = Workspace::file("023.ini")->path;
 $ini_file_escaped = escapeshellarg($ini_file);
 file_put_contents($ini_file, <<<INI
 ; no sections should match as cli doesn't support any

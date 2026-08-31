@@ -22,7 +22,7 @@ final class LR {
     }
 }
 
-$renderFile = TestPath::file();
+$renderFile = Workspace::file();
 file_put_contents($renderFile, file_get_contents(__DIR__ . '/gh21746.inc'));
 
 // prevent JITing $renderFile

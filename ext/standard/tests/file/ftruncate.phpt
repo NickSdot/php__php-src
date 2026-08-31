@@ -3,7 +3,7 @@ ftruncate() tests
 --FILE--
 <?php
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 file_put_contents($filename, "some test data inside");
 

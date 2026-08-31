@@ -13,7 +13,7 @@ require_once(__DIR__ .'/skipif.inc');
 <?php
 
 require_once(__DIR__ .'/test.inc');
-$db_filename = TestPath::file();
+$db_filename = Workspace::file();
 
 $db = dba_open($db_filename, 'c-', 'flatfile');
 var_dump($db);

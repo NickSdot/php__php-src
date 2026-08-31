@@ -15,8 +15,8 @@ $stub = "<?php header('Content-Type: text/plain;');
 Phar::mount('this.file', '". __FILE__ . "');
 echo 'OK\n';
 __HALT_COMPILER(); ?>";
-TestContext::useRelativeWorkspace();
-$archive = TestPath::file('archive.phar.php');
+Workspace::useRelative();
+$archive = Workspace::file('archive.phar.php');
 $archiveUrl = str_replace(__DIR__ . '/', '', $archive->path);
 $p = new Phar($archive, 0, 'this');
 $p['index.php'] = "";  # A Phar must have at least one file, hence this dummy

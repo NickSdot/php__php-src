@@ -2,7 +2,7 @@
 Test filesize() function: usage variations - file size after truncate
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 echo "*** Testing filesize(): usage variations ***\n";
 $filename = $file->path;

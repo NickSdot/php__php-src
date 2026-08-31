@@ -7,8 +7,8 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = TestPath::file('alias_acrobatics.phar')->path;
-$fname2 = TestPath::file('alias_acrobatics.2.phar')->path;
+$fname = Workspace::file('alias_acrobatics.phar')->path;
+$fname2 = Workspace::file('alias_acrobatics.2.phar')->path;
 
 $p = new Phar($fname);
 

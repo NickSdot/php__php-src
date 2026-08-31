@@ -8,7 +8,7 @@ gd
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 $fp = fopen($filename,"wb");
 if (!$fp) {
     exit("Failed to create <$filename>");

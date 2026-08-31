@@ -23,7 +23,7 @@ $serverCode = <<<'CODE'
 CODE;
 
 $clientCode = <<<'CODE'
-    $src = fopen(TestPath::file(), 'w+b');
+    $src = fopen(Workspace::file(), 'w+b');
     $data = str_repeat('data', 4096);
     fwrite($src, $data);
     rewind($src);

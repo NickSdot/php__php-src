@@ -4,7 +4,7 @@ Bug #60120 proc_open hangs with stdin/out with >2048 bytes
 <?php
 error_reporting(E_ALL);
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 file_put_contents($file, <<<TMPFILE
 <?php

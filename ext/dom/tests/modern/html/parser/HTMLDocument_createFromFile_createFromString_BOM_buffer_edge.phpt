@@ -14,7 +14,7 @@ var_dump($dom->documentElement->textContent);
 
 echo $dom->saveHtml(), "\n";
 
-$file = TestPath::file();
+$file = Workspace::file();
 file_put_contents($file, $data);
 $dom = Dom\HTMLDocument::createFromFile($file);
 var_dump($dom->documentElement->textContent);

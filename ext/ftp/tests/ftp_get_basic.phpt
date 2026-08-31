@@ -15,12 +15,12 @@ if (!$ftp) die("Couldn't connect to the server");
 var_dump(ftp_login($ftp, 'user', 'pass'));
 
 //test simple text transfer
-$tmpfname = TestPath::file();
+$tmpfname = Workspace::file();
 var_dump(ftp_get($ftp, $tmpfname ,'a story.txt', FTP_ASCII));
 echo file_get_contents($tmpfname);
 
 //test binary data transfer
-$tmpfname = TestPath::file();
+$tmpfname = Workspace::file();
 var_dump(ftp_get($ftp, $tmpfname, 'binary data.bin', FTP_BINARY));
 echo json_encode(file_get_contents($tmpfname)), "\n";
 
@@ -34,4 +34,4 @@ For sale: baby shoes, never worn.
 bool(true)
 "BINARYFoo\u0000Bar\r\n"
 
-Warning: ftp_get(): a warning: No such file or directory  in %sftp_get_basic.php on line %d
+Warning: ftp_get(): a warning: No such file or directory  in %sftp_get_basic.%d.php on line %d

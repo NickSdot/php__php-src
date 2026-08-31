@@ -50,7 +50,7 @@ try {
 
 echo "Testing pgsqlCopyToFile() with default parameters\n";
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 var_dump($db->pgsqlCopyToFile('test_copy_to',$filename));
 echo file_get_contents($filename);
 echo "Testing pgsqlCopyToFile() with different field separator and not null indicator\n";

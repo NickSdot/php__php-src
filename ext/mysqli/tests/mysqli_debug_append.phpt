@@ -21,7 +21,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test is not for Windows platfo
 <?php
     require_once 'connect.inc';
 
-    $trace_file = TestPath::file();
+    $trace_file = Workspace::file();
     if (true !== ($tmp = mysqli_debug(sprintf('d:t:O,%s', $trace_file))))
         printf("[001] Expecting boolean/true, got %s/%s\n", gettype($tmp), $tmp);
 

@@ -14,7 +14,7 @@ $arg2 = array(TRUE,FALSE);
 $arg3 = array(TRUE,FALSE,TRUE);
 
 /* creating dumping file */
-$data_file = TestPath::file();
+$data_file = Workspace::file();
 if (!($fp = fopen($data_file, 'wt')))
    return;
 

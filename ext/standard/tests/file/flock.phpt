@@ -3,7 +3,7 @@ flock() tests
 --FILE--
 <?php
 
-$file = TestPath::file()->path;
+$file = Workspace::file()->path;
 
 $fp = fopen($file, "w");
 fclose($fp);

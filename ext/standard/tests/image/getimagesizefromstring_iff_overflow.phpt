@@ -4,7 +4,7 @@ getimagesizefromstring() IFF chunk size integer overflow (GH-getimagesize_oflow)
 Alexandre Daubois
 --FILE--
 <?php
-$file = TestPath::file('image.iff');
+$file = Workspace::file('image.iff');
 // IFF/ILBM with a chunk size of INT_MAX (0x7fffffff), an odd value.
 // The parser rounds odd chunk sizes up to even via size++, which overflowed
 // when size == INT_MAX. It must be handled gracefully rather than triggering UB.

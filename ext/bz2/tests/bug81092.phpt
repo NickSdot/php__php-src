@@ -4,7 +4,7 @@ Bug #81092 (fflush before stream_filter_remove corrupts stream)
 bz2
 --FILE--
 <?php
-$streamPath = TestPath::file();
+$streamPath = Workspace::file();
 $stream = fopen($streamPath, 'wb+');
 $filter = stream_filter_append($stream, 'bzip2.compress', STREAM_FILTER_WRITE, ['blocks' => 9, 'work' => 0]);
 fwrite($stream, random_bytes(8192));

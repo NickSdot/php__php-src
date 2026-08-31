@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$archive = TestPath::file('phar_commitwrite.phar.zip');
+$archive = Workspace::file('phar_commitwrite.phar.zip');
 $p = new Phar($archive, 0, 'phar_commitwrite.phar');
 $p['file1.txt'] = 'hi';
 $p->stopBuffering();

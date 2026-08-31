@@ -17,7 +17,7 @@ echo "*** Testing scandir() : usage variations ***\n";
 // include for create_files/delete_files functions
 include (__DIR__ . '/../file/file.inc');
 
-$base_dir_path = TestPath::directory()->create();
+$base_dir_path = Workspace::directory()->create();
 
 $level_one_dir_path = $base_dir_path->directory('私はガラスを食べられますlevel_one')->create();
 $level_two_dir_path = $level_one_dir_path->directory('私はガラスを食べられますlevel_two')->create();

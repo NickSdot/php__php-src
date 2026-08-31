@@ -4,7 +4,7 @@ Bug #70362 (Can't copy() large 'data://' with open_basedir)
 open_basedir=.
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 $data = str_repeat('0', 4096);
 $data = 'data://plain/text;base64,' . base64_encode($data);
 var_dump(copy($data, $file));

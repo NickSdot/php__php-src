@@ -7,7 +7,7 @@ Test chdir() function : basic functionality
  */
 
 echo "*** Testing chdir() : basic functionality ***\n";
-$base_dir_path = TestPath::directory()->create();
+$base_dir_path = Workspace::directory()->create();
 
 $level1_one_dir_name = "level1_one";
 $level1_one_dir_path = $base_dir_path->directory($level1_one_dir_name)->create();

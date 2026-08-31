@@ -6,7 +6,7 @@ phar
 phar.require_hash=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.tar');
+$fname = Workspace::file('archive.tar');
 
 include __DIR__ . '/files/make.dangerous.tar.php.inc';
 

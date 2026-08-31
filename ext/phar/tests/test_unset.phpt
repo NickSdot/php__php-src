@@ -6,8 +6,8 @@ phar
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('test_unset.phar.php');
-$fname2 = TestPath::file('test_unset.2.phar.php');
+$fname = Workspace::file('test_unset.phar.php');
+$fname2 = Workspace::file('test_unset.2.phar.php');
 
 $phar = new Phar($fname); // no entries, never flushed
 $phar->setAlias('first');

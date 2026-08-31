@@ -2,7 +2,6 @@
 Test parse_ini_file() function
 --FILE--
 <?php
-$file_path = TestPath::directory();
 
 $parse_string = <<<EOD
 ; Comment starts with semi-colon(;)
@@ -192,7 +191,7 @@ Key18 = null
 ; end of ini file
 EOD;
 /* creating parse.ini file */
-$parse_file = TestPath::file('parse.ini');
+$parse_file = Workspace::file('parse.ini');
 $file_handle = fopen($parse_file, "w");
 fwrite($file_handle, $parse_string);
 fclose($file_handle);

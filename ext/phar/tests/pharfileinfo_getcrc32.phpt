@@ -7,7 +7,7 @@ phar.require_hash=0
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('pharfileinfo_getcrc32.phar')->path;
+$fname = Workspace::file('pharfileinfo_getcrc32.phar')->path;
 $pname = 'phar://' . $fname;
 $file = "<?php
 Phar::mapPhar('hio');

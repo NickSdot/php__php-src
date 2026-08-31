@@ -8,11 +8,8 @@ phar.readonly=1
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_repeated_b.zip');
+$archive = Workspace::file('phar_convert_repeated_b.zip');
 $fname = $archive->path;
-TestPath::file('phar_convert_repeated_b.tar');
-TestPath::file('phar_convert_repeated_b.1.2.tar');
-TestPath::file('phar_convert_repeated_b.1.zip');
 
 echo "=================== new PharData() ==================\n";
 $phar = new PharData($fname);

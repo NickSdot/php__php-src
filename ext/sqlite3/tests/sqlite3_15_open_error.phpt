@@ -16,7 +16,7 @@ if (posix_geteuid() == 0) {
 ?>
 --FILE--
 <?php
-$unreadable = TestPath::file()->create(permissions: 0200);
+$unreadable = Workspace::file()->create(permissions: 0200);
 try {
     $db = new SQLite3($unreadable);
 } catch (Exception $e) {
@@ -25,8 +25,8 @@ try {
 echo "Done\n";
 ?>
 --EXPECTF--
-Exception: Unable to open database: %s in %ssqlite3_15_open_error.php:%d
+Exception: Unable to open database: %s in %ssqlite3_15_open_error.%d.php:%d
 Stack trace:
-#0 %ssqlite3_15_open_error.php(%d): SQLite3->__construct('%s')
+#0 %ssqlite3_15_open_error.%d.php(%d): SQLite3->__construct('%s')
 #1 {main}
 Done

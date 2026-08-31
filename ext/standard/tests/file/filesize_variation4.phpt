@@ -10,7 +10,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') {
 <?php
 /* Testing filesize() with data written using different file modes and by creating holes in file */
 
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 
 echo "*** Testing filesize(): usage variations ***\n";
 echo "\n*** Testing filesize() with data written using different file modes and by creating holes in file ***\n";
@@ -67,7 +67,7 @@ var_dump( filesize($filename) );  //0 bytes
 clearstatcache();
 
 echo "-- with empty file --\n";
-$filename = TestPath::file()->path;
+$filename = Workspace::file()->path;
 fclose( fopen($filename, "w") );
 var_dump( filesize($filename) );  //0 bytes
 

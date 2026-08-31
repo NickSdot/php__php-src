@@ -11,7 +11,7 @@ imagecolorallocate($orig, 0, 0, 0);
 $white = imagecolorallocate($orig, 255, 255, 255);
 imageline($orig, 0, 0, 99, 99, $white);
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 imagebmp($orig, $filename->path, true);
 $saved = imagecreatefrombmp($filename);
 var_dump($saved !== false);

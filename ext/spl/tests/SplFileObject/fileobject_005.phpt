@@ -6,7 +6,7 @@ Mark Ammann
 --FILE--
 <?php
 
-$path = TestPath::file()->create();
+$path = Workspace::file()->create();
 
 $fo = new SplFileObject($path, 'w+', true);
 $fo->fwrite("blahlubba");

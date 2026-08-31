@@ -11,8 +11,7 @@ require __DIR__ . '/../skipif_root.inc';
 echo "*** Testing lchown() : error functionality ***\n";
 
 // Set up
-$filename = TestPath::file()->path;
-touch( $filename );
+$filename = Workspace::file()->create();
 $uid = posix_getuid();
 
 // Non-existent filename

@@ -10,8 +10,7 @@ if (defined("PHP_WINDOWS_VERSION_MAJOR")) die("skip not for Windows")
 <?php
 umask(022);
 var_dump(decoct(umask()));
-$output = TestPath::directory();
-mkdir($output->path);
+$output = Workspace::directory()->create();
 $extracted1 = $output->file('test79082-testfile');
 $extracted2 = $output->file('test79082-testfile2');
 chmod(__DIR__ . '/test79082/test79082-testfile', 0644);
@@ -19,7 +18,7 @@ chmod(__DIR__ . '/test79082/test79082-testfile2', 0400);
 
 foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
     clearstatcache();
-    $archive = TestPath::file('archive.' . $ext);
+    $archive = Workspace::file('archive.' . $ext);
     $phar = new PharData($archive->path, format: $format);
     $phar->buildFromIterator(new \RecursiveDirectoryIterator(__DIR__ . '/test79082', \FilesystemIterator::SKIP_DOTS), __DIR__ . '/test79082');
     $phar->extractTo($output->path);
@@ -30,7 +29,7 @@ foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
 }
 foreach([Phar::TAR => 'tar', Phar::ZIP => 'zip'] as $format => $ext) {
     clearstatcache();
-    $archive = TestPath::file('archive-d.' . $ext);
+    $archive = Workspace::file('archive-d.' . $ext);
     $phar = new PharData($archive->path, format: $format);
     $phar->buildFromDirectory(__DIR__ . '/test79082');
     $phar->extractTo($output->path);

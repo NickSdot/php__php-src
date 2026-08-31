@@ -10,11 +10,11 @@ if (PHP_OS_FAMILY === 'Windows') {
 --FILE--
 <?php
 
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 
-$dir = TestPath::directory()->create();
+$dir = Workspace::directory()->create();
 
-if (!symlink(TestPath::file('bug68825.php')->create(), $dir->file('bug'))) {
+if (!symlink(Workspace::file('bug68825.php')->create(), $dir->file('bug'))) {
     die('Failed to create symbolic link');
 }
 

@@ -15,8 +15,8 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $gd1 = TestPath::file();
-    $gd2 = TestPath::file();
+    $gd1 = Workspace::file();
+    $gd2 = Workspace::file();
 
     echo "GIF to GD1 conversion: ";
     echo imagegd(imagecreatefromgif($cwd . "/conv_test.gif"), $gd1->path) ? 'ok' : 'failed';

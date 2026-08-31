@@ -53,7 +53,7 @@ for($i=0; $i< $limit; ++$i) {
 
 $str .= ");\n";
 
-$filename = TestPath::file();
+$filename = Workspace::file();
 file_put_contents($filename, $str);
 unset($str);
 

@@ -10,8 +10,7 @@ session.cache_limiter=
 session.gc_probability=0
 --FILE--
 <?php
-$save_path = TestPath::directory();
-mkdir($save_path);
+$save_path = Workspace::directory()->create();
 ini_set('session.save_path', $save_path->path);
 
 $known_id = 'knownfilesessionid';

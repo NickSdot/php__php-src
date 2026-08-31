@@ -10,7 +10,7 @@ $magic_file = __DIR__ . DIRECTORY_SEPARATOR . 'magic';
 $ret = @finfo_open(FILEINFO_NONE, $magic_file . ".non-exits");
 var_dump($ret);
 
-$dir = TestPath::directory('bug61964')->create();
+$dir = Workspace::directory('bug61964')->create();
 
 $magic_file_copy = $dir->file();
 $magic_file_copy2 = $dir->file();
@@ -31,7 +31,7 @@ $test1 = $dir->file();
 $test2 = $dir->file();
 file_put_contents($test1, "string\n> Core\n> Me");
 file_put_contents($test2, "a\nb\n");
-@mkdir($dir->directory());
+$dir->directory()->create();
 
 finfo_open(FILEINFO_NONE, $dir);
 echo "DONE: testing dir with files\n";
@@ -44,15 +44,15 @@ object(finfo)#%d (0) {
 object(finfo)#%d (0) {
 }
 bool(false)%A
-Warning: finfo_open(): offset `string' invalid in %sbug61964.php on line %d
+Warning: finfo_open(): offset `string' invalid in %sbug61964.%d.php on line %d
 
-Warning: finfo_open(): offset ` Core' invalid in %sbug61964.php on line %d
+Warning: finfo_open(): offset ` Core' invalid in %sbug61964.%d.php on line %d
 
-Warning: finfo_open(): offset ` Me' invalid in %sbug61964.php on line %d
+Warning: finfo_open(): offset ` Me' invalid in %sbug61964.%d.php on line %d
 
-Warning: finfo_open(): offset `a' invalid in %sbug61964.php on line %d
+Warning: finfo_open(): offset `a' invalid in %sbug61964.%d.php on line %d
 
-Warning: finfo_open(): offset `b' invalid in %sbug61964.php on line %d
+Warning: finfo_open(): offset `b' invalid in %sbug61964.%d.php on line %d
 
-Warning: finfo_open(): Failed to load magic database at "%sbug61964" in %sbug61964.php on line %d
+Warning: finfo_open(): Failed to load magic database at "%sbug61964" in %sbug61964.%d.php on line %d
 DONE: testing dir with files

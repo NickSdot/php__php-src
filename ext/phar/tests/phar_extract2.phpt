@@ -7,19 +7,11 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('tempmanifest2.phar.php');
+$archive = Workspace::file('tempmanifest2.phar.php');
 $fname = $archive->path;
 $pname = 'phar://' . $fname;
 
-$extract = TestPath::directory('extract2');
-mkdir($extract->path);
-$extract->file('file1.txt');
-$extract->file('file2.txt');
-$subdir = $extract->directory('subdir');
-$ectory = $subdir->directory('ectory');
-$ectory->file('file.txt');
-$one = $extract->directory('one');
-$one->directory('level');
+$extract = Workspace::directory('extract2')->create();
 
 $phar = new Phar($fname);
 $phar->setDefaultStub();

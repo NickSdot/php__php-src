@@ -10,8 +10,8 @@ opcache
 server
 --FILE--
 <?php
-TestContext::useRelativeWorkspace();
-$workspace = TestPath::directory()->create();
+Workspace::useRelative();
+$workspace = Workspace::directory()->create();
 $dir1 = $workspace->directory('test1');
 $dir2 = $workspace->directory('test2');
 $link = $workspace->directory('test');

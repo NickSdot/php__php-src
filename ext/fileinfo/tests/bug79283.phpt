@@ -4,7 +4,7 @@ Bug #79283 (Segfault in libmagic patch contains a buffer overflow)
 fileinfo
 --FILE--
 <?php
-$magic_file = TestPath::file();
+$magic_file = Workspace::file();
 file_put_contents($magic_file, "
 0	regex	\\0\\0\\0\\0	Test
 ");

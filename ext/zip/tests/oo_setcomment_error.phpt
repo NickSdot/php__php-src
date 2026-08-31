@@ -4,7 +4,7 @@ setComment error behavior
 zip
 --FILE--
 <?php
-$file = TestPath::file();
+$file = Workspace::file();
 
 @unlink($file);
 

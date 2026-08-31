@@ -8,13 +8,9 @@ phar.readonly=0
 --FILE--
 <?php
 
-$archive = TestPath::file('phar_convert_phar.phar');
-$archiveZip = TestPath::file('phar_convert_phar.phar.zip');
-$archive2 = TestPath::file('phar_convert_phar2.phar');
-$archive3 = TestPath::file('phar_convert_phar.3.phar');
-$fname = $archive->path;
-$fname2 = $archive2->path;
-$fname3 = $archive3->path;
+$fname = Workspace::file('archive.phar');
+$fname2 = Workspace::file('copy.phar');
+$fname3 = Workspace::file('archive.3.phar');
 
 $phar = new Phar($fname);
 $phar['a.txt'] = 'some text';

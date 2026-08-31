@@ -8,7 +8,7 @@ echo "*** Testing dir() : basic functionality ***\n";
 include(__DIR__."/../file/file.inc");
 
 // create the temporary directory
-$dir_path = TestPath::directory('dir_basic')->create();
+$dir_path = Workspace::directory('dir_basic')->create();
 
 // create files within the temporary directory
 create_files($dir_path, 3, "alphanumeric", 0755, 1, "w", "dir_basic");

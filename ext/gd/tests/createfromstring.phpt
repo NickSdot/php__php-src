@@ -8,8 +8,8 @@ gd
 ?>
 --FILE--
 <?php
-$truecolor_file = TestPath::file();
-$palette_file = TestPath::file();
+$truecolor_file = Workspace::file();
+$palette_file = Workspace::file();
 
 $im = imagecreatetruecolor(5,5);
 imagefill($im, 0,0, 0xffffff);

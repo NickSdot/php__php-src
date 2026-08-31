@@ -7,7 +7,7 @@ phar.readonly=0
 --FILE--
 <?php
 
-$fname = TestPath::file('archive.phar.zip');
+$fname = Workspace::file('archive.phar.zip');
 
 $phar = new Phar($fname);
 $phar['a.php'] = '<php echo "this is a\n"; ?>';

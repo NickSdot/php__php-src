@@ -15,7 +15,7 @@ echo "*** Testing stat() : basic functionality ***\n";
 /* creating temp directory and file */
 
 // creating dir
-$dirname = TestPath::directory()->create();
+$dirname = Workspace::directory()->create();
 // stat of the dir created
 $dir_stat = stat($dirname);
 clearstatcache();

@@ -7,8 +7,8 @@ zlib
 phar.readonly=0
 --FILE--
 <?php
-$fname = TestPath::file('archive.phar.php')->path;
-$fname2 = TestPath::file('archive-copy.phar.php')->path;
+$fname = Workspace::file('archive.phar.php')->path;
+$fname2 = Workspace::file('archive-copy.phar.php')->path;
 
 $phar = new Phar($fname);
 $phar['a'] = 'file contents

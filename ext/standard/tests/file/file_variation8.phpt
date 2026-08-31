@@ -5,36 +5,34 @@ Dave Kelsey <d_kelsey@uk.ibm.com>
 --FILE--
 <?php
 echo "*** Testing file() : variation ***\n";
-$mainDir = TestPath::directory('fileVar8.dir');
-$absMainDir = $mainDir;
-mkdir($absMainDir);
-$subDir = $mainDir->directory('fileVar8Sub');
-$absSubDir = $subDir;
-mkdir($absSubDir);
+$absMainDir = Workspace::directory()->create();
+$absSubDir = $absMainDir->directory('subdir')->create();
+$mainDir = $absMainDir->name;
+$subDir = $absSubDir->name;
 
 $old_dir_path = getcwd();
-chdir(dirname($mainDir->path));
+chdir(dirname($absMainDir));
 
 $allDirs = array(
   // absolute paths
   "$absSubDir/",
-  "$absSubDir/../".$subDir->name,
-  "$absSubDir//.././".$subDir->name,
-  "$absSubDir/../../".$mainDir->name."/./".$subDir->name,
-  "$absSubDir/..///".$subDir->name."//..//../".$subDir->name,
+  "$absSubDir/../".$subDir,
+  "$absSubDir//.././".$subDir,
+  "$absSubDir/../../".$mainDir."/./".$subDir,
+  "$absSubDir/..///".$subDir."//..//../".$subDir,
   "$absSubDir/BADDIR",
 
   // relative paths
-  $mainDir->name."/".$subDir->name,
-  $mainDir->name."//".$subDir->name,
-   $mainDir->name."///".$subDir->name,
-  "./".$mainDir->name."/../".$mainDir->name."/".$subDir->name,
+  $mainDir."/".$subDir,
+  $mainDir."//".$subDir,
+   $mainDir."///".$subDir,
+  "./".$mainDir."/../".$mainDir."/".$subDir,
   "BADDIR",
 
 );
 
-$filename = $subDir->file();
-$absFile = $filename;
+$absFile = $absSubDir->file();
+$filename = $absFile->name;
 $h = fopen($absFile,"w");
 fwrite($h, "contents read");
 fclose($h);
@@ -43,7 +41,7 @@ for($i = 0; $i<count($allDirs); $i++) {
   $j = $i+1;
   $dir = $allDirs[$i];
   echo "\n-- Iteration $j --\n";
-  var_dump(file($dir."/".$filename->name));
+  var_dump(file($dir."/".$filename));
 }
 
 chdir($old_dir_path);

@@ -10,7 +10,7 @@ include "include.inc";
 $php = get_cgi_path();
 reset_env_vars();
 
-$f = TestPath::file()->path;
+$f = Workspace::file()->path;
 
 putenv("TRANSLATED_PATH=".$f."/x");
 putenv("SCRIPT_FILENAME=".$f."/x");

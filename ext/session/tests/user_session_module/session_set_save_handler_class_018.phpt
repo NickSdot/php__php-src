@@ -8,7 +8,7 @@ session
 --FILE--
 <?php
 
-$save_path = TestPath::directory('session_set_save_handler_class_018')->create();
+$save_path = Workspace::directory('session_set_save_handler_class_018')->create();
 session_save_path($save_path);
 
 ob_start();

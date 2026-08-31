@@ -14,7 +14,7 @@ echo "*** Testing readfile(): checking third argument ***\n";
 // creating a context
 $context = stream_context_create();
 // temp file name used here
-$filename = TestPath::file();
+$filename = Workspace::file();
 
 // create file
 $fp = fopen($filename, "w");

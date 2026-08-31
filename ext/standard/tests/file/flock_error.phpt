@@ -11,7 +11,7 @@ Description: PHP supports a portable way of locking complete files
 
 echo "*** Testing error conditions ***\n";
 
-$file = TestPath::file();
+$file = Workspace::file();
 $fp = fopen($file, "w");
 
 /* array of operations */

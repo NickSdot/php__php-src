@@ -16,7 +16,7 @@ if (substr(PHP_OS, 0, 3) == 'WIN') die("skip this test not for Windows platforms
 <?php
 
 //file
-$file = TestPath::file()->create();
+$file = Workspace::file()->create();
 $fileInfo = new SplFileInfo($file->path);
 $result = shell_exec('ls -i ' . escapeshellarg($file->path));
 var_dump($fileInfo->getInode() == (int) $result);

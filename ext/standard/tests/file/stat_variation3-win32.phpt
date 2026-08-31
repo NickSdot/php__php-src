@@ -15,7 +15,7 @@ require __DIR__ . "/file.inc";
 
 
 /* create temp file and directory */
-$dirname = TestPath::directory()->create();  // temp dir
+$dirname = Workspace::directory()->create();  // temp dir
 
 echo "*** Testing stat(): with creating & deleting subdir/file ***\n";
 

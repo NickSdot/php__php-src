@@ -13,7 +13,7 @@ if (!defined('GLOB_BRACE')) {
 <?php
 echo "*** Testing glob() : usage variations ***\n";
 
-$directory = TestPath::directory('glob_variation');
+$directory = Workspace::directory('glob_variation');
 $wonder = $directory->directory('wonder');
 $first = $directory->file('wonder12345');
 $second = $directory->file('wonder;123456');

@@ -14,7 +14,7 @@ gd
 --FILE--
 <?php
     $cwd = __DIR__;
-    $output = TestPath::file();
+    $output = Workspace::file();
 
     echo "XBM to PNG conversion: ";
     echo imagepng(imagecreatefromxbm($cwd . "/conv_test.xbm"), $output->path) ? 'ok' : 'failed';

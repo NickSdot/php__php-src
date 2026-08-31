@@ -11,7 +11,7 @@ if (!function_exists('imagewebp')) die('skip WebP support not available');
 ?>
 --FILE--
 <?php
-$filename = TestPath::file();
+$filename = Workspace::file();
 $im = imagecreatetruecolor(75, 75);
 $red = imagecolorallocate($im, 255, 0, 0);
 imagefilledrectangle($im, 0, 0, 74, 74, $red);

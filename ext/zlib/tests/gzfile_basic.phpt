@@ -4,7 +4,7 @@ Test function gzfile() reading a gzip relative file
 zlib
 --SETUP--
 <?php
-TestContext::useRelativeWorkspace();
+Workspace::useRelative();
 ?>
 --FILE--
 <?php
@@ -13,7 +13,7 @@ hello world
 is a very common test
 for all languages
 EOT;
-$filename = TestPath::file('gzfile_basic.txt.gz')->path;
+$filename = Workspace::file('gzfile_basic.txt.gz')->path;
 $h = gzopen($filename, 'w');
 gzwrite($h, $plaintxt);
 gzclose($h);

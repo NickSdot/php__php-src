@@ -5,7 +5,7 @@ zip
 --FILE--
 <?php
 
-$archive = new ZipArchive(TestPath::file());
+$archive = new ZipArchive(Workspace::file());
 var_dump(array_column([$archive], 'lastId'));
 
 ?>

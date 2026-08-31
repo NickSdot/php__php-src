@@ -5,7 +5,7 @@ sendmail_path={MAIL:gh19188_mixed_mode.out}
 mail.cr_lf_mode=mixed
 --FILE--
 <?php
-$outFile = TestPath::file('gh19188_mixed_mode.out');
+$outFile = Workspace::file('gh19188_mixed_mode.out');
 chdir($outFile->directory);
 var_dump(mail('user@example.com', 'Test Subject', 'A Message', 'X-Test: mixed'));
 $mail = file_get_contents($outFile);

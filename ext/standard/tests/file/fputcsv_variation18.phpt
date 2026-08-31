@@ -10,7 +10,7 @@ $list = [
   4 => '"/""",aaa',
 ];
 
-$file = TestPath::file();
+$file = Workspace::file();
 
 $fp = fopen($file, "w");
 foreach ($list as $v) {
