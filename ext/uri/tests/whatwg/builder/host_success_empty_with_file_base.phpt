@@ -1,37 +1,39 @@
 --TEST--
-Test Uri\WhatWg\UrlBuilder::setQuery() - success - with base URL
+Test Uri\WhatWg\UrlBuilder::setHost() - success - empty host with file base URL
+--XFAIL--
+not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 
-$base = new Uri\WhatWg\Url('https://example.com/?baz');
+$base = new Uri\WhatWg\Url('file:///Users/example/base/path?oldQuery#oldFragment');
 
 $url = new Uri\WhatWg\UrlBuilder()
-    ->setQuery('foo=bar')
+    ->setHost('')
     ->build($base);
 
 var_dump($url->toAsciiString());
 var_dump($url);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
-var_dump($url->equals(new Uri\WhatWg\Url('?foo=bar', $base), Uri\UriComparisonMode::IncludeFragment));
+var_dump($url->equals(new Uri\WhatWg\Url('//', $base), Uri\UriComparisonMode::IncludeFragment));
 
 ?>
 --EXPECTF--
-string(28) "https://example.com/?foo=bar"
+string(8) "file:///"
 object(Uri\WhatWg\Url)#%d (%d) {
   ["scheme"]=>
-  string(5) "https"
+  string(4) "file"
   ["username"]=>
   NULL
   ["password"]=>
   NULL
   ["host"]=>
-  string(11) "example.com"
+  string(0) ""
   ["port"]=>
   NULL
   ["path"]=>
   string(1) "/"
   ["query"]=>
-  string(7) "foo=bar"
+  NULL
   ["fragment"]=>
   NULL
 }

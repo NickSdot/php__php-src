@@ -1,10 +1,11 @@
 --TEST--
-Test Uri\WhatWg\UrlBuilder::setScheme() - success - contains digit & special characters
+Test Uri\WhatWg\UrlBuilder::setQuery() - success - non-special scheme without host
 --FILE--
 <?php
 
 $url = new Uri\WhatWg\UrlBuilder()
-    ->setScheme('my-12+34.scheme')
+    ->setScheme('scheme')
+    ->setQuery('newQuery')
     ->build();
 
 var_dump($url->toAsciiString());
@@ -13,10 +14,10 @@ var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
 
 ?>
 --EXPECTF--
-string(16) "my-12+34.scheme:"
+string(16) "scheme:?newQuery"
 object(Uri\WhatWg\Url)#%d (%d) {
   ["scheme"]=>
-  string(15) "my-12+34.scheme"
+  string(6) "scheme"
   ["username"]=>
   NULL
   ["password"]=>
@@ -28,7 +29,7 @@ object(Uri\WhatWg\Url)#%d (%d) {
   ["path"]=>
   string(0) ""
   ["query"]=>
-  NULL
+  string(8) "newQuery"
   ["fragment"]=>
   NULL
 }

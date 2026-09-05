@@ -1,16 +1,24 @@
 --TEST--
-Test Uri\WhatWg\Url parsing - opaque path - spaces before query
+Test Uri\WhatWg\UrlBuilder::setPath() - success - trailing spaces before query in opaque path
 --FILE--
 <?php
 
-$url = new Uri\WhatWg\Url('foo:abc  ?query', softErrors: $softErrors);
+$errors = [];
 
-var_dump($url);
+$url = new Uri\WhatWg\UrlBuilder()
+    ->setScheme('foo')
+    ->setPath('abc  ')
+    ->setQuery('query')
+    ->build(null, $errors);
+
 var_dump($url->toAsciiString());
-var_dump($softErrors);
+var_dump($url);
+var_dump($errors);
+var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
 
 ?>
 --EXPECTF--
+string(17) "foo:abc %20?query"
 object(Uri\WhatWg\Url)#%d (%d) {
   ["scheme"]=>
   string(3) "foo"
@@ -29,12 +37,11 @@ object(Uri\WhatWg\Url)#%d (%d) {
   ["fragment"]=>
   NULL
 }
-string(17) "foo:abc %20?query"
 array(2) {
   [0]=>
   object(Uri\WhatWg\UrlValidationError)#%d (%d) {
     ["context"]=>
-    string(7) " ?query"
+    string(2) " ?"
     ["type"]=>
     enum(Uri\WhatWg\UrlValidationErrorType::InvalidUrlUnit)
     ["failure"]=>
@@ -43,10 +50,11 @@ array(2) {
   [1]=>
   object(Uri\WhatWg\UrlValidationError)#%d (%d) {
     ["context"]=>
-    string(8) "  ?query"
+    string(3) "  ?"
     ["type"]=>
     enum(Uri\WhatWg\UrlValidationErrorType::InvalidUrlUnit)
     ["failure"]=>
     bool(false)
   }
 }
+bool(true)

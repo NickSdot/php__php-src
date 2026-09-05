@@ -3,17 +3,18 @@ Test Uri\WhatWg\UrlBuilder::setFragment() - success - contains tab and newline c
 --FILE--
 <?php
 
-$builder = new Uri\WhatWg\UrlBuilder();
-$builder->setScheme("foo");
-$builder->setHost("example.com");
-$builder->setFragment("\tfo\no");
-$softErrors = [];
-$url = $builder->build(softErrors: $softErrors);
+$errors = [];
+
+$url = new Uri\WhatWg\UrlBuilder()
+    ->setScheme('foo')
+    ->setHost('example.com')
+    ->setFragment("\tfo\no")
+    ->build(softErrors: $errors);
 
 var_dump($url->toAsciiString());
 var_dump($url);
-var_dump($softErrors);
-var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
+var_dump($errors);
+var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString()), Uri\UriComparisonMode::IncludeFragment));
 
 ?>
 --EXPECTF--
@@ -36,7 +37,7 @@ object(Uri\WhatWg\Url)#%d (%d) {
   ["fragment"]=>
   string(3) "foo"
 }
-array(%d) {
+array(1) {
   [0]=>
   object(Uri\WhatWg\UrlValidationError)#%d (%d) {
     ["context"]=>

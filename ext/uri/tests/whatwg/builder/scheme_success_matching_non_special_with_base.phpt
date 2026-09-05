@@ -1,22 +1,23 @@
 --TEST--
-Test Uri\WhatWg\UrlBuilder::setFragment() - success - with base URL containing opaque path
+Test Uri\WhatWg\UrlBuilder::setScheme() - success - matching non-special scheme with base URL
 --FILE--
 <?php
 
-$base = new Uri\WhatWg\Url('scheme:opaque-path');
+$base = new Uri\WhatWg\Url('scheme://user:pass@example.com:123/base/path?oldQuery#oldFragment');
 
 $url = new Uri\WhatWg\UrlBuilder()
-    ->setFragment('foo')
+    ->setScheme('scheme')
+    ->setPath('opaquePath')
     ->build($base);
 
 var_dump($url->toAsciiString());
 var_dump($url);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
-var_dump($url->equals(new Uri\WhatWg\Url('#foo', $base), Uri\UriComparisonMode::IncludeFragment));
+var_dump($url->equals(new Uri\WhatWg\Url('scheme:opaquePath', $base), Uri\UriComparisonMode::IncludeFragment));
 
 ?>
 --EXPECTF--
-string(22) "scheme:opaque-path#foo"
+string(17) "scheme:opaquePath"
 object(Uri\WhatWg\Url)#%d (%d) {
   ["scheme"]=>
   string(6) "scheme"
@@ -29,11 +30,11 @@ object(Uri\WhatWg\Url)#%d (%d) {
   ["port"]=>
   NULL
   ["path"]=>
-  string(11) "opaque-path"
+  string(10) "opaquePath"
   ["query"]=>
   NULL
   ["fragment"]=>
-  string(3) "foo"
+  NULL
 }
 bool(true)
 bool(true)

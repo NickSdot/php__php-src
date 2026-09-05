@@ -3,10 +3,9 @@ Test Uri\WhatWg\UrlBuilder::setScheme() - success - non-special scheme
 --FILE--
 <?php
 
-$builder = new Uri\WhatWg\UrlBuilder();
-$builder->setScheme("foo");
-
-$url = $builder->build();
+$url = new Uri\WhatWg\UrlBuilder()
+    ->setScheme('foo')
+    ->build();
 
 var_dump($url->toAsciiString());
 var_dump($url);

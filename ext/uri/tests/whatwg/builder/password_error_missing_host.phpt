@@ -3,9 +3,9 @@ Test Uri\WhatWg\UrlBuilder::setPassword() - error - missing host
 --FILE--
 <?php
 
-$builder = new Uri\WhatWg\UrlBuilder();
-$builder->setScheme("https");
-$builder->setPassword("pass");
+$builder = new Uri\WhatWg\UrlBuilder()
+    ->setScheme('https')
+    ->setPassword('password');
 
 try {
     $builder->build();

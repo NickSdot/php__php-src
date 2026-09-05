@@ -3,16 +3,16 @@ Test Uri\WhatWg\UrlBuilder::setQuery() - success - empty string
 --FILE--
 <?php
 
-$builder = new Uri\WhatWg\UrlBuilder();
-$builder->setScheme("https");
-$builder->setHost("example.com");
-$builder->setQuery("foo");
-$builder->setQuery("");
-$url = $builder->build();
+$url = new Uri\WhatWg\UrlBuilder()
+    ->setScheme('https')
+    ->setHost('example.com')
+    ->setQuery('')
+    ->build();
 
 var_dump($url->toAsciiString());
 var_dump($url);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
+var_dump($url->equals(new Uri\WhatWg\Url('https://example.com/?'), Uri\UriComparisonMode::IncludeFragment));
 
 ?>
 --EXPECTF--
@@ -35,4 +35,5 @@ object(Uri\WhatWg\Url)#%d (%d) {
   ["fragment"]=>
   NULL
 }
+bool(true)
 bool(true)

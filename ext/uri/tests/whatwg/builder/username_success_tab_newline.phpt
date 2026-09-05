@@ -3,26 +3,27 @@ Test Uri\WhatWg\UrlBuilder::setUsername() - success - contains tab and newline c
 --FILE--
 <?php
 
-$builder = new Uri\WhatWg\UrlBuilder();
-$builder->setScheme("\tfo\no");
-$builder->setHost("example.com");
-$builder->setUsername("f\no\ro\t");
-$softErrors = [];
-$url = $builder->build(softErrors: $softErrors);
+$errors = [];
+
+$url = new Uri\WhatWg\UrlBuilder()
+    ->setScheme("\tfo\no")
+    ->setHost('example.com')
+    ->setUsername("f\no\ro\t")
+    ->build(softErrors: $errors);
 
 var_dump($url->toAsciiString());
 var_dump($url);
-var_dump($softErrors);
+var_dump($errors);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
 
 ?>
---EXPECT--
-string(30) "foo://f%0Ao%0Do%09@example.com"
-object(Uri\WhatWg\Url)#4 (8) {
+--EXPECTF--
+string(30) "foo://f%r%%r0Ao%r%%r0Do%r%%r09@example.com"
+object(Uri\WhatWg\Url)#%d (8) {
   ["scheme"]=>
   string(3) "foo"
   ["username"]=>
-  string(12) "f%0Ao%0Do%09"
+  string(12) "f%r%%r0Ao%r%%r0Do%r%%r09"
   ["password"]=>
   string(0) ""
   ["host"]=>
@@ -38,7 +39,7 @@ object(Uri\WhatWg\Url)#4 (8) {
 }
 array(1) {
   [0]=>
-  object(Uri\WhatWg\UrlValidationError)#2 (3) {
+  object(Uri\WhatWg\UrlValidationError)#%d (3) {
     ["context"]=>
     string(5) "	fo
 o"

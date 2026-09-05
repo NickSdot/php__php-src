@@ -1,39 +1,37 @@
 --TEST--
-Test Uri\WhatWg\UrlBuilder basic - success - with scheme-relative URL
+Test Uri\WhatWg\UrlBuilder::setPath() - success - colon in first segment with base URL
 --XFAIL--
 not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 
-$base = new Uri\WhatWg\Url('https://user:pass@example.com:123/foo/bar?query#hash');
+$base = new Uri\WhatWg\Url('https://user:pass@example.com:123/base/path?oldQuery#oldFragment');
 
 $url = new Uri\WhatWg\UrlBuilder()
-    ->setHost('example.net')
-    ->setPath('/foo/bar/baz')
-    ->setPort(124)
+    ->setPath('new:Path')
     ->build($base);
 
 var_dump($url->toAsciiString());
 var_dump($url);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
-var_dump($url->equals(new Uri\WhatWg\Url('//example.net:124/foo/bar/baz', $base), Uri\UriComparisonMode::IncludeFragment));
+var_dump($url->equals(new Uri\WhatWg\Url('./new:Path', $base), Uri\UriComparisonMode::IncludeFragment));
 
 ?>
 --EXPECTF--
-string(35) "https://example.net:124/foo/bar/baz"
+string(47) "https://user:pass@example.com:123/base/new:Path"
 object(Uri\WhatWg\Url)#%d (%d) {
   ["scheme"]=>
   string(5) "https"
   ["username"]=>
-  NULL
+  string(4) "user"
   ["password"]=>
-  NULL
+  string(4) "pass"
   ["host"]=>
-  string(11) "example.net"
+  string(11) "example.com"
   ["port"]=>
-  int(124)
+  int(123)
   ["path"]=>
-  string(12) "/foo/bar/baz"
+  string(14) "/base/new:Path"
   ["query"]=>
   NULL
   ["fragment"]=>
