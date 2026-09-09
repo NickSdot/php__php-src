@@ -7,6 +7,10 @@ PHP                                                                        NEWS
     registrations are freed while still reachable from the cycle collector.
     (Ilia Alshanetsky)
 
+- PCNTL:
+  . Fixed pcntl_signal_dispatch() dropping queued signals when it runs while an
+    exception is pending. (nicolas-grekas)
+
 
 24 Sep 2026, PHP 8.4.26
 
