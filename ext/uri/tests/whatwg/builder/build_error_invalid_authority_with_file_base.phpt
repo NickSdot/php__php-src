@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::build() - error - invalid authority with file base URL
---XFAIL--
-maybe bug: file authority reports wrong failure reason
 --FILE--
 <?php
 
