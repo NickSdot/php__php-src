@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setPath() - success - relative path with hostless non-special base URL
---XFAIL--
-not yet: relative path is not resolved against a hostless non-special base URL
 --FILE--
 <?php
 

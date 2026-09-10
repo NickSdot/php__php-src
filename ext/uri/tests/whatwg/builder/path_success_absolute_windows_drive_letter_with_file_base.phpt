@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setPath() - success - absolute Windows drive letter with file base URL
---XFAIL--
-not yet: absolute Windows drive path keeps the inherited query and fragment
 --FILE--
 <?php
 

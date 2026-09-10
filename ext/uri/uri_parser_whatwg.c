@@ -1116,15 +1116,65 @@ ZEND_ATTRIBUTE_NONNULL_ARGS(1, 2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser
 		}
 		lxb_url_query_set_null(lexbor_url);
 	} else if (Z_TYPE_P(path) == IS_STRING && Z_STRLEN_P(path) > 0) {
-		lxb_url_path_set_null(lexbor_url);
+		const char *path_start = Z_STRVAL_P(path);
+		const char *path_end = path_start + Z_STRLEN_P(path);
+		while (path_start < path_end
+			&& php_uri_whatwg_is_ascii_tab_or_newline((unsigned char) *path_start)
+		) {
+			path_start++;
+		}
+
+		const bool is_special = lexbor_base_url->scheme.type != LXB_URL_SCHEMEL_TYPE__UNKNOWN;
+		const bool starts_with_separator = path_start < path_end
+			&& (*path_start == '/' || (is_special && *path_start == '\\'));
+		const char *path_second = path_start < path_end ? path_start + 1 : path_end;
+		while (path_second < path_end
+			&& php_uri_whatwg_is_ascii_tab_or_newline((unsigned char) *path_second)
+		) {
+			path_second++;
+		}
+
+		/* Keep path text from being interpreted as a file drive letter or an authority. */
+		const char *path_prefix = NULL;
+		if (lexbor_base_url->scheme.type == LXB_URL_SCHEMEL_TYPE_FILE && !starts_with_separator) {
+			path_prefix = "./";
+		} else if (starts_with_separator && path_second < path_end
+			&& (*path_second == '/' || (is_special && *path_second == '\\'))
+		) {
+			path_prefix = "/.";
+		}
+
+		zend_string *input = NULL;
+		if (path_prefix != NULL) {
+			smart_str protected_path = {0};
+			smart_str_appends(&protected_path, path_prefix);
+			smart_str_appendl(&protected_path, Z_STRVAL_P(path), Z_STRLEN_P(path));
+			input = smart_str_extract(&protected_path);
+		}
+
+		if (starts_with_separator) {
+			lxb_url_path_set_null(lexbor_url);
+		}
+
+		const lxb_char_t *data = input != NULL
+			? (const lxb_char_t *) ZSTR_VAL(input)
+			: (const lxb_char_t *) Z_STRVAL_P(path);
+		const size_t data_len = input != NULL ? ZSTR_LEN(input) : Z_STRLEN_P(path);
 		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			(lxb_char_t *) Z_STRVAL_P(path), Z_STRLEN_P(path),
-			lexbor_base_url->path.opaque ? LXB_URL_STATE_NO_SCHEME_STATE : LXB_URL_STATE_PATH_START_STATE, LXB_ENCODING_AUTO
+			data, data_len, LXB_URL_STATE_NO_SCHEME_STATE, LXB_ENCODING_AUTO
 		);
-		php_uri_parser_whatwg_build_errors_and_throw(status, "path", &errors);
+		if (status != LXB_STATUS_OK) {
+			php_uri_parser_whatwg_build_errors_and_throw(status, "path", &errors);
+		} else {
+			php_uri_parser_whatwg_build_errors(&errors);
+		}
+		if (input != NULL) {
+			zend_string_release(input);
+		}
 		if (status != LXB_STATUS_OK) {
 			goto failure;
 		}
+		lxb_url_query_set_null(lexbor_url);
 	}
 
 	if (Z_TYPE_P(query) == IS_STRING) {
