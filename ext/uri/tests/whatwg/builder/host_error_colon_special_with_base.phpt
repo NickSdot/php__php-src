@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setHost() - error - colon in special host input with base URL
---XFAIL--
-not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 

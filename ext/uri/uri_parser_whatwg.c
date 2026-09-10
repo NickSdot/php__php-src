@@ -1002,6 +1002,32 @@ ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_build_errors_and_throw(
 	}
 }
 
+ZEND_ATTRIBUTE_NONNULL static zend_result php_uri_parser_whatwg_validate_host_dependent_components(
+	const zval *username, const zval *password, const zval *port, zval *errors
+)
+{
+	const char *message;
+	if (Z_TYPE_P(username) == IS_STRING && Z_STRLEN_P(username) > 0) {
+		message = "The specified URL cannot have username";
+	} else if (Z_TYPE_P(password) == IS_STRING && Z_STRLEN_P(password) > 0) {
+		message = "The specified URL cannot have password";
+	} else if (Z_TYPE_P(port) == IS_LONG) {
+		message = "The specified URL cannot have port";
+	} else {
+		return SUCCESS;
+	}
+
+	zend_object *exception = zend_throw_exception(
+		php_uri_ce_whatwg_invalid_url_exception, message, 0
+	);
+	if (Z_TYPE_P(errors) != IS_ARRAY) {
+		ZVAL_EMPTY_ARRAY(errors);
+	}
+	zend_update_property(exception->ce, exception, ZEND_STRL("errors"), errors);
+
+	return FAILURE;
+}
+
 ZEND_ATTRIBUTE_NONNULL_ARGS(1, 2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser_whatwg_resolve_reference_from_zval(
 	lxb_url_t *lexbor_base_url, const zval *scheme, const zval *username, const zval *password,
 	const zval *host, const zval *port, const zval *path, const zval *query, const zval *fragment,
@@ -1013,19 +1039,53 @@ ZEND_ATTRIBUTE_NONNULL_ARGS(1, 2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser
 
 	lxb_url_t *lexbor_url = php_uri_parser_whatwg_clone(lexbor_base_url);
 	const bool has_authority = Z_TYPE_P(host) == IS_STRING;
-	if (Z_TYPE_P(username) == IS_STRING) {
-		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			(lxb_char_t *) Z_STRVAL_P(username), Z_STRLEN_P(username),
-			LXB_URL_STATE_AUTHORITY_STATE, LXB_ENCODING_AUTO
-		);
-		php_uri_parser_whatwg_build_errors_and_throw(status, "username", &errors);
-		if (status != LXB_STATUS_OK) {
+	if (has_authority && lexbor_url->scheme.type == LXB_URL_SCHEMEL_TYPE_FILE) {
+		if (Z_TYPE_P(username) == IS_STRING && Z_STRLEN_P(username) > 0) {
+			php_uri_parser_whatwg_component_error("username", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
 			goto failure;
 		}
-	} else if (has_authority && lexbor_base_url->username.data != NULL) {
+
+		if (Z_TYPE_P(password) == IS_STRING && Z_STRLEN_P(password) > 0) {
+			php_uri_parser_whatwg_component_error("password", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
+			goto failure;
+		}
+
+		if (Z_TYPE_P(port) == IS_LONG) {
+			php_uri_parser_whatwg_component_error("port", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
+			goto failure;
+		}
+	}
+
+	if (has_authority) {
 		zval zv;
 		ZVAL_NULL(&zv);
-		const zend_result result = php_uri_parser_whatwg_username_write(lexbor_url, &zv, NULL);
+		if ((lexbor_base_url->username.data != NULL
+				&& php_uri_parser_whatwg_username_write(lexbor_url, &zv, NULL) == FAILURE)
+			|| (lexbor_base_url->password.data != NULL
+				&& php_uri_parser_whatwg_password_write(lexbor_url, &zv, NULL) == FAILURE)
+			|| (lexbor_base_url->has_port
+				&& php_uri_parser_whatwg_port_write(lexbor_url, &zv, NULL) == FAILURE)
+		) {
+			goto failure;
+		}
+
+		const zend_result result = php_uri_parser_whatwg_host_write(lexbor_url, host, NULL);
+		php_uri_parser_whatwg_build_errors(&errors);
+		if (result == FAILURE) {
+			goto failure;
+		}
+		if (lexbor_url->scheme.type != LXB_URL_SCHEMEL_TYPE_FILE
+			&& lexbor_url->host.type == LXB_URL_HOST_TYPE_EMPTY
+			&& php_uri_parser_whatwg_validate_host_dependent_components(
+				username, password, port, &errors
+			) == FAILURE
+		) {
+			goto failure;
+		}
+	}
+
+	if (Z_TYPE_P(username) == IS_STRING) {
+		const zend_result result = php_uri_parser_whatwg_username_write(lexbor_url, username, NULL);
 		php_uri_parser_whatwg_build_errors(&errors);
 		if (result == FAILURE) {
 			goto failure;
@@ -1033,58 +1093,29 @@ ZEND_ATTRIBUTE_NONNULL_ARGS(1, 2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser
 	}
 
 	if (Z_TYPE_P(password) == IS_STRING) {
-		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			(lxb_char_t *) Z_STRVAL_P(password), Z_STRLEN_P(password),
-			LXB_URL_STATE_AUTHORITY_STATE, LXB_ENCODING_AUTO
-		);
-		php_uri_parser_whatwg_build_errors_and_throw(status, "password", &errors);
-		if (status != LXB_STATUS_OK) {
-			goto failure;
-		}
-	} else if (has_authority && lexbor_base_url->password.data != NULL) {
-		zval zv;
-		ZVAL_NULL(&zv);
-		const zend_result result = php_uri_parser_whatwg_password_write(lexbor_url, &zv, NULL);
+		const zend_result result = php_uri_parser_whatwg_password_write(lexbor_url, password, NULL);
 		php_uri_parser_whatwg_build_errors(&errors);
 		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	if (Z_TYPE_P(host) == IS_STRING) {
-		lxb_url_host_set_empty(&lexbor_url->host, &lexbor_mraw);
-		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			(lxb_char_t *) Z_STRVAL_P(host), Z_STRLEN_P(host),
-			LXB_URL_STATE_HOST_STATE, LXB_ENCODING_AUTO
-		);
-		php_uri_parser_whatwg_build_errors_and_throw(status, "host", &errors);
-		if (status != LXB_STATUS_OK) {
 			goto failure;
 		}
 	}
 
 	if (Z_TYPE_P(port) == IS_LONG) {
-		lexbor_str_t port_str = {0};
-		zval_long_or_null_to_lexbor_str(port, &port_str);
-
-		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			port_str.data, port_str.length, LXB_URL_STATE_PORT_STATE, LXB_ENCODING_AUTO
-		);
-		php_uri_parser_whatwg_build_errors_and_throw(status, "port", &errors);
-		if (status != LXB_STATUS_OK) {
-			goto failure;
-		}
-	} else if (has_authority && lexbor_base_url->has_port) {
-		zval zv;
-		ZVAL_NULL(&zv);
-		const zend_result result = php_uri_parser_whatwg_port_write(lexbor_url, &zv, NULL);
+		const zend_result result = php_uri_parser_whatwg_port_write(lexbor_url, port, NULL);
 		php_uri_parser_whatwg_build_errors(&errors);
 		if (result == FAILURE) {
 			goto failure;
 		}
 	}
 
-	if (Z_TYPE_P(path) == IS_STRING && Z_STRLEN_P(path) > 0) {
+	if (has_authority) {
+		const zend_result result = php_uri_parser_whatwg_path_write(lexbor_url, path, NULL);
+		php_uri_parser_whatwg_build_errors(&errors);
+		if (result == FAILURE) {
+			goto failure;
+		}
+		lxb_url_query_set_null(lexbor_url);
+	} else if (Z_TYPE_P(path) == IS_STRING && Z_STRLEN_P(path) > 0) {
 		lxb_url_path_set_null(lexbor_url);
 		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
 			(lxb_char_t *) Z_STRVAL_P(path), Z_STRLEN_P(path),
@@ -1196,17 +1227,17 @@ ZEND_ATTRIBUTE_NONNULL_ARGS(2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser_wh
 	lxb_url_parser_clean(&lexbor_parser);
 	if (lexbor_base_url != NULL && Z_TYPE_P(scheme) == IS_STRING && Z_STRLEN_P(scheme) == 0) {
 		if (Z_TYPE_P(host) == IS_NULL || Z_STRLEN_P(host) == 0) {
-			if (Z_TYPE_P(username) != IS_NULL) {
+			if (Z_TYPE_P(username) == IS_STRING && Z_STRLEN_P(username) > 0) {
 				php_uri_parser_whatwg_throw_exception("The specified URL cannot have username");
 				return NULL;
 			}
 
-			if (Z_TYPE_P(password) != IS_NULL) {
+			if (Z_TYPE_P(password) == IS_STRING && Z_STRLEN_P(password) > 0) {
 				php_uri_parser_whatwg_throw_exception("The specified URL cannot have password");
 				return NULL;
 			}
 
-			if (Z_TYPE_P(port) != IS_NULL) {
+			if (Z_TYPE_P(port) == IS_LONG) {
 				php_uri_parser_whatwg_throw_exception("The specified URL cannot have port");
 				return NULL;
 			}

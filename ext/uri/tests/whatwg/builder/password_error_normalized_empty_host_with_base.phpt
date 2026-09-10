@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setPassword() - error - host normalizes to empty with base URL
---XFAIL--
-maybe bug: should not ignore password when host normalizes to empty
 --FILE--
 <?php
 

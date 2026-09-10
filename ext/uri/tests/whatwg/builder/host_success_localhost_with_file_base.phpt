@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setHost() - success - localhost with file base URL
---XFAIL--
-not yet: localhost file host keeps the inherited query and fragment
 --FILE--
 <?php
 

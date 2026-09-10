@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::build() - error - soft errors assigned to typed property reference with base URL
---XFAIL--
-not yet: soft errors are not returned correctly with a base URL
 --FILE--
 <?php
 

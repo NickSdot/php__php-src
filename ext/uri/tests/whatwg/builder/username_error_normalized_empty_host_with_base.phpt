@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setUsername() - error - host normalizes to empty with base URL
---XFAIL--
-maybe bug: should not ignore username when host normalizes to empty
 --FILE--
 <?php
 

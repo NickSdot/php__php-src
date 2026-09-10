@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setHost() - success - empty host with file base URL
---XFAIL--
-not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 
