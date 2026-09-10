@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::build() - error - authority and path with base URL containing opaque path
---XFAIL--
-maybe bug: authority error should not be reported as path error
 --FILE--
 <?php
 

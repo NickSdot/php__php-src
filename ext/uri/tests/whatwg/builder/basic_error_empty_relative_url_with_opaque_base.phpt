@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder basic - error - empty relative-URL with base URL containing opaque path
---XFAIL--
-not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 

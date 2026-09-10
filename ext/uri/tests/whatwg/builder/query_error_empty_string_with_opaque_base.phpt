@@ -1,7 +1,5 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setQuery() - error - empty string with base URL containing opaque path
---XFAIL--
-not yet: empty query with an opaque base URL is accepted
 --FILE--
 <?php
 

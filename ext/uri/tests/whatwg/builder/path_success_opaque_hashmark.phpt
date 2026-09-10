@@ -3,13 +3,16 @@ Test Uri\WhatWg\UrlBuilder::setPath() - success - hashmark in opaque path
 --FILE--
 <?php
 
+$errors = [];
+
 $url = new Uri\WhatWg\UrlBuilder()
     ->setScheme('scheme')
     ->setPath('#foo')
-    ->build();
+    ->build(softErrors: $errors);
 
 var_dump($url->toAsciiString());
 var_dump($url);
+var_dump($errors);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
 
 ?>
@@ -32,5 +35,16 @@ object(Uri\WhatWg\Url)#%d (%d) {
   NULL
   ["fragment"]=>
   NULL
+}
+array(1) {
+  [0]=>
+  object(Uri\WhatWg\UrlValidationError)#%d (%d) {
+    ["context"]=>
+    string(4) "#foo"
+    ["type"]=>
+    enum(Uri\WhatWg\UrlValidationErrorType::InvalidUrlUnit)
+    ["failure"]=>
+    bool(false)
+  }
 }
 bool(true)

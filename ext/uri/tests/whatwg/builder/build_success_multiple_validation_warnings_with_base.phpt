@@ -1,15 +1,14 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::build() - success - multiple validation warnings with base URL
---XFAIL--
-not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 
 $base = new Uri\WhatWg\Url('https://example.com/base/path');
-$referenceErrors = [];
-$reference = new Uri\WhatWg\Url('//127.0.0.1.\newPath', $base, $referenceErrors);
 
 $errors = [];
+$referenceErrors = [];
+
+$reference = new Uri\WhatWg\Url('//127.0.0.1.\newPath', $base, $referenceErrors);
 
 $url = new Uri\WhatWg\UrlBuilder()
     ->setHost('127.0.0.1.')
