@@ -1,18 +1,19 @@
 --TEST--
 Test Uri\WhatWg\UrlBuilder::setQuery() - success - hashmark with base URL
---XFAIL--
-not yet: builder does not resolve this reference against the base URL correctly
 --FILE--
 <?php
 
 $base = new Uri\WhatWg\Url('https://user:pass@example.com:123/base/path?oldQuery#oldFragment');
 
+$errors = [];
+
 $url = new Uri\WhatWg\UrlBuilder()
     ->setQuery('newQuery#value')
-    ->build($base);
+    ->build($base, $errors);
 
 var_dump($url->toAsciiString());
 var_dump($url);
+var_dump($errors);
 var_dump($url->equals(new Uri\WhatWg\Url($url->toAsciiString())));
 var_dump($url->equals(new Uri\WhatWg\Url('?newQuery%23value', $base), Uri\UriComparisonMode::IncludeFragment));
 
@@ -36,6 +37,17 @@ object(Uri\WhatWg\Url)#%d (%d) {
   string(16) "newQuery%23value"
   ["fragment"]=>
   NULL
+}
+array(1) {
+  [0]=>
+  object(Uri\WhatWg\UrlValidationError)#%d (%d) {
+    ["context"]=>
+    string(6) "#value"
+    ["type"]=>
+    enum(Uri\WhatWg\UrlValidationErrorType::InvalidUrlUnit)
+    ["failure"]=>
+    bool(false)
+  }
 }
 bool(true)
 bool(true)
