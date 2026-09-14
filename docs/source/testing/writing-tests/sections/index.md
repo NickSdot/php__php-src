@@ -60,6 +60,46 @@ generally useful, optional; this reference explains when and how each one is use
  [EXPECTF_EXTERNAL](#--expectf_external--),
  [EXPECTREGEX_EXTERNAL](#--expectregex_external--)
 
+## Order
+
+`--TEST--` must come first. Other sections are not order-sensitive but should
+follow the convention below to make tests easier to scan. Omit sections that do
+not apply; choose one where alternatives share a position. Square brackets mark
+omittable sections; `|` separates alternatives.
+
+```text
+--TEST--
+[--DESCRIPTION--]
+[--CREDITS--]
+
+[--INI--]
+[--ENV--]
+[--EXTENSIONS--]
+
+[--SKIPIF--]
+[--XFAIL--]
+[--XLEAK--]
+[--FLAKY--]
+[--CONFLICTS--]
+[--WHITESPACE_SENSITIVE--]
+
+[--ARGS--]
+[--CGI--]
+[--PHPDBG--]
+[--CAPTURE_STDIO--]
+
+[--GET--]
+[--POST-- | --POST_RAW-- | --PUT-- | --GZIP_POST-- | --DEFLATE_POST--]
+[--COOKIE--]
+[--STDIN--]
+
+[--FILE-- | --FILEEOF-- | --FILE_EXTERNAL-- | --REDIRECTTEST--]
+[--CLEAN--]
+
+[--EXPECTHEADERS--]
+[--EXPECT-- | --EXPECT_EXTERNAL-- | --EXPECTF-- | --EXPECTF_EXTERNAL-- | --EXPECTREGEX-- | --EXPECTREGEX_EXTERNAL--]
+```
+
 ## Reference
 
 ### --TEST--
@@ -1630,43 +1670,3 @@ section just stating a filename where to load the expected output from.
 |                  | [§](index.md#--expect_external--) `--EXPECT_EXTERNAL--`   |
 |                  | [§](index.md#--expectf_external--) `--EXPECTF_EXTERNAL--` |
 |                  | [§](index.md#--expectregex--) `--EXPECTREGEX--`           |
-
-## Order
-
-`--TEST--` must come first. Other sections are not order-sensitive but should
-follow the convention below to make tests easier to scan. Omit sections that do
-not apply; choose one where alternatives share a position. Square brackets mark
-omittable sections; `|` separates alternatives.
-
-```text
---TEST--
-[--DESCRIPTION--]
-[--CREDITS--]
-
-[--INI--]
-[--ENV--]
-[--EXTENSIONS--]
-
-[--SKIPIF--]
-[--XFAIL--]
-[--XLEAK--]
-[--FLAKY--]
-[--CONFLICTS--]
-[--WHITESPACE_SENSITIVE--]
-
-[--ARGS--]
-[--CGI--]
-[--PHPDBG--]
-[--CAPTURE_STDIO--]
-
-[--GET--]
-[--POST-- | --POST_RAW-- | --PUT-- | --GZIP_POST-- | --DEFLATE_POST--]
-[--COOKIE--]
-[--STDIN--]
-
-[--FILE-- | --FILEEOF-- | --FILE_EXTERNAL-- | --REDIRECTTEST--]
-[--CLEAN--]
-
-[--EXPECTHEADERS--]
-[--EXPECT-- | --EXPECT_EXTERNAL-- | --EXPECTF-- | --EXPECTF_EXTERNAL-- | --EXPECTREGEX-- | --EXPECTREGEX_EXTERNAL--]
-```
