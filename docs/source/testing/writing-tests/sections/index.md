@@ -221,6 +221,39 @@ opcache.file_cache="{TMP}"
 opcache.preload={PWD}/foo.inc
 ```
 
+### --ENV--
+
+Configures environment variables such as those found in the `$_SERVER` global
+array.
+
+|               |                                          |
+|---------------|------------------------------------------|
+| **Mandatory** | No                                       |
+| **Position**  | Before execution section                 |
+| **Content**   | Environment variables, e.g. `NAME=value` |
+| **Case**      | Platform-dependent                       |
+| **Lines**     | One or more                              |
+| **Separator** | Newline                                  |
+
+#### Placeholders
+
+| Placeholder | Description                 | Example                      |
+|-------------|-----------------------------|------------------------------|
+| `{PWD}`     | Current test file directory | `LDAPCONF={PWD}/ldap.conf`   |
+
+#### Examples
+
+**Example 1**
+
+```text
+--ENV--
+SCRIPT_NAME=/frontcontroller10.php
+REQUEST_URI=/frontcontroller10.php/hi
+PATH_INFO=/hi
+```
+
+Full example: [sample018.phpt](../samples/index.md#sample018phpt)
+
 ### --EXTENSIONS--
 
 Use EXTENSIONS when a test needs additional PHP extensions.
@@ -600,33 +633,6 @@ formatting changes. Available as of PHP 7.4.3.
 | **Mandatory** | No                       |
 | **Position**  | Before execution section |
 | **Content**   | None                     |
-
-### --ENV--
-
-Configures environment variables such as those found in the `$_SERVER` global
-array.
-
-|               |                                          |
-|---------------|------------------------------------------|
-| **Mandatory** | No                                       |
-| **Position**  | Before execution section                 |
-| **Content**   | Environment variables, e.g. `NAME=value` |
-| **Case**      | Platform-dependent                       |
-| **Lines**     | One or more                              |
-| **Separator** | Newline                                  |
-
-#### Examples
-
-**Example 1**
-
-```text
---ENV--
-SCRIPT_NAME=/frontcontroller10.php
-REQUEST_URI=/frontcontroller10.php/hi
-PATH_INFO=/hi
-```
-
-Full example: [sample018.phpt](../samples/index.md#sample018phpt)
 
 ### --ARGS--
 
@@ -1638,6 +1644,7 @@ omittable sections; `|` separates alternatives.
 [--CREDITS--]
 
 [--INI--]
+[--ENV--]
 [--EXTENSIONS--]
 
 [--SKIPIF--]
@@ -1647,7 +1654,6 @@ omittable sections; `|` separates alternatives.
 [--CONFLICTS--]
 [--WHITESPACE_SENSITIVE--]
 
-[--ENV--]
 [--ARGS--]
 [--CGI--]
 [--PHPDBG--]
