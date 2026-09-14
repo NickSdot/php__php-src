@@ -1,4 +1,6 @@
-Memory Management TODO
+# Memory Management Notes
+
+## TODO
 
 The Reference Counting page contained TODOs for dedicated Cycle Collector and
 Zend Allocator pages; grouping them under Memory Management makes sense. Pages
