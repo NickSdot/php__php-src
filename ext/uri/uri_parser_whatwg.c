@@ -1084,54 +1084,6 @@ ZEND_ATTRIBUTE_NONNULL static const char *php_uri_parser_whatwg_build_reference_
 	return result;
 }
 
-ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_build_reference_errors_and_throw(
-	const lxb_status_t status, const char *component, zval *errors
-)
-{
-	const char *reason = php_uri_parser_whatwg_build_reference_errors(errors, false);
-
-	if (status != LXB_STATUS_OK) {
-		if (Z_ISUNDEF_P(errors)) {
-			ZVAL_EMPTY_ARRAY(errors);
-		}
-
-		zval exception_errors;
-		ZVAL_COPY_VALUE(&exception_errors, errors);
-		ZVAL_UNDEF(errors);
-		throw_invalid_url_exception_with_reason(NULL, component, reason, &exception_errors);
-	}
-}
-
-/* TODO: Replace with lxb_url_path_set_null() once https://github.com/lexbor/lexbor/pull/415 is available. */
-ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_path_set_null(lxb_url_t *url)
-{
-	if (url->path.str.data == NULL) {
-		return;
-	}
-
-	(void) lexbor_str_destroy(&url->path.str, url->mraw, false);
-
-	url->path.str.length = 0;
-	url->path.length = 0;
-	url->path.opaque = false;
-}
-
-/* TODO: Replace with lxb_url_query_set_null() once https://github.com/lexbor/lexbor/pull/415 is available. */
-ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_query_set_null(lxb_url_t *url)
-{
-	if (url->query.data != NULL) {
-		(void) lexbor_str_destroy(&url->query, url->mraw, false);
-	}
-}
-
-/* TODO: Replace with lxb_url_fragment_set_null() once https://github.com/lexbor/lexbor/pull/415 is available. */
-ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_fragment_set_null(lxb_url_t *url)
-{
-	if (url->fragment.data != NULL) {
-		(void) lexbor_str_destroy(&url->fragment, url->mraw, false);
-	}
-}
-
 ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_merge_exception_errors(zval *errors)
 {
 	if (zend_hash_num_elements(Z_ARRVAL_P(errors)) == 0 || EG(exception) == NULL
@@ -1298,7 +1250,10 @@ ZEND_ATTRIBUTE_NONNULL static void php_uri_parser_whatwg_append_reference_path(
 		&& (path_start[0] == '/' || (is_special && path_start[0] == '\\'))
 		&& (*path_second == '/' || (is_special && *path_second == '\\'))
 	) {
-		smart_str_appends(reference, "/.");
+		smart_str_appends(
+			reference,
+			scheme_type == LXB_URL_SCHEMEL_TYPE_FILE ? "/.." : "/."
+		);
 	} else if (!has_scheme
 		&& path_start < path_end
 		&& path_start[0] != '/'
@@ -1455,217 +1410,6 @@ failure:
 	return NULL;
 }
 
-ZEND_ATTRIBUTE_NONNULL_ARGS(1, 2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser_whatwg_resolve_reference_from_zval(
-	lxb_url_t *lexbor_base_url, const zval *scheme, const zval *username, const zval *password,
-	const zval *host, const zval *port, const zval *path, const zval *query, const zval *fragment,
-	zval *errors_zv
-) {
-	lxb_status_t status;
-	zval errors;
-	array_init(&errors);
-
-	const char *path_start = Z_STRVAL_P(path);
-	const char *path_end = path_start + Z_STRLEN_P(path);
-	path_start = php_uri_whatwg_skip_ascii_tab_or_newline(path_start, path_end);
-
-	const bool is_fragment_reference = Z_TYPE_P(host) == IS_NULL
-		&& path_start == path_end
-		&& Z_TYPE_P(query) == IS_NULL
-		&& Z_TYPE_P(fragment) == IS_STRING;
-	if (lexbor_base_url->path.opaque
-		&& !is_fragment_reference
-		&& (Z_TYPE_P(host) == IS_STRING || path_start == path_end)
-	) {
-		const char *component = Z_TYPE_P(host) == IS_STRING
-			? "host"
-			: (Z_TYPE_P(query) == IS_STRING ? "query" : "path");
-		php_uri_parser_whatwg_component_error(component, LXB_URL_ERROR_TYPE_MISSING_SCHEME_NON_RELATIVE_URL);
-		zval_ptr_dtor(&errors);
-		return NULL;
-	}
-
-	const lxb_url_scheme_type_t scheme_type = php_uri_parser_whatwg_get_special_scheme(Z_STR_P(scheme));
-	if (Z_STRLEN_P(scheme) > 0 && scheme_type == lexbor_base_url->scheme.type) {
-		const char *reason;
-		append_validation_error(
-			Z_ARRVAL(errors), LXB_URL_ERROR_TYPE_SPECIAL_SCHEME_MISSING_FOLLOWING_SOLIDUS, "", &reason
-		);
-	}
-
-	lxb_url_t *lexbor_url = php_uri_parser_whatwg_clone(lexbor_base_url);
-	const bool has_authority = Z_TYPE_P(host) == IS_STRING;
-	if (has_authority && lexbor_url->scheme.type == LXB_URL_SCHEMEL_TYPE_FILE) {
-		if (Z_TYPE_P(username) == IS_STRING && Z_STRLEN_P(username) > 0) {
-			php_uri_parser_whatwg_component_error("username", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
-			goto failure;
-		}
-
-		if (Z_TYPE_P(password) == IS_STRING && Z_STRLEN_P(password) > 0) {
-			php_uri_parser_whatwg_component_error("password", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
-			goto failure;
-		}
-
-		if (Z_TYPE_P(port) == IS_LONG) {
-			php_uri_parser_whatwg_component_error("port", LXB_URL_ERROR_TYPE_DOMAIN_INVALID_CODE_POINT);
-			goto failure;
-		}
-	}
-
-	if (has_authority) {
-		zval zv;
-		ZVAL_NULL(&zv);
-		if ((lexbor_base_url->username.data != NULL
-				&& php_uri_parser_whatwg_username_write(lexbor_url, &zv, NULL) == FAILURE)
-			|| (lexbor_base_url->password.data != NULL
-				&& php_uri_parser_whatwg_password_write(lexbor_url, &zv, NULL) == FAILURE)
-			|| (lexbor_base_url->has_port
-				&& php_uri_parser_whatwg_port_write(lexbor_url, &zv, NULL) == FAILURE)
-		) {
-			goto failure;
-		}
-
-		const zend_result result = php_uri_parser_whatwg_host_write(lexbor_url, host, NULL);
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-		if (lexbor_url->scheme.type != LXB_URL_SCHEMEL_TYPE_FILE
-			&& lexbor_url->host.type == LXB_URL_HOST_TYPE_EMPTY
-			&& php_uri_parser_whatwg_validate_host_dependent_components(
-				username, password, port
-			) == FAILURE
-		) {
-			goto failure;
-		}
-	}
-
-	if (Z_TYPE_P(username) == IS_STRING) {
-		const zend_result result = php_uri_parser_whatwg_username_write(lexbor_url, username, NULL);
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	if (Z_TYPE_P(password) == IS_STRING) {
-		const zend_result result = php_uri_parser_whatwg_password_write(lexbor_url, password, NULL);
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	if (Z_TYPE_P(port) == IS_LONG) {
-		const zend_result result = php_uri_parser_whatwg_port_write(lexbor_url, port, NULL);
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	if (has_authority) {
-		const zend_result result = php_uri_parser_whatwg_path_write(lexbor_url, path, NULL);
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-		php_uri_parser_whatwg_query_set_null(lexbor_url);
-	} else if (Z_STRLEN_P(path) > 0) {
-		const bool is_special = lexbor_base_url->scheme.type != LXB_URL_SCHEMEL_TYPE__UNKNOWN;
-		lxb_url_state_t state = LXB_URL_STATE_NO_SCHEME_STATE;
-		if (!lexbor_base_url->path.opaque && path_start < path_end
-			&& (*path_start == '/' || (is_special && *path_start == '\\'))
-		) {
-			state = LXB_URL_STATE_PATH_START_STATE;
-			if (lexbor_base_url->scheme.type == LXB_URL_SCHEMEL_TYPE_FILE) {
-				const char *path_second = php_uri_whatwg_skip_ascii_tab_or_newline(
-					path_start + 1, path_end
-				);
-				if (path_second == path_end || (*path_second != '/' && *path_second != '\\')) {
-					state = LXB_URL_STATE_FILE_STATE;
-				}
-			}
-		}
-
-		smart_str reference = {0};
-		php_uri_parser_whatwg_append_escaped_component(
-			&reference, Z_STRVAL_P(path), Z_STRLEN_P(path), true, true, &errors
-		);
-		if (lexbor_base_url->path.opaque && path_start == path_end
-			&& Z_TYPE_P(query) == IS_NULL && Z_TYPE_P(fragment) != IS_NULL
-		) {
-			smart_str_appendc(&reference, '#');
-		}
-
-		zend_string *input = smart_str_extract(&reference);
-		if (path_start < path_end
-			&& (*path_start == '/' || (is_special && *path_start == '\\'))
-		) {
-			php_uri_parser_whatwg_path_set_null(lexbor_url);
-		}
-		lxb_url_parser_clean(&lexbor_parser);
-		status = lxb_url_parse_basic(&lexbor_parser, lexbor_url, lexbor_base_url,
-			(const lxb_char_t *) ZSTR_VAL(input), ZSTR_LEN(input), state, LXB_ENCODING_UTF_8
-		);
-		if (status != LXB_STATUS_OK) {
-			php_uri_parser_whatwg_build_reference_errors_and_throw(status, "path", &errors);
-		} else {
-			php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		}
-		zend_string_release(input);
-		if (status != LXB_STATUS_OK) {
-			goto failure;
-		}
-		if (path_start < path_end) {
-			php_uri_parser_whatwg_query_set_null(lexbor_url);
-		}
-	}
-
-	if (Z_TYPE_P(query) == IS_STRING) {
-		zend_result result;
-		if (Z_STRLEN_P(query) == 0) {
-			lexbor_str_destroy(&lexbor_url->query, lexbor_url->mraw, false);
-			lexbor_str_init(&lexbor_url->query, lexbor_url->mraw, 1);
-			result = SUCCESS;
-		} else {
-			result = php_uri_parser_whatwg_query_write(lexbor_url, query, NULL);
-		}
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	php_uri_parser_whatwg_fragment_set_null(lexbor_url);
-	if (Z_TYPE_P(fragment) == IS_STRING) {
-		zend_result result;
-		if (Z_STRLEN_P(fragment) == 0) {
-			lexbor_str_init(&lexbor_url->fragment, lexbor_url->mraw, 1);
-			result = SUCCESS;
-		} else {
-			result = php_uri_parser_whatwg_fragment_write(lexbor_url, fragment, NULL);
-		}
-		php_uri_parser_whatwg_build_reference_errors(&errors, false);
-		if (result == FAILURE) {
-			goto failure;
-		}
-	}
-
-	if (php_uri_pass_errors_by_ref_and_free(errors_zv, &errors) == FAILURE) {
-		/* The errors zval was already consumed; failure would destroy it again. */
-		lxb_url_destroy(lexbor_url);
-		return NULL;
-	}
-
-	return lexbor_url;
-
-failure:
-	php_uri_parser_whatwg_merge_exception_errors(&errors);
-	zval_ptr_dtor(&errors);
-	lxb_url_destroy(lexbor_url);
-	return NULL;
-}
-
 ZEND_ATTRIBUTE_NONNULL static zend_result php_uri_parser_whatwg_build_path(
 	lxb_url_t *lexbor_url, const zval *path, const zval *query, const zval *fragment, zval *errors
 ) {
@@ -1743,17 +1487,8 @@ ZEND_ATTRIBUTE_NONNULL_ARGS(2, 3, 4, 5, 6, 7, 8, 9) lxb_url_t *php_uri_parser_wh
 			}
 		}
 
-		lxb_url_t *reference_url = php_uri_parser_whatwg_parse_reference_from_zval(
+		return php_uri_parser_whatwg_parse_reference_from_zval(
 			lexbor_base_url, scheme, username, password, host, port, path, query, fragment, soft_errors_zv
-		);
-		if (reference_url == NULL) {
-			return NULL;
-		}
-		lxb_url_destroy(reference_url);
-		lxb_url_parser_clean(&lexbor_parser);
-
-		return php_uri_parser_whatwg_resolve_reference_from_zval(
-			lexbor_base_url, scheme, username, password, host, port, path, query, fragment, NULL
 		);
 	}
 
